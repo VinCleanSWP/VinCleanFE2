@@ -15,6 +15,9 @@ const ServiceTypeDetail = () => {
   const typeId = useParams();
   const [service, setService] = useState(null);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
+  const [selectedServiceName, setSelectedServiceName] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+
   const id = parseInt(typeId.id);
   console.log(id);
   useEffect(() => {
@@ -22,11 +25,13 @@ const ServiceTypeDetail = () => {
       .then(response => {
         const data = response.data.data;
         setService(data);
+        setSelectedType(typeId.type1);
       })
       .catch(error => {
         console.error('Error fetching service type detail:', error);
       });
   }, [id]);
+
 
   if (!service) {
     return <div>Loading...</div>;
@@ -125,7 +130,13 @@ const ServiceTypeDetail = () => {
             <Col lg="7" className="mt-5">
               <div className="booking-info mt-5">
                 <h5 className="mb-4 fw-bold ">Booking Information</h5>
-                <BookingForm serviceId={selectedServiceId} />
+                {/* <BookingForm serviceId={selectedServiceId} /> */}
+                <BookingForm
+                  selectedServiceId={selectedServiceId}
+                  selectedServiceName={selectedServiceName}
+                  selectedServiceType={selectedType}
+                />
+
               </div>
             </Col>
 
@@ -137,15 +148,30 @@ const ServiceTypeDetail = () => {
                   {/* {service.map(service => (
                     <li className={`btn service-item ${service.selected ? 'selected' : ''}`} key={service.serviceId}>{service.name}</li>
                   ))} */}
-                  {service.map(service => (
+                  {/* {service.map(service => (
                     <li
                       className={`btn service-item ${service.serviceId === selectedServiceId ? 'selected' : ''}`}
                       key={service.serviceId}
                       onClick={() => setSelectedServiceId(service.serviceId)}
                     >
-                      {service.name}
+                      {service.name}/
+                      {service.costPerSlot}vnd
+                    </li>
+                  ))} */}
+                  {service.map(service => (
+                    <li
+                      className={`btn service-item ${service.serviceId === selectedServiceId ? 'selected' : ''}`}
+                      key={service.serviceId}
+                      onClick={() => {
+                        setSelectedServiceId(service.serviceId);
+                        setSelectedServiceName(service.name);
+
+                      }}
+                    >
+                      {service.name}/{service.cost}vnd
                     </li>
                   ))}
+
                 </ul>
               </div>
             </Col>

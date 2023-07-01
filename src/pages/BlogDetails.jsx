@@ -116,14 +116,17 @@ const BlogDetails = () => {
 
                 <div className="single__comment d-flex gap-3">
                   <img src="" alt="" />
-                  <div className="comment__content">
+                  <div className="comment-box" >
                     <h6 className=" fw-bold"></h6>
                     <p className="section__description mb-0"></p>
                     <p className="section__description">
                       {comments.map(comment => {
                         if (comment.blogId === blogid) {
                           return (
-                            <div key={comment.id} style={{ whiteSpace: 'pre-line' }} dangerouslySetInnerHTML={{ __html: comment.content }}></div>
+                            <div key={comment.id} style={{ whiteSpace: 'pre-line' }}>
+                              <h6>{comment.modifiedBy}</h6>
+                              <p dangerouslySetInnerHTML={{ __html: comment.content }}></p>
+                            </div>
                           );
                         }
                         return null;

@@ -39,8 +39,10 @@ const Header = () => {
     localStorage.removeItem('loggedIn');
     localStorage.removeItem('email');
     localStorage.removeItem('name');
+    localStorage.removeItem('role');
     setLoggedIn(false);
     setEmail('');
+    window.location.href = '/home';
   };
   useEffect(() => {
     // Kiểm tra xem đã có thông tin đăng nhập trong localStorage hay chưa

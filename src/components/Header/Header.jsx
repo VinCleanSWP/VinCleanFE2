@@ -1,6 +1,5 @@
-import React, { useRef } from "react";
-
-import { Container, Row, Col } from "reactstrap";
+import React, { useRef, useState, useEffect } from "react";
+import { Container, Row, Col, Button } from "reactstrap";
 import { Link, NavLink } from "react-router-dom";
 import "../../styles/header.css";
 
@@ -29,41 +28,34 @@ const navLinks = [
 ];
 
 const Header = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+
   const menuRef = useRef(null);
-
   const toggleMenu = () => menuRef.current.classList.toggle("menu__active");
+  const handleLogout = () => {
+    // Xóa thông tin đăng nhập từ localStorage
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('email');
+    localStorage.removeItem('name');
+    setLoggedIn(false);
+    setEmail('');
+  };
+  useEffect(() => {
+    // Kiểm tra xem đã có thông tin đăng nhập trong localStorage hay chưa
+    const isLoggedIn = localStorage.getItem('loggedIn');
+    const storedEmail = localStorage.getItem('email');
+    const storedName = localStorage.getItem('name');
 
+    if (isLoggedIn && storedEmail) {
+      setLoggedIn(true);
+      setEmail(storedEmail);
+      setName(storedName)
+    }
+  }, []);
   return (
     <header className="header">
-      {/* ============ header top ============ */}
-      <div className="header__top">
-        <Container>
-          <Row>
-            <Col lg="6" md="6" sm="6">
-              <div className="header__top__left">
-                <span>Need Help?</span>
-                <span className="header__top__help">
-                  <i class="ri-phone-fill"></i> +1-202-555-0149
-                </span>
-              </div>
-            </Col>
-
-            <Col lg="6" md="6" sm="6">
-              <div className="header__top__right d-flex align-items-center justify-content-end gap-3">
-                <Link to="#" className=" d-flex align-items-center gap-1">
-                  <i class="ri-login-circle-line"></i> Login
-                </Link>
-
-                <Link to="#" className=" d-flex align-items-center gap-1">
-                  <i class="ri-user-line"></i> Register
-                </Link>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-
-      {/* =============== header middle =========== */}
       <div className="header__middle">
         <Container>
           <Row>
@@ -110,11 +102,21 @@ const Header = () => {
               sm="0"
               className=" d-flex align-items-center justify-content-end "
             >
-              <button className="header__btn btn ">
-                <Link to="/contact">
-                  <i class="ri-phone-line"></i> Request a call
-                </Link>
-              </button>
+              {loggedIn ?
+                (<div>
+                  <button className="header__btn btn" style={{marginBottom: "8px"}}>
+                    <Link to="/home">
+                      {name}
+                    </Link>
+                  </button>
+                  <Button className="header__btn btn" onClick={handleLogout}>Logout</Button>
+                </div>) :
+                (<button className="header__btn btn ">
+                  <Link to="/login">
+                    Login
+                  </Link>
+                </button>)
+              }
             </Col>
           </Row>
         </Container>

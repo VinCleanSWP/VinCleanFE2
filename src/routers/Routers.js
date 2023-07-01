@@ -8,10 +8,14 @@ import Blog from "../pages/Blog";
 import BlogDetails from "../pages/BlogDetails";
 import NotFound from "../pages/NotFound";
 import Contact from "../pages/Contact";
+import Login from "../pages/Login";
+import Signup from "../pages/Signup";
 
 const Routers = () => {
   return (
     <Routes>
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/home" element={<Home />} />
       <Route path="/about" element={<About />} />

@@ -10,14 +10,19 @@ import NotFound from "../pages/NotFound";
 import Contact from "../pages/Contact";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import Manager from "../pages/Manager";
+import Customer from "../pages/Customer";
 
 const Routers = () => {
+  const role = localStorage.getItem("role");
   return (
     <Routes>
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Navigate to="/home" />} />
+      <Route path="/" element={(role == 1) ? <Navigate to="/home" /> : ((role == 2) ? <Navigate to="/customer" /> : <Navigate to="/manager" />)} />
       <Route path="/home" element={<Home />} />
+      <Route path="/manager" element={<Manager />} />
+      <Route path="/customer" element={<Customer />} />
       <Route path="/about" element={<About />} />
       <Route path="/cars" element={<CarListing />} />
       <Route path="/servicetype/:id" element={<CarDetails />} />

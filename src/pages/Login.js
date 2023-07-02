@@ -18,6 +18,8 @@ export default function Login() {
                     localStorage.setItem('email', email);
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
+                    localStorage.setItem('id', response.data.data.accountId);
+                    const accountId = localStorage.getItem('id');
                     // navigate('/home')
                     window.location.href = '/';
                 }

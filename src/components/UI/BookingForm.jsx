@@ -31,9 +31,10 @@ const BookingForm = ({ selectedServiceId, selectedServiceName, selectedServiceTy
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
   const [notification, setNotification] = useState(null);
+  const accountID = localStorage.getItem('id');
 
   useEffect(() => {
-    axios.get(`https://localhost:7013/api/Customer/Account/36`)
+    axios.get(`https://localhost:7013/api/Customer/Account/${accountID}`)
       .then(response => {
         const data = response.data.data;
         setCustomerid(data.customerId)

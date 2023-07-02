@@ -1,6 +1,5 @@
 import { Container, Row, Col, Form, FormGroup, Input } from "reactstrap";
 import React, { useEffect, useState } from 'react';
-import blogData from "../assets/data/blogData.js";
 import Helmet from "../components/Helmet/Helmet";
 import { Link } from "react-router-dom";
 import moment from 'moment';
@@ -20,7 +19,11 @@ const BlogDetails = () => {
   const [comments, setComments] = useState([]);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [blogId, setBlogId] = useState(blogid);
+  const [relatedPosts, setRelatedPosts] = useState([]);
+  const [accountNames, setAccountNames] = useState([]);
+  const [commentAuthors, setCommentAuthors] = useState([]);
+  const commentList = comments;
+  console.log(accountNames);
 
   useEffect(() => {
     axios.get(`https://localhost:7013/api/Blog/${blogid}`)
@@ -41,38 +44,69 @@ const BlogDetails = () => {
       });
   }, [id]);
 
+  useEffect(() => {
+    const fetchCommentAuthors = async () => {
+      const authors = [];
+      let successfulResponses = 0;
+
+      for (let i = 0; i < comments.length; i++) {
+        const comment = comments[i];
+        if (comment.blogId === blogid) {
+          try {
+            const response = await axios.get(`https://localhost:7013/api/Account/${comment.modifiedBy}`);
+            const account = response.data.data;
+            authors.push(account.name);
+            successfulResponses++;
+          } catch (error) {
+            console.error('Error fetching account name:', error);
+            authors.push('');
+          }
+        }
+      }
+
+      if (successfulResponses === authors.length) {
+        setCommentAuthors(authors);
+      }
+    };
+
+    fetchCommentAuthors();
+  }, [comments, blogid]);
+  useEffect(() => {
+    axios.get(`https://localhost:7013/api/RelatedPosts?blogId=${blogid}`)
+      .then(response => {
+        setRelatedPosts(response.data.data);
+      })
+      .catch(error => {
+        console.error('Error fetching related posts:', error);
+      });
+  }, [blogid]);
 
   if (!blog) {
     return <div>Loading...</div>;
   }
-  const dateTime = blog.createdDate;
 
+  const dateTime = blog.createdDate;
   const formattedDateTime = moment(dateTime).format('MMMM Do YYYY, h:mm:ss a');
+
   const handleCommentChange = (event) => {
     setComment(event.target.value);
   };
 
-  const handleFullNameChange = (event) => {
-    setFullName(event.target.value);
-  };
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
 
   const handleSubmitComment = (event) => {
     event.preventDefault();
 
     const commentData = {
       content: comment,
-      blogId: blogid
+      blogId: blogid,
+      modifiedBy: accountId
     };
 
     axios.post('https://localhost:7013/api/Comment', commentData)
       .then(response => {
         console.log('Comment posted:', response.data);
         setComment('');
-        setBlogId('');
         setComments(prevComments => [...prevComments, response.data.data]);
       })
       .catch(error => {
@@ -87,20 +121,20 @@ const BlogDetails = () => {
           <Row>
             <Col lg="8" md="8">
               <div className="blog__details">
-                <img src='' alt="" className="w-100" />
+                <img src={blog.img} alt="" className="w-100" />
                 <h2 className="section__title mt-4">{blog.title}</h2>
 
                 <div className="blog__publisher d-flex align-items-center gap-4 mb-4">
                   <span className="blog__author">
-                    <i class="ri-user-line"></i>
+                    <i className="ri-user-line"></i>
                   </span>
 
                   <span className=" d-flex align-items-center gap-1 section__description">
-                    <i class="ri-calendar-line"></i>
+                    <i className="ri-calendar-line"></i>
                   </span>
 
                   <span className=" d-flex align-items-center gap-1 section__description">
-                    <i class="ri-time-line"></i>{formattedDateTime}
+                    <i className="ri-time-line"></i>{formattedDateTime}
                   </span>
                 </div>
 
@@ -111,68 +145,63 @@ const BlogDetails = () => {
                 <p className="section__description"></p>
               </div>
 
+              {/* =============== comment list ============ */}
               <div className="comment__list mt-5">
                 <h4 className="mb-5"></h4>
+                {comments.length > 0 && (
+                  comments
+                    .filter((comment) => comment.blogId === blogid)
+                    .map((comment, index) => {
+                      const accountName = commentAuthors[index];
 
-                <div className="single__comment d-flex gap-3">
-                  <img src="" alt="" />
-                  <div className="comment-box" >
-                    <h6 className=" fw-bold"></h6>
-                    <p className="section__description mb-0"></p>
-                    <p className="section__description">
-                      {comments.map(comment => {
-                        if (comment.blogId === blogid) {
-                          return (
-                            <div key={comment.id} style={{ whiteSpace: 'pre-line' }}>
-                              <h6>{comment.modifiedBy}</h6>
-                              <p dangerouslySetInnerHTML={{ __html: comment.content }}></p>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })}
-                    </p>
-                  </div>
-                </div>
+                      return (
+                        <div key={comment.id} style={{ whiteSpace: 'pre-line' }}>
+                          {/* <img src={commentImg} alt="Avatar" /> */}
+                          <h6>{accountName}</h6>
+                          <div className="comment-box">
+                            <p dangerouslySetInnerHTML={{ __html: comment.content }}></p>
+                          </div>
+                        </div>
+                      );
+                    })
+                )}
 
-                {/* =============== comment form ============ */}
-                <div className="leave__comment-form mt-5">
-                  <p className="section__description">
-                  </p>
+              </div>
 
-                  <Form>
-                    <FormGroup className=" d-flex gap-3">
-                      <Input
-                        type="text"
-                        placeholder="Full name"
-                        value={fullName}
-                        onChange={handleFullNameChange}
-                      />
-                      <Input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={handleEmailChange}
-                      />
-                    </FormGroup>
+              {/* =============== comment form ============ */}
+              <div className="leave__comment-form mt-5">
+                <p className="section__description">
+                </p>
 
-                    <FormGroup>
-                      <form onSubmit={handleSubmitComment}>
-                        <textarea
-                          rows="5"
-                          className="w-100 py-2 px-3"
-                          placeholder="Comment..."
-                          value={comment}
-                          onChange={handleCommentChange}
+                <Form onSubmit={handleSubmitComment}>
+                  {/* <FormGroup className=" d-flex gap-3">
+                    <Input
+                      type="text"
+                      placeholder="Full name"
+                      value={fullName}
+                      onChange={handleFullNameChange}
+                    />
+                    <Input
+                      type="email"
+                      placeholder="Email"
+                      value={email}
+                      onChange={handleEmailChange}
+                    />
+                  </FormGroup> */}
 
-                        ></textarea>
-                        <button type="submit" className="btn comment__btn mt-3">
-                          Post a Comment
-                        </button>
-                      </form>
-                    </FormGroup>
-                  </Form>
-                </div>
+                  <FormGroup>
+                    <textarea
+                      rows="5"
+                      className="w-100 py-2 px-3"
+                      placeholder="Comment..."
+                      value={comment}
+                      onChange={handleCommentChange}
+                    ></textarea>
+                    <button type="submit" className="btn comment__btn mt-3">
+                      Post a Comment
+                    </button>
+                  </FormGroup>
+                </Form>
               </div>
             </Col>
 
@@ -180,13 +209,17 @@ const BlogDetails = () => {
               <div className="recent__post mb-4">
                 <h5 className=" fw-bold">Recent Posts</h5>
               </div>
-              {blogData.map((item) => (
-                <div className="recent__blog-post mb-4" key={item.id}>
-                  <div className="recent__blog-item d-flex gap-3">
-                    <img src={item.imgUrl} alt="" className="w-25 rounded-2" />
-                    <h6>
-                      <Link to={`/blogs/${item.title}`}>{blog.title}</Link>
-                    </h6>
+              {relatedPosts.map((item) => (
+                <div className="recent__post__item" key={item.blogId}>
+                  <div className="post__image">
+                    <img src={item.img} alt="" />
+                  </div>
+                  <div className="post__content">
+                    <Link to={`/blog-details/${item.blogId}`}>{item.title}</Link>
+                    <p>
+                      <i className="ri-calendar-line"></i>
+                      {moment(item.createdDate).format('MMMM Do YYYY')}
+                    </p>
                   </div>
                 </div>
               ))}

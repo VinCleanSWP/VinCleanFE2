@@ -4,6 +4,8 @@ import "../../styles/car-item.css";
 import { useEffect, useState } from 'react';
 import React from "react";
 import axios from 'axios';
+import Star from './Star';
+
 const CarItem = (props) => {
   // const { imgUrl, model, carName, automatic, speed, price } = props.item;
   const { typeId, type1, img } = props.item;
@@ -19,6 +21,7 @@ const CarItem = (props) => {
           <h4 className="section__title text-center"></h4>
           <h6 className="rent__price text-center mt-">
 
+          <Star/>
 
           </h6>
 

@@ -4,7 +4,7 @@
 
 .booking__form input {
   padding: 8px 15px;
-  border: 1px solid #7c8a972a;
+  border: 1px solid #0000002a;
   color: #7c8a97;
   width: 100%;
 }
@@ -28,6 +28,11 @@
 .booking__form input:focus,
 .booking__form select:focus {
   outline: none;
+}
+
+.normal-button{
+  background: #162b75;
+  border-radius: 10px 10px 10px 10px;
 }
 
 @media only screen and (max-width: 768px) {

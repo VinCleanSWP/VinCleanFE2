@@ -7,15 +7,15 @@ import VinCleanLogo from "../../assets/all-images/logo.png";
 const navLinks = [
   {
     path: "/home",
-    display: "Home",
+    display: "Trang chủ",
   },
   {
     path: "/about",
-    display: "About",
+    display: "Giới thiệu",
   },
   {
     path: "/cars",
-    display: "Cars",
+    display: "Đặt dịch vụ",
   },
 
   {
@@ -24,7 +24,7 @@ const navLinks = [
   },
   {
     path: "/contact",
-    display: "Order",
+    display: "Liên hệ",
   },
 ];
 
@@ -79,8 +79,8 @@ const Header = () => {
                   <i class="ri-earth-line"></i>
                 </span>
                 <div className="header__location-content">
-                  <h4>Bangladesh</h4>
-                  <h6>Sylhet City, Bangladesh</h6>
+                  <h4>Việt Nam</h4>
+                  <h6>Tp.Hồ Chí Minh</h6>
                 </div>
               </div>
             </Col>
@@ -91,8 +91,8 @@ const Header = () => {
                   <i class="ri-time-line"></i>
                 </span>
                 <div className="header__location-content">
-                  <h4>Sunday to Friday</h4>
-                  <h6>10am - 7pm</h6>
+                  <h4>Làm hằng ngày</h4>
+                  <h6>7am - 8pm</h6>
                 </div>
               </div>
             </Col>
@@ -132,6 +132,8 @@ const Header = () => {
               <i class="ri-menu-line" onClick={toggleMenu}></i>
             </span>
 
+            
+
             <div className="navigation" ref={menuRef} onClick={toggleMenu}>
               <div className="menu">
                 {navLinks.map((item, index) => (
@@ -148,14 +150,14 @@ const Header = () => {
               </div>
             </div>
 
-            <div className="nav__right">
+            {/* <div className="nav__right">
               <div className="search__box">
                 <input type="text" placeholder="Search" />
                 <span>
                   <i class="ri-search-line"></i>
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
         </Container>
       </div>

@@ -40,7 +40,7 @@ const ServiceTypeDetail = () => {
               <img src={service.img} alt="" className="w-100" />
             </Col>
 
-            <Col lg="6">
+            {/* <Col lg="6">
               <div className="car__info">
                 <h2 className="section__title"></h2>
 
@@ -57,12 +57,12 @@ const ServiceTypeDetail = () => {
                       <i class="ri-star-s-fill"></i>
                       <i class="ri-star-s-fill"></i>
                     </span>
-                    {/* ({singleCarItem.rating} ratings) */}
+                    ({singleCarItem.rating} ratings)
                   </span>
                 </div>
 
                 <p className="section__description">
-                  {/* {singleCarItem.description} */}
+                  {singleCarItem.description}
                 </p>
 
                 <div
@@ -74,7 +74,7 @@ const ServiceTypeDetail = () => {
                       class="ri-roadster-line"
                       style={{ color: "#f9a826" }}
                     ></i>{" "}
-                    {/* {singleCarItem.model} */}
+                    {singleCarItem.model}
                   </span>
 
                   <span className=" d-flex align-items-center gap-1 section__description">
@@ -82,7 +82,7 @@ const ServiceTypeDetail = () => {
                       class="ri-settings-2-line"
                       style={{ color: "#f9a826" }}
                     ></i>{" "}
-                    {/* {singleCarItem.automatic} */}
+                    {singleCarItem.automatic}
                   </span>
 
                   <span className=" d-flex align-items-center gap-1 section__description">
@@ -90,7 +90,7 @@ const ServiceTypeDetail = () => {
                       class="ri-timer-flash-line"
                       style={{ color: "#f9a826" }}
                     ></i>{" "}
-                    {/* {singleCarItem.speed} */}
+                    {singleCarItem.speed}
                   </span>
                 </div>
 
@@ -100,7 +100,7 @@ const ServiceTypeDetail = () => {
                 >
                   <span className=" d-flex align-items-center gap-1 section__description">
                     <i class="ri-map-pin-line" style={{ color: "#f9a826" }}></i>{" "}
-                    {/* {singleCarItem.gps} */}
+                    {singleCarItem.gps}
                   </span>
 
                   <span className=" d-flex align-items-center gap-1 section__description">
@@ -108,7 +108,7 @@ const ServiceTypeDetail = () => {
                       class="ri-wheelchair-line"
                       style={{ color: "#f9a826" }}
                     ></i>{" "}
-                    {/* {singleCarItem.seatType} */}
+                    {singleCarItem.seatType}
                   </span>
 
                   <span className=" d-flex align-items-center gap-1 section__description">
@@ -116,22 +116,22 @@ const ServiceTypeDetail = () => {
                       class="ri-building-2-line"
                       style={{ color: "#f9a826" }}
                     ></i>{" "}
-                    {/* {singleCarItem.brand} */}
+                    {singleCarItem.brand}
                   </span>
                 </div>
               </div>
-            </Col>
+            </Col> */}
 
             <Col lg="7" className="mt-5">
               <div className="booking-info mt-5">
-                <h5 className="mb-4 fw-bold ">Booking Information</h5>
+                <h5 className="mb-4 fw-bold ">Thông tin đặt</h5>
                 <BookingForm serviceId={selectedServiceId} />
               </div>
             </Col>
 
             <Col lg="5" className="mt-5">
               <div className="payment__info mt-5">
-                <h5 className="mb-4 fw-bold ">Service</h5>
+                <h5 className="mb-4 fw-bold ">Chọn dịch vụ</h5>
 
                 <ul className="service-list">
                   {/* {service.map(service => (

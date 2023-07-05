@@ -47,45 +47,45 @@ function Signup() {
                 <div className="card-body">
 
                   <div className="pt-4 pb-2">
-                    <h5 className="card-title text-center pb-0 fs-4">Create an Account</h5>
-                    <p className="text-center small">Enter your personal details to create account</p>
+                    <h5 className="card-title text-center pb-0 fs-4">Tạo tài khoản</h5>
+                    <p className="text-center small">Bạn chỉ mất 30s để đăng ký</p>
                   </div>
 
                   <form className="row g-3 needs-validation" onSubmit={handleSubmit} novalidate>
                     
                     <div className="col-12">
-                      <label for="yourName" className="form-label">Your Name</label>
+                      <label for="yourName" className="form-label">Tên của bạn</label>
                       <input type="text" name="name" className="form-control" id="yourName" value={formData.name} onChange={handleChange} required />
-                      <div className="invalid-feedback">Please, enter your name!</div>
+                      <div className="invalid-feedback">Hãy nhập tên của bạn</div>
                     </div>
 
                     <div className="col-12">
-                      <label for="yourUsername" className="form-label">Your Email</label>
+                      <label for="yourUsername" className="form-label">Email</label>
                       <div className="input-group has-validation">
                         <span className="input-group-text" id="inputGroupPrepend">@</span>
                         <input type="text" name="email" className="form-control" id="yourEmail" value={formData.email} onChange={handleChange} required />
-                        <div className="invalid-feedback">Please choose a username.</div>
+                        <div className="invalid-feedback">Nhập lại email</div>
                       </div>
                     </div>
 
                     <div className="col-12">
-                      <label for="yourPassword" className="form-label">Password</label>
+                      <label for="yourPassword" className="form-label">Mật khẩu</label>
                       <input type="password" name="password" className="form-control" id="yourPassword" value={formData.password} onChange={handleChange} required />
-                      <div className="invalid-feedback">Please enter your password!</div>
+                      <div className="invalid-feedback">Nhập lại mật khẩu</div>
                     </div>
 
                     <div className="col-12">
                       <div className="form-check">
                         <input className="form-check-input" name="terms" type="checkbox" value="" id="acceptTerms" required />
-                        <label className="form-check-label" for="acceptTerms">I agree and accept the <a href="#">terms and conditions</a></label>
-                        <div className="invalid-feedback">You must agree before submitting.</div>
+                        <label className="form-check-label" for="acceptTerms">Tôi đồng ý với <a href="#">những điều khoản và điều kiện</a> sử dụng</label>
+                        <div className="invalid-feedback">Bạn phải đồng ý những điều khoản và điều kiện trên trước khi xác nhận.</div>
                       </div>
                     </div>
                     <div className="col-12">
-                      <button className="btn btn-primary w-100" type="submit">Create Account</button>
+                      <button className="btn btn-primary w-100" type="submit">Đăng ký</button>
                     </div>
                     <div className="col-12">
-                      <p className="small mb-0">Already have an account? <Link to="/login">Log in</Link></p>
+                      <p className="small mb-0">Bạn đã có tài khoản rồi? <Link to="/login">Đăng nhập</Link></p>
                     </div>
                   </form>
 

@@ -4,9 +4,11 @@ import "../../styles/blog-item.css";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+// import Blog1 from "../../assets/all-images/blog-img/blog-1.jpg"
+
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
-
+  
   useEffect(() => {
     axios.get(`https://localhost:7013/api/Blog`)
       .then(response => {
@@ -23,20 +25,30 @@ const BlogList = () => {
       {blogs.map(blog => (
         <Col lg="4" md="6" sm="6" className="mb-5" key={blog.id}>
           <div className="blog__item">
-            {/* <img src={blog.image} alt="" className="w-100" /> */}
-            <div className="blog__info p-3">
-              <h1>{blog.title}</h1>
-              {/* <Link to={`/blogs/${blog.title}`} className="blog__title">
+            
+            {/* Bấm vào ảnh để xem blog details */}
+            <Link to = {`/blogs/${blog.blogId}`} >
+              <img src = {blog.img} alt="" className="blog-image" style={{ width: '415px', height: '297.17px'}}/>
+            </Link>         
+            
+            <div className="blog__info p-3">            
+                    
+              {/* Bấm vào title để xem Blog Details */}
+              <Link to={`/blogs/${blog.blogId}`} className="blog__title">
                 {blog.title}
-              </Link> */}
+              </Link>             
+
               <p className="section__description mt-3">
                 {blog.sumarry.length > 100
-                  ? blog.sumarry.substr(0, 100)
-                  : blog.sumarry}
+                ? blog.sumarry.substr(0, 100)
+                : blog.sumarry}
               </p>
+              
+              {/* Bấm vào để xem Blog Details */}
               <Link to={`/blogs/${blog.blogId}`} className="read__more">
-                Read More
+              ⊳ Xem chi tiết
               </Link>
+              
               <div className="blog__time pt-3 mt-3 d-flex align-items-center justify-content-between">
                 <span className="blog__author">
                   <i className="ri-user-line"></i>
@@ -45,9 +57,9 @@ const BlogList = () => {
                   <span className="d-flex align-items-center gap-1 section__description">
                     <i className="ri-calendar-line"></i> {blog.createdDate}
                   </span>
-                  <span className="d-flex align-items-center gap-1 section__description">
+                  {/* <span className="d-flex align-items-center gap-1 section__description">
                     <i className="ri-time-line"></i>
-                  </span>
+                  </span> */}
                 </div>
               </div>
             </div>

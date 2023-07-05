@@ -9,7 +9,10 @@ import Table from '../components/ManagerUI/Table'
 import Calendar from '../components/ManagerUI/Calendar'
 import Form from '../components/ManagerUI/Form'
 import Alert from '../components/ManagerUI/Alert'
-
+import AddEmployee from '../components/ManagerUI/AddEmployee';
+import Employee from '../components/ManagerUI/Emloyee';
+import Service from '../components/ManagerUI/Service';
+import Customer from '..//components/ManagerUI/Customer';
 export default function ManagerRouter() {
     return (
         <div className="page-wrapper">
@@ -22,6 +25,10 @@ export default function ManagerRouter() {
                 <Route path='/calendar' element={<Calendar />}></Route>
                 <Route path='/form' element={<Form />}></Route>
                 <Route path='/alert' element={<Alert />}></Route>
+                <Route path='/employee' element={<Employee />}></Route>
+                <Route path='/customer' element={<Customer />}></Route>
+                <Route path='/service' element={<Service />}></Route>
+
             </Routes>
             <ADFooter />
         </div>

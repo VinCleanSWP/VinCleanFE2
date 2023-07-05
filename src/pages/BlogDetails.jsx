@@ -17,13 +17,9 @@ const BlogDetails = () => {
   const blogid = parseInt(id.id);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [relatedPosts, setRelatedPosts] = useState([]);
-  const [accountNames, setAccountNames] = useState([]);
   const [commentAuthors, setCommentAuthors] = useState([]);
-  const commentList = comments;
-  console.log(accountNames);
+  const [imgAuthors, setImgAuthors] = useState([]);
+  const accountId = localStorage.getItem('id');
 
   useEffect(() => {
     axios.get(`https://localhost:7013/api/Blog/${blogid}`)
@@ -34,8 +30,8 @@ const BlogDetails = () => {
       .catch(error => {
         console.error('Error fetching blog detail:', error);
       });
-    axios
-      .get(`https://localhost:7013/api/Comment?blogId=${blogid}`)
+
+    axios.get(`https://localhost:7013/api/Comment?blogId=${blogid}`)
       .then(response => {
         setComments(response.data.data);
       })
@@ -47,6 +43,7 @@ const BlogDetails = () => {
   useEffect(() => {
     const fetchCommentAuthors = async () => {
       const authors = [];
+      const img = [];
       let successfulResponses = 0;
 
       for (let i = 0; i < comments.length; i++) {
@@ -56,43 +53,28 @@ const BlogDetails = () => {
             const response = await axios.get(`https://localhost:7013/api/Account/${comment.modifiedBy}`);
             const account = response.data.data;
             authors.push(account.name);
+            img.push(account.img);
             successfulResponses++;
           } catch (error) {
             console.error('Error fetching account name:', error);
             authors.push('');
+            img.push('');
           }
         }
       }
 
       if (successfulResponses === authors.length) {
         setCommentAuthors(authors);
+        setImgAuthors(img);
       }
     };
 
     fetchCommentAuthors();
   }, [comments, blogid]);
-  useEffect(() => {
-    axios.get(`https://localhost:7013/api/RelatedPosts?blogId=${blogid}`)
-      .then(response => {
-        setRelatedPosts(response.data.data);
-      })
-      .catch(error => {
-        console.error('Error fetching related posts:', error);
-      });
-  }, [blogid]);
-
-  if (!blog) {
-    return <div>Loading...</div>;
-  }
-
-  const dateTime = blog.createdDate;
-  const formattedDateTime = moment(dateTime).format('MMMM Do YYYY, h:mm:ss a');
 
   const handleCommentChange = (event) => {
     setComment(event.target.value);
   };
-
-
 
   const handleSubmitComment = (event) => {
     event.preventDefault();
@@ -114,6 +96,24 @@ const BlogDetails = () => {
       });
   };
 
+  const handleDeleteComment = (commentId) => {
+    axios.delete(`https://localhost:7013/api/Comment/${commentId}`)
+      .then(response => {
+        console.log('Comment deleted:', response.data);
+        setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  if (!blog) {
+    return <div>Loading...</div>;
+  }
+
+  const dateTime = blog.createdDate;
+  const formattedDateTime = moment(dateTime).format('MMMM Do YYYY, h:mm:ss a');
+
   return (
     <Helmet title={blog.title}>
       <section>
@@ -125,14 +125,6 @@ const BlogDetails = () => {
                 <h2 className="section__title mt-4">{blog.title}</h2>
 
                 <div className="blog__publisher d-flex align-items-center gap-4 mb-4">
-                  <span className="blog__author">
-                    <i className="ri-user-line"></i>
-                  </span>
-
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i className="ri-calendar-line"></i>
-                  </span>
-
                   <span className=" d-flex align-items-center gap-1 section__description">
                     <i className="ri-time-line"></i>{formattedDateTime}
                   </span>
@@ -145,7 +137,6 @@ const BlogDetails = () => {
                 <p className="section__description"></p>
               </div>
 
-              {/* =============== comment list ============ */}
               <div className="comment__list mt-5">
                 <h4 className="mb-5"></h4>
                 {comments.length > 0 && (
@@ -153,42 +144,35 @@ const BlogDetails = () => {
                     .filter((comment) => comment.blogId === blogid)
                     .map((comment, index) => {
                       const accountName = commentAuthors[index];
+                      const accountImg = imgAuthors[index];
 
                       return (
                         <div key={comment.id} style={{ whiteSpace: 'pre-line' }}>
-                          {/* <img src={commentImg} alt="Avatar" /> */}
+                          <img src={accountImg} alt="Avatar" />
                           <h6>{accountName}</h6>
                           <div className="comment-box">
                             <p dangerouslySetInnerHTML={{ __html: comment.content }}></p>
+                          </div>
+                          <div>
+                            {comment.modifiedBy === accountId && (
+                              <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() => handleDeleteComment(comment.id)}
+                              >
+                                Delete
+                              </button>
+                            )}
                           </div>
                         </div>
                       );
                     })
                 )}
-
               </div>
 
-              {/* =============== comment form ============ */}
               <div className="leave__comment-form mt-5">
-                <p className="section__description">
-                </p>
+                <p className="section__description"></p>
 
                 <Form onSubmit={handleSubmitComment}>
-                  {/* <FormGroup className=" d-flex gap-3">
-                    <Input
-                      type="text"
-                      placeholder="Full name"
-                      value={fullName}
-                      onChange={handleFullNameChange}
-                    />
-                    <Input
-                      type="email"
-                      placeholder="Email"
-                      value={email}
-                      onChange={handleEmailChange}
-                    />
-                  </FormGroup> */}
-
                   <FormGroup>
                     <textarea
                       rows="5"
@@ -209,20 +193,7 @@ const BlogDetails = () => {
               <div className="recent__post mb-4">
                 <h5 className=" fw-bold">Recent Posts</h5>
               </div>
-              {relatedPosts.map((item) => (
-                <div className="recent__post__item" key={item.blogId}>
-                  <div className="post__image">
-                    <img src={item.img} alt="" />
-                  </div>
-                  <div className="post__content">
-                    <Link to={`/blog-details/${item.blogId}`}>{item.title}</Link>
-                    <p>
-                      <i className="ri-calendar-line"></i>
-                      {moment(item.createdDate).format('MMMM Do YYYY')}
-                    </p>
-                  </div>
-                </div>
-              ))}
+              {/* Render related posts */}
             </Col>
           </Row>
         </Container>

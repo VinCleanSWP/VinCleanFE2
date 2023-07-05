@@ -12,12 +12,13 @@ import "../styles/about.css";
 const About = () => {
   return (
     <Helmet title="About">
-      <CommonSection title="About Us" />
+      <CommonSection title="Giới thiệu" />
       <AboutSection aboutClass="aboutPage" />
 
       <section className="about__page-section">
         <Container>
           <Row>
+            
             <Col lg="6" md="6" sm="12">
               <div className="about__page-img">
                 <img src={driveImg} alt="" className="w-100 rounded-3" />
@@ -27,21 +28,17 @@ const About = () => {
             <Col lg="6" md="6" sm="12">
               <div className="about__page-content">
                 <h2 className="section__title">
-                  We Are Committed To Provide Safe Ride Solutions
+                Vin Clean: Cách mạng giải pháp làm sạch với dịch vụ vượt trội
                 </h2>
 
                 <p className="section__description">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Eveniet veniam assumenda aperiam accusantium ex autem
-                  perferendis repellendus nostrum delectus. Nemo et dolore est
-                  tempore rem minima adipisci magni dolorum ipsam.
+                Với đội ngũ nhân viên chuyên nghiệp, chất lượng dịch vụ cao và sự cam kết đáp ứng nhu cầu của khách hàng,
+                Vin Clean mang đến các giải pháp làm sạch tiên tiến và hiệu quả. Khách hàng có thể tin tưởng vào sự tận tâm
+                 và chuyên nghiệp của Vin Clean để có một môi trường sống sạch sẽ và an lành.
                 </p>
 
                 <p className="section__description">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Eveniet veniam assumenda aperiam accusantium ex autem
-                  perferendis repellendus nostrum delectus. Nemo et dolore est
-                  tempore rem minima adipisci magni dolorum ipsam.
+                Trọng tâm của chúng tôi là lắng nghe khách hàng, hiểu nhu cầu của họ và cung cấp dịch vụ vệ sinh ở mức độ vượt trội.
                 </p>
 
                 <div className=" d-flex align-items-center gap-3 mt-4">
@@ -50,7 +47,7 @@ const About = () => {
                   </span>
 
                   <div>
-                    <h6 className="section__subtitle">Need Any Help?</h6>
+                    <h6 className="section__subtitle">Cần hỗ trợ?</h6>
                     <h4>+00123456789</h4>
                   </div>
                 </div>
@@ -60,9 +57,9 @@ const About = () => {
         </Container>
       </section>
 
-      <BecomeDriverSection />
+      {/* <BecomeDriverSection /> */}
 
-      <section>
+      {/* <section>
         <Container>
           <Row>
             <Col lg="12" className="mb-5 text-center">
@@ -72,7 +69,7 @@ const About = () => {
             <OurMembers />
           </Row>
         </Container>
-      </section>
+      </section> */}
     </Helmet>
   );
 };

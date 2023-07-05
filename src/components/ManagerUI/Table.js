@@ -2,7 +2,7 @@ import React, { } from 'react';
 
 function Table() {
     return (
-        <div>
+        <div >
             {/* PAGE CONTAINER*/}
             <div className="page-container">
                 {/* HEADER DESKTOP*/}

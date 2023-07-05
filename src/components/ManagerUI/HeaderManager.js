@@ -11,7 +11,7 @@ export default function HeaderManager() {
         window.location.href = '/home';
     };
     return (
-        <div>
+        <div >
             <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                 <div className="container-fluid">
                     <button className="btn btn-primary" id="sidebarToggle">Toggle Menu</button>

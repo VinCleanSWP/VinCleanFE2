@@ -1,0 +1,41 @@
+.rating-list {
+    margin-top: 20px; /* Khoảng cách từ phần trước danh sách đánh giá */
+    list-style: none;
+  }
+  
+  .rating-item {
+    margin-bottom: 15px; /* Khoảng cách giữa các đánh giá */
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0,0,0,.09);
+  }
+
+  .rating{
+    margin: 30px 0px;
+    min-height: 5rem;
+    border: 1px solid #f9ede5;
+    align-items: center;
+    border-radius: 2px;
+    box-sizing: border-box;
+    padding: 1.875rem;
+  }
+
+  .average-rating{
+    margin-bottom: 1rem;
+    align-items: center;
+    padding-bottom: 10px;
+  }
+  
+  .rating-stars {
+    display: flex;
+    align-items: center;
+    color: #f9a826;
+  }
+
+  .rating-stars i {
+    margin-right: 5px; /* Khoảng cách giữa các biểu tượng ngôi sao */
+  }
+
+  .date {
+    font-size: 13px;
+    color: rgba(0,0,0,.54);
+  }

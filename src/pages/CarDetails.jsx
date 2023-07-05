@@ -1,14 +1,10 @@
-
-
 import carData from "../assets/data/carData";
 import { Container, Row, Col } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import { useParams } from "react-router-dom";
 import BookingForm from "../components/UI/BookingForm";
 import PaymentMethod from "../components/UI/PaymentMethod";
-
 import React, { useEffect, useState } from 'react';
-
 import axios from 'axios';
 
 const ServiceTypeDetail = () => {
@@ -32,104 +28,69 @@ const ServiceTypeDetail = () => {
     return <div>Loading...</div>;
   }
   return (
-    <Helmet title="">
+    <Helmet title="Booking">
       <section>
         <Container>
+          <Row>
+            <Col lg="6" md="6">
+              <div className="about__img">
+                <img src='https://static.tintuc.com.vn/images/ver3/2020/01/26/quet-nha.jpg' alt="" className="w-100" />
+              </div>
+            </Col>
+            <Col lg="6" md="6">
+              <div className="about__section-content">
+                <h4 className="section__subtitle">About Service</h4>
+                <h2 className="section__title">Welcome to car rent service</h2>
+                <p className="section__description">
+                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                  Voluptatum blanditiis esse accusantium dignissimos labore
+                  laborum. Veniam, corporis mollitia temporibus, in quaerat vero
+                  deleniti amet dolorem repudiandae, pariatur nam dolore! Impedit
+                  neque sit ad temporibus quam similique dolor ipsam praesentium
+                  sunt.
+                </p>
+
+                <div className="about__section-item d-flex align-items-center">
+                  <p className="section__description d-flex align-items-center gap-2">
+                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
+                    amet.
+                  </p>
+
+                  <p className="section__description d-flex align-items-center gap-2">
+                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
+                    amet.
+                  </p>
+                </div>
+
+                <div className="about__section-item d-flex align-items-center">
+                  <p className="section__description d-flex align-items-center gap-2">
+                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
+                    amet.
+                  </p>
+
+                  <p className="section__description d-flex align-items-center gap-2">
+                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
+                    amet.
+                  </p>
+                </div>
+
+              </div>
+            </Col>
+          </Row>
+
           <Row>
             <Col lg="6">
               <img src={service.img} alt="" className="w-100" />
             </Col>
 
-            <Col lg="6">
-              <div className="car__info">
-                <h2 className="section__title"></h2>
-
-                <div className=" d-flex align-items-center gap-5 mb-4 mt-3">
-                  <h6 className="rent__price fw-bold fs-4">
-
-                  </h6>
-
-                  <span className=" d-flex align-items-center gap-2">
-                    <span style={{ color: "#f9a826" }}>
-                      <i class="ri-star-s-fill"></i>
-                      <i class="ri-star-s-fill"></i>
-                      <i class="ri-star-s-fill"></i>
-                      <i class="ri-star-s-fill"></i>
-                      <i class="ri-star-s-fill"></i>
-                    </span>
-                    {/* ({singleCarItem.rating} ratings) */}
-                  </span>
-                </div>
-
-                <p className="section__description">
-                  {/* {singleCarItem.description} */}
-                </p>
-
-                <div
-                  className=" d-flex align-items-center mt-3"
-                  style={{ columnGap: "4rem" }}
-                >
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i
-                      class="ri-roadster-line"
-                      style={{ color: "#f9a826" }}
-                    ></i>{" "}
-                    {/* {singleCarItem.model} */}
-                  </span>
-
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i
-                      class="ri-settings-2-line"
-                      style={{ color: "#f9a826" }}
-                    ></i>{" "}
-                    {/* {singleCarItem.automatic} */}
-                  </span>
-
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i
-                      class="ri-timer-flash-line"
-                      style={{ color: "#f9a826" }}
-                    ></i>{" "}
-                    {/* {singleCarItem.speed} */}
-                  </span>
-                </div>
-
-                <div
-                  className=" d-flex align-items-center mt-3"
-                  style={{ columnGap: "2.8rem" }}
-                >
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i class="ri-map-pin-line" style={{ color: "#f9a826" }}></i>{" "}
-                    {/* {singleCarItem.gps} */}
-                  </span>
-
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i
-                      class="ri-wheelchair-line"
-                      style={{ color: "#f9a826" }}
-                    ></i>{" "}
-                    {/* {singleCarItem.seatType} */}
-                  </span>
-
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i
-                      class="ri-building-2-line"
-                      style={{ color: "#f9a826" }}
-                    ></i>{" "}
-                    {/* {singleCarItem.brand} */}
-                  </span>
-                </div>
-              </div>
-            </Col>
-
-            <Col lg="7" className="mt-5">
+            <Col lg="8" className="mt-5">
               <div className="booking-info mt-5">
                 <h5 className="mb-4 fw-bold ">Booking Information</h5>
                 <BookingForm serviceId={selectedServiceId} />
               </div>
             </Col>
 
-            <Col lg="5" className="mt-5">
+            <Col lg="4" className="mt-5">
               <div className="payment__info mt-5">
                 <h5 className="mb-4 fw-bold ">Service</h5>
 

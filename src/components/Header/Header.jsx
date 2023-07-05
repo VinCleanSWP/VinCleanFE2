@@ -23,7 +23,7 @@ const navLinks = [
   },
   {
     path: "/contact",
-    display: "Contact",
+    display: "Order",
   },
 ];
 
@@ -40,6 +40,7 @@ const Header = () => {
     localStorage.removeItem('email');
     localStorage.removeItem('name');
     localStorage.removeItem('role');
+    localStorage.removeItem('id');
     setLoggedIn(false);
     setEmail('');
     window.location.href = '/home';
@@ -107,7 +108,7 @@ const Header = () => {
               {loggedIn ?
                 (<div>
                   <button className="header__btn btn" style={{marginBottom: "8px"}}>
-                    <Link to="/home">
+                    <Link to="/profile">
                       {name}
                     </Link>
                   </button>

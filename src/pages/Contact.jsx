@@ -1,96 +1,217 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Container, Row, Col, Form, FormGroup, Input } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
-
+import axios from 'axios';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Typography from '@mui/material/Typography';
 import "../styles/contact.css";
 
-const socialLinks = [
-  {
-    url: "#",
-    icon: "ri-facebook-line",
-  },
-  {
-    url: "#",
-    icon: "ri-instagram-line",
-  },
-  {
-    url: "#",
-    icon: "ri-linkedin-line",
-  },
-  {
-    url: "#",
-    icon: "ri-twitter-line",
-  },
-];
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 700,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
+const btnstyle = {
+  width: '50%'
+};
 
 const Contact = () => {
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => setOpen(false);
+  const [booking, setBooking] = useState([])
+  const [process, setProcess] = useState([])
+
+  useEffect(() => {
+    // Gọi API để lấy dữ liệu
+    axios.get(`https://localhost:7013/api/Process`)
+      .then(response => {
+        setProcess(response.data.data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }, []);
+
+  const handleRowClick = (process) => {
+    setOpen(true);
+    setBooking(process);
+  };
+
+  // DateDetails
+  const dateDetails = booking.date;
+  const date = new Date(dateDetails);
+  const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
+  const formattedDate = date.toLocaleDateString(undefined, options);
+
   return (
-    <Helmet title="Contact">
-      <CommonSection title="Contact" />
+    <Helmet title="Order">
+      <CommonSection title="Order" />
       <section>
+
         <Container>
           <Row>
-            <Col lg="7" md="7">
-              <h6 className="fw-bold mb-4">Get In Touch</h6>
-
-              <Form>
-                <FormGroup className="contact__form">
-                  <Input placeholder="Your Name" type="text" />
-                </FormGroup>
-                <FormGroup className="contact__form">
-                  <Input placeholder="Email" type="email" />
-                </FormGroup>
-                <FormGroup className="contact__form">
-                  <textarea
-                    rows="5"
-                    placeholder="Message"
-                    className="textarea"
-                  ></textarea>
-                </FormGroup>
-
-                <button className=" contact__btn" type="submit">
-                  Send Message
-                </button>
-              </Form>
-            </Col>
-
-            <Col lg="5" md="5">
-              <div className="contact__info">
-                <h6 className="fw-bold">Contact Information</h6>
-                <p className="section__description mb-0">
-                  123 ZindaBazar, Sylhet, Bangladesh
-                </p>
-                <div className=" d-flex align-items-center gap-2">
-                  <h6 className="fs-6 mb-0">Phone:</h6>
-                  <p className="section__description mb-0">+88683896366</p>
-                </div>
-
-                <div className=" d-flex align-items-center gap-2">
-                  <h6 className="mb-0 fs-6">Email:</h6>
-                  <p className="section__description mb-0">example@gmail.com</p>
-                </div>
-
-                <h6 className="fw-bold mt-4">Follow Us</h6>
-
-                <div className=" d-flex align-items-center gap-4 mt-3">
-                  {socialLinks.map((item, index) => (
-                    <Link
-                      to={item.url}
-                      key={index}
-                      className="social__link-icon"
+            <Col lg="12" md="12">
+              <h4 className="fw-bold mb-4">Booking</h4>
+              <div className="table-responsive m-b-40">
+                <table className="table table-borderless table-data3">
+                  <thead>
+                    <tr>
+                      <th>Service</th>
+                      <th>Option</th>
+                      <th>Employee</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {process.map((processing) => (
+                      <tr className="pointer" key={processing.processId} onClick={() => handleRowClick(processing)}>
+                        <td>{processing.typeName}</td>
+                        <td>{processing.serviceName}</td>
+                        <td>{processing.employeeName}</td>
+                        {/* <td>{order.dateWork}</td> */}
+                        <td>{new Date(processing.date).toLocaleDateString(undefined, options)}</td>
+                        {processing.status == 'Completed' ?
+                          (
+                            <td className="complete">{processing.status}</td>
+                          ) : processing.status == 'Incoming' ?
+                            (
+                              <td className="denied">{processing.status}</td>
+                            ) : (
+                              <td className="process">{processing.status}</td>
+                            )}
+                        {/* <td className="complete">{processing.status}</td> */}
+                        <td className="process">{processing.totalMoney} VND</td>
+                      </tr>
+                    ))}
+                    <Modal
+                      open={open}
+                      onClose={handleClose}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
                     >
-                      <i class={item.icon}></i>
-                    </Link>
-                  ))}
-                </div>
+                      <Box sx={style}>
+                        <Row>
+                          <Col lg="12" md="12">
+                            <div className="contact__info">
+                              <h4 className="fw-bold mb-3">Booking Details</h4>
+                              <br></br>
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="fs-6 mb-0">Service:</h6>
+                                <p className="section__description mb-0">{booking.typeName}</p>
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="fs-6 mb-0">Option:</h6>
+                                <p className="section__description mb-0">{booking.serviceName}</p>
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-6">Address:</h6>
+                                <p className="section__description mb-0">{booking.address}</p>
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-6">Date:</h6>
+                                {/* <p className="section__description mb-0">{booking.date}</p> */}
+                                <p className="section__description mb-0">{formattedDate}</p>
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-6">StartTime:</h6>
+                                <p className="section__description mb-0">{booking.startTime}</p>
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-6">EndTime:</h6>
+                                <p className="section__description mb-0">{booking.endTime}</p>
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-6">Employee:</h6>
+                                <p className="section__description mb-0">{booking.employeeName}</p>
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-6">EmployeePhone:</h6>
+                                <p className="section__description mb-0">{booking.employeePhone}</p>
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-6">Note:</h6>
+                                {/* <p className="section__description mb-0 bordered">{booking.note}</p> */}
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <p className="section__description mb-0 mt-2 note-container">{booking.note}</p>
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2 ">
+                                <h6 className="mb-0 h3 mt-3">Total:</h6>
+                                <p className="section__description mb-0 h3 mt-3 text-success">{booking.totalMoney} VND</p>
+                              </div>
+                            </div>
+                            {booking.status == 'Completed' ?
+                              (
+                                <div>
+                                  <Row>
+                                    <Col lg="6" md="6">
+                                      <Button variant="contained" className="container mt-3 mr-3" disabled>Edit</Button>
+                                    </Col>
+                                    <Col lg="6" md="6">
+                                      <Button variant="contained" className="container mt-3 mr-3">Check Out</Button>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              ) : booking.status == 'Incoming' ?
+                                (
+                                  <div>
+                                    <Row>
+                                      <Col lg="6" md="6">
+                                        <Button variant="contained" className="container mt-3 mr-3" >Edit</Button>
+                                      </Col>
+                                      <Col lg="6" md="6">
+                                        <Button variant="contained" className="container mt-3 mr-3" disabled>Check Out</Button>
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                ) : (
+                                  <div>
+                                    <Row>
+                                      <Col lg="6" md="6">
+                                        <Button variant="contained" className="container mt-3 mr-3" disabled>Edit</Button>
+                                      </Col>
+                                      <Col lg="6" md="6">
+                                        <Button variant="contained" className="container mt-3 mr-3" disabled>Check Out</Button>
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                )}
+                          </Col>
+                        </Row>
+                      </Box>
+                    </Modal>
+                  </tbody>
+                </table>
               </div>
             </Col>
           </Row>
-        </Container>
-      </section>
-    </Helmet>
+        </Container >
+      </section >
+    </Helmet >
   );
 };
 

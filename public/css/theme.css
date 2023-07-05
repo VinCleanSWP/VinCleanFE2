@@ -4678,6 +4678,10 @@ section {
     color: #fa4251;
 }
 
+.status--complete {
+    color: #0059ff;
+}
+
 .table-data3 thead {
     background: #333;
 }
@@ -4745,6 +4749,10 @@ section {
 
 .table-data3 tbody td.denied {
     color: #fa4251;
+}
+
+.table-data3 tbody td.complete {
+    color: #0059ff;
 }
 
 /* ----- Footer ----- */

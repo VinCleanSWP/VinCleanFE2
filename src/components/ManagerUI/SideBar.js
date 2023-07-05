@@ -48,6 +48,27 @@ function SideBar() {
               </li>
               <li>
                 <Link to="/calendar" >
+                  <i className="fas fa-table" />Table</Link>
+              </li>
+              <li>
+                <Link to="/customer">
+                  <i className="fas fa-table" />Customer</Link>
+
+              </li>
+              <li>
+                <Link to="/employee">
+                  <i className="fas fa-table" />Employee</Link>
+              </li>
+              <li>
+                <Link to="/service">
+                  <i className="fas fa-table" />Service</Link>
+              </li>
+              <li>
+                <Link to="/form">
+                  <i className="far fa-check-square" />Forms</Link>
+              </li>
+              <li>
+                <Link to="/calendar">
                   <i className="fas fa-calendar-alt" />Calendar</Link>
               </li>
               <li>

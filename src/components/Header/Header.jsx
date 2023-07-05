@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "reactstrap";
 import { Link, NavLink } from "react-router-dom";
 import "../../styles/header.css";
+import VinCleanLogo from "../../assets/all-images/logo.png";
 
 const navLinks = [
   {
@@ -23,7 +24,7 @@ const navLinks = [
   },
   {
     path: "/contact",
-    display: "Contact",
+    display: "Order",
   },
 ];
 
@@ -40,6 +41,7 @@ const Header = () => {
     localStorage.removeItem('email');
     localStorage.removeItem('name');
     localStorage.removeItem('role');
+    localStorage.removeItem('id');
     setLoggedIn(false);
     setEmail('');
     window.location.href = '/home';
@@ -65,10 +67,7 @@ const Header = () => {
               <div className="logo">
                 <h1>
                   <Link to="/home" className=" d-flex align-items-center gap-2">
-                    <i class="ri-car-line"></i>
-                    <span>
-                      Rent Car <br /> Service
-                    </span>
+                    <img src={VinCleanLogo} alt="" style={{ width: "200px", height: "auto" }} />
                   </Link>
                 </h1>
               </div>
@@ -106,8 +105,8 @@ const Header = () => {
             >
               {loggedIn ?
                 (<div>
-                  <button className="header__btn btn" style={{marginBottom: "8px"}}>
-                    <Link to="/home">
+                  <button className="header__btn btn" style={{ marginBottom: "8px" }}>
+                    <Link to="/profile">
                       {name}
                     </Link>
                   </button>

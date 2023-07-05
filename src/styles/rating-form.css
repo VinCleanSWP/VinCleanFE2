@@ -1,0 +1,22 @@
+.rating-form {
+    padding: 20px;
+  }
+  
+  .stars {
+    font-size: 24px;
+    margin-top: 10px;
+  }
+  
+  .star {
+    cursor: pointer;
+    transition: color 0.2s;
+    color: #ccc;
+  }
+  
+  .star.filled {
+    color: #ffdd74; /* Màu cho các ngôi sao được chọn */
+  }
+  
+  .star.empty:hover {
+    color: #ffdd74; /* Màu khi di chuột vào ngôi sao 0 sao */
+  }

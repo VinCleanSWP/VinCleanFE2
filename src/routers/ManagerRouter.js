@@ -12,8 +12,10 @@ import Alert from '../components/ManagerUI/Alert'
 import Booking from '../components/ManagerUI/Booking';
 import Activity from '../components/ManagerUI/Activity';
 import Request from '../components/ManagerUI/Request';
-
-
+import AddEmployee from '../components/ManagerUI/AddEmployee';
+import Employee from '../components/ManagerUI/Emloyee';
+import Service from '../components/ManagerUI/Service';
+import Customer from '..//components/ManagerUI/Customer';
 export default function ManagerRouter() {
     return (
         <div >
@@ -30,6 +32,10 @@ export default function ManagerRouter() {
                 <Route path='/alert' element={<Alert />}></Route>
                 <Route path='/activity' element={<Activity />}></Route>
                 <Route path='/request' element={<Request />}></Route>
+                <Route path='/employee' element={<Employee />}></Route>
+                <Route path='/customer' element={<Customer />}></Route>
+                <Route path='/service' element={<Service />}></Route>
+
             </Routes>
             <ADFooter />
         </div>

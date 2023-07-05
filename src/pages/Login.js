@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -18,6 +19,8 @@ export default function Login() {
                     localStorage.setItem('email', email);
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
+                    localStorage.setItem('id', response.data.data.accountId);
+                    const accountId = localStorage.getItem('id');
                     // navigate('/home')
                     window.location.href = '/';
                 }
@@ -97,6 +100,9 @@ export default function Login() {
                                         <div class="col-12">
                                             <p class="small mb-0">Don't have account?<Link to="/signup">Create an account</Link></p>
                                         </div>
+                                        <div class="col-12">
+                                            <p class="small mb-0">Forgot your Password?<Link to="/reset"> Click here</Link></p>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -104,7 +110,6 @@ export default function Login() {
                     </div>
                 </div>
             </section>
-
         </div>
     );
 }

@@ -31,7 +31,6 @@ const BlogDetails = () => {
         console.error('Error fetching blog detail:', error);
       });
       
-      
       axios.get(`https://localhost:7013/api/Blog`)
       .then(response => {
         const data = response.data.data;
@@ -84,7 +83,6 @@ const BlogDetails = () => {
     fetchCommentAuthors();
   }, [comments, blogid]);
 
-  // const formattedDateTime = moment(dateTime).format('DD/MM/YYYY');
   const handleCommentChange = (event) => {
     setComment(event.target.value);
   };
@@ -208,7 +206,19 @@ const BlogDetails = () => {
               <div className="recent__post mb-4">
                 <h5 className=" fw-bold">Bài gần đây</h5>
               </div>
-              {/* Render related posts */}
+              
+              {blogs.map((blog) => (
+                <div className="recent__blog-post mb-4" key={blog.blogId}>
+                  <div className="recent__blog-item d-flex gap-3">
+                    <img src={blog.img} alt="" className="w-25 rounded-2" />
+                    
+                    <h6>
+                      <Link to={`/blogs/${blog.title}`}>{blog.title}</Link>
+                    </h6>
+                  
+                  </div>
+                </div>
+              ))}
             </Col>
           </Row>
         </Container>

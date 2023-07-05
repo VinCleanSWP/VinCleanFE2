@@ -270,7 +270,7 @@ function ADHeader() {
                                     </div>
                                 </div>
                                 <div className="account-wrap">
-                                    <div className="account-item clearfix js-item-menu" data-toggle="dropdown" data-target=".js-dropdown">
+                                    <div className="account-item clearfix js-item-menu">
                                         <div className="image">
                                             <img src="images/icon/avatar-01.jpg" alt={name} />
                                         </div>

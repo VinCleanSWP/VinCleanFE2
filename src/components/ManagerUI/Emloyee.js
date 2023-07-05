@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 import firebase from 'firebase/app';
 import 'firebase/storage';
 import './FireBaseConfig';
-import { storage } from 'firebase/storage';
+// import { storage } from 'firebase/storage';
+import { storage } from './FireBaseConfig';
 
 
 
@@ -241,7 +242,7 @@ function Table() {
                 isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
                 contentLabel="Add Employee"
-                portalClassName="popup-container"
+                portalClassName=""
                 style={{
                     overlay: {
                         zIndex: 9999
@@ -349,7 +350,7 @@ function Table() {
                 isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
                 contentLabel="Add Employee"
-                portalClassName="popup-container"
+                portalClassName=""
                 style={{
                     overlay: {
                         zIndex: 9999

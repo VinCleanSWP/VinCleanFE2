@@ -229,7 +229,7 @@ function Booking() {
                                             <input value={modal.customerName} className="form-control" />
                                         </div>
                                         <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '150px', }} />
+                                            <img  src={modal.accountImage} alt="react logo" style={{ width: '110px',height:"120px" }} />
                                         </div>
                                     </form>
                                     <form className="form-inline">
@@ -374,8 +374,8 @@ function Booking() {
                                                         </td>
                                                         <td className="desc">{u.phone}</td>
                                                         <td style={{ color: getStatusColor(u.status) }}>{u.status}</td>
-                                                        <td>
-                                                            <img src={u.account.img} alt="img" />
+                                                        <td style={{ display: 'inline' , padding :"10px" }}>
+                                                            <img src={u.account.img} alt="img" style={{ width: '100px', height: '80px' }}/>
                                                         </td>
 
                                                     </tr>

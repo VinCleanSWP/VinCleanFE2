@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "reactstrap";
 import { Link, NavLink } from "react-router-dom";
 import "../../styles/header.css";
+import VinCleanLogo from"../../assets/all-images/logo.png";
 
 const navLinks = [
   {
@@ -66,10 +67,7 @@ const Header = () => {
               <div className="logo">
                 <h1>
                   <Link to="/home" className=" d-flex align-items-center gap-2">
-                    <i class="ri-car-line"></i>
-                    <span>
-                      Rent Car <br /> Service
-                    </span>
+                  <img src={VinCleanLogo} alt=""style={{ width: "200px", height: "auto" }} />
                   </Link>
                 </h1>
               </div>

@@ -1,8 +1,35 @@
-import React, { } from 'react';
+import React, { useRef, useState, useEffect } from "react";
 
 function ADHeader() {
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+
+    const handleLogout = () => {
+        // Xóa thông tin đăng nhập từ localStorage
+        localStorage.removeItem('loggedIn');
+        localStorage.removeItem('email');
+        localStorage.removeItem('name');
+        localStorage.removeItem('role');
+        setLoggedIn(false);
+        setEmail('');
+        window.location.href = '/home';
+    };
+
+    useEffect(() => {
+        // Kiểm tra xem đã có thông tin đăng nhập trong localStorage hay chưa
+        const isLoggedIn = localStorage.getItem('loggedIn');
+        const storedEmail = localStorage.getItem('email');
+        const storedName = localStorage.getItem('name');
+
+        if (isLoggedIn && storedEmail) {
+            setLoggedIn(true);
+            setEmail(storedEmail);
+            setName(storedName);
+        }
+    }, []);
     return (
-        <div>
+        <div >
             {/* HEADER MOBILE*/}
             <header className="header-mobile d-block d-lg-none">
                 <div className="header-mobile__bar">
@@ -243,25 +270,25 @@ function ADHeader() {
                                     </div>
                                 </div>
                                 <div className="account-wrap">
-                                    <div className="account-item clearfix js-item-menu">
+                                    <div className="account-item clearfix js-item-menu" data-toggle="dropdown" data-target=".js-dropdown">
                                         <div className="image">
-                                            <img src="images/icon/avatar-01.jpg" alt="John Doe" />
+                                            <img src="images/icon/avatar-01.jpg" alt={name} />
                                         </div>
                                         <div className="content">
-                                            <a className="js-acc-btn" href="#">john doe</a>
+                                            <a className="js-acc-btn" href=" ">{name}</a>
                                         </div>
                                         <div className="account-dropdown js-dropdown">
                                             <div className="info clearfix">
                                                 <div className="image">
                                                     <a href="#">
-                                                        <img src="images/icon/avatar-01.jpg" alt="John Doe" />
+                                                        <img src="images/icon/avatar-01.jpg" alt={name} />
                                                     </a>
                                                 </div>
                                                 <div className="content">
                                                     <h5 className="name">
-                                                        <a href="#">john doe</a>
+                                                        <a href="#">{name};</a>
                                                     </h5>
-                                                    <span className="email">johndoe@example.com</span>
+                                                    <span className="email">{email}</span>
                                                 </div>
                                             </div>
                                             <div className="account-dropdown__body">

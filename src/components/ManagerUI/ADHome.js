@@ -2,7 +2,7 @@ import React, { } from 'react';
 
 function ADHome() {
   return (
-    <div>
+    <div >
       {/* PAGE CONTAINER*/}
       <div className="page-container">
         {/* MAIN CONTENT*/}

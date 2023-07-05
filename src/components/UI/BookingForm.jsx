@@ -78,32 +78,40 @@ const BookingForm = () => {
   };
 
   return (
+    
     <Form onSubmit={handleSubmit}>
       <FormGroup className="booking__form d-inline-block me-4 mb-4">
+        <label for="firstName">Tên</label>
         <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block ms-1 mb-4">
+        <label for="firstName">Họ</label>
         <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block me-4 mb-4">
+        <label for="firstName">Số điện thoại</label>
         <input type="text" placeholder="Phone Number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block ms-1 mb-4">
+        <label for="firstName">Địa chỉ</label>
         <input type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block me-4 mb-4">
+        <label for="firstName">Ngày làm</label>
         <input type="date" placeholder="Journey Date" value={journeyDate} onChange={(e) => setJourneyDate(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block ms-1 mb-4">
+        <label for="firstName">Hẹn giờ</label>
         <input type="time" placeholder="Journey Time" className="time__picker" value={journeyTime} onChange={(e) => setJourneyTime(e.target.value)} />
         {/* <input type="time" placeholder="Journey Time" className="time__picker" value={journeyTime} onChange={handleJourneyTimeChange} /> */}
       </FormGroup>
       <FormGroup>
+        <label for="firstName">Ghi chú</label>
         <textarea rows={5} type="textarea" className="textarea" placeholder="Write" value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
       </FormGroup>
 
 
-      <button className="normal-button" type="submit">Submit</button>
+      <button className="normal-button" type="submit">Xác nhận</button>
 
       <Modal isOpen={isPopupOpen} onRequestClose={handleClosePopup} >
 

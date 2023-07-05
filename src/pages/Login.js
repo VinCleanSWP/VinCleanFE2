@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -18,6 +19,8 @@ export default function Login() {
                     localStorage.setItem('email', email);
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
+                    localStorage.setItem('id', response.data.data.accountId);
+                    const accountId = localStorage.getItem('id');
                     // navigate('/home')
                     window.location.href = '/';
                 }
@@ -61,41 +64,44 @@ export default function Login() {
                                 <div className="card-body">
 
                                     <div className="pt-4 pb-2">
-                                        <h5 className="card-title text-center pb-0 fs-4">Login to Your Account</h5>
-                                        <p className="text-center small">Enter your username & password to login</p>
+                                        <h5 className="card-title text-center pb-0 fs-4">Xin chào</h5>
+                                        <p className="text-center small">Đăng nhập hoặc Tạo tài khoản</p>
                                     </div>
 
                                     <form class="row g-3 needs-validation" novalidate onSubmit={handleSubmit}>
 
                                         <div class="col-12">
-                                            <label for="yourUsername" class="form-label">Username</label>
+                                            <label for="yourUsername" class="form-label">Email</label>
                                             <div class="input-group has-validation">
                                                 <span class="input-group-text" id="inputGroupPrepend">@</span>
                                                 {/* <input type="text" name="username" class="form-control" id="yourUsername" required /> */}
                                                 <input type="email" name="username" class="form-control" id="yourUsername" value={email} onChange={(e) => setEmail(e.target.value)} />
-                                                <div class="invalid-feedback">Please enter your username.</div>
+                                                <div class="invalid-feedback">Hãy nhập lại email</div>
                                             </div>
                                         </div>
 
                                         <div class="col-12">
-                                            <label for="yourPassword" class="form-label">Password</label>
+                                            <label for="yourPassword" class="form-label">Mật khẩu</label>
                                             {/* <input type="password" name="password" class="form-control" id="yourPassword" required /> */}
                                             <input type="password" name="password" class="form-control" id="yourPassword" value={password} onChange={(e) => setPassword(e.target.value)} />
-                                            <div class="invalid-feedback">Please enter your password!</div>
+                                            <div class="invalid-feedback">Hãy nhập lại mật khẩu</div>
                                         </div>
 
                                         <div class="col-12">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe" />
-                                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                                                <label class="form-check-label" for="rememberMe">Nhớ tôi</label>
                                             </div>
                                         </div>
                                         <div class="col-12">
-                                            <button class="btn btn-primary w-100" type="submit">Login</button>
+                                            <button class="btn btn-primary w-100" type="submit">Đăng nhập</button>
                                         </div>
                                         {error && <p style={{ color: 'red' }}>{error}</p>}
                                         <div class="col-12">
-                                            <p class="small mb-0">Don't have account?<Link to="/signup">Create an account</Link></p>
+                                            <p class="small mb-0">Bạn mới biết đến Vin Clean?<Link to="/signup"> Đăng ký</Link></p>
+                                        </div>
+                                        <div class="col-12">
+                                            <p class="small mb-0">Forgot your Password?<Link to="/reset"> Click here</Link></p>
                                         </div>
                                     </form>
                                 </div>
@@ -104,7 +110,6 @@ export default function Login() {
                     </div>
                 </div>
             </section>
-
         </div>
     );
 }

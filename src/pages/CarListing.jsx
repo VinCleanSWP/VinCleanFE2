@@ -22,8 +22,8 @@ const CarListing = () => {
   }, []);
 
   return (
-    <Helmet title="Cars">
-      <CommonSection title="Car Listing" />
+    <Helmet title="Service">
+      <CommonSection title="Các loại dịch vụ" />
 
       <section>
         <Container>
@@ -31,20 +31,21 @@ const CarListing = () => {
             <Col lg="12">
               <div className=" d-flex align-items-center gap-3 mb-5">
                 <span className=" d-flex align-items-center gap-2">
-                  <i class="ri-sort-asc"></i> Sort By
+                  <i class="ri-sort-asc"></i> Sắp xếp
                 </span>
 
                 <select>
-                  <option>Select</option>
-                  <option value="low">Low to High</option>
-                  <option value="high">High to Low</option>
+                  <option>Mặc định</option>
+                  <option value="low">Giá thấp đến cao</option>
+                  <option value="high">Giá cao đến thấp</option>
                 </select>
               </div>
             </Col>
-
+            
             {servicetype.map((item) => (
               <CarItem item={item} key={item.typeId} />
             ))}
+          
           </Row>
         </Container>
       </section>

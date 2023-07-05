@@ -1,8 +1,241 @@
-import React, { } from 'react';
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Modal from 'react-modal';
+import { Link } from 'react-router-dom';
+import firebase from 'firebase/app';
+import 'firebase/storage';
+import './FireBaseConfig';
+import { storage } from 'firebase/storage';
+
+
 
 function Table() {
+
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [customerList, setCustomerList] = useState([]);
+    const [employeeData, setEmployeeData] = useState(null);
+    const [customerData, setCustomerData] = useState(null);
+    const [employeeList, setEmployeeList] = useState([]);
+    const [account, setAccount] = useState([]);
+    const [userName, setUserName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [gender, setGender] = useState('');
+    const [newuserName, setNewUserName] = useState('');
+    const [newfirstName, setNewFirstName] = useState('');
+    const [newlastName, setNewLastName] = useState('');
+    const [newphone, setNewPhone] = useState('');
+    const [newemail, setNewEmail] = useState('');
+    const [newpassword, setNewPassword] = useState('');
+    const [newgender, setNewGender] = useState('');
+    const [employeeId, setEmployeeId] = useState('');
+    const [customerId, setCustomerId] = useState('');
+    const accountId = localStorage.getItem('id');
+
+    const [url, setUrl] = useState('');
+
+    const deleteEmployee = (employeeId) => {
+        axios.delete(`https://localhost:7013/api/Employee/${employeeId}`)
+            .then(response => {
+                console.log('Employee deleted successfully');
+                const updatedEmployeeList = employeeList.filter(employee => employee.employeeId !== employeeId);
+                setEmployeeList(updatedEmployeeList);
+                // Thực hiện các hành động khác sau khi xóa thành công
+            })
+            .catch(error => {
+                console.error('Error deleting customer:', error);
+                // Xử lý lỗi khi xóa khách hàng
+            });
+    }
+
+
+    const fetchEmpoloyeeList = () => {
+        axios.get('https://localhost:7013/api/Employee')
+            .then(response => {
+                setEmployeeList(response.data.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+    useEffect(() => {
+
+
+        axios
+            .get(`https://localhost:7013/api/Customer/${customerId}`)
+            .then(response => {
+
+                const { data } = response.data;
+
+
+                setCustomerData(data);
+                setUserName(data.account.name)
+                setFirstName(data.firstName);
+                setLastName(data.lastName);
+                setGender(data.account.gender);
+                setPhone(data.phone);
+                setEmail(data.account.email);
+                setPassword(data.account.password);
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+
+
+
+
+
+
+    }, [customerId]);
+
+    useEffect(() => {
+
+
+        axios
+            .get(`https://localhost:7013/api/Employee/${employeeId}`)
+            .then(response => {
+                const { data } = response.data;
+
+                setEmployeeData(data);
+                setUserName(data.account.name);
+
+                setFirstName(data.firstName);
+                setLastName(data.lastName);
+                setGender(data.gender);
+                setPhone(data.phone);
+                setEmail(data.account.email);
+                setPassword(data.account.password);
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+
+
+
+
+
+
+    }, [employeeId]);
+    const handleChangeSubmit = () => {
+        const updatedEmployee = {
+            employeeId: employeeId,
+            // accountId: 27,
+            img: "tuthemvaonha",//them vao giup tao Phung
+            status: "Available",
+            name: userName,
+            firstName: firstName,
+            lastName: lastName,
+            gender: gender,
+            phone: phone,
+            email: email,
+            password: password
+        };
+        console.log(updatedEmployee);
+
+
+        axios
+            .put(`https://localhost:7013/api/Employee`, updatedEmployee)
+            .then(response => {
+                console.log('Employee updated successfully:', response.data);
+
+                // Do something after successful update
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error
+            });
+    };
+
+
+
+
+    useEffect(() => {
+        axios.get('https://localhost:7013/api/Customer')
+            .then(response => {
+                setCustomerList(response.data.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
+    useEffect(() => {
+        axios.get('https://localhost:7013/api/Employee')
+            .then(response => {
+                setEmployeeList(response.data.data);
+                console.log(account);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        fetchEmpoloyeeList();
+    }, []);
+    useEffect(() => {
+        axios.get('https://localhost:7013/api/Account')
+            .then(response => {
+                setAccount(response.data.data);
+
+
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+    }, []);
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        const storageRef = storage.ref(`Employee/${file.name}`);
+        const fileRef = storageRef.child(file.name);
+        await fileRef.put(file);
+        const imgUrl = await fileRef.getDownloadURL();
+        setUrl(imgUrl);
+        console.log(imgUrl);
+    };
+
+
+    const handleSubmit = () => {
+        // Tạo object chứa dữ liệu form
+        const formData = {
+            name: userName,
+            email: email,
+            img: url,
+            password: password,
+
+            gender: gender,
+            firstName: firstName,
+            lastName: lastName,
+            phone: phone
+
+        };
+
+        // Gửi dữ liệu form đến API
+        axios.post('https://localhost:7013/api/Employee', formData)
+            .then(response => {
+                // Xử lý kết quả từ API (nếu cần)
+                console.log(response.data);
+            })
+            .catch(error => {
+                // Xử lý lỗi (nếu có)
+                console.error(error);
+            });
+    };
+
+
+
+    console.log(customerList);
+
     return (
-        <div>
+        <div >
             {/* PAGE CONTAINER*/}
             <div className="page-container">
                 {/* HEADER DESKTOP*/}
@@ -182,386 +415,19 @@ function Table() {
                 <div className="main-content">
                     <div className="section__content section__content--p30">
                         <div className="container-fluid">
-                            <div className="row">
-                                <div className="col-lg-9">
-                                    <div className="table-responsive table--no-card m-b-30">
-                                        <table className="table table-borderless table-striped table-earning">
-                                            <thead>
-                                                <tr>
-                                                    <th>date</th>
-                                                    <th>order ID</th>
-                                                    <th>name</th>
-                                                    <th className="text-right">price</th>
-                                                    <th className="text-right">quantity</th>
-                                                    <th className="text-right">total</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>2018-09-29 05:57</td>
-                                                    <td>100398</td>
-                                                    <td>iPhone X 64Gb Grey</td>
-                                                    <td className="text-right">$999.00</td>
-                                                    <td className="text-right">1</td>
-                                                    <td className="text-right">$999.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-28 01:22</td>
-                                                    <td>100397</td>
-                                                    <td>Samsung S8 Black</td>
-                                                    <td className="text-right">$756.00</td>
-                                                    <td className="text-right">1</td>
-                                                    <td className="text-right">$756.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-27 02:12</td>
-                                                    <td>100396</td>
-                                                    <td>Game Console Controller</td>
-                                                    <td className="text-right">$22.00</td>
-                                                    <td className="text-right">2</td>
-                                                    <td className="text-right">$44.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-26 23:06</td>
-                                                    <td>100395</td>
-                                                    <td>iPhone X 256Gb Black</td>
-                                                    <td className="text-right">$1199.00</td>
-                                                    <td className="text-right">1</td>
-                                                    <td className="text-right">$1199.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-25 19:03</td>
-                                                    <td>100393</td>
-                                                    <td>USB 3.0 Cable</td>
-                                                    <td className="text-right">$10.00</td>
-                                                    <td className="text-right">3</td>
-                                                    <td className="text-right">$30.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-29 05:57</td>
-                                                    <td>100392</td>
-                                                    <td>Smartwatch 4.0 LTE Wifi</td>
-                                                    <td className="text-right">$199.00</td>
-                                                    <td className="text-right">6</td>
-                                                    <td className="text-right">$1494.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-24 19:10</td>
-                                                    <td>100391</td>
-                                                    <td>Camera C430W 4k</td>
-                                                    <td className="text-right">$699.00</td>
-                                                    <td className="text-right">1</td>
-                                                    <td className="text-right">$699.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-22 00:43</td>
-                                                    <td>100393</td>
-                                                    <td>USB 3.0 Cable</td>
-                                                    <td className="text-right">$10.00</td>
-                                                    <td className="text-right">3</td>
-                                                    <td className="text-right">$30.00</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div className="col-lg-3">
-                                    <div className="au-card au-card--bg-blue au-card-top-countries m-b-30">
-                                        <div className="au-card-inner">
-                                            <div className="table-responsive">
-                                                <table className="table table-top-countries">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>United States</td>
-                                                            <td className="text-right">$119,366.96</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Australia</td>
-                                                            <td className="text-right">$70,261.65</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>United Kingdom</td>
-                                                            <td className="text-right">$46,399.22</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Turkey</td>
-                                                            <td className="text-right">$35,364.90</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Germany</td>
-                                                            <td className="text-right">$20,366.96</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>France</td>
-                                                            <td className="text-right">$10,366.96</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Australia</td>
-                                                            <td className="text-right">$5,366.96</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Italy</td>
-                                                            <td className="text-right">$1639.32</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div className="row">
                                 <div className="col-lg-6">
                                     {/* USER DATA*/}
-                                    <div className="user-data m-b-30">
-                                        <h3 className="title-3 m-b-30">
-                                            <i className="zmdi zmdi-account-calendar" />user data</h3>
-                                        <div className="filters m-b-45">
-                                            <div className="rs-select2--dark rs-select2--md m-r-10 rs-select2--border">
-                                                <select className="js-select2" name="property">
-                                                    <option selected="selected">All Properties</option>
-                                                    <option value>Products</option>
-                                                    <option value>Services</option>
-                                                </select>
-                                                <div className="dropDownSelect2" />
-                                            </div>
-                                            <div className="rs-select2--dark rs-select2--sm rs-select2--border">
-                                                <select className="js-select2 au-select-dark" name="time">
-                                                    <option selected="selected">All Time</option>
-                                                    <option value>By Month</option>
-                                                    <option value>By Day</option>
-                                                </select>
-                                                <div className="dropDownSelect2" />
-                                            </div>
-                                        </div>
-                                        <div className="table-responsive table-data">
-                                            <table className="table">
-                                                <thead>
-                                                    <tr>
-                                                        <td>
-                                                            <label className="au-checkbox">
-                                                                <input type="checkbox" />
-                                                                <span className="au-checkmark" />
-                                                            </label>
-                                                        </td>
-                                                        <td>name</td>
-                                                        <td>role</td>
-                                                        <td>type</td>
-                                                        <td />
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <label className="au-checkbox">
-                                                                <input type="checkbox" />
-                                                                <span className="au-checkmark" />
-                                                            </label>
-                                                        </td>
-                                                        <td>
-                                                            <div className="table-data__info">
-                                                                <h6>lori lynch</h6>
-                                                                <span>
-                                                                    <a href="#">johndoe@gmail.com</a>
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className="role admin">admin</span>
-                                                        </td>
-                                                        <td>
-                                                            <div className="rs-select2--trans rs-select2--sm">
-                                                                <select className="js-select2" name="property">
-                                                                    <option selected="selected">Full Control</option>
-                                                                    <option value>Post</option>
-                                                                    <option value>Watch</option>
-                                                                </select>
-                                                                <div className="dropDownSelect2" />
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className="more">
-                                                                <i className="zmdi zmdi-more" />
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label className="au-checkbox">
-                                                                <input type="checkbox" defaultChecked="checked" />
-                                                                <span className="au-checkmark" />
-                                                            </label>
-                                                        </td>
-                                                        <td>
-                                                            <div className="table-data__info">
-                                                                <h6>lori lynch</h6>
-                                                                <span>
-                                                                    <a href="#">johndoe@gmail.com</a>
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className="role user">user</span>
-                                                        </td>
-                                                        <td>
-                                                            <div className="rs-select2--trans rs-select2--sm">
-                                                                <select className="js-select2" name="property">
-                                                                    <option value>Full Control</option>
-                                                                    <option value selected="selected">Post</option>
-                                                                    <option value>Watch</option>
-                                                                </select>
-                                                                <div className="dropDownSelect2" />
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className="more">
-                                                                <i className="zmdi zmdi-more" />
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label className="au-checkbox">
-                                                                <input type="checkbox" />
-                                                                <span className="au-checkmark" />
-                                                            </label>
-                                                        </td>
-                                                        <td>
-                                                            <div className="table-data__info">
-                                                                <h6>lori lynch</h6>
-                                                                <span>
-                                                                    <a href="#">johndoe@gmail.com</a>
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className="role user">user</span>
-                                                        </td>
-                                                        <td>
-                                                            <div className="rs-select2--trans rs-select2--sm">
-                                                                <select className="js-select2" name="property">
-                                                                    <option value>Full Control</option>
-                                                                    <option value selected="selected">Post</option>
-                                                                    <option value>Watch</option>
-                                                                </select>
-                                                                <div className="dropDownSelect2" />
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className="more">
-                                                                <i className="zmdi zmdi-more" />
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <label className="au-checkbox">
-                                                                <input type="checkbox" />
-                                                                <span className="au-checkmark" />
-                                                            </label>
-                                                        </td>
-                                                        <td>
-                                                            <div className="table-data__info">
-                                                                <h6>lori lynch</h6>
-                                                                <span>
-                                                                    <a href="#">johndoe@gmail.com</a>
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className="role member">member</span>
-                                                        </td>
-                                                        <td>
-                                                            <div className="rs-select2--trans rs-select2--sm">
-                                                                <select className="js-select2" name="property">
-                                                                    <option selected="selected">Full Control</option>
-                                                                    <option value>Post</option>
-                                                                    <option value>Watch</option>
-                                                                </select>
-                                                                <div className="dropDownSelect2" />
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className="more">
-                                                                <i className="zmdi zmdi-more" />
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div className="user-data__footer">
-                                            <button className="au-btn au-btn-load">load more</button>
-                                        </div>
-                                    </div>
+
                                     {/* END USER DATA*/}
                                 </div>
-                                <div className="col-lg-6">
-                                    {/* TOP CAMPAIGN*/}
-                                    <div className="top-campaign">
-                                        <h3 className="title-3 m-b-30">top campaigns</h3>
-                                        <div className="table-responsive">
-                                            <table className="table table-top-campaign">
-                                                <tbody>
-                                                    <tr>
-                                                        <td>1. Australia</td>
-                                                        <td>$70,261.65</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>2. United Kingdom</td>
-                                                        <td>$46,399.22</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3. Turkey</td>
-                                                        <td>$35,364.90</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4. Germany</td>
-                                                        <td>$20,366.96</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>5. France</td>
-                                                        <td>$10,366.96</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3. Turkey</td>
-                                                        <td>$35,364.90</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4. Germany</td>
-                                                        <td>$20,366.96</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>5. France</td>
-                                                        <td>$10,366.96</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3. Turkey</td>
-                                                        <td>$35,364.90</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4. Germany</td>
-                                                        <td>$20,366.96</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>5. France</td>
-                                                        <td>$10,366.96</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4. Germany</td>
-                                                        <td>$20,366.96</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    {/*  END TOP CAMPAIGN*/}
-                                </div>
+
                             </div>
                             <div className="row">
                                 <div className="col-md-12">
                                     {/* DATA TABLE */}
-                                    <h3 className="title-5 m-b-35">data table</h3>
+                                    <h3 className="title-5 m-b-35">Customer List</h3>
                                     <div className="table-data__tool">
                                         <div className="table-data__tool-left">
                                             <div className="rs-select2--light rs-select2--md">
@@ -606,250 +472,511 @@ function Table() {
                                                             <span className="au-checkmark" />
                                                         </label>
                                                     </th>
-                                                    <th>name</th>
-                                                    <th>email</th>
-                                                    <th>description</th>
-                                                    <th>date</th>
-                                                    <th>status</th>
-                                                    <th>price</th>
+                                                    <th>Customer ID</th>
+                                                    <th>Image</th>
+                                                    <th>Last name</th>
+                                                    <th>First Name</th>
+                                                    <th>Phone</th>
+                                                    <th>Address</th>
                                                     <th />
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr className="tr-shadow">
-                                                    <td>
-                                                        <label className="au-checkbox">
-                                                            <input type="checkbox" />
-                                                            <span className="au-checkmark" />
-                                                        </label>
-                                                    </td>
-                                                    <td>Lori Lynch</td>
-                                                    <td>
-                                                        <span className="block-email">lori@example.com</span>
-                                                    </td>
-                                                    <td className="desc">Samsung S8 Black</td>
-                                                    <td>2018-09-27 02:12</td>
-                                                    <td>
-                                                        <span className="status--process">Processed</span>
-                                                    </td>
-                                                    <td>$679.00</td>
-                                                    <td>
-                                                        <div className="table-data-feature">
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Send">
-                                                                <i className="zmdi zmdi-mail-send" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                {customerList.map((customer, index) => (
+
+
+                                                    <tr key={customer.customerId}>
+
+
+                                                        <td>{customer.customerId}</td>
+                                                        <div></div>
+                                                        <td><img src={customer.account.img} alt="Avatar" /></td>
+                                                        <td>{customer.lastName}</td>
+                                                        <td>{customer.firstName}</td>
+                                                        <td>{customer.phone}</td>
+                                                        <td>{customer.address}</td>
+                                                        <td />
+                                                        <td>
+                                                            <div className="table-data-feature">
+                                                                <button className="item" data-toggle="tooltip" data-placement="top" title="Send">
+                                                                    <i className="zmdi zmdi-mail-send" />
+                                                                </button>
+                                                                <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                                    <i className="zmdi zmdi-edit" />
+                                                                </button>
+                                                                <button className="item" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                                    <i className="zmdi zmdi-delete" />
+                                                                </button>
+                                                                <Modal
+                                                                    isOpen={modalIsOpen}
+                                                                    onRequestClose={() => setModalIsOpen(false)}
+                                                                    contentLabel="Add Employee"
+                                                                    portalClassName="popup-container"
+                                                                    style={{
+                                                                        overlay: {
+                                                                            zIndex: 9999
+                                                                        },
+                                                                        content: {
+                                                                            width: '600px',
+                                                                            height: '600px',
+                                                                            margin: 'auto'
+                                                                        }
+                                                                    }}
+
+                                                                >
+                                                                    <div className="card overflow-hidden">
+                                                                        <div className="row no-gutters row-bordered row-border-light">
+                                                                            <div className="col-md-9">
+                                                                                <div className="tab-content">
+                                                                                    <div className="tab-pane fade active show" id="account-general">
+                                                                                        <hr className="border-light m-0" />
+                                                                                        <div className="card-body">
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">User name</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control mb-1"
+                                                                                                    value={userName}
+                                                                                                    onChange={(e) => setUserName(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <label className="form-label">Image</label>
+
+                                                                                                <input type="file" onChange={handleImageUpload} />
+
+
+                                                                                            </div>
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">First name</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control mb-1"
+                                                                                                    value={firstName}
+                                                                                                    onChange={(e) => setFirstName(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">Last name</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control mb-1"
+                                                                                                    value={lastName}
+                                                                                                    onChange={(e) => setLastName(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <label className="form-group">Gender</label>
+                                                                                                <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
+                                                                                                    <option value="">Choose gender</option>
+                                                                                                    <option value="Male">Male</option>
+                                                                                                    <option value="Female">Female</option>
+                                                                                                    <option value="Other">Other</option>
+                                                                                                </select>
+
+                                                                                            </div>
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">Phone</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control mb-1"
+                                                                                                    value={phone}
+                                                                                                    onChange={(e) => setPhone(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+
+
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">E-mail</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control mb-1"
+                                                                                                    value={email}
+                                                                                                    onChange={(e) => setEmail(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">Password</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control"
+                                                                                                    value={password}
+                                                                                                    onChange={(e) => setPassword(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="text-right mt-3">
+                                                                        <button type="button" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+                                                                        <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
+                                                                    </div>
+                                                                </Modal>
+                                                                {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                                    <i className="zmdi zmdi-edit" />
+                                                                </button> */}
+                                                                {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit" onClick={() => setModalIsOpen(true)}>
                                                                 <i className="zmdi zmdi-edit" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Delete">
-                                                                <i className="zmdi zmdi-delete" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="More">
-                                                                <i className="zmdi zmdi-more" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr className="spacer" />
-                                                <tr className="tr-shadow">
-                                                    <td>
-                                                        <label className="au-checkbox">
-                                                            <input type="checkbox" />
-                                                            <span className="au-checkmark" />
-                                                        </label>
-                                                    </td>
-                                                    <td>Lori Lynch</td>
-                                                    <td>
-                                                        <span className="block-email">john@example.com</span>
-                                                    </td>
-                                                    <td className="desc">iPhone X 64Gb Grey</td>
-                                                    <td>2018-09-29 05:57</td>
-                                                    <td>
-                                                        <span className="status--process">Processed</span>
-                                                    </td>
-                                                    <td>$999.00</td>
-                                                    <td>
-                                                        <div className="table-data-feature">
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Send">
-                                                                <i className="zmdi zmdi-mail-send" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                                                                <i className="zmdi zmdi-edit" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Delete">
-                                                                <i className="zmdi zmdi-delete" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="More">
-                                                                <i className="zmdi zmdi-more" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr className="spacer" />
-                                                <tr className="tr-shadow">
-                                                    <td>
-                                                        <label className="au-checkbox">
-                                                            <input type="checkbox" />
-                                                            <span className="au-checkmark" />
-                                                        </label>
-                                                    </td>
-                                                    <td>Lori Lynch</td>
-                                                    <td>
-                                                        <span className="block-email">lyn@example.com</span>
-                                                    </td>
-                                                    <td className="desc">iPhone X 256Gb Black</td>
-                                                    <td>2018-09-25 19:03</td>
-                                                    <td>
-                                                        <span className="status--denied">Denied</span>
-                                                    </td>
-                                                    <td>$1199.00</td>
-                                                    <td>
-                                                        <div className="table-data-feature">
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Send">
-                                                                <i className="zmdi zmdi-mail-send" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                                                                <i className="zmdi zmdi-edit" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Delete">
-                                                                <i className="zmdi zmdi-delete" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="More">
-                                                                <i className="zmdi zmdi-more" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr className="spacer" />
-                                                <tr className="tr-shadow">
-                                                    <td>
-                                                        <label className="au-checkbox">
-                                                            <input type="checkbox" />
-                                                            <span className="au-checkmark" />
-                                                        </label>
-                                                    </td>
-                                                    <td>Lori Lynch</td>
-                                                    <td>
-                                                        <span className="block-email">doe@example.com</span>
-                                                    </td>
-                                                    <td className="desc">Camera C430W 4k</td>
-                                                    <td>2018-09-24 19:10</td>
-                                                    <td>
-                                                        <span className="status--process">Processed</span>
-                                                    </td>
-                                                    <td>$699.00</td>
-                                                    <td>
-                                                        <div className="table-data-feature">
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Send">
-                                                                <i className="zmdi zmdi-mail-send" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                                                                <i className="zmdi zmdi-edit" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="Delete">
-                                                                <i className="zmdi zmdi-delete" />
-                                                            </button>
-                                                            <button className="item" data-toggle="tooltip" data-placement="top" title="More">
-                                                                <i className="zmdi zmdi-more" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+
+                                                                </button> */}
+                                                                <button
+                                                                    className="item"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="View"
+                                                                    onClick={() => {
+                                                                        setModalIsOpen(true);
+                                                                        setCustomerId(customer.customerId);
+                                                                    }}
+                                                                >
+                                                                    <i class="zmdi zmdi-more" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+
                                             </tbody>
+
                                         </table>
                                     </div>
                                     {/* END DATA TABLE */}
                                 </div>
                             </div>
-                            <div className="row m-t-30">
+                            <div className="row">
+
                                 <div className="col-md-12">
-                                    {/* DATA TABLE*/}
-                                    <div className="table-responsive m-b-40">
-                                        <table className="table table-borderless table-data3">
+                                    {/* DATA TABLE */}
+                                    <h3 className="title-5 m-b-35">Employee List</h3>
+                                    <div className="table-data__tool">
+
+                                        <div className="table-data__tool-right">
+                                            {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
+                                                <i className="zmdi zmdi-plus" />add item</button> */}
+
+                                            <button className="btn btn-primary" onClick={() => setModalIsOpen(true)}>
+                                                Add employee
+                                            </button>
+                                            <Modal
+                                                isOpen={modalIsOpen}
+                                                onRequestClose={() => setModalIsOpen(false)}
+                                                contentLabel="Add Employee"
+                                                portalClassName="popup-container"
+                                                style={{
+                                                    overlay: {
+                                                        zIndex: 9999
+                                                    },
+                                                    content: {
+                                                        width: '600px',
+                                                        height: '600px',
+                                                        margin: 'auto'
+                                                    }
+                                                }}
+
+                                            >
+                                                <div className="card overflow-hidden">
+                                                    <div className="row no-gutters row-bordered row-border-light">
+                                                        <div className="col-md-9">
+                                                            <div className="tab-content">
+                                                                <div className="tab-pane fade active show" id="account-general">
+                                                                    <hr className="border-light m-0" />
+                                                                    <div className="card-body">
+                                                                        <div className="form-group">
+                                                                            <label className="form-label">User name</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                className="form-control mb-1"
+                                                                                value={userName}
+                                                                                onChange={(e) => setUserName(e.target.value)}
+                                                                            />
+                                                                        </div>
+                                                                        <div>
+                                                                            <label className="form-label">Image</label>
+
+                                                                            <input type="file" onChange={handleImageUpload} />
+
+
+                                                                        </div>
+                                                                        <div className="form-group">
+                                                                            <label className="form-label">First name</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                className="form-control mb-1"
+                                                                                value={firstName}
+                                                                                onChange={(e) => setFirstName(e.target.value)}
+                                                                            />
+                                                                        </div>
+                                                                        <div className="form-group">
+                                                                            <label className="form-label">Last name</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                className="form-control mb-1"
+                                                                                value={lastName}
+                                                                                onChange={(e) => setLastName(e.target.value)}
+                                                                            />
+                                                                        </div>
+                                                                        <div>
+                                                                            <label className="form-group">Gender</label>
+                                                                            <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
+                                                                                <option value="">Choose gender</option>
+                                                                                <option value="Male">Male</option>
+                                                                                <option value="Female">Female</option>
+                                                                                <option value="Other">Other</option>
+                                                                            </select>
+
+                                                                        </div>
+                                                                        <div className="form-group">
+                                                                            <label className="form-label">Phone</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                className="form-control mb-1"
+                                                                                value={phone}
+                                                                                onChange={(e) => setPhone(e.target.value)}
+                                                                            />
+                                                                        </div>
+
+
+                                                                        <div className="form-group">
+                                                                            <label className="form-label">E-mail</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                className="form-control mb-1"
+                                                                                value={email}
+                                                                                onChange={(e) => setEmail(e.target.value)}
+                                                                            />
+                                                                        </div>
+                                                                        <div className="form-group">
+                                                                            <label className="form-label">Password</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                className="form-control"
+                                                                                value={password}
+                                                                                onChange={(e) => setPassword(e.target.value)}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right mt-3">
+                                                    <button type="button" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+                                                    <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
+                                                </div>
+                                            </Modal>
+
+
+                                            <div className="rs-select2--dark rs-select2--sm rs-select2--dark2">
+                                                <select className="js-select2" name="type">
+                                                    <option selected="selected">Export</option>
+                                                    <option value>Option 1</option>
+                                                    <option value>Option 2</option>
+                                                </select>
+                                                <div className="dropDownSelect2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="table-responsive table-responsive-data2">
+                                        <table className="table table-data2">
                                             <thead>
                                                 <tr>
-                                                    <th>date</th>
-                                                    <th>type</th>
-                                                    <th>description</th>
-                                                    <th>status</th>
-                                                    <th>price</th>
+                                                    <th>
+                                                        <label className="au-checkbox">
+                                                            <input type="checkbox" />
+                                                            <span className="au-checkmark" />
+                                                        </label>
+                                                    </th>
+                                                    <th>Employee ID</th>
+                                                    <th>Image</th>
+                                                    <th>Last name</th>
+                                                    <th>First Name</th>
+                                                    <th>Phone</th>
+                                                    <th>Status</th>
+                                                    <th />
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>2018-09-29 05:57</td>
-                                                    <td>Mobile</td>
-                                                    <td>iPhone X 64Gb Grey</td>
-                                                    <td className="process">Processed</td>
-                                                    <td>$999.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-28 01:22</td>
-                                                    <td>Mobile</td>
-                                                    <td>Samsung S8 Black</td>
-                                                    <td className="process">Processed</td>
-                                                    <td>$756.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-27 02:12</td>
-                                                    <td>Game</td>
-                                                    <td>Game Console Controller</td>
-                                                    <td className="denied">Denied</td>
-                                                    <td>$22.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-26 23:06</td>
-                                                    <td>Mobile</td>
-                                                    <td>iPhone X 256Gb Black</td>
-                                                    <td className="denied">Denied</td>
-                                                    <td>$1199.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-25 19:03</td>
-                                                    <td>Accessories</td>
-                                                    <td>USB 3.0 Cable</td>
-                                                    <td className="process">Processed</td>
-                                                    <td>$10.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-29 05:57</td>
-                                                    <td>Accesories</td>
-                                                    <td>Smartwatch 4.0 LTE Wifi</td>
-                                                    <td className="denied">Denied</td>
-                                                    <td>$199.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-24 19:10</td>
-                                                    <td>Camera</td>
-                                                    <td>Camera C430W 4k</td>
-                                                    <td className="process">Processed</td>
-                                                    <td>$699.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2018-09-22 00:43</td>
-                                                    <td>Computer</td>
-                                                    <td>Macbook Pro Retina 2017</td>
-                                                    <td className="process">Processed</td>
-                                                    <td>$10.00</td>
-                                                </tr>
+                                                {employeeList.map(employee => (
+                                                    <tr key={employee.employeeId}>
+                                                        <td>
+                                                            <label className="au-checkbox">
+                                                                <input type="checkbox" />
+                                                                <span className="au-checkmark" />
+                                                            </label>
+                                                        </td>
+                                                        <td>{employee.employeeId}</td>
+                                                        <td>{employee.lastName}</td>
+                                                        <td>{employee.firstName}</td>
+                                                        <td>{employee.phone}</td>
+                                                        <td>{employee.status}</td>
+                                                        <td />
+                                                        <td>
+                                                            <div className="table-data-feature">
+                                                                <button className="item" data-toggle="tooltip" data-placement="top" title="Send">
+                                                                    <i className="zmdi zmdi-mail-send" />
+                                                                </button>
+                                                                <Modal
+                                                                    isOpen={modalIsOpen}
+                                                                    onRequestClose={() => setModalIsOpen(false)}
+                                                                    contentLabel="Add Employee"
+                                                                    portalClassName="popup-container"
+                                                                    style={{
+                                                                        overlay: {
+                                                                            zIndex: 9999
+                                                                        },
+                                                                        content: {
+                                                                            width: '600px',
+                                                                            height: '600px',
+                                                                            margin: 'auto'
+                                                                        }
+                                                                    }}
+
+                                                                >
+                                                                    <div className="card overflow-hidden">
+                                                                        <div className="row no-gutters row-bordered row-border-light">
+                                                                            <div className="col-md-9">
+                                                                                <div className="tab-content">
+                                                                                    <div className="tab-pane fade active show" id="account-general">
+                                                                                        <hr className="border-light m-0" />
+                                                                                        <div className="card-body">
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">User name</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control mb-1"
+                                                                                                    value={userName}
+                                                                                                    onChange={(e) => setUserName(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <label className="form-label">Image</label>
+
+                                                                                                <input type="file" onChange={handleImageUpload} />
+
+
+                                                                                            </div>
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">First name</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control mb-1"
+                                                                                                    value={firstName}
+                                                                                                    onChange={(e) => setFirstName(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">Last name</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control mb-1"
+                                                                                                    value={lastName}
+                                                                                                    onChange={(e) => setLastName(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <label className="form-group">Gender</label>
+                                                                                                <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
+                                                                                                    <option value="">Choose gender</option>
+                                                                                                    <option value="Male">Male</option>
+                                                                                                    <option value="Female">Female</option>
+                                                                                                    <option value="Other">Other</option>
+                                                                                                </select>
+
+                                                                                            </div>
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">Phone</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control mb-1"
+                                                                                                    value={phone}
+                                                                                                    onChange={(e) => setPhone(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+
+
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">E-mail</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control mb-1"
+                                                                                                    value={email}
+                                                                                                    onChange={(e) => setEmail(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+                                                                                            <div className="form-group">
+                                                                                                <label className="form-label">Password</label>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    className="form-control"
+                                                                                                    value={password}
+                                                                                                    onChange={(e) => setPassword(e.target.value)}
+                                                                                                />
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="text-right mt-3">
+                                                                        <button type="button" className="btn btn-primary" onClick={handleChangeSubmit}>Submit</button>
+                                                                        <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
+                                                                    </div>
+                                                                </Modal>
+                                                                {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                                    <i className="zmdi zmdi-edit" />
+                                                                </button> */}
+                                                                {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit" onClick={() => setModalIsOpen(true)}>
+                                                                <i className="zmdi zmdi-edit" />
+
+                                                                </button> */}
+                                                                <button
+                                                                    className="item"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="Edit"
+                                                                    onClick={() => {
+                                                                        setModalIsOpen(true);
+                                                                        setEmployeeId(employee.employeeId); // Truyền employeeId vào đây
+                                                                    }}
+                                                                >
+                                                                    <i class="zmdi zmdi-edit" />
+                                                                </button>
+                                                                <button
+                                                                    className="item"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="Delete"
+                                                                    onClick={() => deleteEmployee(employee.employeeId)}
+                                                                >
+                                                                    <i className="zmdi zmdi-delete" />
+                                                                </button>
+                                                                <button className="item" data-toggle="tooltip" data-placement="top" title="More">
+                                                                    <i className="zmdi zmdi-more" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+
                                             </tbody>
+
                                         </table>
                                     </div>
-                                    {/* END DATA TABLE*/}
+                                    {/* END DATA TABLE */}
                                 </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <div className="copyright">
-                                        <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
-                                    </div>
-                                </div>
+                                <div />
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
+            <div />
         </div>
     );
 }

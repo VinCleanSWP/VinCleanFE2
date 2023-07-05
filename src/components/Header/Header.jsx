@@ -2,20 +2,20 @@ import React, { useRef, useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "reactstrap";
 import { Link, NavLink } from "react-router-dom";
 import "../../styles/header.css";
-import VinCleanLogo from"../../assets/all-images/logo.png";
+import VinCleanLogo from "../../assets/all-images/logo.png";
 
 const navLinks = [
   {
     path: "/home",
-    display: "Home",
+    display: "Trang chủ",
   },
   {
     path: "/about",
-    display: "About",
+    display: "Giới thiệu",
   },
   {
     path: "/cars",
-    display: "Cars",
+    display: "Đặt dịch vụ",
   },
 
   {
@@ -24,7 +24,7 @@ const navLinks = [
   },
   {
     path: "/contact",
-    display: "Contact",
+    display: "Liên hệ",
   },
 ];
 
@@ -41,6 +41,7 @@ const Header = () => {
     localStorage.removeItem('email');
     localStorage.removeItem('name');
     localStorage.removeItem('role');
+    localStorage.removeItem('id');
     setLoggedIn(false);
     setEmail('');
     window.location.href = '/home';
@@ -66,7 +67,7 @@ const Header = () => {
               <div className="logo">
                 <h1>
                   <Link to="/home" className=" d-flex align-items-center gap-2">
-                  <img src={VinCleanLogo} alt=""style={{ width: "200px", height: "auto" }} />
+                    <img src={VinCleanLogo} alt="" style={{ width: "200px", height: "auto" }} />
                   </Link>
                 </h1>
               </div>
@@ -78,8 +79,8 @@ const Header = () => {
                   <i class="ri-earth-line"></i>
                 </span>
                 <div className="header__location-content">
-                  <h4>Bangladesh</h4>
-                  <h6>Sylhet City, Bangladesh</h6>
+                  <h4>Việt Nam</h4>
+                  <h6>Tp.Hồ Chí Minh</h6>
                 </div>
               </div>
             </Col>
@@ -90,8 +91,8 @@ const Header = () => {
                   <i class="ri-time-line"></i>
                 </span>
                 <div className="header__location-content">
-                  <h4>Sunday to Friday</h4>
-                  <h6>10am - 7pm</h6>
+                  <h4>Làm hằng ngày</h4>
+                  <h6>7am - 8pm</h6>
                 </div>
               </div>
             </Col>
@@ -104,8 +105,8 @@ const Header = () => {
             >
               {loggedIn ?
                 (<div>
-                  <button className="header__btn btn" style={{marginBottom: "8px"}}>
-                    <Link to="/home">
+                  <button className="header__btn btn" style={{ marginBottom: "8px" }}>
+                    <Link to="/profile">
                       {name}
                     </Link>
                   </button>
@@ -131,6 +132,8 @@ const Header = () => {
               <i class="ri-menu-line" onClick={toggleMenu}></i>
             </span>
 
+            
+
             <div className="navigation" ref={menuRef} onClick={toggleMenu}>
               <div className="menu">
                 {navLinks.map((item, index) => (
@@ -147,14 +150,14 @@ const Header = () => {
               </div>
             </div>
 
-            <div className="nav__right">
+            {/* <div className="nav__right">
               <div className="search__box">
                 <input type="text" placeholder="Search" />
                 <span>
                   <i class="ri-search-line"></i>
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
         </Container>
       </div>

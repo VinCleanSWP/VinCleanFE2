@@ -1,25 +1,46 @@
 .blog__publisher span i {
-  color: #f9a826;
+  color: #dca447;
 }
 
 blockquote {
   line-height: 35px;
 }
 
+.comment-box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #FFFFFF;
+  width: 600px
+}
+
+.avatar-wrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .single__comment img {
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  border: 2px solid #000d6b;
+  border: 2px solid #162b75;
   object-fit: cover;
 }
 
 .replay i {
-  color: #f9a826;
+  color: #dca447;
 }
 
 .replay {
-  color: #000d6b;
+  color: #162b75;
   font-weight: 600;
   cursor: pointer;
 }
@@ -34,13 +55,13 @@ blockquote {
 }
 
 .comment__btn {
-  background: #000d6b !important;
+  background: #162b75 !important;
   color: #fff !important;
 }
 
 .recent__blog-item h6 a {
   text-decoration: none;
-  color: #000d6b;
+  color: #162b75;
   font-weight: 600;
 }
 

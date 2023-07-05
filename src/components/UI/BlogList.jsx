@@ -1,28 +1,45 @@
-
-import { Col } from "reactstrap";
+import { Col, Input } from "reactstrap";
 import "../../styles/blog-item.css";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-// import Blog1 from "../../assets/all-images/blog-img/blog-1.jpg"
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
-  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
+
   useEffect(() => {
     axios.get(`https://localhost:7013/api/Blog`)
       .then(response => {
         const data = response.data.data;
         setBlogs(data);
+        setFilteredBlogs(data);
       })
       .catch(error => {
         console.error('Error fetching blog list:', error);
       });
   }, []);
 
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value);
+    filterBlogs(e.target.value);
+  };
+
+  const filterBlogs = (searchValue) => {
+    const filtered = blogs.filter(blog =>
+      blog.title.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredBlogs(filtered);
+  };
+
   return (
     <>
-      {blogs.map(blog => (
+      <div className="search-container">
+        <Input type="text" value={searchTerm} onChange={handleChange} placeholder="Search blogs..." />
+        <br></br>
+      </div>
+      {filteredBlogs.map(blog => (
         <Col lg="4" md="6" sm="6" className="mb-5" key={blog.id}>
           <div className="blog__item">
             

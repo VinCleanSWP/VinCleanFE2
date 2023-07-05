@@ -6,27 +6,6 @@ const Service = () => {
     const [servicetype, setType] = useState([]);
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [customerList, setCustomerList] = useState([]);
-    const [employeeData, setEmployeeData] = useState(null);
-    const [customerData, setCustomerData] = useState(null);
-    const [employeeList, setEmployeeList] = useState([]);
-    const [account, setAccount] = useState([]);
-    const [userName, setUserName] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [gender, setGender] = useState('');
-    const [newuserName, setNewUserName] = useState('');
-    const [newfirstName, setNewFirstName] = useState('');
-    const [newlastName, setNewLastName] = useState('');
-    const [newphone, setNewPhone] = useState('');
-    const [newemail, setNewEmail] = useState('');
-    const [newpassword, setNewPassword] = useState('');
-    const [newgender, setNewGender] = useState('');
-    const [employeeId, setEmployeeId] = useState('');
-    const [customerId, setCustomerId] = useState('');
     const accountId = localStorage.getItem('id');
     const [servicetypeid, setServiceTypeId] = useState('');
     const [ServiceId, setServiceId] = useState('');

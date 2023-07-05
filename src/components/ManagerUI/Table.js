@@ -3,10 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
-import firebase from 'firebase/app';
-import 'firebase/storage';
-import './FireBaseConfig';
-import { storage } from 'firebase/storage';
+
+import { storage } from '../../firebase/index';
 
 
 
@@ -130,7 +128,7 @@ function Table() {
         const updatedEmployee = {
             employeeId: employeeId,
             // accountId: 27,
-            img: "tuthemvaonha",//them vao giup tao Phung
+            img: url,
             status: "Available",
             name: userName,
             firstName: firstName,

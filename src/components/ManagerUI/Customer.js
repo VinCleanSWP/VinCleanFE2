@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
-import firebase from 'firebase/app';
-import 'firebase/storage';
-import './FireBaseConfig';
-import { storage } from 'firebase/storage';
+import { storage } from '../../firebase/index';
 
 
 
@@ -24,13 +21,6 @@ function Customer() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [gender, setGender] = useState('');
-    const [newuserName, setNewUserName] = useState('');
-    const [newfirstName, setNewFirstName] = useState('');
-    const [newlastName, setNewLastName] = useState('');
-    const [newphone, setNewPhone] = useState('');
-    const [newemail, setNewEmail] = useState('');
-    const [newpassword, setNewPassword] = useState('');
-    const [newgender, setNewGender] = useState('');
     const [employeeId, setEmployeeId] = useState('');
     const [customerId, setCustomerId] = useState('');
     const accountId = localStorage.getItem('id');
@@ -238,7 +228,6 @@ function Customer() {
                 isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
                 contentLabel="Add Employee"
-                portalClassName="popup-container"
                 style={{
                     overlay: {
                         zIndex: 9999,

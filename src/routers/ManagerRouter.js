@@ -19,26 +19,25 @@ import Customer from '..//components/ManagerUI/Customer';
 export default function ManagerRouter() {
     return (
         <div >
-        <div className="page-wrapper">
-            <ADHeader />
-            <SideBar />
-            <Routes>
-                <Route path='/manager' element={<ADHome />}></Route>
-                <Route path='/profile' element={<Profile />}></Route>
-                <Route path='/table' element={<Table />}></Route>
-                <Route path='/booking' element={<Booking />}></Route>
-                <Route path='/calendar' element={<Calendar />}></Route>
-                <Route path='/form' element={<Form />}></Route>
-                <Route path='/alert' element={<Alert />}></Route>
-                <Route path='/activity' element={<Activity />}></Route>
-                <Route path='/request' element={<Request />}></Route>
-                <Route path='/employee' element={<Employee />}></Route>
-                <Route path='/customer' element={<Customer />}></Route>
-                <Route path='/service' element={<Service />}></Route>
-
-            </Routes>
-            <ADFooter />
-        </div>
+            <div className="page-wrapper">
+                <ADHeader />
+                <SideBar />
+                <Routes>
+                    <Route path='/manager' element={<ADHome />}></Route>
+                    <Route path='/profile' element={<Profile />}></Route>
+                    <Route path='/table' element={<Table />}></Route>
+                    <Route path='/booking' element={<Booking />}></Route>
+                    <Route path='/calendar' element={<Calendar />}></Route>
+                    <Route path='/form' element={<Form />}></Route>
+                    <Route path='/alert' element={<Alert />}></Route>
+                    <Route path='/activity' element={<Activity />}></Route>
+                    <Route path='/request' element={<Request />}></Route>
+                    <Route path='/employee' element={<Employee />}></Route>
+                    <Route path='/customer' element={<Customer />}></Route>
+                    <Route path='/service' element={<Service />}></Route>
+                </Routes>
+                <ADFooter />
+            </div>
         </div>
     )
 }

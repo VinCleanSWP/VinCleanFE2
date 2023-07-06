@@ -19,9 +19,12 @@ const Home = () => {
     <Helmet title="Home">
       {/* ============= hero section =========== */}
       <section className="p-0 hero__slider-section">
-        <HeroSlider />
+        
+        <HeroSlider />  
 
-        <div className="hero__form">
+      </section>
+
+      {/* <div className="hero__form">
           <Container>
             <Row className="form__row">
               <Col lg="4" md="4">
@@ -35,40 +38,46 @@ const Home = () => {
               </Col>
             </Row>
           </Container>
-        </div>
-      </section>
+        </div> */}
+      
       {/* =========== about section ================ */}
       <AboutSection />
+
       {/* ========== services section ============ */}
       <section>
         <Container>
           <Row>
             <Col lg="12" className="mb-5 text-center">
-              <h6 className="section__subtitle">See our</h6>
-              <h2 className="section__title">Popular Services</h2>
+              <h6 className="section__subtitle">Lí Do</h6>
+              <h2 className="section__title">Nên Chọn Dịch Vụ Chúng Tôi</h2>
             </Col>
 
             <ServicesList />
+          
           </Row>
         </Container>
       </section>
-      {/* =========== car offer section ============= */}
-      <section>
+      
+      {/* =========== Service section ============= */}
+      {/* <section>
         <Container>
           <Row>
             <Col lg="12" className="text-center mb-5">
-              <h6 className="section__subtitle">Come with</h6>
-              <h2 className="section__title">Hot Offers</h2>
+              <h6 className="section__subtitle">Hãy Xem</h6>
+              <h2 className="section__title">Những Dịch Vụ Phổ Biến</h2>
             </Col>
-
+            
             {carData.slice(0, 6).map((item) => (
               <CarItem item={item} key={item.id} />
             ))}
+            
+            
           </Row>
         </Container>
-      </section>
+      </section> */}
+
       {/* =========== become a driver section ============ */}
-      <BecomeDriverSection />
+      {/* <BecomeDriverSection /> */}
 
       {/* =========== testimonial section =========== */}
       <section>
@@ -89,11 +98,12 @@ const Home = () => {
         <Container>
           <Row>
             <Col lg="12" className="mb-5 text-center">
-              <h6 className="section__subtitle">Explore our blogs</h6>
-              <h2 className="section__title">Latest Blogs</h2>
+              <h6 className="section__subtitle">Khám phá Blog của chúng tôi</h6>
+              <h2 className="section__title">Blog mới nhất</h2>
             </Col>
 
             <BlogList />
+          
           </Row>
         </Container>
       </section>

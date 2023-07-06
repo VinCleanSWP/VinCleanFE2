@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Helmet from "../components/Helmet/Helmet";
 import { Link } from "react-router-dom";
 import moment from 'moment';
-
 import commentImg from "../assets/all-images/ava-1.jpg";
 
 import "../styles/blog-details.css";
@@ -14,6 +13,7 @@ import axios from 'axios';
 const BlogDetails = () => {
   const id = useParams();
   const [blog, setBlog] = useState();
+  const [blogs, setBlogs] = useState([]);
   const blogid = parseInt(id.id);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
@@ -30,8 +30,18 @@ const BlogDetails = () => {
       .catch(error => {
         console.error('Error fetching blog detail:', error);
       });
-
-    axios.get(`https://localhost:7013/api/Comment?blogId=${blogid}`)
+      
+      axios.get(`https://localhost:7013/api/Blog`)
+      .then(response => {
+        const data = response.data.data;
+        setBlogs(data);
+      })
+      .catch(error => {
+        console.error('Error fetching blog list:', error);
+      });
+      
+    axios
+      .get(`https://localhost:7013/api/Comment?blogId=${blogid}`)
       .then(response => {
         setComments(response.data.data);
       })
@@ -39,6 +49,7 @@ const BlogDetails = () => {
         console.log(error);
       });
   }, [id]);
+  
 
   useEffect(() => {
     const fetchCommentAuthors = async () => {
@@ -134,6 +145,7 @@ const BlogDetails = () => {
                 <h6 className="ps-5 fw-normal">
                   <blockquote className="fs-4"></blockquote>
                 </h6>
+                
                 <p className="section__description"></p>
               </div>
 
@@ -189,11 +201,24 @@ const BlogDetails = () => {
               </div>
             </Col>
 
+          {/* Bài gần đây góc bên phải */}
             <Col lg="4" md="4">
               <div className="recent__post mb-4">
-                <h5 className=" fw-bold">Recent Posts</h5>
+                <h5 className=" fw-bold">Bài gần đây</h5>
               </div>
-              {/* Render related posts */}
+              
+              {blogs.map((blog) => (
+                <div className="recent__blog-post mb-4" key={blog.blogId}>
+                  <div className="recent__blog-item d-flex gap-3">
+                    <img src={blog.img} alt="" className="w-25 rounded-2" />
+                    
+                    <h6>
+                      <Link to={`/blogs/${blog.title}`}>{blog.title}</Link>
+                    </h6>
+                  
+                  </div>
+                </div>
+              ))}
             </Col>
           </Row>
         </Container>

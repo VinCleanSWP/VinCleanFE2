@@ -8,7 +8,7 @@ import WhiteVinCleanLogo from"../../assets/all-images/whitelogo.png";
 const quickLinks = [
   {
     path: "/about",
-    display: "About",
+    display: "Giới thiệu",
   },
 
   {
@@ -18,7 +18,7 @@ const quickLinks = [
 
   {
     path: "/cars",
-    display: "Car Listing",
+    display: "Đặt dịch vụ",
   },
   {
     path: "/blogs",
@@ -27,7 +27,7 @@ const quickLinks = [
 
   {
     path: "/contact",
-    display: "Contact",
+    display: "Liên hệ",
   },
 ];
 
@@ -47,10 +47,10 @@ const Footer = () => {
               </h1>
             </div>
             <p className="footer__logo-content">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Consequuntur, distinctio, itaque reiciendis ab cupiditate harum ex
-              quam veniam, omnis expedita animi quibusdam obcaecati mollitia?
-              Delectus et ad illo recusandae temporibus?
+            Vin Clean đã nhanh chóng tạo dựng được uy tín là một trong những nhà cung cấp giải pháp vệ sinh khu dân cư và thương mại hàng đầu.  
+            </p>
+            <p className="footer__logo-content">
+            Trọng tâm của chúng tôi là lắng nghe khách hàng, hiểu nhu cầu của họ và cung cấp dịch vụ vệ sinh ở mức độ vượt trội.
             </p>
           </Col>
 

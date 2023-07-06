@@ -129,10 +129,25 @@ const ServiceTypeDetail = () => {
               <img src={service.img} alt="" className="w-100" />
             </Col>
 
-            <Row>
-              <Col lg="6" md="6">
-                <div className="about__img">
-                  <img src='https://static.tintuc.com.vn/images/ver3/2020/01/26/quet-nha.jpg' alt="" className="w-100" />
+            {/* <Col lg="6">
+              <div className="car__info">
+                <h2 className="section__title"></h2>
+
+                <div className=" d-flex align-items-center gap-5 mb-4 mt-3">
+                  <h6 className="rent__price fw-bold fs-4">
+
+                  </h6>
+
+                  <span className=" d-flex align-items-center gap-2">
+                    <span style={{ color: "#f9a826" }}>
+                      <i class="ri-star-s-fill"></i>
+                      <i class="ri-star-s-fill"></i>
+                      <i class="ri-star-s-fill"></i>
+                      <i class="ri-star-s-fill"></i>
+                      <i class="ri-star-s-fill"></i>
+                    </span>
+                    ({singleCarItem.rating} ratings)
+                  </span>
                 </div>
               </Col>
               <Col lg="6" md="6">
@@ -148,81 +163,77 @@ const ServiceTypeDetail = () => {
                     sunt.
                   </p>
 
-                  <div className="about__section-item d-flex align-items-center">
-                    <p className="section__description d-flex align-items-center gap-2">
-                      <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                      amet.
-                    </p>
+                <p className="section__description">
+                  {singleCarItem.description}
+                </p>
 
-                    <p className="section__description d-flex align-items-center gap-2">
-                      <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                      amet.
-                    </p>
-                  </div>
+                <div
+                  className=" d-flex align-items-center mt-3"
+                  style={{ columnGap: "4rem" }}
+                >
+                  <span className=" d-flex align-items-center gap-1 section__description">
+                    <i
+                      class="ri-roadster-line"
+                      style={{ color: "#f9a826" }}
+                    ></i>{" "}
+                    {singleCarItem.model}
+                  </span>
 
-                  <div className="about__section-item d-flex align-items-center">
-                    <p className="section__description d-flex align-items-center gap-2">
-                      <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                      amet.
-                    </p>
+                  <span className=" d-flex align-items-center gap-1 section__description">
+                    <i
+                      class="ri-settings-2-line"
+                      style={{ color: "#f9a826" }}
+                    ></i>{" "}
+                    {singleCarItem.automatic}
+                  </span>
 
-                    <p className="section__description d-flex align-items-center gap-2">
-                      <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                      amet.
-                    </p>
-                  </div>
-                  <div>
-                    <button onClick={openModal}>Bảng giá dịch vụ</button>
-                    <Modal
-                      style={modalStyles.overlay}
-                      isOpen={isModalOpen}
-                      onRequestClose={closeModal}
-                      contentLabel="Modal"
-                    >
-                      <h2 className="mb-4 fw-bold " >Bảng giá dịch vụ</h2>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th className="mb-4 fw-bold ">Tên dịch vụ</th>
-                            <th className="mb-4 fw-bold ">Giá</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <div>
-                            <ul className="service-list">
-                              {service.map(service => (
-                                <li key={service.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                                  <span style={{ marginRight: '20px' }}>{service.name}</span>
-                                  <span>{service.cost}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </tbody>
-                      </table>
-                      <button className="mb-4 fw-bold" style={modalStyles.closeButton} onClick={closeModal}>Đóng</button>
-                    </Modal>
-                  </div>
+                  <span className=" d-flex align-items-center gap-1 section__description">
+                    <i
+                      class="ri-timer-flash-line"
+                      style={{ color: "#f9a826" }}
+                    ></i>{" "}
+                    {singleCarItem.speed}
+                  </span>
                 </div>
-              </Col>
-            </Row>
+
+                <div
+                  className=" d-flex align-items-center mt-3"
+                  style={{ columnGap: "2.8rem" }}
+                >
+                  <span className=" d-flex align-items-center gap-1 section__description">
+                    <i class="ri-map-pin-line" style={{ color: "#f9a826" }}></i>{" "}
+                    {singleCarItem.gps}
+                  </span>
+
+                  <span className=" d-flex align-items-center gap-1 section__description">
+                    <i
+                      class="ri-wheelchair-line"
+                      style={{ color: "#f9a826" }}
+                    ></i>{" "}
+                    {singleCarItem.seatType}
+                  </span>
+
+                  <span className=" d-flex align-items-center gap-1 section__description">
+                    <i
+                      class="ri-building-2-line"
+                      style={{ color: "#f9a826" }}
+                    ></i>{" "}
+                    {singleCarItem.brand}
+                  </span>
+                </div>
+              </div>
+            </Col> */}
 
             <Col lg="7" className="mt-5">
               <div className="booking-info mt-5">
-                <h5 className="mb-4 fw-bold ">Booking Information</h5>
-                {/* <BookingForm serviceId={selectedServiceId} /> */}
-                <BookingForm
-                  selectedServiceId={selectedServiceId}
-                  selectedServiceName={selectedServiceName}
-                  selectedServiceType={selectedType}
-                />
-
+                <h5 className="mb-4 fw-bold ">Thông tin đặt</h5>
+                <BookingForm serviceId={selectedServiceId} />
               </div>
             </Col>
 
             <Col lg="4" className="mt-5">
               <div className="payment__info mt-5">
-                <h5 className="mb-4 fw-bold ">Service</h5>
+                <h5 className="mb-4 fw-bold ">Chọn dịch vụ</h5>
 
                 <ul className="service-list">
                   {/* {service.map(service => (

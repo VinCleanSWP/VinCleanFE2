@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
-import { storage } from '../../firebase/index';
+import firebase from 'firebase/app';
+import 'firebase/storage';
+import './FireBaseConfig';
+import { storage } from './FireBaseConfig';
 
 
 

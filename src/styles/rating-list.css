@@ -1,3 +1,9 @@
+
+/* .service-list li{
+  border-bottom: 1px solid rgba(0,0,0,.09);
+} */
+
+
 .rating-list {
     margin-top: 20px; /* Khoảng cách từ phần trước danh sách đánh giá */
     list-style: none;
@@ -19,10 +25,26 @@
     padding: 1.875rem;
   }
 
+  .rating h4{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
   .average-rating{
     margin-bottom: 1rem;
     align-items: center;
     padding-bottom: 10px;
+
+    background-color: #fffbf8;
+    min-height: 5rem;
+    border: 1px solid #f9ede5;
+
+    display: flex;
+    align-items: center;
+    border-radius: 2px;
+    box-sizing: border-box;
+    padding: 1.875rem;
   }
   
   .rating-stars {
@@ -44,6 +66,7 @@
     font-size: 24px;
     color: #ddd;
     cursor: pointer;
+    width: 20%;
   }
   
   .star-rating .star {

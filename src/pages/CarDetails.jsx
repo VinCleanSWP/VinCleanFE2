@@ -35,6 +35,9 @@ const ServiceTypeDetail = () => {
         console.error('Error fetching service type detail:', error);
       });
 
+      
+
+
     axios.get(`https://localhost:7013/api/Rating/Service/${id}`)
       .then(response => {
         const data = response.data.data;
@@ -44,6 +47,9 @@ const ServiceTypeDetail = () => {
         console.error('Error fetching rating list:', error);
       });
   }, [id]);
+
+
+
   const openModal = () => {
     setModalOpen(true);
   };
@@ -113,30 +119,6 @@ const ServiceTypeDetail = () => {
                   neque sit ad temporibus quam similique dolor ipsam praesentium
                   sunt.
                 </p>
-
-                <div className="about__section-item d-flex align-items-center">
-                  <p className="section__description d-flex align-items-center gap-2">
-                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                    amet.
-                  </p>
-
-                  <p className="section__description d-flex align-items-center gap-2">
-                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                    amet.
-                  </p>
-                </div>
-
-                <div className="about__section-item d-flex align-items-center">
-                  <p className="section__description d-flex align-items-center gap-2">
-                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                    amet.
-                  </p>
-
-                  <p className="section__description d-flex align-items-center gap-2">
-                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                    amet.
-                  </p>
-                </div>
 
               </div>
             </Col>
@@ -267,6 +249,7 @@ const ServiceTypeDetail = () => {
                       {service.costPerSlot}vnd
                     </li>
                   ))} */}
+                  
                   {service.map(service => (
                     <li
                       className={`btn service-item ${service.serviceId === selectedServiceId ? 'selected' : ''}`}
@@ -274,7 +257,6 @@ const ServiceTypeDetail = () => {
                       onClick={() => {
                         setSelectedServiceId(service.serviceId);
                         setSelectedServiceName(service.name);
-
                       }}
                     >
                       {service.name}
@@ -287,32 +269,54 @@ const ServiceTypeDetail = () => {
               </div>
             </Col>
           </Row>
+
+
+          
           <div className="rating">
-            <div className="average-rating">
-              <h3>Average Rating: {averageRate}/5</h3>
+          <h4>ĐÁNH GIÁ DỊCH VỤ</h4>
+            <div className="average-rating">             
+              <h3>Điểm đánh giá: {averageRate.toFixed(1)}/5</h3>
               <h3>
                 <div className="rating-stars">
                   {[...Array(averageRateInt)].map((_, index) => (
-                    <i key={index} className="ri-star-s-fill"></i>
+                    <i key={index} class="ri-star-s-fill"></i>
                   ))}
                 </div>
               </h3>
             </div>
-            <ul className="rating-list">
+            
+            <div className="rating-list">
               {rating.map(rating => (
-                <li key={rating.id} className="rating-item">
-                  {/* <div>{rating.customerAccount.account.image}</div> */}
+                <li key={rating.id} className="rating-item">                                  
+                  {/* <div>{rating.customerAccount.account.img}</div> */}    
+              <Row>   
+                <Col lg="1">
+                  {/* Hiện Avatar */}
+                    <img class="avatar__img" src="https://i.kym-cdn.com/photos/images/original/002/601/167/c81"/>     
+                </Col>
+                  
+                  
+                <Col lg="10">
+                  {/* Hiện tên */}
                   <div>{rating.customer.lastName} {rating.customer.firstName}</div>
-                  <div>Dịch vụ: {rating.service.name}</div>
+                  
                   <div className="rating-stars">
+                    
+                    {/* Hiện số sao */}
                     {[...Array(rating.rate)].map((_, index) => (
-                      <i key={index} className="ri-star-s-fill"></i>
+                      <i key={index} class="ri-star-s-fill"></i>
                     ))}</div>
-                  <div>Nhận xét: {rating.comment}</div>
-                  <div className="date">{moment(rating.createdDate).format('hh:mm - DD/MM/YYYY')}</div>
+
+                    {/* Hiện ngày giờ | Dịch vụ */}
+                    <div className="date">{moment(rating.createdDate).format('hh:mm - DD/MM/YYYY')} | Dịch vụ: {rating.service.name}</div>
+                  {/* Hiện comment */}
+                  <div>{rating.comment}</div>
+                  
+                </Col>
+              </Row> 
                 </li>
               ))}
-            </ul>
+            </div>
           </div>
         </Container>
       </section>

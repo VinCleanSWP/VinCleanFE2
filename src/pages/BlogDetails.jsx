@@ -194,7 +194,7 @@ const BlogDetails = () => {
                       onChange={handleCommentChange}
                     ></textarea>
                     <button type="submit" className="btn comment__btn mt-3">
-                      Post a Comment
+                      Gửi bình luận
                     </button>
                   </FormGroup>
                 </Form>

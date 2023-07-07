@@ -11,32 +11,43 @@ function SideBar() {
           </a>
         </div>
         <div className="menu-sidebar__content js-scrollbar1">
-          <nav className="navbar-sidebar">
-            <ul className="list-unstyled navbar__list">
-              <li className="active has-sub">
-                <a className="js-arrow" href=" ">
-                  <i className="fas fa-tachometer-alt" />Dashboard</a>
-                <ul className="list-unstyled navbar__sub-list js-sub-list">
+          <nav className="navbar-sidebar" >
+            <ul className="list-unstyled navbar__list" >
+              <li class=" has-sub">
+                <a class="js-arrow" href=" ">
+                  <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                <ul class="list-unstyled navbar__sub-list js-sub-list">
                   <li>
                     <a href="index.html">Dashboard 1</a>
                   </li>
-                  <li>
-                    <a href="index2.html">Dashboard 2</a>
-                  </li>
-                  <li>
-                    <a href="index3.html">Dashboard 3</a>
-                  </li>
-                  <li>
-                    <a href="index4.html">Dashboard 4</a>
-                  </li>
                 </ul>
               </li>
-              <li>
+              <li >
                 <Link to="/profile">
                   <i className="fas fa-chart-bar" />Profile</Link>
               </li>
               <li>
                 <Link to="/table">
+                  <i className="fas fa-table" />Tables</Link>
+              </li>
+              <li>
+                <Link to="/booking" >
+                  <i className="fas fa-table" />Task</Link>
+              </li>
+              <li>
+                <Link to="/activity" >
+                  <i className="fas fa-table" />Activities</Link>
+              </li>
+              <li>
+                <Link to="/request" >
+                  <i className="fas fa-table" />RequestTask</Link>
+              </li>
+              <li>
+                <Link to="/form" >
+                  <i className="far fa-check-square" />Forms</Link>
+              </li>
+              <li>
+                <Link to="/calendar" >
                   <i className="fas fa-table" />Table</Link>
               </li>
               <li>
@@ -65,7 +76,7 @@ function SideBar() {
                   <i className="fas fa-map-marker-alt" />Maps</a>
               </li>
               <li className="has-sub">
-                <a className="js-arrow" href=" ">
+                <a className="js-arrow" href=" " style={{textDecorationLine: 'none'}}>
                   <i className="fas fa-copy" />Pages</a>
                 <ul className="list-unstyled navbar__sub-list js-sub-list">
                   <li>
@@ -80,7 +91,7 @@ function SideBar() {
                 </ul>
               </li>
               <li className="has-sub">
-                <a className="js-arrow" href=" ">
+                <a className="js-arrow" href=" " style={{textDecorationLine: 'none'}}>
                   <i className="fas fa-desktop" />UI Elements</a>
                 <ul className="list-unstyled navbar__sub-list js-sub-list">
                   <li>

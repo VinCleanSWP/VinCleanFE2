@@ -1625,7 +1625,7 @@ section {
 }
 
 .navbar-sidebar {
-    padding: 35px;
+    padding-left: 35px;
     padding-bottom: 0;
 }
 
@@ -1634,18 +1634,27 @@ section {
     color: #555;
     font-size: 16px;
     padding: 15px 0;
+    text-decoration-line: none;
 }
 
 .navbar-sidebar .navbar__list li a i {
     margin-right: 19px;
 }
 
+.navbar-sidebar .navbar__list li a:focus,
+.navbar-sidebar .navbar__list li a:active,
 .navbar-sidebar .navbar__list li a:hover {
-    color: #4272d7;
+    color: #5e5e5e;
+    background-color: #cfcfcf;
+    border-radius: 20px;
+    margin-right: 20px;
 }
 
 .navbar-sidebar .navbar__list li.active > a {
-    color: #4272d7;
+    color: #5e5e5e;
+    background-color: #cfcfcf;
+    border-radius: 20px;
+    margin-right: 20px;
 }
 
 .has-sub {
@@ -14657,3 +14666,21 @@ section {
 .vue-lists ul, .vue-lists ol {
     padding-left: 30px;
 }
+
+.popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.link-without-underline {
+    text-decoration: none !important;
+  }
+
+

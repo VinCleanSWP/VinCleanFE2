@@ -2,7 +2,7 @@ import React, { } from 'react';
 
 function Alert() {
   return (
-    <div>
+    <div >
       {/* PAGE CONTAINER*/}
       <div className="page-container">
         {/* MAIN CONTENT*/}

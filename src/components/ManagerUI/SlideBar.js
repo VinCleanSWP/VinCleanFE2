@@ -13,6 +13,7 @@ export default function SlideBar() {
                     <Link className="list-group-item list-group-item-action list-group-item-light p-3" to="/services">Services</Link>
                     <Link className="list-group-item list-group-item-action list-group-item-light p-3" to="/blog">Blog</Link>
                     <Link className="list-group-item list-group-item-action list-group-item-light p-3" to="/customer">Customer</Link>
+                    
                 </div>
             </div>
         </div>

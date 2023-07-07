@@ -20,10 +20,10 @@ const ServiceTypeDetail = () => {
   const [selectedServiceName, setSelectedServiceName] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
-
-
   const id = parseInt(typeId.id);
   console.log(id);
+
+  
   useEffect(() => {
     axios.get(`https://localhost:7013/api/Service/Type/${id}`)
       .then(response => {
@@ -301,6 +301,7 @@ const ServiceTypeDetail = () => {
             <ul className="rating-list">
               {rating.map(rating => (
                 <li key={rating.id} className="rating-item">
+                  {/* <div>{rating.customerAccount.account.image}</div> */}
                   <div>{rating.customer.lastName} {rating.customer.firstName}</div>
                   <div>Dịch vụ: {rating.service.name}</div>
                   <div className="rating-stars">

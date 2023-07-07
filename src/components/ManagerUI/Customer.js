@@ -5,8 +5,7 @@ import { Link } from 'react-router-dom';
 import firebase from 'firebase/app';
 import 'firebase/storage';
 import './FireBaseConfig';
-import { storage } from 'firebase/storage';
-
+import { storage } from './FireBaseConfig';
 
 
 function Customer() {

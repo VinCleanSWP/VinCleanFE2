@@ -39,3 +39,19 @@
     font-size: 13px;
     color: rgba(0,0,0,.54);
   }
+
+  .star-rating {
+    font-size: 24px;
+    color: #ddd;
+    cursor: pointer;
+  }
+  
+  .star-rating .star {
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+  .star-rating .star.selected,
+  .star-rating .star:hover {
+    color: #f9a826;
+  }

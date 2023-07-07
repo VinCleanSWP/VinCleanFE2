@@ -1,5 +1,6 @@
 import { Col } from "reactstrap";
 import { Link } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../styles/rating-form.css';
@@ -43,13 +44,14 @@ import '../../styles/rating-form.css';
 
 
 const Star = () => {
+  const typeId = useParams();
+  const id = parseInt(typeId.id);
+  console.log(id);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
-    // Gửi yêu cầu GET để lấy dữ liệu từ backend
-    // Thay đổi URL dựa trên đường dẫn của API của bạn
-    axios.get('https://localhost:7013/api/Rating/Service/?')
+    axios.get(`https://localhost:7013/api/Service/Type/${id}`)
       .then(response => {
         // Xử lý dữ liệu từ phản hồi backend (nếu cần)
         const initialRating = response.data.rating;
@@ -62,8 +64,6 @@ const Star = () => {
 
   const handleStarClick = (starIndex) => {
     setRating(starIndex);
-    // Gửi mức rating lên backend thông qua API
-    // Thay đổi URL dựa trên đường dẫn của API của bạn
     axios.post('https://localhost:7013/api/Rating', { rating: starIndex })
       .then(response => {
         console.log(response.data); // Xử lý phản hồi từ backend (nếu cần)

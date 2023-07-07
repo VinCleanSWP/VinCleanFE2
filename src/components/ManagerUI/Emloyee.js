@@ -3,10 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
-import firebase from 'firebase/app';
-import 'firebase/storage';
-import './FireBaseConfig';
-import { storage } from './FireBaseConfig';
+import { storage } from '../../firebase/index';
+
 
 
 function Table() {
@@ -24,16 +22,8 @@ function Table() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [gender, setGender] = useState('');
-    const [newuserName, setNewUserName] = useState('');
-    const [newfirstName, setNewFirstName] = useState('');
-    const [newlastName, setNewLastName] = useState('');
-    const [newphone, setNewPhone] = useState('');
-    const [newemail, setNewEmail] = useState('');
-    const [newpassword, setNewPassword] = useState('');
-    const [newgender, setNewGender] = useState('');
     const [employeeId, setEmployeeId] = useState('');
     const [customerId, setCustomerId] = useState('');
-    const accountId = localStorage.getItem('id');
 
     const [url, setUrl] = useState('');
 
@@ -129,7 +119,7 @@ function Table() {
         const updatedEmployee = {
             employeeId: employeeId,
             // accountId: 27,
-            img: "tuthemvaonha",//them vao giup tao Phung
+            img: url,//them vao giup tao Phung
             status: "Available",
             name: userName,
             firstName: firstName,
@@ -146,7 +136,7 @@ function Table() {
             .put(`https://localhost:7013/api/Employee`, updatedEmployee)
             .then(response => {
                 console.log('Employee updated successfully:', response.data);
-
+                setModalIsOpen(false);
                 // Do something after successful update
             })
             .catch(error => {
@@ -193,8 +183,8 @@ function Table() {
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        const storageRef = storage.ref(`Employee/${file.name}`);
-        const fileRef = storageRef.child(file.name);
+        const storageRef = storage.ref();
+        const fileRef = storageRef.child(`Employee/${file.name}`);
         await fileRef.put(file);
         const imgUrl = await fileRef.getDownloadURL();
         setUrl(imgUrl);
@@ -222,6 +212,7 @@ function Table() {
             .then(response => {
                 // Xử lý kết quả từ API (nếu cần)
                 console.log(response.data);
+                setModalIsOpen(false);
             })
             .catch(error => {
                 // Xử lý lỗi (nếu có)
@@ -240,7 +231,6 @@ function Table() {
                 isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
                 contentLabel="Add Employee"
-                portalClassName="popup-container"
                 style={{
                     overlay: {
                         zIndex: 9999
@@ -333,6 +323,15 @@ function Table() {
                                                 onChange={(e) => setPassword(e.target.value)}
                                             />
                                         </div>
+                                        <div className="form-group">
+                                            <label className="form-label">img</label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={userName}
+                                                onChange={(e) => setUserName(e.target.value)}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -348,7 +347,6 @@ function Table() {
                 isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
                 contentLabel="Add Employee"
-                portalClassName="popup-container"
                 style={{
                     overlay: {
                         zIndex: 9999
@@ -689,7 +687,9 @@ function Table() {
                                                     <tr key={employee.employeeId}>
 
                                                         <td>{employee.employeeId}</td>
-                                                        <td></td>
+                                                        <td>
+                                                            <img src={employee.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
+                                                        </td>
                                                         <td>{employee.lastName}</td>
                                                         <td>{employee.firstName}</td>
                                                         <td>{employee.phone}</td>

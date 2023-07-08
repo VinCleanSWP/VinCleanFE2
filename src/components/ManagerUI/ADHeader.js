@@ -1,9 +1,27 @@
 import React, { useRef, useState, useEffect } from "react";
+import { MdOutlineLogout } from "react-icons/md";
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 function ADHeader() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
+    const [id, setId] = useState('');
+
+
+    const fetchAccountData = async () => {
+        try {
+            if(localStorage.getItem('id')){
+                const response = await axios.get(`https://localhost:7013/api/Account/${localStorage.getItem('id')}`); // Thay đổi đường dẫn API tương ứng
+                // Xử lý dữ liệu tài khoản đã nhận được từ response.data
+                console.log(response.data); // Hoặc cập nhật các state khác trong component của bạn
+            }
+          
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
     const handleLogout = () => {
         // Xóa thông tin đăng nhập từ localStorage
@@ -11,6 +29,7 @@ function ADHeader() {
         localStorage.removeItem('email');
         localStorage.removeItem('name');
         localStorage.removeItem('role');
+        localStorage.removeItem('id');
         setLoggedIn(false);
         setEmail('');
         window.location.href = '/home';
@@ -21,11 +40,15 @@ function ADHeader() {
         const isLoggedIn = localStorage.getItem('loggedIn');
         const storedEmail = localStorage.getItem('email');
         const storedName = localStorage.getItem('name');
+        const storedId = localStorage.getItem('id');
+        console.log(storedId)
 
         if (isLoggedIn && storedEmail) {
             setLoggedIn(true);
             setEmail(storedEmail);
             setName(storedName);
+            setId(storedId);
+            fetchAccountData();
         }
     }, []);
     return (
@@ -157,159 +180,20 @@ function ADHeader() {
                                 </button>
                             </form>
                             <div className="header-button">
-                                <div className="noti-wrap">
-                                    <div className="noti__item js-item-menu">
-                                        <i className="zmdi zmdi-comment-more" />
-                                        <span className="quantity">1</span>
-                                        <div className="mess-dropdown js-dropdown">
-                                            <div className="mess__title">
-                                                <p>You have 2 news message</p>
-                                            </div>
-                                            <div className="mess__item">
-                                                <div className="image img-cir img-40">
-                                                    <img src="images/icon/avatar-06.jpg" alt="Michelle Moreno" />
-                                                </div>
-                                                <div className="content">
-                                                    <h6>Michelle Moreno</h6>
-                                                    <p>Have sent a photo</p>
-                                                    <span className="time">3 min ago</span>
-                                                </div>
-                                            </div>
-                                            <div className="mess__item">
-                                                <div className="image img-cir img-40">
-                                                    <img src="images/icon/avatar-04.jpg" alt="Diane Myers" />
-                                                </div>
-                                                <div className="content">
-                                                    <h6>Diane Myers</h6>
-                                                    <p>You are now connected on message</p>
-                                                    <span className="time">Yesterday</span>
-                                                </div>
-                                            </div>
-                                            <div className="mess__footer">
-                                                <a href="#">View all messages</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="noti__item js-item-menu">
-                                        <i className="zmdi zmdi-email" />
-                                        <span className="quantity">1</span>
-                                        <div className="email-dropdown js-dropdown">
-                                            <div className="email__title">
-                                                <p>You have 3 New Emails</p>
-                                            </div>
-                                            <div className="email__item">
-                                                <div className="image img-cir img-40">
-                                                    <img src="images/icon/avatar-06.jpg" alt="Cynthia Harvey" />
-                                                </div>
-                                                <div className="content">
-                                                    <p>Meeting about new dashboard...</p>
-                                                    <span>Cynthia Harvey, 3 min ago</span>
-                                                </div>
-                                            </div>
-                                            <div className="email__item">
-                                                <div className="image img-cir img-40">
-                                                    <img src="images/icon/avatar-05.jpg" alt="Cynthia Harvey" />
-                                                </div>
-                                                <div className="content">
-                                                    <p>Meeting about new dashboard...</p>
-                                                    <span>Cynthia Harvey, Yesterday</span>
-                                                </div>
-                                            </div>
-                                            <div className="email__item">
-                                                <div className="image img-cir img-40">
-                                                    <img src="images/icon/avatar-04.jpg" alt="Cynthia Harvey" />
-                                                </div>
-                                                <div className="content">
-                                                    <p>Meeting about new dashboard...</p>
-                                                    <span>Cynthia Harvey, April 12,,2018</span>
-                                                </div>
-                                            </div>
-                                            <div className="email__footer">
-                                                <a href="#">See all emails</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="noti__item js-item-menu">
-                                        <i className="zmdi zmdi-notifications" />
-                                        <span className="quantity">3</span>
-                                        <div className="notifi-dropdown js-dropdown">
-                                            <div className="notifi__title">
-                                                <p>You have 3 Notifications</p>
-                                            </div>
-                                            <div className="notifi__item">
-                                                <div className="bg-c1 img-cir img-40">
-                                                    <i className="zmdi zmdi-email-open" />
-                                                </div>
-                                                <div className="content">
-                                                    <p>You got a email notification</p>
-                                                    <span className="date">April 12, 2018 06:50</span>
-                                                </div>
-                                            </div>
-                                            <div className="notifi__item">
-                                                <div className="bg-c2 img-cir img-40">
-                                                    <i className="zmdi zmdi-account-box" />
-                                                </div>
-                                                <div className="content">
-                                                    <p>Your account has been blocked</p>
-                                                    <span className="date">April 12, 2018 06:50</span>
-                                                </div>
-                                            </div>
-                                            <div className="notifi__item">
-                                                <div className="bg-c3 img-cir img-40">
-                                                    <i className="zmdi zmdi-file-text" />
-                                                </div>
-                                                <div className="content">
-                                                    <p>You got a new file</p>
-                                                    <span className="date">April 12, 2018 06:50</span>
-                                                </div>
-                                            </div>
-                                            <div className="notifi__footer">
-                                                <a href="#">All notifications</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div className="account-wrap">
-                                    <div className="account-item clearfix js-item-menu">
-                                        <div className="image">
-                                            <img src="images/icon/avatar-01.jpg" alt={name} />
-                                        </div>
+                                    <div className="account-item  ">
                                         <div className="content">
-                                            <a className="js-acc-btn" href=" ">{name}</a>
+                                            <a className="js-acc-btn" >Welcome, {name}</a>
                                         </div>
-                                        <div className="account-dropdown js-dropdown">
-                                            <div className="info clearfix">
-                                                <div className="image">
-                                                    <a href="#">
-                                                        <img src="images/icon/avatar-01.jpg" alt={name} />
-                                                    </a>
-                                                </div>
-                                                <div className="content">
-                                                    <h5 className="name">
-                                                        <a href="#">{name};</a>
-                                                    </h5>
-                                                    <span className="email">{email}</span>
-                                                </div>
-                                            </div>
-                                            <div className="account-dropdown__body">
-                                                <div className="account-dropdown__item">
-                                                    <a href="#">
-                                                        <i className="zmdi zmdi-account" />Account</a>
-                                                </div>
-                                                <div className="account-dropdown__item">
-                                                    <a href="#">
-                                                        <i className="zmdi zmdi-settings" />Setting</a>
-                                                </div>
-                                                <div className="account-dropdown__item">
-                                                    <a href="#">
-                                                        <i className="zmdi zmdi-money-box" />Billing</a>
-                                                </div>
-                                            </div>
-                                            <div className="account-dropdown__footer">
-                                                <a href="#">
-                                                    <i className="zmdi zmdi-power" />Logout</a>
-                                            </div>
+                                        <div className="image">
+                                            <Link to="/profile">
+                                                <img src="images/icon/avatar-01.jpg" alt={name} />
+                                            </Link>
                                         </div>
+                                        <div className="logout">
+                                            <MdOutlineLogout onClick={handleLogout}/>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

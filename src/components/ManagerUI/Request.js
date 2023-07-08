@@ -3,6 +3,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FcAlphabeticalSortingAz } from "react-icons/fc";
 
 function Request() {
     const [requestData, setrequestData] = useState([]);
@@ -12,6 +13,8 @@ function Request() {
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     const [selectedProcessId, setSelectedProcessId] = useState(null);
     const [search, setSearch] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc'); // 'asc' để sắp xếp tăng dần, 'desc' để sắp xếp giảm dần
+
 
 
     const handleEmployeeSelect = (employeeId) => {
@@ -26,6 +29,13 @@ function Request() {
         assignTask();
     }, []);
 
+    const formatTime = (timeString) => {
+        if (timeString) {
+            const [hours, minutes] = timeString.split(":");
+            return `${hours}:${minutes}`;
+        }
+        return "";
+    };
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
@@ -135,6 +145,32 @@ function Request() {
             });
     };
 
+    const handleSearchChange = (e) => {
+        setSearch(e.target.value);
+    };
+
+    const sortAndFilterData = () => {
+        const sortedData = [...requestData].sort((a, b) => {
+            const dateA = new Date(a.dateWork);
+            const dateB = new Date(b.dateWork);
+            return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+
+        const filteredData = sortedData.filter(m =>
+            m.customerName.toLowerCase().includes(search.toLowerCase()) ||
+            m.oldEmployeeName.toLowerCase().includes(search.toLowerCase()) ||
+            m.address.toLowerCase().includes(search.toLowerCase()) ||
+            m.processId.toString().toLowerCase().includes(search.toLowerCase()) ||
+            m.date.toString().toLowerCase().includes(search.toLowerCase()) ||
+            m.startTime.toString().toLowerCase().includes(search.toLowerCase())
+        );
+
+        return filteredData;
+    };
+
+    const toggleSortOrder = () => {
+        setSortOrder(prevSortOrder => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
+    };
 
     return (
         <div >
@@ -148,13 +184,13 @@ function Request() {
                             <div className="row m-t-30">
                                 <div className="col-md-12">
                                     <form action="">
-                                        <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
-                                            <div class="input-group">
-                                                <input type="search" placeholder="What're you searching for?" aria-describedby="button-addon1" class="form-control border-0 bg-light" style={{ borderRadius: '100px' }}
-                                                    onChange={(e) => { setSearch(e.target.value) }} />
-                                                <div class="input-group-append">
-                                                    <button id="button-addon1" type="submit" class="btn btn-link text-primary" style={{ borderRadius: '70px' }} ><i class="fa fa-search"></i></button>
-                                                </div>
+                                        <div class="table__header">
+                                            <h2><strong>Request Change Task</strong></h2>
+                                            <div class="input-group" >
+                                                <input type="search" placeholder="Search Data..."
+                                                    value={search}
+                                                    onChange={handleSearchChange} />
+                                                <img src="images/icon/search.png" alt=""></img>
                                             </div>
                                         </div>
                                     </form>
@@ -163,37 +199,27 @@ function Request() {
                                         <table className="table table-borderless table-data3 shadow-sm">
                                             <thead>
                                                 <tr>
-                                                    <th>Process Id</th>
-                                                    <th>Customer</th>
-                                                    <th>Employee</th>
-                                                    <th>Date</th>
-                                                    <th>Time</th>
-                                                    <th>Address</th>
-                                                    <th>Status</th>
+                                                    <th>Process Id <span className='icon-arrow' ><FcAlphabeticalSortingAz /></span> </th>
+                                                    <th>Customer<span className='icon-arrow' ><FcAlphabeticalSortingAz /></span></th>
+                                                    <th>Employee <span className='icon-arrow' ><FcAlphabeticalSortingAz /></span></th>
+                                                    <th onClick={toggleSortOrder}><div>Date<span className='icon-arrow' ><FcAlphabeticalSortingAz /></span></div></th>
+                                                    <th>Time <span className='icon-arrow' ><FcAlphabeticalSortingAz /></span></th>
+                                                    <th>Address <span className='icon-arrow' ><FcAlphabeticalSortingAz /></span></th>
+                                                    <th>Status <span className='icon-arrow' ><FcAlphabeticalSortingAz /></span></th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {requestData.filter((booking) => {
-                                                    if (search.toLowerCase() === '') {
-                                                        return booking;
-                                                    }
-                                                    else if (booking.customerName.toLowerCase().includes(search.toLowerCase()) ||
-                                                        booking.oldEmployeeName.toLowerCase().includes(search.toLowerCase()) ||
-                                                        booking.address.toLowerCase().includes(search.toLowerCase())
-                                                    ) {
-                                                        return booking;
-                                                    }
-                                                })
+                                                {sortAndFilterData()
                                                     .map(request => (
                                                         <tr key={request.processId}>
                                                             <td>{request.processId}</td>
                                                             <td>{request.customerName}</td>
                                                             <td>{request.oldEmployeeName} </td>
                                                             <td>{format(new Date(request.date), 'dd/MM/yyyy')}</td>
-                                                            <td>{request.startTime} - {request.endTime}</td>
+                                                            <td>{formatTime(request.startTime)} - {formatTime(request.endTime)}</td>
                                                             <td>{request.address}</td>
-                                                            <td style={{ color: getStatusColor(request.status) }}>{request.status}</td>
+                                                            <td><p className={`status ${request.status}`} style={{ minWidth: '100px' }}>{request.status}</p></td>
                                                             <td>
                                                                 <div className="table-data-feature">
                                                                     <button className="item" data-toggle="tooltip" data-placement="top" title="Send"
@@ -234,7 +260,7 @@ function Request() {
                             <div className="modal-content">
                                 <div className="modal-header" >
                                     <h5 className="modal-title" id="exampleModalLabel"><strong>Request Details  ID: {modal2.processId} </strong></h5>
-                                    <h5 className="modal-title" style={{ color: 'green', marginLeft: '400px' }}> <span style={{ marginRight: "5px" }}>•</span> {modal.status} </h5>
+                                    <h5 className={`status ${modal.status} modal-title`} style={{ marginLeft: '400px', width: '130px' }}> <span style={{ marginRight: "5px" }}>•</span> {modal.status} </h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>
                                 <div className="modal-body">
@@ -400,8 +426,8 @@ function Request() {
                                                         </td>
                                                         <td className="desc">{u.phone}</td>
                                                         <td style={{ color: getStatusColor(u.status) }}>{u.status}</td>
-                                                        <td>
-                                                            <span className="status--process">IMG</span>
+                                                        <td style={{ display: 'inline', padding: "10px"}}>
+                                                            <img src={u.account.img ? u.account.img : 'http://via.placeholder.com/300'} alt="img" style={{ width: '100px', height: '80px',borderRadius: "50%", margin:"5px 0px" }} />
                                                         </td>
 
                                                     </tr>

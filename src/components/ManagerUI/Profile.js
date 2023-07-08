@@ -1,7 +1,27 @@
-import React, { } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './profile.css'
 
+
 function Profile() {
+ const [accountData, setAccountData] = useState({});
+
+ useEffect(() => {
+    const fetchAccountData = async () => {
+      try {
+        const id = localStorage.getItem('id');
+        if (id) {
+          const response = await axios.get(`https://localhost:7013/api/Account/${id}`);
+          setAccountData(response.data.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAccountData();
+  }, []);
+
     return (
         <div className="page-container">
             <div className="container light-style flex-grow-1 container-p-y">
@@ -24,7 +44,7 @@ function Profile() {
                             <div className="tab-content">
                                 <div className="tab-pane fade active show" id="account-general">
                                     <div className="card-body media align-items-center">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt className="d-block ui-w-80" />
+                                        <img style={{borderRadius:"50%", objectFit:'cover'}} src={accountData.img ? accountData.img : 'http://via.placeholder.com/300' } alt className="d-block ui-w-80" />
                                         <div className="media-body ml-4">
                                             <label className="btn btn-outline-primary">
                                                 Upload new photo
@@ -38,19 +58,19 @@ function Profile() {
                                     <div className="card-body">
                                         <div className="form-group">
                                             <label className="form-label">Username</label>
-                                            <input type="text" className="form-control mb-1" defaultValue="nmaxwell" />
+                                            <input type="text" className="form-control mb-1" defaultValue={accountData.name} />
                                         </div>
                                         <div className="form-group">
                                             <label className="form-label">Name</label>
-                                            <input type="text" className="form-control" defaultValue="Nelle Maxwell" />
+                                            <input type="text" className="form-control" defaultValue={accountData.name} />
                                         </div>
                                         <div className="form-group">
                                             <label className="form-label">E-mail</label>
-                                            <input type="text" className="form-control mb-1" defaultValue="nmaxwell@mail.com" />
-                                            <div className="alert alert-warning mt-3">
+                                            <input type="text" className="form-control mb-1" defaultValue={accountData.email} />
+                                            {/* <div className="alert alert-warning mt-3">
                                                 Your email is not confirmed. Please check your inbox.<br />
                                                 <a href="javascript:void(0)">Resend confirmation</a>
-                                            </div>
+                                            </div> */}
                                         </div>
                                         <div className="form-group">
                                             <label className="form-label">Company</label>

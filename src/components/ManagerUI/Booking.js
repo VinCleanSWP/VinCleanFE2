@@ -3,6 +3,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FcAlphabeticalSortingAz } from "react-icons/fc";
 
 function Booking() {
     const [bookingData, setBookingData] = useState([]);
@@ -11,6 +12,7 @@ function Booking() {
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     const [selectedProcessId, setSelectedProcessId] = useState(null);
     const [search, setSearch] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
 
 
     const handleEmployeeSelect = (employeeId) => {
@@ -21,7 +23,13 @@ function Booking() {
         setSelectedProcessId(processId);
     };
 
-
+    const formatTime = (timeString) => {
+        if (timeString) {
+            const [hours, minutes] = timeString.split(":");
+            return `${hours}:${minutes}`;
+        }
+        return "";
+    };
 
     const updateClick = () => {
         const data = {
@@ -121,6 +129,35 @@ function Booking() {
             });
     }
 
+     ///Search and sort
+     const handleSearchChange = (e) => {
+        setSearch(e.target.value);
+      };
+    
+      const sortAndFilterData = () => {
+        const sortedData = [...bookingData].sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+    
+        const filteredData = sortedData.filter(booking =>
+            booking.processId.toString().toLowerCase().includes(search.toLowerCase()) ||
+            booking.name.toString().toLowerCase().includes(search.toLowerCase()) ||
+            // booking.typeName.toLowerCase().includes(search.toLowerCase()) ||
+            booking.date.toString().toLowerCase().includes(search.toLowerCase()) ||
+            // booking.startWorking.toString().toLowerCase().includes(search.toLowerCase()) ||
+            // booking.address.toString().toLowerCase().includes(search.toLowerCase()) ||
+            booking.status.toString().toLowerCase().includes(search.toLowerCase())
+        );
+    
+        return filteredData;
+      };
+    
+      const toggleSortOrder = () => {
+        setSortOrder(prevSortOrder => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
+      };
+
 
     return (
         <div >
@@ -130,86 +167,72 @@ function Booking() {
                 <div className="main-content">
                     <div className="section__content section__content--p30">
                         <div className="container-fluid">
-                            <div className="row m-t-30">
-                                <div className="col-md-12">
-                                    <form action="">
-                                        <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
-                                            <div class="input-group">
-                                                <input type="search" placeholder="What're you searching for?" aria-describedby="button-addon1" class="form-control border-0 bg-light" style={{ borderRadius: '100px' }}
-                                                    onChange={(e) => {setSearch(e.target.value)}} />
-                                                <div class="input-group-append">
-                                                    <button id="button-addon1" type="submit" class="btn btn-link text-primary" style={{ borderRadius: '70px' }} ><i class="fa fa-search"></i></button>
+                                <div className="row m-t-30">
+                                    <div className="col-md-12">
+                                        <form action="">
+                                            <div class="table__header">
+                                                <h2><strong>Customer Booking</strong></h2>
+                                                <div class="input-group" >
+                                                    <input type="search" placeholder="Search Data..."
+                                                        value={search}
+                                                        onChange={handleSearchChange}/>
+                                                    <img src="images/icon/search.png" alt=""></img>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
-                                    {/* DATA TABLE*/}
-                                    <div className="table-responsive m-b-40" style={{ borderRadius: '15px' }}>
-                                        <table className="table table-borderless table-data3 shadow-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Id</th>
-                                                    <th>Customer</th>
-                                                    <th>Services</th>
-                                                    <th>Date</th>
-                                                    <th>Time</th>
-                                                    <th>Address</th>
-                                                    <th>Status</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {bookingData.filter((booking) => {
-                                                    if( search.toLowerCase() === '' ){
-                                                    return booking;
-                                                    }
-                                                    else if ( booking.processId.toString().toLowerCase().includes(search.toLowerCase()) ||
-                                                            booking.name.toString().toLowerCase().includes(search.toLowerCase()) ||
-                                                            // booking.typeName.toLowerCase().includes(search.toLowerCase()) ||
-                                                            format(new Date(booking.date), 'dd/MM/yyyy').toString().toLowerCase().includes(search.toLowerCase()) ||
-                                                            // booking.startWorking.toString().toLowerCase().includes(search.toLowerCase()) ||
-                                                            // booking.address.toString().toLowerCase().includes(search.toLowerCase()) ||
-                                                            booking.status.toString().toLowerCase().includes(search.toLowerCase())
-                                                    ){
-                                                        return booking;
-                                                    }
-                                                })
-                                                    .map(booking => (
-                                                        <tr key={booking.processId}>
-                                                            <td>{booking.processId}</td>
-                                                            <td>{booking.name}</td>
-                                                            <td>{booking.typeName}</td>
-                                                            <td>{format(new Date(booking.date), 'dd/MM/yyyy')}</td>
-                                                            <td>{booking.startWorking} - {booking.endWorking}</td>
-                                                            <td>{booking.address}</td>
-                                                            <td style={{ color: getStatusColor(booking.status) }}>{booking.status}</td>
-                                                            <td>
-                                                                <div className="table-data-feature">
-                                                                    <button className="item" data-toggle="tooltip" data-placement="top" title="Send"
-                                                                        onClick={() => sendEmail(booking.processId)}>
-                                                                        <i className="zmdi zmdi-mail-send" />
-                                                                    </button>
-                                                                    <button className="item" data-toggle="tooltip" data-placement="top" title="Assign"
-                                                                        onClick={(p) => {
-                                                                            assignTask(booking.date, booking.startTime, booking.endTime);
-                                                                            handleProcessSelect(booking.processId);
-                                                                        }}
-                                                                        data-bs-toggle="modal" data-bs-target="#assign">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="gray" d="m21.1 12.5l1.4 1.41l-6.53 6.59L12.5 17l1.4-1.41l2.07 2.08l5.13-5.17M10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11L10 17m1-13a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4Z" /></svg>
-                                                                    </button>
-                                                                    <button className="item" data-toggle="tooltip" data-placement="top" title="More" onClick={(e) => showDetail(booking.processId)} data-bs-toggle="modal" data-bs-target="#myModal">
-                                                                        <i className="zmdi zmdi-more" />
-                                                                    </button>
+                                        </form>
+                                        {/* DATA TABLE*/}
+                                        <div className="table-responsive m-b-40" style={{ borderRadius: '15px' }}>
+                                            <table className="table table-borderless table-data3 shadow-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Id <span className='icon-arrow'><FcAlphabeticalSortingAz/></span></th>
+                                                        <th>Customer <span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></th>
+                                                        <th>Services<span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></th>
+                                                        <th onClick={toggleSortOrder}><div>Date<span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></div></th>
+                                                        <th>Time<span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></th>
+                                                        <th>Address<span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></th>
+                                                        <th>Status<span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {sortAndFilterData()
+                                                        .map(booking => (
+                                                            <tr key={booking.processId}>
+                                                                <td>{booking.processId}</td>
+                                                                <td>{booking.name}</td>
+                                                                <td>{booking.typeName}</td>
+                                                                <td>{format(new Date(booking.date), 'dd/MM/yyyy')}</td>
+                                                                <td>{formatTime(booking.startWorking)} - {formatTime(booking.endWorking)}</td>
+                                                                <td>{booking.address}</td>
+                                                                <td ><p className={`status ${booking.status}`} style={{ minWidth: '100px' }}>{booking.status}</p></td>
+                                                                <td>
+                                                                    <div className="table-data-feature">
+                                                                        <button className="item" data-toggle="tooltip" data-placement="top" title="Send"
+                                                                            onClick={() => sendEmail(booking.processId)}>
+                                                                            <i className="zmdi zmdi-mail-send" />
+                                                                        </button>
+                                                                        <button className="item" data-toggle="tooltip" data-placement="top" title="Assign"
+                                                                            onClick={(p) => {
+                                                                                assignTask(booking.date, booking.startTime, booking.endTime);
+                                                                                handleProcessSelect(booking.processId);
+                                                                            }}
+                                                                            data-bs-toggle="modal" data-bs-target="#assign">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="gray" d="m21.1 12.5l1.4 1.41l-6.53 6.59L12.5 17l1.4-1.41l2.07 2.08l5.13-5.17M10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11L10 17m1-13a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4Z" /></svg>
+                                                                        </button>
+                                                                        <button className="item" data-toggle="tooltip" data-placement="top" title="More" onClick={(e) => showDetail(booking.processId)} data-bs-toggle="modal" data-bs-target="#myModal">
+                                                                            <i className="zmdi zmdi-more" />
+                                                                        </button>
 
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                            </tbody>
-                                        </table>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                         </div>
                         {/* END DATA TABLE*/}
                     </div>
@@ -218,7 +241,7 @@ function Booking() {
                             <div className="modal-content">
                                 <div className="modal-header" >
                                     <h5 className="modal-title" id="exampleModalLabel"><strong>Booking Details  ID: {modal.processId} </strong></h5>
-                                    <h5 className="modal-title" style={{ color: getStatusColor(modal.status), marginLeft: '400px' }}> <span style={{ marginRight: "5px" }}>•</span> {modal.status} </h5>
+                                    <h5 className={`status ${modal.status} modal-title`} style={{marginLeft: '400px', width: '130px' }}> <span style={{ marginRight: "5px" }}>•</span> {modal.status} </h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>
                                 <div className="modal-body">
@@ -229,7 +252,7 @@ function Booking() {
                                             <input value={modal.customerName} className="form-control" />
                                         </div>
                                         <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '150px', }} />
+                                            <img src={modal.accountImage} alt="react logo" style={{ width: '120px', height: "120px", borderRadius: 100 }} />
                                         </div>
                                     </form>
                                     <form className="form-inline">
@@ -286,7 +309,7 @@ function Booking() {
                                                     <input type="text" className="form-control" value={modal.employeeName} />
                                                 </div>
                                                 <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                                    <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '150px', }} />
+                                                    <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '120px', height: "120px", borderRadius: 100 }} />
                                                 </div>
                                             </form>
                                             <form className="form-inline">
@@ -374,8 +397,8 @@ function Booking() {
                                                         </td>
                                                         <td className="desc">{u.phone}</td>
                                                         <td style={{ color: getStatusColor(u.status) }}>{u.status}</td>
-                                                        <td>
-                                                            <img src={u.account.img} alt="img" />
+                                                        <td style={{ display: 'inline', padding: "10px" }}>
+                                                            <img src={u.account.img ? u.account.img : 'http://via.placeholder.com/300'} alt="img" style={{ width: '100px', height: '80px' }} />
                                                         </td>
 
                                                     </tr>

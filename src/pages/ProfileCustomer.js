@@ -4,6 +4,8 @@ import axios from 'axios';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
+import '../styles/profile-customer.css'
+
 
 const style = {
     position: 'absolute',
@@ -168,15 +170,22 @@ export default function ProfileCustomer() {
         <div className='container'>
             <div className="container light-style flex-grow-1 container-p-y">
                 <h4 className="font-weight-bold py-3 mb-4">
-                    Account settings
+                    Cài đặt tài khoản
                 </h4>
                 <div className="card overflow-hidden">
                     <div className="row no-gutters row-bordered row-border-light">
                         <div className="col-md-3 pt-0">
                             <div className="list-group list-group-flush account-settings-links">
-                                <a className="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
-                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
-                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-info">Order History</a>
+                                <div class="Account__StyledAvatar-sc-1d5h8iz-3 profile-left">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar"/>
+                                    <div class="info">
+                                        Tài khoản của 
+                                        <strong>{customer.lastName} {customer.firstName}</strong>
+                                    </div>                                    
+                                </div>  
+                                <a className="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">Thông tin chung</a>   
+                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Bảo mật</a>
+                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-info">Lịch sử đặt</a>
                                 {/* <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-social-links">Social links</a>
                                 <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-connections">Connections</a>
                                 <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Notifications</a> */}
@@ -187,27 +196,27 @@ export default function ProfileCustomer() {
                                 {/* Edit Profile */}
                                 <div className="tab-pane fade active show" id="account-general">
                                     <form onSubmit={handleSubmitInfo}>
-                                        <h4 className="card-body fw-bold">Edit Profile</h4>
+                                        <h4 className="card-body fw-bold">Thông tin cá nhân</h4>
                                         <div className="card-body media align-items-center">
                                             <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt className="d-block ui-w-80" />
                                             <div className="media-body ml-4">
                                                 <label className="btn btn-outline-primary">
-                                                    Upload new photo
+                                                    Chọn ảnh
                                                     <input type="file" className="account-settings-fileinput" />
                                                 </label> &nbsp;
                                                 <button type="button" className="btn btn-default md-btn-flat">Reset</button>
-                                                <div className="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
+                                                <div className="text small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
                                             </div>
                                         </div>
                                         <hr className="border-light m-0" />
                                         <div className="card-body">
                                             <div className="form-group">
-                                                <label className="form-label">FirstName</label>
+                                                <label className="form-label">Tên</label>
                                                 <input type="text" className="form-control" maxlength="15" id="firstName"
                                                     name="firstName" defaultValue={customer.firstName} onChange={handleInputChange} required />
                                             </div>
                                             <div className="form-group">
-                                                <label className="form-label">LastName</label>
+                                                <label className="form-label">Họ</label>
                                                 <input type="text" className="form-control" maxlength="30" id="lastName"
                                                     name="lastName" defaultValue={customer.lastName} onChange={handleInputChange} required />
                                             </div>
@@ -216,23 +225,26 @@ export default function ProfileCustomer() {
                                                 <input type="text" className="form-control" maxlength="30" id="dob"
                                                     name="dob" defaultValue={customer.account.dob} onChange={handleInputChange} required />
                                             </div> */}
-                                            <div className="form-group">
-                                                <label className="form-label">Gender:</label>
+                                            <div className="gender-select">
+                                                <label className="form-label">Giới tính</label>
                                                 <select id="gender" name="gender" Value={customer.account && customer.account.gender} onChange={handleInputChange}>
-                                                    <option value="">Select gender</option>
-                                                    <option value="male">Male</option>
-                                                    <option value="female">Female</option>
-                                                    <option value="other">Other</option>
+                                                    <option value="">Chọn</option>
+                                                    <option value="male">Nam</option>
+                                                    <option value="female">Nữ</option>
+                                                    <option value="other">Khác</option>
                                                 </select>
-                                                <p>Selected gender: {customer.account && customer.account.gender}</p>
+                                                
+                                                {/* Cái gì gây man???? 2 cái gender luôn à */}
+                                                {/* <p>Selected gender: {customer.account && customer.account.gender}</p> */}                                          
                                             </div>
+                                                                                  
                                             <div className="form-group">
-                                                <label className="form-label">Phone</label>
+                                                <label className="form-label">Số điện thoại</label>
                                                 <input type="text" className="form-control" id="phone"
                                                     name="phone" defaultValue={customer.phone} onChange={handleInputChange} required />
                                             </div>
                                             <div className="form-group">
-                                                <label className="form-label">Address</label>
+                                                <label className="form-label">Địa chỉ</label>
                                                 <input type="text" className="form-control" id="address"
                                                     name="address" defaultValue={customer.address} onChange={handleInputChange} required />
                                             </div>
@@ -240,12 +252,12 @@ export default function ProfileCustomer() {
                                                 <label className="form-label">E-mail</label>
                                                 <input type="text" className="form-control mb-1" defaultValue={customer.account && customer.account.email} disabled />
                                                 <div className="alert alert-warning mt-3">
-                                                    Your email is not confirmed. Please check your inbox.<br />
-                                                    <a href="javascript:void(0)">Resend confirmation</a>
+                                                    Email chưa được xác nhận. Hãy vào inbox để xác nhận!<br />
+                                                    <a href="javascript:void(0)">Gửi lại xác nhận</a>
                                                 </div>
                                             </div>
                                             <div className="text-right mt-3 mb-3">
-                                                <button type="submit" className="btn btn-primary">Save changes</button>&nbsp;
+                                                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
                                                 <button type="button" className="btn btn-default">Cancel</button>
                                             </div>
                                         </div>

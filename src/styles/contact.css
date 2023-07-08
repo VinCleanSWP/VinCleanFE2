@@ -1,3 +1,21 @@
+.rating-form input{
+  margin-top: 5px;
+  width: 100%;
+  /* border: 1px solid #0000002a;
+  border-radius: 5px; */
+  height: 50px;
+}
+
+.submit-button {
+  background: #162b75;
+  color: #fff;
+  width: 100px;
+  border-radius: 5px;
+  padding: 5px;
+  margin-left: 500px;
+  margin-top: 20px;
+}
+
 .social__link-icon {
   text-decoration: none;
 

@@ -35,10 +35,18 @@ const BlogList = () => {
 
   return (
     <>
-      <div className="search-container">
-        <Input type="text" value={searchTerm} onChange={handleChange} placeholder="Search blogs..." />
-        <br></br>
+    <Col lg="12" className="mb-5 text-center">
+      <h2 className="section__title">Bài Blog Mới Nhất</h2>
+    </Col>
+      <div className="search-blog">
+        <Input type="text" 
+        value={searchTerm} 
+        onChange={handleChange} 
+        placeholder="Tìm kiếm Blog"
+        />
       </div>
+      
+
       {filteredBlogs.map(blog => (
         <Col lg="4" md="6" sm="6" className="mb-5" key={blog.id}>
           <div className="blog__item">

@@ -97,9 +97,8 @@ const Home = () => {
       <section>
         <Container>
           <Row>
-            <Col lg="12" className="mb-5 text-center">
+            <Col lg="12" className="text-center">
               <h6 className="section__subtitle">Khám phá Blog của chúng tôi</h6>
-              <h2 className="section__title">Blog mới nhất</h2>
             </Col>
 
             <BlogList />

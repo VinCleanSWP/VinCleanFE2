@@ -1,9 +1,16 @@
+.avatar__img {
+  border-radius: 50%;
+  width: 40px; 
+}
 
+.rating-list li{
+margin-right: 550px;
+}
 
 .car__item {
   border: 1px solid #7c8a9736;
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 20px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -32,7 +39,7 @@
 }
 .car__btn-details {
   background: #dca447;
-  border-radius: 4px 4px 4px 4px;
+  border-radius: 5px 5px 5px 5px;
 }
 
 .car__btn-rent {

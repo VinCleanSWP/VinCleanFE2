@@ -2,7 +2,6 @@ import React from 'react'
 import SlideBar from '../components/ManagerUI/SlideBar'
 import HeaderManager from '../components/ManagerUI/HeaderManager'
 import { Route, Routes } from 'react-router-dom'
-import { storage } from 'firebase/storage';
 
 export default function Customer() {
   return (

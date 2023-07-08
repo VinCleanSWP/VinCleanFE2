@@ -67,7 +67,7 @@ const BlogList = () => {
                                                             <td>{request.title}</td>
 
                                                             <td>
-                                                                <div>
+                                                                <div className="table-data-feature">
                                                                     <Link to={`/modifyblog/${request.blogId}`}> <button
                                                                         className="item"
                                                                         data-toggle="tooltip"
@@ -77,8 +77,7 @@ const BlogList = () => {
                                                                     >
                                                                         <i class="zmdi zmdi-edit" />
                                                                     </button></Link>
-                                                                </div>
-                                                                <div className="table-data-feature">
+
                                                                     <Link to={`/blogs/${request.blogId}`}>
                                                                         <button className="item" data-toggle="tooltip" data-placement="top" title="More"><i className="zmdi zmdi-more" /></button>
 

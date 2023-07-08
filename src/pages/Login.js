@@ -29,6 +29,7 @@ export default function Login() {
                     localStorage.setItem('email', email);
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
+                    localStorage.setItem('id', response.data.data.accountId)
                     // navigate('/home')
                     window.location.href = '/';
                 }
@@ -37,6 +38,7 @@ export default function Login() {
                     localStorage.setItem('email', email);
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
+                    localStorage.setItem('id', response.data.data.accountId);
                     // navigate('/home')
                     window.location.href = '/';
                 }

@@ -234,13 +234,15 @@ function Table() {
                                                 value={userName}
                                                 onChange={(e) => setUserName(e.target.value)}
                                             />
+                                            <img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
                                         </div>
                                         <div>
                                             <label className="form-label"><strong>Image</strong></label>
 
                                             <input type="file" onChange={handleImageUpload} />
 
-                                            <img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
+
+                                            <img src={newImage || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
 
 
 
@@ -434,7 +436,7 @@ function Table() {
                     </div>
                 </div>
                 <div className="text-right mt-3">
-                    <button type="button" className="btn btn-primary" onClick={handleChangeSubmit}>Submit</button>
+                    <button type="button" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
                     <button type="button" className="btn btn-secondary" onClick={() => setAddModalIsOpen(false)}>Close</button>
                 </div>
             </Modal>
@@ -636,6 +638,13 @@ function Table() {
                                     {/* DATA TABLE */}
                                     <h3 className="title-5 m-b-35">Employee List</h3>
                                     <div className="table-data__tool">
+                                        <div class="input-group">
+                                            <input type="search" placeholder="What're you searching for?" aria-describedby="button-addon1" class="form-control border-0 bg-light" style={{ borderRadius: '100px' }}
+                                                onChange={(e) => { setSearch(e.target.value) }} />
+                                            <div class="input-group-append">
+                                                <button id="button-addon1" type="submit" class="btn btn-link text-primary" style={{ borderRadius: '70px' }} ><i class="fa fa-search"></i></button>
+                                            </div>
+                                        </div>
 
                                         <div className="table-data__tool-right">
                                             {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">

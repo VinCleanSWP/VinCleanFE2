@@ -64,6 +64,11 @@ function SideBar() {
                   <i className="fas fa-table" />Service</Link>
               </li>
               <li>
+                <Link to="/bloglist">
+                  <i className="fas fa-table" />Blog
+                </Link>
+              </li>
+              <li>
                 <Link to="/form">
                   <i className="far fa-check-square" />Forms</Link>
               </li>
@@ -76,7 +81,7 @@ function SideBar() {
                   <i className="fas fa-map-marker-alt" />Maps</a>
               </li>
               <li className="has-sub">
-                <a className="js-arrow" href=" " style={{textDecorationLine: 'none'}}>
+                <a className="js-arrow" href=" " style={{ textDecorationLine: 'none' }}>
                   <i className="fas fa-copy" />Pages</a>
                 <ul className="list-unstyled navbar__sub-list js-sub-list">
                   <li>
@@ -91,7 +96,7 @@ function SideBar() {
                 </ul>
               </li>
               <li className="has-sub">
-                <a className="js-arrow" href=" " style={{textDecorationLine: 'none'}}>
+                <a className="js-arrow" href=" " style={{ textDecorationLine: 'none' }}>
                   <i className="fas fa-desktop" />UI Elements</a>
                 <ul className="list-unstyled navbar__sub-list js-sub-list">
                   <li>

@@ -1,3 +1,19 @@
+.comment__list h4{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.comment-blog-container h4{
+  margin-bottom: 30px;
+}
+
+.avatar-image {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #00000121;
+}
+
 .blog__publisher span i {
   color: #dca447;
 }
@@ -11,21 +27,16 @@ blockquote {
   border-radius: 5px;
   padding: 10px;
   background-color: #FFFFFF;
-  width: 600px
+  width: 700px;
+  margin-bottom: 25px;
 }
 
-.avatar-wrapper {
+/* .avatar-wrapper {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  overflow: hidden;
-}
-
-.avatar-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+ 
+} */
 
 .single__comment img {
   width: 70px;

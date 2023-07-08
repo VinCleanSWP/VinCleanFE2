@@ -37,6 +37,8 @@ function Table() {
     const [newImage, setTempImageUrl] = useState('');
     const [employeeId, setEmployeeId] = useState('');
     const [customerId, setCustomerId] = useState('');
+    const [modalIsOpen,setModalIsOpen]= useState('');
+    
 
     const [url, setUrl] = useState('');
 

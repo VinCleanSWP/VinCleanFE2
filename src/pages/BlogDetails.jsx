@@ -20,6 +20,8 @@ const BlogDetails = () => {
   const [commentAuthors, setCommentAuthors] = useState([]);
   const [imgAuthors, setImgAuthors] = useState([]);
   const accountId = localStorage.getItem('id');
+  const [commentDate, setCommentDate] = useState([]);
+
 
   useEffect(() => {
     axios.get(`https://localhost:7013/api/Blog/${blogid}`)
@@ -55,6 +57,7 @@ const BlogDetails = () => {
     const fetchCommentAuthors = async () => {
       const authors = [];
       const img = [];
+      const createdDate = [];
       let successfulResponses = 0;
 
       for (let i = 0; i < comments.length; i++) {
@@ -77,6 +80,7 @@ const BlogDetails = () => {
       if (successfulResponses === authors.length) {
         setCommentAuthors(authors);
         setImgAuthors(img);
+        setCommentDate(createdDate)
       }
     };
 
@@ -87,24 +91,48 @@ const BlogDetails = () => {
     setComment(event.target.value);
   };
 
-  const handleSubmitComment = (event) => {
-    event.preventDefault();
+  // const handleSubmitComment = async (event) => {
+  //   event.preventDefault();
 
+  //   const commentData = {
+  //     content: comment,
+  //     blogId: blogid,
+  //     modifiedBy: accountId
+  //   };
+
+  //   axios.post('https://localhost:7013/api/Comment', commentData)
+  //     .then(response => {
+  //       console.log('Comment posted:', response.data);
+  //       setComment('');
+  //       setComments(prevComments => [...prevComments, response.data.data]);        
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //     });
+  // };
+
+  const handleSubmitComment = async (event) => {
+    event.preventDefault();
+  
     const commentData = {
       content: comment,
       blogId: blogid,
       modifiedBy: accountId
     };
-
-    axios.post('https://localhost:7013/api/Comment', commentData)
-      .then(response => {
-        console.log('Comment posted:', response.data);
-        setComment('');
-        setComments(prevComments => [...prevComments, response.data.data]);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  
+    try {
+      const response = await axios.post('https://localhost:7013/api/Comment', commentData);
+      console.log('Bình luận đã được đăng:', response.data);
+  
+      // Gọi lại API để lấy danh sách bình luận mới nhất
+      const updatedCommentsResponse = await axios.get(`https://localhost:7013/api/Comment?blogId=${blogid}`);
+      const updatedComments = updatedCommentsResponse.data.data;
+  
+      setComment('');
+      setComments(updatedComments);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDeleteComment = (commentId) => {
@@ -150,6 +178,7 @@ const BlogDetails = () => {
               </div>
 
               <div className="comment__list mt-5">
+                <h4>Tất cả bình luận</h4>
                 <h4 className="mb-5"></h4>
                 {comments.length > 0 && (
                   comments
@@ -157,24 +186,42 @@ const BlogDetails = () => {
                     .map((comment, index) => {
                       const accountName = commentAuthors[index];
                       const accountImg = imgAuthors[index];
+                      const accountcreatedDate = commentDate[index];
 
                       return (
+
                         <div key={comment.id} style={{ whiteSpace: 'pre-line' }}>
-                          <img src={accountImg} alt="Avatar" />
-                          <h6>{accountName}</h6>
-                          <div className="comment-box">
-                            <p dangerouslySetInnerHTML={{ __html: comment.content }}></p>
-                          </div>
-                          <div>
-                            {comment.modifiedBy === accountId && (
-                              <button
-                                className="btn btn-danger btn-sm"
-                                onClick={() => handleDeleteComment(comment.id)}
-                              >
-                                Delete
-                              </button>
-                            )}
-                          </div>
+                          <Row>
+                            {/* Hiện ảnh */}
+                            <Col lg="1">
+                              <img className="avatar-image" src={accountImg} alt="Avatar" />
+                            </Col>
+
+
+                            <Col lg="10">
+                              {/* Hiện tên */}
+                              <h6>{accountName}</h6>
+
+                              <div className="date">{moment(accountcreatedDate).format('DD/MM/YYYY')} </div>
+
+                              {/* Khung hiện comment */}
+                              <div className="comment-box">
+                                <p dangerouslySetInnerHTML={{ __html: comment.content }}></p>
+                              </div>
+                            </Col>
+
+                            <div>
+                              {comment.modifiedBy === accountId && (
+                                <button className="btn btn-danger btn-sm"
+                                  onClick={() => handleDeleteComment(comment.id)}
+                                >
+
+                                  Delete
+
+                                </button>
+                              )}
+                            </div>
+                          </Row>
                         </div>
                       );
                     })
@@ -189,7 +236,7 @@ const BlogDetails = () => {
                     <textarea
                       rows="5"
                       className="w-100 py-2 px-3"
-                      placeholder="Comment..."
+                      placeholder="Ghi bình luận ở đây..."
                       value={comment}
                       onChange={handleCommentChange}
                     ></textarea>
@@ -208,12 +255,12 @@ const BlogDetails = () => {
               </div>
 
               {blogs.map((blog) => (
-                <div className="recent__blog-post mb-4" key={blog.blogId}>
+                <div className="recent__blog-post mb-4" key={blog.id}>
                   <div className="recent__blog-item d-flex gap-3">
                     <img src={blog.img} alt="" className="w-25 rounded-2" />
 
                     <h6>
-                      <Link to={`/blogs/${blog.title}`}>{blog.title}</Link>
+                      <Link to={`/blogs/${blog.blogId}`}>{blog.title}</Link>
                     </h6>
 
                   </div>

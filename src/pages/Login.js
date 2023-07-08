@@ -100,10 +100,10 @@ export default function Login() {
                                         </div>
                                         {error && <p style={{ color: 'red' }}>{error}</p>}
                                         <div class="col-12">
-                                            <p class="small mb-0">Bạn mới biết đến Vin Clean?<Link to="/signup"> Đăng ký</Link></p>
+                                            <p class="small mb-0">Bạn mới biết đến Vin Clean? <Link to="/signup">Đăng ký</Link></p>
                                         </div>
                                         <div class="col-12">
-                                            <p class="small mb-0">Forgot your Password?<Link to="/reset"> Click here</Link></p>
+                                            <p class="small mb-0">Quên mật khẩu? <Link to="/reset">Bấm vào đây</Link></p>
                                         </div>
                                     </form>
                                 </div>

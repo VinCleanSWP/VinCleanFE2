@@ -59,6 +59,11 @@ function SideBar() {
                   <i className="fas fa-table" />Service</Link>
               </li>
               <li>
+                <Link to="/bloglist">
+                  <i className="fas fa-table" />Blog
+                </Link>
+              </li>
+              <li>
                 <Link to="/form">
                   <i className="far fa-check-square" />Forms</Link>
               </li>

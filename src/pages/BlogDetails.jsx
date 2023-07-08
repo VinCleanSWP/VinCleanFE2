@@ -30,8 +30,8 @@ const BlogDetails = () => {
       .catch(error => {
         console.error('Error fetching blog detail:', error);
       });
-      
-      axios.get(`https://localhost:7013/api/Blog`)
+
+    axios.get(`https://localhost:7013/api/Blog`)
       .then(response => {
         const data = response.data.data;
         setBlogs(data);
@@ -39,7 +39,7 @@ const BlogDetails = () => {
       .catch(error => {
         console.error('Error fetching blog list:', error);
       });
-      
+
     axios
       .get(`https://localhost:7013/api/Comment?blogId=${blogid}`)
       .then(response => {
@@ -49,7 +49,7 @@ const BlogDetails = () => {
         console.log(error);
       });
   }, [id]);
-  
+
 
   useEffect(() => {
     const fetchCommentAuthors = async () => {
@@ -145,7 +145,7 @@ const BlogDetails = () => {
                 <h6 className="ps-5 fw-normal">
                   <blockquote className="fs-4"></blockquote>
                 </h6>
-                
+
                 <p className="section__description"></p>
               </div>
 
@@ -194,28 +194,28 @@ const BlogDetails = () => {
                       onChange={handleCommentChange}
                     ></textarea>
                     <button type="submit" className="btn comment__btn mt-3">
-                      Post a Comment
+                      Gửi bình luận
                     </button>
                   </FormGroup>
                 </Form>
               </div>
             </Col>
 
-          {/* Bài gần đây góc bên phải */}
+            {/* Bài gần đây góc bên phải */}
             <Col lg="4" md="4">
               <div className="recent__post mb-4">
                 <h5 className=" fw-bold">Bài gần đây</h5>
               </div>
-              
+
               {blogs.map((blog) => (
                 <div className="recent__blog-post mb-4" key={blog.blogId}>
                   <div className="recent__blog-item d-flex gap-3">
                     <img src={blog.img} alt="" className="w-25 rounded-2" />
-                    
+
                     <h6>
                       <Link to={`/blogs/${blog.title}`}>{blog.title}</Link>
                     </h6>
-                  
+
                   </div>
                 </div>
               ))}

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Modal } from "reactstrap";
 const Service = () => {
     const [servicetype, setType] = useState([]);
+    const [servicelist, setServiceList] = useState([]);
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const accountId = localStorage.getItem('id');
@@ -15,6 +16,7 @@ const Service = () => {
     const [Description, setDescription] = useState('');
     const [Status, setStatus] = useState('');
     const [TypeName, setTypeName] = useState('');
+    const [TypeImage, setTypeImage] = useState('');
 
 
     useEffect(() => {
@@ -32,6 +34,18 @@ const Service = () => {
             .then(response => {
                 const data = response.data.data;
                 setTypeName(data.type1)
+                setTypeImage(data.img)
+
+
+
+            })
+            .catch(error => {
+                console.error('Error fetching blog list:', error);
+            });
+        axios.get(`https://localhost:7013/api/Service/Type/${servicetypeid}`)
+            .then(response => {
+                const data = response.data.data;
+                setServiceList(data)
 
 
 
@@ -63,18 +77,19 @@ const Service = () => {
 
 
         <div>
-            <div>  <Modal
+            <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
                 contentLabel="Add Employee"
-                portalClassName="popup-container"
+
                 style={{
                     overlay: {
-                        zIndex: 9999
+                        zIndex: 9999,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)'
                     },
                     content: {
-                        width: '600px',
-                        height: '600px',
+                        width: '800px',
+                        height: '800px',
                         margin: 'auto'
                     }
                 }}
@@ -88,7 +103,7 @@ const Service = () => {
                                     <hr className="border-light m-0" />
                                     <div className="card-body">
                                         <div className="form-group">
-                                            <label className="form-label">Type Id</label>
+                                            <label className="form-label"><strong>Type Id</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
@@ -97,7 +112,9 @@ const Service = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="form-label">Image</label>
+                                            <label className="form-label"><strong>Image</strong></label>
+                                            <br></br>
+                                            <img src={TypeImage || "http://via.placeholder.com/300"} alt="Type" style={{ width: '100px', height: '100px' }} />
 
                                             {/* <input type="file" onChange={handleImageUpload} /> */}
 
@@ -105,13 +122,69 @@ const Service = () => {
                                         </div>
 
                                         <div className="form-group">
-                                            <label className="form-label">Type Name</label>
+                                            <label className="form-label"><strong>Type Name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={TypeName}
                                                 onChange={(e) => setDescription(e.target.value)}
                                             />
+                                        </div>
+                                        <div className="table-responsive table-responsive-data2">
+                                            <table className="table table-data2">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Type ID</th>
+                                                        <th>Name</th>
+
+                                                        <th>Status</th>
+                                                        <th>Image</th>
+                                                        <th />
+                                                    </tr>
+                                                </thead>
+                                                <tbody>v
+                                                    {servicelist.map(sv => (
+                                                        <tr key={sv.serviceId}>
+
+                                                            <td>{sv.serviceId}</td>
+                                                            <td>{sv.name}</td>
+                                                            <td>{sv.cost}</td>
+
+
+
+                                                            <td>
+                                                                <div className="table-data-feature">
+
+
+                                                                    {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                                    <i className="zmdi zmdi-edit" />
+                                                                </button> */}
+                                                                    {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit" onClick={() => setModalIsOpen(true)}>
+                                                                <i className="zmdi zmdi-edit" />
+
+                                                                </button> */}
+                                                                    <button
+                                                                        className="item"
+                                                                        data-toggle="tooltip"
+                                                                        data-placement="top"
+                                                                        title="Edit"
+                                                                        onClick={() => {
+                                                                            setModalIsOpen(true);
+                                                                            setServiceTypeId(Service.typeId);
+                                                                        }}
+                                                                    >
+                                                                        <i class="zmdi zmdi-edit" />
+                                                                    </button>
+
+
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+
+                                                </tbody>
+
+                                            </table>
                                         </div>
 
 
@@ -127,7 +200,7 @@ const Service = () => {
                     {/* <button type="button" className="btn btn-primary" onClick={handleSubmit}>Submit</button> */}
                     <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
                 </div>
-            </Modal></div>
+            </Modal>
 
 
 
@@ -324,29 +397,8 @@ const Service = () => {
 
                                 <div className="col-md-12">
                                     {/* DATA TABLE */}
-                                    <h3 className="title-5 m-b-35">Service list</h3>
-                                    <div className="table-data__tool">
-
-                                        <div className="table-data__tool-right">
-                                            {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
-                                                <i className="zmdi zmdi-plus" />add item</button> */}
-
-                                            <button className="btn btn-primary" onClick={() => setModalIsOpen(true)}>
-                                                Add employee
-                                            </button>
 
 
-
-                                            <div className="rs-select2--dark rs-select2--sm rs-select2--dark2">
-                                                <select className="js-select2" name="type">
-                                                    <option selected="selected">Export</option>
-                                                    <option value>Option 1</option>
-                                                    <option value>Option 2</option>
-                                                </select>
-                                                <div className="dropDownSelect2" />
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div className="table-responsive table-responsive-data2">
                                         <table className="table table-data2">
                                             <thead>
@@ -389,7 +441,7 @@ const Service = () => {
                                                                     title="Edit"
                                                                     onClick={() => {
                                                                         setModalIsOpen(true);
-                                                                        setServiceTypeId(Service.typeId); // Truyền employeeId vào đây
+                                                                        setServiceTypeId(Service.typeId);
                                                                     }}
                                                                 >
                                                                     <i class="zmdi zmdi-edit" />

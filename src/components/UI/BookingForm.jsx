@@ -1,11 +1,22 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import "../../styles/booking-form.css";
 import { Form, FormGroup } from "reactstrap";
 import { useParams } from "react-router-dom";
 import axios from 'axios';
 import Modal from 'react-modal';
+import { format, set } from 'date-fns';
 
-const BookingForm = () => {
+const Notification = ({ message, onClose }) => {
+  return (
+    <div className="notification">
+      <p>{message}</p>
+      <button className="normal-button" onClick={onClose}>Close</button>
+    </div>
+  );
+};
+
+const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, selectedServiceCost }) => {
   const { id } = useParams();
   const [customerid, setCustomerid] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -18,48 +29,70 @@ const BookingForm = () => {
   const [journeyHours, setJourneyHours] = useState("");
   const [journeyMinutes, setJourneyMinutes] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [submittedData, setSubmittedData] = useState(null); // Thêm state để lưu trữ dữ liệu đã gửi về
+  const [submittedData, setSubmittedData] = useState(null);
+  const [notification, setNotification] = useState(null);
+  const [totalPoint, setTotalPoint] = useState(0);
+  const [lastTotalPoint, setLastTotalPoint] = useState(totalPoint);
+  const [discountedPrice, setDiscountedPrice] = useState();
+  const [isPointUsed, setIsPointUsed] = useState(false);
+  const [selectedServiceCostChange, setSelectedServiceCost] = useState(0);
 
+
+
+  const accountID = localStorage.getItem('id');
 
   useEffect(() => {
-    axios.get(`https://localhost:7013/api/Customer/Account/36`)
+    axios.get(`https://localhost:7013/api/Customer/Account/${accountID}`)
       .then(response => {
         const data = response.data.data;
-        setCustomerid(data.customerId)
+        setCustomerid(data.customerId);
         setFirstName(data.firstName);
         setLastName(data.lastName);
+        setTotalPoint(data.totalPoint);
       })
       .catch(error => {
         console.error("Error fetching customer account:", error);
       });
   }, []);
 
-  const handleJourneyTimeChange = (e) => {
-    const timeString = e.target.value;
-    const [hours, minutes] = timeString.split(':');
+  // useEffect(() => {
+  //   // Calculate the discounted price based on the totalPoint
+  //   const calculateDiscountedPrice = () => {
+  //     const discount = Math.floor(totalPoint / 100) * 5;
+  //     const newDiscountedPrice = selectedServiceCost - discount;
+  //     setDiscountedPrice(newDiscountedPrice > 0 ? newDiscountedPrice : 0);
+  //   };
 
-    setJourneyHours(parseInt(hours));
-    setJourneyMinutes(parseInt(minutes));
-  };
+  //   calculateDiscountedPrice();
+  // }, [totalPoint, selectedServiceCost]);
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsPopupOpen(true);
+    setDiscountedPrice(0);
+
+    return;
+  };
+
+  const handleConfirm = (e) => {
     e.preventDefault();
 
     const data = {
       customerId: customerid,
       starTime: journeyTime + ":00",
-      date: new Date().toISOString(),
-      serviceId: 1,
+      date: journeyDate,
+      serviceId: serviceId,
       address: address,
       phone: phoneNumber,
-      note: message
+      note: message,
+      price: discountedPrice, // Use the discounted price
+      pointUsed: lastTotalPoint
     };
 
     axios.post('https://localhost:7013/api/Process', data)
       .then(response => {
         console.log(response.data);
-        setSubmittedData(response.data); // Lưu trữ dữ liệu đã gửi về
-        setIsPopupOpen(true);
+        setSubmittedData(response.data);
       })
       .catch(error => {
         console.error(error);
@@ -72,63 +105,134 @@ const BookingForm = () => {
     setMessage('');
   };
 
-  const handleClosePopup = () => {
-    setIsPopupOpen(false);
-    setSubmittedData(null); // Đặt lại dữ liệu đã gửi về sau khi đóng popup
+  const handleUseTotalPoint = () => {
+
+    const pointsToUse = Math.floor(totalPoint / 100) * 100;
+    const discountAmount = Math.floor(pointsToUse / 100) * 5;
+    // setOldTotalPoint(totalPoint)
+    if (!handleNotUseTotalPoint) {
+      setTotalPoint(0);
+    }
+    setLastTotalPoint(totalPoint);
+    setDiscountedPrice(discountAmount > 0 ? selectedServiceCost - discountAmount : selectedServiceCost);
+
+    setIsPointUsed(true);
+  };
+  const handleNotUseTotalPoint = () => {
+    // setOldTotalPoint(totalPoint);
+    // console.log(totalPoint);
+    // console.log(oldTotalPoint);
+
+    setTotalPoint(Math.floor(totalPoint / 100) * 100);
+    setLastTotalPoint(0);
+
+    setIsPointUsed(false);
+    setDiscountedPrice(selectedServiceCost);
   };
 
+
+
+
+
+
+
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSubmittedData(null);
+  };
+
+  const handleCloseNotification = () => {
+    setNotification(null);
+  };
+
+
   return (
-    
     <Form onSubmit={handleSubmit}>
+      {/* {notification && (
+        <Notification message={notification} onClose={handleCloseNotification} />
+      )} */}
+
       <FormGroup className="booking__form d-inline-block me-4 mb-4">
-        <label for="firstName">Tên</label>
         <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block ms-1 mb-4">
-        <label for="firstName">Họ</label>
         <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block me-4 mb-4">
-        <label for="firstName">Số điện thoại</label>
         <input type="text" placeholder="Phone Number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block ms-1 mb-4">
-        <label for="firstName">Địa chỉ</label>
         <input type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block me-4 mb-4">
-        <label for="firstName">Ngày làm</label>
         <input type="date" placeholder="Journey Date" value={journeyDate} onChange={(e) => setJourneyDate(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block ms-1 mb-4">
-        <label for="firstName">Hẹn giờ</label>
         <input type="time" placeholder="Journey Time" className="time__picker" value={journeyTime} onChange={(e) => setJourneyTime(e.target.value)} />
-        {/* <input type="time" placeholder="Journey Time" className="time__picker" value={journeyTime} onChange={handleJourneyTimeChange} /> */}
       </FormGroup>
       <FormGroup>
-        <label for="firstName">Ghi chú</label>
         <textarea rows={5} type="textarea" className="textarea" placeholder="Write" value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
       </FormGroup>
 
+      <button className="normal-button" type="submit">Submit</button>
 
-      <button className="normal-button" type="submit">Xác nhận</button>
+      <Modal
+        isOpen={isPopupOpen}
+        onRequestClose={handleClosePopup}
+        ClassName="custom-overlay"
 
-      <Modal isOpen={isPopupOpen} onRequestClose={handleClosePopup} >
+        style={{
+          content: {
+            width: '600px',  // Điều chỉnh kích thước chiều rộng của Modal
+            height: '400px', // Điều chỉnh kích thước chiều cao của Modal
+            margin: 'auto',  // Căn giữa theo chiều ngang
+            borderRadius: '8px', // Bo tròn góc của Modal
+            // Các thuộc tính khác để tùy chỉnh kiểu dáng
+          }
+        }}
+      >
 
-        {/* Nội dung popup */}
-        {submittedData && (
-          <div>
+        {/* Render the content of the popup */}
+        {
+          <div class="mb-4 fw-bold ">
             <h3>Submitted Data</h3>
-            <p>Customer ID: {submittedData.customerId}</p>
+            <p>Customer ID: {customerid}</p>
             <p>Customer name: {lastName + ' ' + firstName}</p>
-            <p>Start Time: {submittedData.starTime}</p>
-            <p>Status: {submittedData.status}</p>
-            <p>Date: {submittedData.date}</p>
-            <p>Note: {submittedData.note}</p>
+            <p>Start Time: {journeyTime + ":00"}</p>
+
+            <p>Service Name: {selectedServiceName}</p>
+
+            {/* <p>Date: {format(new Date(journeyDate), 'dd/MM/yyyy')}</p> */}
+            <p>price: {selectedServiceCost}</p>
+            <p>Total price: {discountedPrice}</p>
+
+
+
+
+            <div>
+              <p>Do you want to use your total points?</p>
+
+              <div>
+                <button className="normal-button" onClick={handleUseTotalPoint}>
+                  Use {Math.floor(totalPoint / 100) * 100} points
+                </button>
+                <button className="normal-button" onClick={handleNotUseTotalPoint}>
+                  No
+                </button>
+              </div>
+
+            </div>
+
+
+
+
+            <p>Note: {message}</p>
             {/* Các thông tin khác */}
-            <button onClick={handleClosePopup}>Close</button>
+            <button className="normal-button" onClick={handleClosePopup}>Close</button>
+            <button className="normal-button" onClick={handleConfirm}>Confirm</button>
           </div>
-        )}
+        }
       </Modal>
     </Form>
   );

@@ -4,20 +4,27 @@ import Helmet from "../components/Helmet/Helmet";
 import { useParams } from "react-router-dom";
 import BookingForm from "../components/UI/BookingForm";
 import PaymentMethod from "../components/UI/PaymentMethod";
+import '../styles/rating-list.css';
+import moment from "moment";
+import _ from 'lodash';
+
 import React, { useEffect, useState } from 'react';
+
 import axios from 'axios';
 
 const ServiceTypeDetail = () => {
   const typeId = useParams();
   const [service, setService] = useState(null);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
+  const [rating, setRating] = useState();
   const [selectedServiceName, setSelectedServiceName] = useState("");
   const [selectedType, setSelectedType] = useState("");
+  const [selectedCost, setSelectedServiceCost] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
-
-
   const id = parseInt(typeId.id);
   console.log(id);
+
+
   useEffect(() => {
     axios.get(`https://localhost:7013/api/Service/Type/${id}`)
       .then(response => {
@@ -28,7 +35,22 @@ const ServiceTypeDetail = () => {
       .catch(error => {
         console.error('Error fetching service type detail:', error);
       });
+
+
+
+
+    axios.get(`https://localhost:7013/api/Rating/Service/${id}`)
+      .then(response => {
+        const data = response.data.data;
+        setRating(data);
+      })
+      .catch(error => {
+        console.error('Error fetching rating list:', error);
+      });
   }, [id]);
+
+
+
   const openModal = () => {
     setModalOpen(true);
   };
@@ -70,6 +92,9 @@ const ServiceTypeDetail = () => {
 
 
 
+  const averageRate = _.meanBy(rating, 'rate');
+  const averageRateInt = Math.round(averageRate);
+
   if (!service) {
     return <div>Loading...</div>;
   }
@@ -96,30 +121,6 @@ const ServiceTypeDetail = () => {
                   sunt.
                 </p>
 
-                <div className="about__section-item d-flex align-items-center">
-                  <p className="section__description d-flex align-items-center gap-2">
-                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                    amet.
-                  </p>
-
-                  <p className="section__description d-flex align-items-center gap-2">
-                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                    amet.
-                  </p>
-                </div>
-
-                <div className="about__section-item d-flex align-items-center">
-                  <p className="section__description d-flex align-items-center gap-2">
-                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                    amet.
-                  </p>
-
-                  <p className="section__description d-flex align-items-center gap-2">
-                    <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                    amet.
-                  </p>
-                </div>
-
               </div>
             </Col>
           </Row>
@@ -139,7 +140,7 @@ const ServiceTypeDetail = () => {
                   </h6>
 
                   <span className=" d-flex align-items-center gap-2">
-                    <span style={{ color: "#f9a826" }}>
+                    {/* <span style={{ color: "#f9a826" }}>
                       <i class="ri-star-s-fill"></i>
                       <i class="ri-star-s-fill"></i>
                       <i class="ri-star-s-fill"></i>
@@ -227,7 +228,8 @@ const ServiceTypeDetail = () => {
             <Col lg="7" className="mt-5">
               <div className="booking-info mt-5">
                 <h5 className="mb-4 fw-bold ">Thông tin đặt</h5>
-                <BookingForm serviceId={selectedServiceId} />
+                <BookingForm serviceId={selectedServiceId} selectedServiceName={selectedServiceName}
+                  selectedServiceType={selectedType} selectedServiceCost={selectedCost} />
               </div>
             </Col>
 
@@ -249,6 +251,7 @@ const ServiceTypeDetail = () => {
                       {service.costPerSlot}vnd
                     </li>
                   ))} */}
+
                   {service.map(service => (
                     <li
                       className={`btn service-item ${service.serviceId === selectedServiceId ? 'selected' : ''}`}
@@ -256,17 +259,69 @@ const ServiceTypeDetail = () => {
                       onClick={() => {
                         setSelectedServiceId(service.serviceId);
                         setSelectedServiceName(service.name);
+                        setSelectedServiceCost(service.cost)
 
                       }}
                     >
-                      {service.name}
+                      {service.name} / {service.cost} VND
                     </li>
                   ))}
 
                 </ul>
+
+
               </div>
             </Col>
           </Row>
+
+
+
+          <div className="rating">
+            <h4>ĐÁNH GIÁ DỊCH VỤ</h4>
+            <div className="average-rating">
+              <h3>Điểm đánh giá: {averageRate.toFixed(1)}/5</h3>
+              <h3>
+                <div className="rating-stars">
+                  {[...Array(averageRateInt)].map((_, index) => (
+                    <i key={index} class="ri-star-s-fill"></i>
+                  ))}
+                </div>
+              </h3>
+            </div>
+
+            <div className="rating-list">
+              {rating.map(rating => (
+                <li key={rating.id} className="rating-item">
+                  {/* <div>{rating.customerAccount.account.img}</div> */}
+                  <Row>
+                    <Col lg="1">
+                      {/* Hiện Avatar */}
+                      <img class="avatar__img" src="https://i.kym-cdn.com/photos/images/original/002/601/167/c81" />
+                    </Col>
+
+
+                    <Col lg="10">
+                      {/* Hiện tên */}
+                      <div>{rating.customer.lastName} {rating.customer.firstName}</div>
+
+                      <div className="rating-stars">
+
+                        {/* Hiện số sao */}
+                        {[...Array(rating.rate)].map((_, index) => (
+                          <i key={index} class="ri-star-s-fill"></i>
+                        ))}</div>
+
+                      {/* Hiện ngày giờ | Dịch vụ */}
+                      <div className="date">{moment(rating.createdDate).format('hh:mm - DD/MM/YYYY')} | Dịch vụ: {rating.service.name}</div>
+                      {/* Hiện comment */}
+                      <div>{rating.comment}</div>
+
+                    </Col>
+                  </Row>
+                </li>
+              ))}
+            </div>
+          </div>
         </Container>
       </section>
     </Helmet>

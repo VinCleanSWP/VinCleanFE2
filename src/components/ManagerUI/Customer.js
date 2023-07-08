@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
+import firebase from 'firebase/app';
+import 'firebase/storage';
+import './FireBaseConfig';
 import { storage } from './FireBaseConfig';
-// import { storage } from 'firebase/storage';
 
 
 
@@ -11,9 +13,9 @@ function Customer() {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [customerList, setCustomerList] = useState([]);
-    const [employeeData, setEmployeeData] = useState(null);
+
     const [customerData, setCustomerData] = useState(null);
-    const [employeeList, setEmployeeList] = useState([]);
+
     const [account, setAccount] = useState([]);
     const [userName, setUserName] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -22,36 +24,16 @@ function Customer() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [gender, setGender] = useState('');
-    const [employeeId, setEmployeeId] = useState('');
+    const [img, setImage] = useState('');
+
     const [customerId, setCustomerId] = useState('');
     const accountId = localStorage.getItem('id');
 
-    const [url, setUrl] = useState('');
-
-    const deleteEmployee = (employeeId) => {
-        axios.delete(`https://localhost:7013/api/Employee/${employeeId}`)
-            .then(response => {
-                console.log('Employee deleted successfully');
-                const updatedEmployeeList = employeeList.filter(employee => employee.employeeId !== employeeId);
-                setEmployeeList(updatedEmployeeList);
-                // Thực hiện các hành động khác sau khi xóa thành công
-            })
-            .catch(error => {
-                console.error('Error deleting customer:', error);
-                // Xử lý lỗi khi xóa khách hàng
-            });
-    }
 
 
-    const fetchEmpoloyeeList = () => {
-        axios.get('https://localhost:7013/api/Employee')
-            .then(response => {
-                setEmployeeList(response.data.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
+
+
+
     useEffect(() => {
 
 
@@ -70,6 +52,7 @@ function Customer() {
                 setPhone(data.phone);
                 setEmail(data.account.email);
                 setPassword(data.account.password);
+                setImage(data.account.img);
 
 
             })
@@ -85,66 +68,6 @@ function Customer() {
 
     }, [customerId]);
 
-    useEffect(() => {
-
-
-        axios
-            .get(`https://localhost:7013/api/Employee/${employeeId}`)
-            .then(response => {
-                const { data } = response.data;
-
-                setEmployeeData(data);
-                setUserName(data.account.name);
-
-                setFirstName(data.firstName);
-                setLastName(data.lastName);
-                setGender(data.gender);
-                setPhone(data.phone);
-                setEmail(data.account.email);
-                setPassword(data.account.password);
-
-
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-
-
-
-
-
-
-
-    }, [employeeId]);
-    const handleChangeSubmit = () => {
-        const updatedEmployee = {
-            employeeId: employeeId,
-            // accountId: 27,
-            img: "tuthemvaonha",//them vao giup tao Phung
-            status: "Available",
-            name: userName,
-            firstName: firstName,
-            lastName: lastName,
-            gender: gender,
-            phone: phone,
-            email: email,
-            password: password
-        };
-        console.log(updatedEmployee);
-
-
-        axios
-            .put(`https://localhost:7013/api/Employee`, updatedEmployee)
-            .then(response => {
-                console.log('Employee updated successfully:', response.data);
-
-                // Do something after successful update
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Handle error
-            });
-    };
 
 
 
@@ -158,17 +81,7 @@ function Customer() {
                 console.error(error);
             });
     }, []);
-    useEffect(() => {
-        axios.get('https://localhost:7013/api/Employee')
-            .then(response => {
-                setEmployeeList(response.data.data);
-                console.log(account);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        fetchEmpoloyeeList();
-    }, []);
+
     useEffect(() => {
         axios.get('https://localhost:7013/api/Account')
             .then(response => {
@@ -182,47 +95,11 @@ function Customer() {
 
     }, []);
 
-    const handleImageUpload = async (e) => {
-        const file = e.target.files[0];
-        const storageRef = storage.ref(`Employee/${file.name}`);
-        const fileRef = storageRef.child(file.name);
-        await fileRef.put(file);
-        const imgUrl = await fileRef.getDownloadURL();
-        setUrl(imgUrl);
-        console.log(imgUrl);
-    };
-
-
-    const handleSubmit = () => {
-        // Tạo object chứa dữ liệu form
-        const formData = {
-            name: userName,
-            email: email,
-            img: url,
-            password: password,
-
-            gender: gender,
-            firstName: firstName,
-            lastName: lastName,
-            phone: phone
-
-        };
-
-        // Gửi dữ liệu form đến API
-        axios.post('https://localhost:7013/api/Employee', formData)
-            .then(response => {
-                // Xử lý kết quả từ API (nếu cần)
-                console.log(response.data);
-            })
-            .catch(error => {
-                // Xử lý lỗi (nếu có)
-                console.error(error);
-            });
-    };
 
 
 
-    console.log(customerList);
+
+
     return (
         <div>
              <Modal
@@ -233,13 +110,16 @@ function Customer() {
                     overlay: {
                         zIndex: 9999,
                         display: 'flex',
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Tạo màu nền tối đen
 
                     },
                     content: {
-                        width: '600px',
-                        height: '600px',
-                        margin: 'auto'
-                    }
+                        width: '800px',
+                        height: '800px',
+                        margin: 'auto',
+                        overflow: 'hidden'
+                    },
+
                 }}
 
             >
@@ -249,58 +129,59 @@ function Customer() {
                             <div className="tab-content">
                                 <div className="tab-pane fade active show" id="account-general">
                                     <hr className="border-light m-0" />
-                                    <div className="card-body">
+                                    <div className="modal-header"> <div className="card-body">
                                         <div className="form-group">
-                                            <label className="form-label">User name</label>
+                                            <label className="form-label" strong><strong>User name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={userName}
-                                                onChange={(e) => setUserName(e.target.value)}
+                                                readOnly
                                             />
                                         </div>
-                                        <div>
-                                            <label className="form-label">Image</label>
+                                        <div className="form-group">
 
-                                            <input type="file" onChange={handleImageUpload} />
+                                            <label className="form-label" strong><strong>Image</strong></label>
+                                            <br></br>
+                                            <img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
 
 
                                         </div>
                                         <div className="form-group">
-                                            <label className="form-label">First name</label>
+                                            <label className="form-label"><strong>First name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={firstName}
-                                                onChange={(e) => setFirstName(e.target.value)}
+                                                readOnly
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label className="form-label">Last name</label>
+                                            <label className="form-label" ><strong>Last name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={lastName}
-                                                onChange={(e) => setLastName(e.target.value)}
+                                                readOnly
                                             />
                                         </div>
-                                        <div>
-                                            <label className="form-group">Gender</label>
-                                            <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
-                                                <option value="">Choose gender</option>
-                                                <option value="Male">Male</option>
-                                                <option value="Female">Female</option>
-                                                <option value="Other">Other</option>
-                                            </select>
 
+                                        <div><label className="form-group" ><strong>Gender</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={gender}
+                                                readOnly
+                                            />
                                         </div>
+
                                         <div className="form-group">
-                                            <label className="form-label">Phone</label>
+                                            <label className="form-label" ><strong>Phone</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={phone}
-                                                onChange={(e) => setPhone(e.target.value)}
+                                                readOnly
                                             />
                                         </div>
 
@@ -311,7 +192,7 @@ function Customer() {
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
+                                                readOnly
                                             />
                                         </div>
                                         <div className="form-group">
@@ -320,20 +201,31 @@ function Customer() {
                                                 type="text"
                                                 className="form-control"
                                                 value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
+                                                readOnly
                                             />
                                         </div>
-                                    </div>
+                                    </div></div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="text-right mt-3">
-                    <button type="button" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+
                     <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
                 </div>
             </Modal>
+            <div className='modal-dialog modal-lg modal-dialog-centered'>
+                <div className="modal-content">
+                    <div className="modal-header" >
+
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                    </div>
+
+                </div>
+            </div>
+
             <div className="page-container">
                 {/* MAIN CONTENT*/}
                 <div className="main-content">
@@ -410,7 +302,7 @@ function Customer() {
 
                                                         <td>{customer.customerId}</td>
                                                         <div></div>
-                                                        <td><img src={customer.account.img} alt="Avatar" /></td>
+                                                        <img src={customer.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
                                                         <td>{customer.lastName}</td>
                                                         <td>{customer.firstName}</td>
                                                         <td>{customer.phone}</td>

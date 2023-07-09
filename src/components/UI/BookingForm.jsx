@@ -175,7 +175,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         <textarea rows={5} type="textarea" className="textarea" placeholder="Write" value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
       </FormGroup>
 
-      <button className="normal-button" type="submit">Submit</button>
+      <button className="normal-button" type="submit">Xác nhận</button>
 
       <Modal
         isOpen={isPopupOpen}
@@ -184,8 +184,8 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
 
         style={{
           content: {
-            width: '600px',  // Điều chỉnh kích thước chiều rộng của Modal
-            height: '400px', // Điều chỉnh kích thước chiều cao của Modal
+            width: '670px',  // Điều chỉnh kích thước chiều rộng của Modal
+            height: '500px', // Điều chỉnh kích thước chiều cao của Modal
             margin: 'auto',  // Căn giữa theo chiều ngang
             borderRadius: '8px', // Bo tròn góc của Modal
             // Các thuộc tính khác để tùy chỉnh kiểu dáng
@@ -195,42 +195,36 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
 
         {/* Render the content of the popup */}
         {
-          <div class="mb-4 fw-bold ">
+          <div class="submit-form mb-4">
             <h3>Submitted Data</h3>
-            <p>Customer ID: {customerid}</p>
-            <p>Customer name: {lastName + ' ' + firstName}</p>
-            <p>Start Time: {journeyTime + ":00"}</p>
-
-            <p>Service Name: {selectedServiceName}</p>
-
+            <br></br>
+            <p><strong>ID của bạn:</strong> {customerid}</p>
+            <p><strong>Tên bạn:</strong> {lastName + ' ' + firstName}</p>
+            <p><strong>Thời gian bắt đầu làm:</strong> {journeyTime + ":00"}</p>
+            <p><strong>Dịch vụ bạn đã chọn:</strong> {selectedServiceName}</p>
             {/* <p>Date: {format(new Date(journeyDate), 'dd/MM/yyyy')}</p> */}
-            <p>price: {selectedServiceCost}</p>
-            <p>Total price: {discountedPrice}</p>
-
-
-
-
+            <p><strong>Tạm tính:</strong> {selectedServiceCost}</p>
             <div>
-              <p>Do you want to use your total points?</p>
+              <p><strong>Bạn có muốn dùng số điểm đã tích không?</strong></p>
 
               <div>
                 <button className="normal-button" onClick={handleUseTotalPoint}>
-                  Use {Math.floor(totalPoint / 100) * 100} points
+                  Dùng {Math.floor(totalPoint / 100) * 100} pts
                 </button>
                 <button className="normal-button" onClick={handleNotUseTotalPoint}>
                   No
                 </button>
               </div>
+            {/* Làm switch button */}
 
             </div>
+            <br></br>
 
-
-
-
-            <p>Note: {message}</p>
+            <p><strong>Tổng tiền:</strong> {discountedPrice}</p>
+            <p><strong>Note:</strong> {message}</p>
             {/* Các thông tin khác */}
             <button className="normal-button" onClick={handleClosePopup}>Close</button>
-            <button className="normal-button" onClick={handleConfirm}>Confirm</button>
+            <button className="submit-button" onClick={handleConfirm}>Xác nhận</button>
           </div>
         }
       </Modal>

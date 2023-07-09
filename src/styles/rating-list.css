@@ -3,6 +3,9 @@
   border-bottom: 1px solid rgba(0,0,0,.09);
 } */
 
+.rating-right-container{
+  padding-left: 10px;
+}
 
 .rating-list {
     margin-top: 20px; /* Khoảng cách từ phần trước danh sách đánh giá */

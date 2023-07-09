@@ -15,6 +15,9 @@ export default function BlogDetail() {
     const[OldImageUrl,setOldImageUrl] = useState('');
     
     const [tempImageUrl, setTempImageUrl] = useState('');
+    const [oldImageUrl,setOldImageUrl] = useState('');
+
+
 
     const blogId = useParams();
     const id = parseInt(blogId.id);

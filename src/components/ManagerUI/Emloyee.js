@@ -8,6 +8,7 @@ import 'firebase/storage';
 import './FireBaseConfig';
 // import { storage } from 'firebase/storage';
 import { storage } from './FireBaseConfig';
+import moment from 'moment';
 
 
 
@@ -28,6 +29,10 @@ function Table() {
     const [password, setPassword] = useState('');
     const [gender, setGender] = useState('');
     const [img, setImage] = useState('');
+    const [status, setstatus] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setendDate] = useState('');
+    const [address, setAddress] = useState('');
     const [newUserName, setNewUserName] = useState('');
     const [newFirstName, setNewFirstName] = useState('');
     const [newLastName, setNewLastName] = useState('');
@@ -36,6 +41,12 @@ function Table() {
     const [newPassword, setNewPassword] = useState('');
     const [newGender, setNewGender] = useState('');
     const [newImage, setTempImageUrl] = useState('');
+    const [newStatus, setNewStatus] = useState('');
+    const [newStartDate, setNewStartDate] = useState('');
+    const [newEndDate, setNewEndDate] = useState('');
+    const [isDeleted, setIsDeleted] = useState('');
+    const [createdDate, setCreatedDate] = useState('');
+    const [accountId, setAccountId] = useState('')
     const [employeeId, setEmployeeId] = useState('');
     const [customerId, setCustomerId] = useState('');
     const[ModalIsOpen,setModalIsOpen] = useState('');
@@ -77,6 +88,8 @@ function Table() {
                 const { data } = response.data;
 
                 setEmployeeData(data);
+                setEmployeeId(data.employeeId)
+                setAccountId(data.account.accountId);
                 setUserName(data.account.name);
                 setFirstName(data.firstName);
                 setLastName(data.lastName);
@@ -173,7 +186,7 @@ function Table() {
             email: newEmail,
             img: url,
             password: newPassword,
-
+            status: newStatus,
             gender: newGender,
             firstName: newFirstName,
             lastName: newLastName,
@@ -216,7 +229,7 @@ function Table() {
                         width: '800px',
                         height: '800px',
                         margin: 'auto',
-                        overflow: 'hidden'
+                        overflow: 'auto'
                     }
                 }}
 
@@ -228,6 +241,24 @@ function Table() {
                                 <div className="tab-pane fade active show" id="account-general">
                                     <hr className="border-light m-0" />
                                     <div className="card-body">
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Employee ID</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={employeeId} readOnly
+
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Account ID</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={accountId} readOnly
+
+                                            />
+                                        </div>
                                         <div className="form-group">
                                             <label className="form-label"><strong>User name</strong></label>
                                             <input
@@ -272,6 +303,24 @@ function Table() {
                                                 onChange={(e) => setLastName(e.target.value)}
                                             />
                                         </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Status</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={status}
+                                                onChange={(e) => setstatus(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Created Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={moment(createdDate).format('YYYY-MM-DD')}
+                                                readOnly
+                                            />
+                                        </div>
                                         <div>
                                             <label className="form-group"><strong>Gender</strong></label>
                                             <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
@@ -298,6 +347,43 @@ function Table() {
                                                 onChange={(e) => setPhone(e.target.value)}
                                             />
                                         </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Start Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={moment(startDate).format('YYYY-MM-DD')}
+                                                onChange={(e) => setStartDate(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>End Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={moment(endDate).format('YYYY-MM-DD')}
+                                                onChange={(e) => setEndDate(e.target.value)}
+                                            />
+                                        </div>
+
+
+
+
+
+
+
+
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Is deleted</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={isDeleted}
+                                                onChange={(e) => isDeleted(e.target.value)} readOnly
+                                            />
+                                        </div>
+
+
 
 
                                         <div className="form-group">
@@ -309,6 +395,8 @@ function Table() {
                                                 onChange={(e) => setEmail(e.target.value)}
                                             />
                                         </div>
+
+
                                         <div className="form-group">
                                             <label className="form-label"><strong>Password</strong></label>
                                             <input
@@ -344,7 +432,7 @@ function Table() {
                         width: '800px',
                         height: '800px',
                         margin: 'auto',
-                        overflow: 'hiden'
+                        overflow: 'auto'
                     }
                 }}
 
@@ -356,6 +444,9 @@ function Table() {
                                 <div className="tab-pane fade active show" id="account-general">
                                     <hr className="border-light m-0" />
                                     <div className="card-body">
+
+
+
                                         <div className="form-group">
                                             <label className="form-label"><strong>User name</strong></label>
                                             <input
@@ -392,6 +483,7 @@ function Table() {
                                                 onChange={(e) => setNewLastName(e.target.value)}
                                             />
                                         </div>
+
                                         <div>
                                             <label className="form-group"><strong>Gender</strong></label>
                                             <select id="gender" value={newGender} onChange={(e) => setNewGender(e.target.value)}>
@@ -400,6 +492,12 @@ function Table() {
                                                 <option value="Female">Female</option>
                                                 <option value="Other">Other</option>
                                             </select>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={newGender}
+                                                onChange={(e) => setNewGender(e.target.value)}
+                                            />
 
                                         </div>
                                         <div className="form-group">
@@ -409,6 +507,25 @@ function Table() {
                                                 className="form-control mb-1"
                                                 value={newPhone}
                                                 onChange={(e) => setNewPhone(e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Start Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={newStartDate}
+                                                onChange={(e) => setNewStartDate(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>End Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={newEndDate}
+                                                onChange={(e) => setNewEndDate(e.target.value)}
                                             />
                                         </div>
 

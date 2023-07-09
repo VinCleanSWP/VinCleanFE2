@@ -87,7 +87,26 @@ const BlogDetails = () => {
     setComment(event.target.value);
   };
 
-  const handleSubmitComment = (event) => {
+  // const handleSubmitComment = (event) => {
+  //   event.preventDefault();
+
+  //   const commentData = {
+  //     content: comment,
+  //     blogId: blogid,
+  //     modifiedBy: accountId
+  //   };
+
+  //   axios.post('https://localhost:7013/api/Comment', commentData)
+  //     .then(response => {
+  //       console.log('Comment posted:', response.data);
+  //       setComment('');
+  //       setComments(prevComments => [...prevComments, response.data.data]);
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //     });
+  // };
+  const handleSubmitComment = async (event) => {
     event.preventDefault();
 
     const commentData = {
@@ -96,16 +115,21 @@ const BlogDetails = () => {
       modifiedBy: accountId
     };
 
-    axios.post('https://localhost:7013/api/Comment', commentData)
-      .then(response => {
-        console.log('Comment posted:', response.data);
-        setComment('');
-        setComments(prevComments => [...prevComments, response.data.data]);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    try {
+      const response = await axios.post('https://localhost:7013/api/Comment', commentData);
+      console.log('Bình luận đã được đăng:', response.data);
+
+      // Gọi lại API để lấy danh sách bình luận mới nhất
+      const updatedCommentsResponse = await axios.get(`https://localhost:7013/api/Comment?blogId=${blogid}`);
+      const updatedComments = updatedCommentsResponse.data.data;
+
+      setComment('');
+      setComments(updatedComments);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
 
   const handleDeleteComment = (commentId) => {
     axios.delete(`https://localhost:7013/api/Comment/${commentId}`)

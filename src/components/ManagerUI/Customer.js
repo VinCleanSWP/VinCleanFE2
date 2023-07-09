@@ -25,9 +25,18 @@ function Customer() {
     const [password, setPassword] = useState('');
     const [gender, setGender] = useState('');
     const [img, setImage] = useState('');
+    const [totalmoney, setTotalMoney] = useState('');
+    const [totalpoint, setTotalPoint] = useState('');
+    const [status, setStatus] = useState('');
+    const [dob, setDob] = useState('');
+    const [address, setAddress] = useState('');
+    const [accountId, setAccountId] = useState('');
+    const [createdDate, setCreatedDate] = useState('');
+    const [isDeleted, setIsDeleted] = useState('');
+
 
     const [customerId, setCustomerId] = useState('');
-    const accountId = localStorage.getItem('id');
+
 
 
 
@@ -53,6 +62,14 @@ function Customer() {
                 setEmail(data.account.email);
                 setPassword(data.account.password);
                 setImage(data.account.img);
+                setStatus(data.account.status);
+                setAddress(data.address);
+                setTotalMoney(data.totalMoney);
+                setTotalPoint(data.totalPoint);
+                setAccountId(data.account.accountId);
+                setCreatedDate(data.createdDate);
+                setIsDeleted(data.account.isDeleted);
+
 
 
             })
@@ -102,7 +119,7 @@ function Customer() {
 
     return (
         <div>
-             <Modal
+            <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
                 contentLabel="Add Employee"
@@ -117,7 +134,7 @@ function Customer() {
                         width: '800px',
                         height: '800px',
                         margin: 'auto',
-                        overflow: 'hidden'
+                        overflow: 'auto'
                     },
 
                 }}
@@ -130,6 +147,24 @@ function Customer() {
                                 <div className="tab-pane fade active show" id="account-general">
                                     <hr className="border-light m-0" />
                                     <div className="modal-header"> <div className="card-body">
+                                        <div className="form-group">
+                                            <label className="form-label" strong><strong>Account ID</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={accountId}
+                                                readOnly
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label" strong><strong>Customer ID</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={customerId}
+                                                readOnly
+                                            />
+                                        </div>
                                         <div className="form-group">
                                             <label className="form-label" strong><strong>User name</strong></label>
                                             <input
@@ -165,6 +200,24 @@ function Customer() {
                                                 readOnly
                                             />
                                         </div>
+                                        <div className="form-group">
+                                            <label className="form-label" ><strong>Created Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={createdDate}
+                                                readOnly
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label" ><strong>Date of birth</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={dob}
+                                                readOnly
+                                            />
+                                        </div>
 
                                         <div><label className="form-group" ><strong>Gender</strong></label>
                                             <input
@@ -173,6 +226,28 @@ function Customer() {
                                                 value={gender}
                                                 readOnly
                                             />
+                                        </div>
+                                        <div>
+                                            <label className="form-group" ><strong>Status</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={status}
+                                                readOnly
+                                            />
+
+
+                                        </div>
+                                        <div>
+                                            <label className="form-group" ><strong>Is deleted</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={isDeleted}
+                                                readOnly
+                                            />
+
+
                                         </div>
 
                                         <div className="form-group">
@@ -184,10 +259,17 @@ function Customer() {
                                                 readOnly
                                             />
                                         </div>
+                                        <div><label className="form-group" ><strong>Address</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={address}
+                                                readOnly
+                                            /></div>
 
 
                                         <div className="form-group">
-                                            <label className="form-label">E-mail</label>
+                                            <label className="form-label"><strong>E-mail</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
@@ -196,7 +278,7 @@ function Customer() {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label className="form-label">Password</label>
+                                            <label className="form-label"><strong>Password</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -204,7 +286,28 @@ function Customer() {
                                                 readOnly
                                             />
                                         </div>
-                                    </div></div>
+                                        <div>
+                                            <label className="form-label"><strong>Total Money</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={totalmoney}
+                                                readOnly
+                                            />
+
+                                        </div>
+                                        <div>
+                                            <label className="form-label"><strong>Total Point</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={totalpoint}
+                                                readOnly
+                                            />
+                                        </div>
+                                    </div>
+
+                                    </div>
 
                                 </div>
                             </div>

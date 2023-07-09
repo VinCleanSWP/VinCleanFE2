@@ -2,20 +2,34 @@ import React from "react";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Modal } from "reactstrap";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { storage } from './FireBaseConfig';
+
+
 const Service = () => {
     const [servicetype, setType] = useState([]);
+    const [servicelist, setServiceList] = useState([]);
 
-    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalServiceIsOpen, setServiceModalIsOpen] = useState(false);
+    const [modalTypeIsOpen, setTypeModalIsOpen] = useState(false);
     const accountId = localStorage.getItem('id');
     const [servicetypeid, setServiceTypeId] = useState('');
-    const [ServiceId, setServiceId] = useState('');
+    const [serviceId, setServiceId] = useState('');
+
     const [Name, setName] = useState('');
     const [Cost, setCost] = useState('');
     const [MinimalSlot, setMinimalSlot] = useState('');
     const [Description, setDescription] = useState('');
     const [Status, setStatus] = useState('');
     const [TypeName, setTypeName] = useState('');
+    const [TypeImage, setTypeImage] = useState('');
 
+    const [editingServiceId, setEditingServiceId] = useState('');
+    const [editingServiceName, setEditingServiceName] = useState('');
+    const [editingServiceCost, setEditingServiceCost] = useState('');
+    const [editingServiceDescription, setEditingServiceDescription] = useState('');
+    const [editingServiceStatus, setEditingServiceStatus] = useState('');
 
     useEffect(() => {
         axios.get(`https://localhost:7013/api/Type`)
@@ -27,109 +41,250 @@ const Service = () => {
                 console.error('Error fetching blog list:', error);
             });
     }, []);
+
     useEffect(() => {
         axios.get(`https://localhost:7013/api/Type/${servicetypeid}`)
             .then(response => {
                 const data = response.data.data;
                 setTypeName(data.type1)
+                setTypeImage(data.img)
+            })
+            .catch(error => {
+                console.error('Error fetching blog list:', error);
+            });
 
-
-
+        axios.get(`https://localhost:7013/api/Service/Type/${servicetypeid}`)
+            .then(response => {
+                const data = response.data.data;
+                setServiceList(data)
             })
             .catch(error => {
                 console.error('Error fetching blog list:', error);
             });
     }, [servicetypeid]);
+
     useEffect(() => {
         axios.get(`https://localhost:7013/api/Service/Type/`)
             .then(response => {
                 const data = response;
-
                 setServiceId(data.ServiceId);
                 setCost(data.cost);
                 setName(data.name);
                 setMinimalSlot(data.minimalSlot);
                 setDescription(data.description);
-                setStatus(data.status)
-                console.log(data.name)
+                setStatus(data.status);
+                console.log(data.name);
             })
-
             .catch(error => {
-                console.error('Error fetching  list:', error);
+                console.error('Error fetching list:', error);
             });
     }, []);
 
+
+
+    const startEditingService = (serviceId, serviceName, serviceCost, serviceDescription, serviceStatus) => {
+        setEditingServiceId(serviceId);
+        setEditingServiceName(serviceName);
+        setEditingServiceCost(serviceCost);
+        setEditingServiceDescription(serviceDescription);
+        setEditingServiceStatus(serviceStatus);
+    };
+    console.log(editingServiceStatus);
+    const saveEditedService = () => {
+        // Tạo đối tượng dữ liệu mới từ các giá trị chỉnh sửa
+        const editedService = {
+            serviceId: editingServiceId,
+            name: editingServiceName,
+            cost: editingServiceCost,
+            description: editingServiceDescription,
+            status: editingServiceStatus
+        };
+        console.log(editedService);
+
+        // Gửi yêu cầu PUT để cập nhật dịch vụ
+        axios.put(`https://localhost:7013/api/Service`, editedService)
+            .then(response => {
+
+
+            })
+            .catch(error => {
+                console.log("Put fail");
+            });
+    };
+    const handleImageUpload = async e => {
+        const file = e.target.files[0];
+        const storageRef = storage.ref(`Employee/${file.name}`);
+        const fileRef = storageRef.child(file.name);
+        await fileRef.put(file);
+        const imgUrl = await fileRef.getDownloadURL();
+        // setTempImageUrl(imgUrl);
+    };
+
+
     return (
-
-
         <div>
-            <div>  <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={() => setModalIsOpen(false)}
+            <Modal
+                isOpen={modalTypeIsOpen}
+                onRequestClose={() => setTypeModalIsOpen(false)}
                 contentLabel="Add Employee"
-                portalClassName="popup-container"
+
                 style={{
                     overlay: {
-                        zIndex: 9999
+                        zIndex: 9999,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)'
                     },
                     content: {
-                        width: '600px',
+                        width: '800px',
                         height: '600px',
-                        margin: 'auto'
+                        margin: 'auto',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '200px',
+                        overflow: 'auto'
+
                     }
                 }}
-
             >
-                <div className="card overflow-hidden">
-                    <div className="row no-gutters row-bordered row-border-light">
-                        <div className="col-md-9">
-                            <div className="tab-content">
-                                <div className="tab-pane fade active show" id="account-general">
-                                    <hr className="border-light m-0" />
-                                    <div className="card-body">
-                                        <div className="form-group">
-                                            <label className="form-label">Type Id</label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={servicetypeid}
-                                                onChange={(e) => ServiceId(e.target.value)}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="form-label">Image</label>
-
-                                            {/* <input type="file" onChange={handleImageUpload} /> */}
-
-
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label className="form-label">Type Name</label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={TypeName}
-                                                onChange={(e) => setDescription(e.target.value)}
-                                            />
-                                        </div>
-
-
-
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div className="card-body">
+                    <div className="form-group">
+                        <label className="form-label"><strong>Type Id</strong></label>
+                        <input
+                            type="text"
+                            className="form-control mb-1"
+                            value={servicetypeid}
+                            onChange={(e) => setServiceTypeId(e.target.value)}
+                        />
                     </div>
+                    <div>
+                        <label className="form-label"><strong>Image</strong></label>
+                        <br></br>
+                        <input type="file" onChange={handleImageUpload} />
+                        <img src={TypeImage || "http://via.placeholder.com/300"} alt="Type" style={{ width: '100px', height: '100px' }} />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label"><strong>Type Name</strong></label>
+                        <input
+                            type="text"
+                            className="form-control mb-1"
+                            value={TypeName}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                    </div>
+
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }} >
+                        <thead>
+                            <tr style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
+                                <th>Type ID</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {servicelist.map(sv => (
+                                <tr key={sv.serviceId}>
+                                    <td>{sv.serviceId}</td>
+                                    <td>
+                                        {editingServiceId === sv.serviceId ? (
+                                            <input
+                                                type="text"
+                                                value={editingServiceName}
+                                                onChange={e => setEditingServiceName(e.target.value)}
+                                            />
+                                        ) : (
+                                            sv.name
+                                        )}
+                                    </td>
+                                    <td>
+                                        {editingServiceId === sv.serviceId ? (
+                                            <div> <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={editingServiceStatus}
+                                                onChange={(e) => setEditingServiceStatus(e.target.value)} /><select type="text"
+                                                    value={editingServiceStatus}
+                                                    onChange={e => setEditingServiceStatus(e.target.value)}>
+
+                                                    <option value="Available">Available</option>
+                                                    <option value="Deleted">Deleted</option>
+                                                </select></div>
+
+                                        ) : (
+                                            sv.status
+                                        )}
+                                    </td>
+
+
+                                    <td>
+
+                                        {editingServiceId === sv.serviceId ? (
+                                            <input
+                                                type="text"
+                                                value={editingServiceDescription}
+                                                onChange={e => setEditingServiceDescription(e.target.value)}
+                                            />
+                                        ) : (
+                                            sv.description
+                                        )}
+                                    </td>
+                                    <td>
+                                        {editingServiceId === sv.serviceId ? (
+                                            <input
+                                                type="text"
+                                                value={editingServiceCost}
+                                                onChange={e => setEditingServiceCost(e.target.value)}
+                                            />
+                                        ) : (
+                                            sv.cost
+                                        )}
+                                    </td>
+                                    <td>
+                                        <div className="table-data-feature">
+                                            {editingServiceId === sv.serviceId ? (
+                                                <button
+                                                    className="item"
+                                                    data-toggle="tooltip"
+                                                    data-placement="top"
+                                                    title="Save"
+                                                    onClick={saveEditedService}
+                                                >
+                                                    <i className="zmdi zmdi-check" />
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="item"
+                                                    data-toggle="tooltip"
+                                                    data-placement="top"
+                                                    title="Edit"
+                                                    onClick={() =>
+                                                        startEditingService(sv.serviceId, sv.name, sv.cost, sv.description)
+                                                    }
+                                                >
+                                                    <i className="zmdi zmdi-edit" />
+                                                </button>
+                                            )}
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
                 <div className="text-right mt-3">
-                    {/* <button type="button" className="btn btn-primary" onClick={handleSubmit}>Submit</button> */}
-                    <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => setTypeModalIsOpen(false)}
+                    >
+                        Close
+                    </button>
                 </div>
-            </Modal></div>
-
-
+            </Modal>
 
             {/* PAGE CONTAINER*/}
             <div className="page-container">
@@ -138,169 +293,7 @@ const Service = () => {
                     <div className="section__content section__content--p30">
                         <div className="container-fluid">
                             <div className="header-wrap">
-                                <form className="form-header" action method="POST">
-                                    <input className="au-input au-input--xl" type="text" name="search" placeholder="Search for datas & reports..." />
-                                    <button className="au-btn--submit" type="submit">
-                                        <i className="zmdi zmdi-search" />
-                                    </button>
-                                </form>
-                                <div className="header-button">
-                                    <div className="noti-wrap">
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-comment-more" />
-                                            <span className="quantity">1</span>
-                                            <div className="mess-dropdown js-dropdown">
-                                                <div className="mess__title">
-                                                    <p>You have 2 news message</p>
-                                                </div>
-                                                <div className="mess__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-06.jpg" alt="Michelle Moreno" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <h6>Michelle Moreno</h6>
-                                                        <p>Have sent a photo</p>
-                                                        <span className="time">3 min ago</span>
-                                                    </div>
-                                                </div>
-                                                <div className="mess__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-04.jpg" alt="Diane Myers" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <h6>Diane Myers</h6>
-                                                        <p>You are now connected on message</p>
-                                                        <span className="time">Yesterday</span>
-                                                    </div>
-                                                </div>
-                                                <div className="mess__footer">
-                                                    <a href="#">View all messages</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-email" />
-                                            <span className="quantity">1</span>
-                                            <div className="email-dropdown js-dropdown">
-                                                <div className="email__title">
-                                                    <p>You have 3 New Emails</p>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-06.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, 3 min ago</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-05.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, Yesterday</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-04.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, April 12,,2018</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__footer">
-                                                    <a href="#">See all emails</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-notifications" />
-                                            <span className="quantity">3</span>
-                                            <div className="notifi-dropdown js-dropdown">
-                                                <div className="notifi__title">
-                                                    <p>You have 3 Notifications</p>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c1 img-cir img-40">
-                                                        <i className="zmdi zmdi-email-open" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>You got a email notification</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c2 img-cir img-40">
-                                                        <i className="zmdi zmdi-account-box" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Your account has been blocked</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c3 img-cir img-40">
-                                                        <i className="zmdi zmdi-file-text" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>You got a new file</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__footer">
-                                                    <a href="#">All notifications</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="account-wrap">
-                                        <div className="account-item clearfix js-item-menu">
-                                            <div className="image">
-                                                <img src="images/icon/avatar-01.jpg" alt="John Doe" />
-                                            </div>
-                                            <div className="content">
-                                                <a className="js-acc-btn" href="#">john doe</a>
-                                            </div>
-                                            <div className="account-dropdown js-dropdown">
-                                                <div className="info clearfix">
-                                                    <div className="image">
-                                                        <a href="#">
-                                                            <img src="images/icon/avatar-01.jpg" alt="John Doe" />
-                                                        </a>
-                                                    </div>
-                                                    <div className="content">
-                                                        <h5 className="name">
-                                                            <a href="#">john doe</a>
-                                                        </h5>
-                                                        <span className="email">johndoe@example.com</span>
-                                                    </div>
-                                                </div>
-                                                <div className="account-dropdown__body">
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-account" />Account</a>
-                                                    </div>
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-settings" />Setting</a>
-                                                    </div>
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-money-box" />Billing</a>
-                                                    </div>
-                                                </div>
-                                                <div className="account-dropdown__footer">
-                                                    <a href="#">
-                                                        <i className="zmdi zmdi-power" />Logout</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                {/* Rest of the header code */}
                             </div>
                         </div>
                     </div>
@@ -310,50 +303,19 @@ const Service = () => {
                 <div className="main-content">
                     <div className="section__content section__content--p30">
                         <div className="container-fluid">
-
                             <div className="row">
-                                <div className="col-lg-6">
-                                    {/* USER DATA*/}
-
-                                    {/* END USER DATA*/}
-                                </div>
-
+                                {/* Rest of the code */}
                             </div>
 
                             <div className="row">
-
                                 <div className="col-md-12">
                                     {/* DATA TABLE */}
-                                    <h3 className="title-5 m-b-35">Service list</h3>
-                                    <div className="table-data__tool">
-
-                                        <div className="table-data__tool-right">
-                                            {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
-                                                <i className="zmdi zmdi-plus" />add item</button> */}
-
-                                            <button className="btn btn-primary" onClick={() => setModalIsOpen(true)}>
-                                                Add employee
-                                            </button>
-
-
-
-                                            <div className="rs-select2--dark rs-select2--sm rs-select2--dark2">
-                                                <select className="js-select2" name="type">
-                                                    <option selected="selected">Export</option>
-                                                    <option value>Option 1</option>
-                                                    <option value>Option 2</option>
-                                                </select>
-                                                <div className="dropDownSelect2" />
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div className="table-responsive table-responsive-data2">
                                         <table className="table table-data2">
                                             <thead>
                                                 <tr>
                                                     <th>Type ID</th>
                                                     <th>Name</th>
-
                                                     <th>Status</th>
                                                     <th>Image</th>
                                                     <th />
@@ -362,62 +324,45 @@ const Service = () => {
                                             <tbody>
                                                 {servicetype.map(Service => (
                                                     <tr key={Service.typeId}>
-
                                                         <td>{Service.typeId}</td>
                                                         <td>{Service.type1}</td>
                                                         <td>{Service.avaiable ? 'Available' : 'Deleted'}</td>
-
                                                         <td>
                                                             <img src={Service.img} style={{ width: '100px', height: 'auto' }} />
                                                         </td>
-
                                                         <td>
                                                             <div className="table-data-feature">
-
-
-                                                                {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                                                                    <i className="zmdi zmdi-edit" />
-                                                                </button> */}
-                                                                {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit" onClick={() => setModalIsOpen(true)}>
-                                                                <i className="zmdi zmdi-edit" />
-
-                                                                </button> */}
                                                                 <button
                                                                     className="item"
                                                                     data-toggle="tooltip"
                                                                     data-placement="top"
                                                                     title="Edit"
                                                                     onClick={() => {
-                                                                        setModalIsOpen(true);
-                                                                        setServiceTypeId(Service.typeId); // Truyền employeeId vào đây
+                                                                        setTypeModalIsOpen(true);
+                                                                        setServiceTypeId(Service.typeId);
                                                                     }}
                                                                 >
-                                                                    <i class="zmdi zmdi-edit" />
+                                                                    <i className="zmdi zmdi-edit" />
                                                                 </button>
-
-
                                                             </div>
                                                         </td>
                                                     </tr>
                                                 ))}
-
                                             </tbody>
-
                                         </table>
                                     </div>
                                     {/* END DATA TABLE */}
                                 </div>
                                 <div />
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div />
+            <ToastContainer />
         </div>
     );
-}
+};
 
 export default Service;
-

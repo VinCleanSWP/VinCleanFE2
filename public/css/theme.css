@@ -1403,6 +1403,7 @@ section {
 
 .account-item {
     cursor: pointer;
+    display: flex;
 }
 
 .account-item .image {
@@ -1412,17 +1413,27 @@ section {
     overflow: hidden;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
-    border-radius: 3px;
+    border-radius: 50%;
 }
 
 .account-item .image > img {
     width: 100%;
 }
+.account-item .logout{
+    margin-right: 0;
+    margin-left: 10px;
+    font-size: xx-large;
+    color: #666666;
+}
 
 .account-item > .content {
     margin-left: 45px;
-    padding: 9px 0;
+    padding: 9px 10px;
+    margin-right: 10px;
     padding-left: 12px;
+    background-color: #7acca3;
+    color: #1a532c;
+    border-radius: 50px;
 }
 
 .account-item > .content > a {
@@ -1434,7 +1445,6 @@ section {
 .account-item > .content > a:after {
     font-family: "Material-Design-Iconic-Font";
     font-weight: 500;
-    content: '\f2f9';
     display: inline-block;
     font-size: 16px;
     margin-left: 5px;
@@ -2814,6 +2824,55 @@ section {
     background: #f7f7f7;
 }
 
+
+.table__header {
+    width: 100%;
+    height: 10%;
+    background-color: #fff4;
+    padding: .8rem 1rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 50px ;
+    box-shadow: 0 .1rem .4rem #0002;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.table__header .input-group {
+    width: 35%;
+    height: 100%;
+    background-color: #fff5;
+    padding: 0 .8rem;
+    border-radius: 2rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: .2s;
+}
+
+.table__header .input-group:hover {
+    width: 45%;
+    background-color: #fff8;
+    box-shadow: 0 .1rem .4rem #0002;
+}
+
+.table__header .input-group img {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.table__header .input-group input {
+    width: 90%;
+    padding: 0 .5rem 0 .3rem;
+    margin: 8px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
 .header__tool {
     display: -webkit-box;
     display: -webkit-flex;
@@ -4682,6 +4741,7 @@ section {
     color: #0059ff;
 }
 
+
 .table-data3 thead {
     background: #333;
 }
@@ -4691,8 +4751,32 @@ section {
     color: #fff;
     font-weight: 400;
     text-transform: capitalize;
-    padding: 18px 40px;
+    padding: 18px 30px;
     padding-right: 10px;
+}
+
+.table-data3 thead tr th div {
+    transition: background-color 0.3s ease;
+  }
+
+.table-data3 thead tr th div:active,
+.table-data3 thead tr th div:hover {
+    background-color: #767676;
+    border-radius: 50px;
+    text-align: center ;
+}
+
+.table-data3 thead tr th.active,tbody td.active {
+    background-color: #6c00bd;
+}
+.table-data3 thead tr span.icon-arrow {
+    display: inline-block;
+    width: 1.3rem;
+    height: 1.3rem;
+    text-align: center;
+    font-size: 1rem;
+    margin-left: .3rem;
+    transition: .2s ease-in-out;
 }
 
 .table-data3 thead tr th:first-child {
@@ -4709,7 +4793,7 @@ section {
 
 .table-data3 thead tr th:last-child {
     text-align: right;
-    padding-right: 50px;
+    padding-right: 30px;
 }
 
 .table-data3 tbody tr td:last-child {
@@ -4734,25 +4818,62 @@ section {
     border-bottom-right-radius: 8px;
 }
 
+.status {
+    padding: .4rem 0;
+    border-radius: 2rem;
+    text-align: center;
+}
+.status.Completed {
+    background-color: #86e49d;
+    color: #006b21;
+}
+
+.status.cancelled {
+    background-color: #d893a3;
+    color: #b30021;
+}
+
+.status.Incoming {
+    background-color: #ebc474;
+}
+
+.status.Processing {
+    background-color: #6fcaea;
+}
+
+.status.Accepted  {
+    background-color: #86e49d;
+    color: #006b21;
+}
+
+.status.Denied {
+    background-color: #d893a3;
+    color: #b30021;
+}
+
+.status.Waiting {
+    background-color: #ebc474;
+}
+
+.status.Processing {
+    background-color: #6fcaea;
+}
+
+@media (max-width: 1000px) {
+    .table-data3 tbody td:not(:first-of-type) {
+        min-width: 12.1rem;
+    }
+}
+
+
+
 .table-data3 tbody td {
-    border-bottom: 1px solid #f5f5f5;
+    border-bottom: 2px solid #f5f5f5;
     background: #fff;
     font-size: 14px;
-    color: #808080;
-    padding: 12px 40px;
+    color: #4b4b4b;
+    padding: 12px 30px;
     padding-right: 10px;
-}
-
-.table-data3 tbody td.process {
-    color: #00ad5f;
-}
-
-.table-data3 tbody td.denied {
-    color: #fa4251;
-}
-
-.table-data3 tbody td.complete {
-    color: #0059ff;
 }
 
 /* ----- Footer ----- */
@@ -14682,5 +14803,7 @@ section {
 .link-without-underline {
     text-decoration: none !important;
   }
+
+  
 
 

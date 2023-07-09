@@ -30,6 +30,7 @@ export default function Login() {
                     localStorage.setItem('email', email);
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
+                    localStorage.setItem('id', response.data.data.accountId)
                     // navigate('/home')
                     window.location.href = '/';
                 }
@@ -38,6 +39,7 @@ export default function Login() {
                     localStorage.setItem('email', email);
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
+                    localStorage.setItem('id', response.data.data.accountId);
                     // navigate('/home')
                     window.location.href = '/';
                 }
@@ -99,10 +101,10 @@ export default function Login() {
                                         </div>
                                         {error && <p style={{ color: 'red' }}>{error}</p>}
                                         <div class="col-12">
-                                            <p class="small mb-0">Bạn mới biết đến Vin Clean?<Link to="/signup"> Đăng ký</Link></p>
+                                            <p class="small mb-0">Bạn mới biết đến Vin Clean? <Link to="/signup">Đăng ký</Link></p>
                                         </div>
                                         <div class="col-12">
-                                            <p class="small mb-0">Forgot your Password?<Link to="/reset"> Click here</Link></p>
+                                            <p class="small mb-0">Quên mật khẩu? <Link to="/reset">Bấm vào đây</Link></p>
                                         </div>
                                     </form>
                                 </div>

@@ -1,5 +1,11 @@
 import React, { } from 'react';
 import { Link } from 'react-router-dom';
+import { FaTasks } from "react-icons/fa";
+import { BiTask } from "react-icons/bi";
+import { BiHistory } from "react-icons/bi";
+import { MdSwitchAccount } from "react-icons/md";
+import { FaUserNurse } from "react-icons/fa";
+import { GrUserAdmin } from "react-icons/gr";
 function SideBar() {
   return (
     <div>
@@ -24,44 +30,38 @@ function SideBar() {
               </li>
               <li >
                 <Link to="/profile">
-                  <i className="fas fa-chart-bar" />Profile</Link>
-              </li>
-              <li>
-                <Link to="/table">
-                  <i className="fas fa-table" />Tables</Link>
+                <i className="fas"><GrUserAdmin/> </i>Profile</Link>
               </li>
               <li>
                 <Link to="/booking" >
-                  <i className="fas fa-table" />Task</Link>
+                <i className="fas"><FaTasks/> </i>Task</Link>
               </li>
               <li>
                 <Link to="/activity" >
-                  <i className="fas fa-table" />Activities</Link>
+                <i className="fas"><BiHistory/></i>Activities</Link>
               </li>
               <li>
                 <Link to="/request" >
-                  <i className="fas fa-table" />RequestTask</Link>
+                <i className="fas"><BiTask/> </i>RequestTask</Link>
               </li>
-              <li>
-                <Link to="/form" >
-                  <i className="far fa-check-square" />Forms</Link>
-              </li>
-              <li>
-                <Link to="/calendar" >
-                  <i className="fas fa-table" />Table</Link>
-              </li>
+  
               <li>
                 <Link to="/customer">
-                  <i className="fas fa-table" />Customer</Link>
+                <i className="fas"><MdSwitchAccount/></i>Customer</Link>
 
               </li>
               <li>
                 <Link to="/employee">
-                  <i className="fas fa-table" />Employee</Link>
+                <i className="fas"><FaUserNurse/></i>Employee</Link>
               </li>
               <li>
                 <Link to="/service">
                   <i className="fas fa-table" />Service</Link>
+              </li>
+              <li>
+                <Link to="/bloglist">
+                  <i className="fas fa-table" />Blog
+                </Link>
               </li>
               <li>
                 <Link to="/form">
@@ -74,60 +74,6 @@ function SideBar() {
               <li>
                 <a href="map.html">
                   <i className="fas fa-map-marker-alt" />Maps</a>
-              </li>
-              <li className="has-sub">
-                <a className="js-arrow" href=" " style={{textDecorationLine: 'none'}}>
-                  <i className="fas fa-copy" />Pages</a>
-                <ul className="list-unstyled navbar__sub-list js-sub-list">
-                  <li>
-                    <a href="login.html">Login</a>
-                  </li>
-                  <li>
-                    <a href="register.html">Register</a>
-                  </li>
-                  <li>
-                    <a href="forget-pass.html">Forget Password</a>
-                  </li>
-                </ul>
-              </li>
-              <li className="has-sub">
-                <a className="js-arrow" href=" " style={{textDecorationLine: 'none'}}>
-                  <i className="fas fa-desktop" />UI Elements</a>
-                <ul className="list-unstyled navbar__sub-list js-sub-list">
-                  <li>
-                    <a href="button.html">Button</a>
-                  </li>
-                  <li>
-                    <a href="badge.html">Badges</a>
-                  </li>
-                  <li>
-                    <a href="tab.html">Tabs</a>
-                  </li>
-                  <li>
-                    <a href="card.html">Cards</a>
-                  </li>
-                  <li>
-                    <a href="alert.html">Alerts</a>
-                  </li>
-                  <li>
-                    <a href="progress-bar.html">Progress Bars</a>
-                  </li>
-                  <li>
-                    <a href="modal.html">Modals</a>
-                  </li>
-                  <li>
-                    <a href="switch.html">Switchs</a>
-                  </li>
-                  <li>
-                    <a href="grid.html">Grids</a>
-                  </li>
-                  <li>
-                    <a href="fontawesome.html">Fontawesome Icon</a>
-                  </li>
-                  <li>
-                    <a href="typo.html">Typography</a>
-                  </li>
-                </ul>
               </li>
             </ul>
           </nav>

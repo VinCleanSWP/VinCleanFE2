@@ -1,0 +1,83 @@
+
+/* .service-list li{
+  border-bottom: 1px solid rgba(0,0,0,.09);
+} */
+
+.rating-right-container{
+  padding-left: 10px;
+}
+
+.rating-list {
+    margin-top: 20px; /* Khoảng cách từ phần trước danh sách đánh giá */
+    list-style: none;
+  }
+  
+  .rating-item {
+    margin-bottom: 15px; /* Khoảng cách giữa các đánh giá */
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0,0,0,.09);
+  }
+
+  .rating{
+    margin: 30px 0px;
+    min-height: 5rem;
+    border: 1px solid #f9ede5;
+    align-items: center;
+    border-radius: 2px;
+    box-sizing: border-box;
+    padding: 1.875rem;
+  }
+
+  .rating h4{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .average-rating{
+    margin-bottom: 1rem;
+    align-items: center;
+    padding-bottom: 10px;
+
+    background-color: #fffbf8;
+    min-height: 5rem;
+    border: 1px solid #f9ede5;
+
+    display: flex;
+    align-items: center;
+    border-radius: 2px;
+    box-sizing: border-box;
+    padding: 1.875rem;
+  }
+  
+  .rating-stars {
+    display: flex;
+    align-items: center;
+    color: #f9a826;
+  }
+
+  .rating-stars i {
+    margin-right: 5px; /* Khoảng cách giữa các biểu tượng ngôi sao */
+  }
+
+  .date {
+    font-size: 13px;
+    color: rgba(0,0,0,.54);
+  }
+
+  .star-rating {
+    font-size: 24px;
+    color: #ddd;
+    cursor: pointer;
+    width: 20%;
+  }
+  
+  .star-rating .star {
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+  .star-rating .star.selected,
+  .star-rating .star:hover {
+    color: #f9a826;
+  }

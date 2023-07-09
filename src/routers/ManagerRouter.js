@@ -5,17 +5,18 @@ import SideBar from '../components/ManagerUI/SideBar'
 import ADFooter from '../components/ManagerUI/ADFooter'
 import ADHome from '../components/ManagerUI/ADHome'
 import Profile from '../components/ManagerUI/Profile'
-import Table from '../components/ManagerUI/Table'
 import Calendar from '../components/ManagerUI/Calendar'
 import Form from '../components/ManagerUI/Form'
 import Alert from '../components/ManagerUI/Alert'
 import Booking from '../components/ManagerUI/Booking';
 import Activity from '../components/ManagerUI/Activity';
 import Request from '../components/ManagerUI/Request';
-import AddEmployee from '../components/ManagerUI/AddEmployee';
 import Employee from '../components/ManagerUI/Emloyee';
 import Service from '../components/ManagerUI/Service';
 import Customer from '..//components/ManagerUI/Customer';
+import BlogList from '../components/ManagerUI/BlogList';
+import BlogDetails from '../pages/BlogDetails';
+import ModifyBlog from '../components/ManagerUI/ModifyBlog';
 export default function ManagerRouter() {
     return (
         <div >
@@ -25,7 +26,6 @@ export default function ManagerRouter() {
                 <Routes>
                     <Route path='/manager' element={<ADHome />}></Route>
                     <Route path='/profile' element={<Profile />}></Route>
-                    <Route path='/table' element={<Table />}></Route>
                     <Route path='/booking' element={<Booking />}></Route>
                     <Route path='/calendar' element={<Calendar />}></Route>
                     <Route path='/form' element={<Form />}></Route>
@@ -35,6 +35,10 @@ export default function ManagerRouter() {
                     <Route path='/employee' element={<Employee />}></Route>
                     <Route path='/customer' element={<Customer />}></Route>
                     <Route path='/service' element={<Service />}></Route>
+                    <Route path='/bloglist' element={<BlogList />}></Route>
+                    <Route path='/modifyblog/:id' element={<ModifyBlog />}></Route>
+                    <Route path='/blogs/:id' element={<BlogDetails />}></Route>
+
                 </Routes>
                 <ADFooter />
             </div>

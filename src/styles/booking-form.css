@@ -1,3 +1,9 @@
+.submit-form p{
+  font-weight: 500;
+}
+
+
+
 .booking__form {
   width: 47.5%;
 }
@@ -7,6 +13,7 @@
   border: 1px solid #0000002a;
   color: #7c8a97;
   width: 100%;
+  border-radius: 10px;
 }
 
 .booking__form select,
@@ -33,6 +40,8 @@
 .normal-button{
   background: #162b75;
   border-radius: 10px 10px 10px 10px;
+  text-align: center;
+  padding: 10px 10px;
 }
 
 @media only screen and (max-width: 768px) {

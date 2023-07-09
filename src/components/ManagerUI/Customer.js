@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
-import { storage } from '../../firebase/index';
+import firebase from 'firebase/app';
+import 'firebase/storage';
+import './FireBaseConfig';
+import { storage } from './FireBaseConfig';
 
 
 
@@ -10,9 +13,9 @@ function Customer() {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [customerList, setCustomerList] = useState([]);
-    const [employeeData, setEmployeeData] = useState(null);
+
     const [customerData, setCustomerData] = useState(null);
-    const [employeeList, setEmployeeList] = useState([]);
+
     const [account, setAccount] = useState([]);
     const [userName, setUserName] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -21,36 +24,25 @@ function Customer() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [gender, setGender] = useState('');
-    const [employeeId, setEmployeeId] = useState('');
+    const [img, setImage] = useState('');
+    const [totalmoney, setTotalMoney] = useState('');
+    const [totalpoint, setTotalPoint] = useState('');
+    const [status, setStatus] = useState('');
+    const [dob, setDob] = useState('');
+    const [address, setAddress] = useState('');
+    const [accountId, setAccountId] = useState('');
+    const [createdDate, setCreatedDate] = useState('');
+    const [isDeleted, setIsDeleted] = useState('');
+
+
     const [customerId, setCustomerId] = useState('');
-    const accountId = localStorage.getItem('id');
-
-    const [url, setUrl] = useState('');
-
-    const deleteEmployee = (employeeId) => {
-        axios.delete(`https://localhost:7013/api/Employee/${employeeId}`)
-            .then(response => {
-                console.log('Employee deleted successfully');
-                const updatedEmployeeList = employeeList.filter(employee => employee.employeeId !== employeeId);
-                setEmployeeList(updatedEmployeeList);
-                // Thực hiện các hành động khác sau khi xóa thành công
-            })
-            .catch(error => {
-                console.error('Error deleting customer:', error);
-                // Xử lý lỗi khi xóa khách hàng
-            });
-    }
 
 
-    const fetchEmpoloyeeList = () => {
-        axios.get('https://localhost:7013/api/Employee')
-            .then(response => {
-                setEmployeeList(response.data.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
+
+
+
+
+
     useEffect(() => {
 
 
@@ -69,6 +61,15 @@ function Customer() {
                 setPhone(data.phone);
                 setEmail(data.account.email);
                 setPassword(data.account.password);
+                setImage(data.account.img);
+                setStatus(data.account.status);
+                setAddress(data.address);
+                setTotalMoney(data.totalMoney);
+                setTotalPoint(data.totalPoint);
+                setAccountId(data.account.accountId);
+                setCreatedDate(data.createdDate);
+                setIsDeleted(data.account.isDeleted);
+
 
 
             })
@@ -84,66 +85,6 @@ function Customer() {
 
     }, [customerId]);
 
-    useEffect(() => {
-
-
-        axios
-            .get(`https://localhost:7013/api/Employee/${employeeId}`)
-            .then(response => {
-                const { data } = response.data;
-
-                setEmployeeData(data);
-                setUserName(data.account.name);
-
-                setFirstName(data.firstName);
-                setLastName(data.lastName);
-                setGender(data.gender);
-                setPhone(data.phone);
-                setEmail(data.account.email);
-                setPassword(data.account.password);
-
-
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-
-
-
-
-
-
-
-    }, [employeeId]);
-    const handleChangeSubmit = () => {
-        const updatedEmployee = {
-            employeeId: employeeId,
-            // accountId: 27,
-            img: "tuthemvaonha",//them vao giup tao Phung
-            status: "Available",
-            name: userName,
-            firstName: firstName,
-            lastName: lastName,
-            gender: gender,
-            phone: phone,
-            email: email,
-            password: password
-        };
-        console.log(updatedEmployee);
-
-
-        axios
-            .put(`https://localhost:7013/api/Employee`, updatedEmployee)
-            .then(response => {
-                console.log('Employee updated successfully:', response.data);
-
-                // Do something after successful update
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Handle error
-            });
-    };
 
 
 
@@ -157,17 +98,7 @@ function Customer() {
                 console.error(error);
             });
     }, []);
-    useEffect(() => {
-        axios.get('https://localhost:7013/api/Employee')
-            .then(response => {
-                setEmployeeList(response.data.data);
-                console.log(account);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        fetchEmpoloyeeList();
-    }, []);
+
     useEffect(() => {
         axios.get('https://localhost:7013/api/Account')
             .then(response => {
@@ -181,47 +112,11 @@ function Customer() {
 
     }, []);
 
-    const handleImageUpload = async (e) => {
-        const file = e.target.files[0];
-        const storageRef = storage.ref(`Employee/${file.name}`);
-        const fileRef = storageRef.child(file.name);
-        await fileRef.put(file);
-        const imgUrl = await fileRef.getDownloadURL();
-        setUrl(imgUrl);
-        console.log(imgUrl);
-    };
-
-
-    const handleSubmit = () => {
-        // Tạo object chứa dữ liệu form
-        const formData = {
-            name: userName,
-            email: email,
-            img: url,
-            password: password,
-
-            gender: gender,
-            firstName: firstName,
-            lastName: lastName,
-            phone: phone
-
-        };
-
-        // Gửi dữ liệu form đến API
-        axios.post('https://localhost:7013/api/Employee', formData)
-            .then(response => {
-                // Xử lý kết quả từ API (nếu cần)
-                console.log(response.data);
-            })
-            .catch(error => {
-                // Xử lý lỗi (nếu có)
-                console.error(error);
-            });
-    };
 
 
 
-    console.log(customerList);
+
+
     return (
         <div>
             <Modal
@@ -232,13 +127,16 @@ function Customer() {
                     overlay: {
                         zIndex: 9999,
                         display: 'flex',
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Tạo màu nền tối đen
 
                     },
                     content: {
-                        width: '600px',
-                        height: '600px',
-                        margin: 'auto'
-                    }
+                        width: '800px',
+                        height: '800px',
+                        margin: 'auto',
+                        overflow: 'auto'
+                    },
+
                 }}
 
             >
@@ -248,266 +146,190 @@ function Customer() {
                             <div className="tab-content">
                                 <div className="tab-pane fade active show" id="account-general">
                                     <hr className="border-light m-0" />
-                                    <div className="card-body">
+                                    <div className="modal-header"> <div className="card-body">
                                         <div className="form-group">
-                                            <label className="form-label">User name</label>
+                                            <label className="form-label" strong><strong>Account ID</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={accountId}
+                                                readOnly
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label" strong><strong>Customer ID</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={customerId}
+                                                readOnly
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label" strong><strong>User name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={userName}
-                                                onChange={(e) => setUserName(e.target.value)}
+                                                readOnly
                                             />
                                         </div>
-                                        <div>
-                                            <label className="form-label">Image</label>
+                                        <div className="form-group">
 
-                                            <input type="file" onChange={handleImageUpload} />
+                                            <label className="form-label" strong><strong>Image</strong></label>
+                                            <br></br>
+                                            <img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
 
 
                                         </div>
                                         <div className="form-group">
-                                            <label className="form-label">First name</label>
+                                            <label className="form-label"><strong>First name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={firstName}
-                                                onChange={(e) => setFirstName(e.target.value)}
+                                                readOnly
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label className="form-label">Last name</label>
+                                            <label className="form-label" ><strong>Last name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={lastName}
-                                                onChange={(e) => setLastName(e.target.value)}
+                                                readOnly
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label" ><strong>Created Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={createdDate}
+                                                readOnly
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label" ><strong>Date of birth</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={dob}
+                                                readOnly
+                                            />
+                                        </div>
+
+                                        <div><label className="form-group" ><strong>Gender</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={gender}
+                                                readOnly
                                             />
                                         </div>
                                         <div>
-                                            <label className="form-group">Gender</label>
-                                            <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
-                                                <option value="">Choose gender</option>
-                                                <option value="Male">Male</option>
-                                                <option value="Female">Female</option>
-                                                <option value="Other">Other</option>
-                                            </select>
+                                            <label className="form-group" ><strong>Status</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={status}
+                                                readOnly
+                                            />
+
 
                                         </div>
+                                        <div>
+                                            <label className="form-group" ><strong>Is deleted</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={isDeleted}
+                                                readOnly
+                                            />
+
+
+                                        </div>
+
                                         <div className="form-group">
-                                            <label className="form-label">Phone</label>
+                                            <label className="form-label" ><strong>Phone</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={phone}
-                                                onChange={(e) => setPhone(e.target.value)}
+                                                readOnly
                                             />
                                         </div>
+                                        <div><label className="form-group" ><strong>Address</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={address}
+                                                readOnly
+                                            /></div>
 
 
                                         <div className="form-group">
-                                            <label className="form-label">E-mail</label>
+                                            <label className="form-label"><strong>E-mail</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
+                                                readOnly
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label className="form-label">Password</label>
+                                            <label className="form-label"><strong>Password</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
                                                 value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
+                                                readOnly
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="form-label"><strong>Total Money</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={totalmoney}
+                                                readOnly
+                                            />
+
+                                        </div>
+                                        <div>
+                                            <label className="form-label"><strong>Total Point</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={totalpoint}
+                                                readOnly
                                             />
                                         </div>
                                     </div>
+
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="text-right mt-3">
-                    <button type="button" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+
                     <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
                 </div>
             </Modal>
+            <div className='modal-dialog modal-lg modal-dialog-centered'>
+                <div className="modal-content">
+                    <div className="modal-header" >
+
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                    </div>
+
+                </div>
+            </div>
 
             <div className="page-container">
-                {/* HEADER DESKTOP*/}
-                <header className="header-desktop">
-                    <div className="section__content section__content--p30">
-                        <div className="container-fluid">
-                            <div className="header-wrap">
-                                <form className="form-header" action method="POST">
-                                    <input className="au-input au-input--xl" type="text" name="search" placeholder="Search for datas & reports..." />
-                                    <button className="au-btn--submit" type="submit">
-                                        <i className="zmdi zmdi-search" />
-                                    </button>
-                                </form>
-                                <div className="header-button">
-                                    <div className="noti-wrap">
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-comment-more" />
-                                            <span className="quantity">1</span>
-                                            <div className="mess-dropdown js-dropdown">
-                                                <div className="mess__title">
-                                                    <p>You have 2 news message</p>
-                                                </div>
-                                                <div className="mess__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-06.jpg" alt="Michelle Moreno" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <h6>Michelle Moreno</h6>
-                                                        <p>Have sent a photo</p>
-                                                        <span className="time">3 min ago</span>
-                                                    </div>
-                                                </div>
-                                                <div className="mess__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-04.jpg" alt="Diane Myers" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <h6>Diane Myers</h6>
-                                                        <p>You are now connected on message</p>
-                                                        <span className="time">Yesterday</span>
-                                                    </div>
-                                                </div>
-                                                <div className="mess__footer">
-                                                    <a href="#">View all messages</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-email" />
-                                            <span className="quantity">1</span>
-                                            <div className="email-dropdown js-dropdown">
-                                                <div className="email__title">
-                                                    <p>You have 3 New Emails</p>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-06.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, 3 min ago</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-05.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, Yesterday</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-04.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, April 12,,2018</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__footer">
-                                                    <a href="#">See all emails</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-notifications" />
-                                            <span className="quantity">3</span>
-                                            <div className="notifi-dropdown js-dropdown">
-                                                <div className="notifi__title">
-                                                    <p>You have 3 Notifications</p>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c1 img-cir img-40">
-                                                        <i className="zmdi zmdi-email-open" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>You got a email notification</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c2 img-cir img-40">
-                                                        <i className="zmdi zmdi-account-box" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Your account has been blocked</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c3 img-cir img-40">
-                                                        <i className="zmdi zmdi-file-text" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>You got a new file</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__footer">
-                                                    <a href="#">All notifications</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="account-wrap">
-                                        <div className="account-item clearfix js-item-menu">
-                                            <div className="image">
-                                                <img src="images/icon/avatar-01.jpg" alt="John Doe" />
-                                            </div>
-                                            <div className="content">
-                                                <a className="js-acc-btn" href="#">john doe</a>
-                                            </div>
-                                            <div className="account-dropdown js-dropdown">
-                                                <div className="info clearfix">
-                                                    <div className="image">
-                                                        <a href="#">
-                                                            <img src="images/icon/avatar-01.jpg" alt="John Doe" />
-                                                        </a>
-                                                    </div>
-                                                    <div className="content">
-                                                        <h5 className="name">
-                                                            <a href="#">john doe</a>
-                                                        </h5>
-                                                        <span className="email">johndoe@example.com</span>
-                                                    </div>
-                                                </div>
-                                                <div className="account-dropdown__body">
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-account" />Account</a>
-                                                    </div>
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-settings" />Setting</a>
-                                                    </div>
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-money-box" />Billing</a>
-                                                    </div>
-                                                </div>
-                                                <div className="account-dropdown__footer">
-                                                    <a href="#">
-                                                        <i className="zmdi zmdi-power" />Logout</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-                {/* END HEADER DESKTOP*/}
                 {/* MAIN CONTENT*/}
                 <div className="main-content">
                     <div className="section__content section__content--p30">
@@ -583,7 +405,7 @@ function Customer() {
 
                                                         <td>{customer.customerId}</td>
                                                         <div></div>
-                                                        <td><img src={customer.account.img} alt="Avatar" /></td>
+                                                        <img src={customer.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
                                                         <td>{customer.lastName}</td>
                                                         <td>{customer.firstName}</td>
                                                         <td>{customer.phone}</td>

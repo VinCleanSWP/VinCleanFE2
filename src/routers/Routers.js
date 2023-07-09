@@ -15,6 +15,7 @@ import Customer from "../pages/Customer";
 import ProfileCustomer from "../pages/ProfileCustomer";
 import ResetPassword from "../pages/ResetPassword";
 
+
 const Routers = () => {
   const role = localStorage.getItem("role");
   return (
@@ -33,6 +34,7 @@ const Routers = () => {
       <Route path="/blogs/:id" element={<BlogDetails />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/profile" element={<ProfileCustomer />} />
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

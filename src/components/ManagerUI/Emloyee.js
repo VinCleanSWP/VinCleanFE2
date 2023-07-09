@@ -3,13 +3,19 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
-import { storage } from '../../firebase/index';
+import firebase from 'firebase/app';
+import 'firebase/storage';
+import './FireBaseConfig';
+// import { storage } from 'firebase/storage';
+import { storage } from './FireBaseConfig';
+import moment from 'moment';
 
 
 
 function Table() {
 
-    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalAddIsOpen, setAddModalIsOpen] = useState(false);
+    const [modalEditIsOpen, setEditModalIsOpen] = useState(false);
     const [customerList, setCustomerList] = useState([]);
     const [employeeData, setEmployeeData] = useState(null);
     const [customerData, setCustomerData] = useState(null);
@@ -22,8 +28,30 @@ function Table() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [gender, setGender] = useState('');
+    const [img, setImage] = useState('');
+    const [status, setstatus] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setendDate] = useState('');
+    const [address, setAddress] = useState('');
+    const [newUserName, setNewUserName] = useState('');
+    const [newFirstName, setNewFirstName] = useState('');
+    const [newLastName, setNewLastName] = useState('');
+    const [newPhone, setNewPhone] = useState('');
+    const [newEmail, setNewEmail] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [newGender, setNewGender] = useState('');
+    const [newImage, setTempImageUrl] = useState('');
+    const [newStatus, setNewStatus] = useState('');
+    const [newStartDate, setNewStartDate] = useState('');
+    const [newEndDate, setNewEndDate] = useState('');
+    const [isDeleted, setIsDeleted] = useState('');
+    const [createdDate, setCreatedDate] = useState('');
+    const [accountId, setAccountId] = useState('')
     const [employeeId, setEmployeeId] = useState('');
-    const [customerId, setCustomerId] = useState('');
+
+
+
+
 
     const [url, setUrl] = useState('');
 
@@ -51,38 +79,6 @@ function Table() {
                 console.error(error);
             });
     }
-    useEffect(() => {
-
-
-        axios
-            .get(`https://localhost:7013/api/Customer/${customerId}`)
-            .then(response => {
-
-                const { data } = response.data;
-
-
-                setCustomerData(data);
-                setUserName(data.account.name)
-                setFirstName(data.firstName);
-                setLastName(data.lastName);
-                setGender(data.account.gender);
-                setPhone(data.phone);
-                setEmail(data.account.email);
-                setPassword(data.account.password);
-
-
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-
-
-
-
-
-
-
-    }, [customerId]);
 
     useEffect(() => {
 
@@ -93,14 +89,21 @@ function Table() {
                 const { data } = response.data;
 
                 setEmployeeData(data);
+                setEmployeeId(data.employeeId)
+                setAccountId(data.account.accountId);
                 setUserName(data.account.name);
-
+                setstatus(data.account.status);
+                setStartDate(data.startDate);
+                setendDate(data.endDate);
+                setIsDeleted(data.account.isDeleted);
+                setCreatedDate(data.account.createdDate);
                 setFirstName(data.firstName);
                 setLastName(data.lastName);
-                setGender(data.gender);
+                setGender(data.account.gender);
                 setPhone(data.phone);
                 setEmail(data.account.email);
                 setPassword(data.account.password);
+                setImage(data.account.img);
 
 
             })
@@ -129,14 +132,13 @@ function Table() {
             email: email,
             password: password
         };
-        console.log(updatedEmployee);
 
 
         axios
             .put(`https://localhost:7013/api/Employee`, updatedEmployee)
             .then(response => {
                 console.log('Employee updated successfully:', response.data);
-                setModalIsOpen(false);
+                // setModalIsOpen(false);
                 // Do something after successful update
             })
             .catch(error => {
@@ -148,15 +150,7 @@ function Table() {
 
 
 
-    useEffect(() => {
-        axios.get('https://localhost:7013/api/Customer')
-            .then(response => {
-                setCustomerList(response.data.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }, []);
+
     useEffect(() => {
         axios.get('https://localhost:7013/api/Employee')
             .then(response => {
@@ -181,29 +175,28 @@ function Table() {
 
     }, []);
 
-    const handleImageUpload = async (e) => {
+    const handleImageUpload = async e => {
         const file = e.target.files[0];
-        const storageRef = storage.ref();
-        const fileRef = storageRef.child(`Employee/${file.name}`);
+        const storageRef = storage.ref(`Employee/${file.name}`);
+        const fileRef = storageRef.child(file.name);
         await fileRef.put(file);
         const imgUrl = await fileRef.getDownloadURL();
-        setUrl(imgUrl);
-        console.log(imgUrl);
+        setTempImageUrl(imgUrl);
     };
 
 
     const handleSubmit = () => {
         // Tạo object chứa dữ liệu form
         const formData = {
-            name: userName,
-            email: email,
+            name: newUserName,
+            email: newEmail,
             img: url,
-            password: password,
-
-            gender: gender,
-            firstName: firstName,
-            lastName: lastName,
-            phone: phone
+            password: newPassword,
+            status: newStatus,
+            gender: newGender,
+            firstName: newFirstName,
+            lastName: newLastName,
+            phone: newPhone
 
         };
 
@@ -212,7 +205,7 @@ function Table() {
             .then(response => {
                 // Xử lý kết quả từ API (nếu cần)
                 console.log(response.data);
-                setModalIsOpen(false);
+                // setModalIsOpen(false);
             })
             .catch(error => {
                 // Xử lý lỗi (nếu có)
@@ -222,23 +215,27 @@ function Table() {
 
 
 
-    console.log(customerList);
+
 
     return (
 
         <div>
+
             <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={() => setModalIsOpen(false)}
+                isOpen={modalEditIsOpen}
+                onRequestClose={() => setEditModalIsOpen(false)}
                 contentLabel="Add Employee"
                 style={{
                     overlay: {
-                        zIndex: 9999
+                        zIndex: 9999,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+
                     },
                     content: {
-                        width: '600px',
-                        height: '600px',
-                        margin: 'auto'
+                        width: '800px',
+                        height: '800px',
+                        margin: 'auto',
+                        overflow: 'auto'
                     }
                 }}
 
@@ -251,23 +248,51 @@ function Table() {
                                     <hr className="border-light m-0" />
                                     <div className="card-body">
                                         <div className="form-group">
-                                            <label className="form-label">User name</label>
+                                            <label className="form-label"><strong>Employee ID</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={employeeId} readOnly
+
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Account ID</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={accountId} readOnly
+
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>User name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={userName}
                                                 onChange={(e) => setUserName(e.target.value)}
                                             />
+                                            <img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
                                         </div>
                                         <div>
-                                            <label className="form-label">Image</label>
+                                            <label className="form-label"><strong>Image</strong></label>
 
                                             <input type="file" onChange={handleImageUpload} />
 
 
+                                            <img src={newImage || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
+
+
+
+
+
+
+
                                         </div>
+
                                         <div className="form-group">
-                                            <label className="form-label">First name</label>
+                                            <label className="form-label"><strong>First name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
@@ -276,7 +301,7 @@ function Table() {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label className="form-label">Last name</label>
+                                            <label className="form-label"><strong>Last name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
@@ -284,18 +309,43 @@ function Table() {
                                                 onChange={(e) => setLastName(e.target.value)}
                                             />
                                         </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Status</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={status}
+                                                onChange={(e) => setstatus(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Created Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={moment(createdDate).format('YYYY-MM-DD')}
+                                                readOnly
+                                            />
+                                        </div>
                                         <div>
-                                            <label className="form-group">Gender</label>
+                                            <label className="form-group"><strong>Gender</strong></label>
                                             <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
                                                 <option value="">Choose gender</option>
                                                 <option value="Male">Male</option>
                                                 <option value="Female">Female</option>
                                                 <option value="Other">Other</option>
                                             </select>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={gender}
+                                                onChange={(e) => setGender(e.target.value)}
+                                            />
 
                                         </div>
+
                                         <div className="form-group">
-                                            <label className="form-label">Phone</label>
+                                            <label className="form-label"><strong>Phone</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
@@ -303,10 +353,47 @@ function Table() {
                                                 onChange={(e) => setPhone(e.target.value)}
                                             />
                                         </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Start Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={moment(startDate).format('YYYY-MM-DD')}
+                                                onChange={(e) => setStartDate(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>End Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={moment(endDate).format('YYYY-MM-DD')}
+                                                // onChange={(e) => setEndDate(e.target.value)}
+                                            />
+                                        </div>
+
+
+
+
+
+
 
 
                                         <div className="form-group">
-                                            <label className="form-label">E-mail</label>
+                                            <label className="form-label"><strong>Is deleted</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={isDeleted}
+                                                onChange={(e) => isDeleted(e.target.value)} readOnly
+                                            />
+                                        </div>
+
+
+
+
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>E-mail</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
@@ -314,8 +401,10 @@ function Table() {
                                                 onChange={(e) => setEmail(e.target.value)}
                                             />
                                         </div>
+
+
                                         <div className="form-group">
-                                            <label className="form-label">Password</label>
+                                            <label className="form-label"><strong>Password</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -323,13 +412,146 @@ function Table() {
                                                 onChange={(e) => setPassword(e.target.value)}
                                             />
                                         </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="text-right mt-3">
+                    <button type="button" className="btn btn-primary" onClick={handleChangeSubmit}>Update</button>
+                    <button type="button" className="btn btn-secondary" onClick={() => setEditModalIsOpen(false)}>Close</button>
+                </div>
+
+            </Modal>
+            <Modal
+                isOpen={modalAddIsOpen}
+                onRequestClose={() => setAddModalIsOpen(false)}
+                contentLabel="Add Employee"
+                style={{
+                    overlay: {
+                        zIndex: 9999,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+                    },
+                    content: {
+                        width: '800px',
+                        height: '800px',
+                        margin: 'auto',
+                        overflow: 'auto'
+                    }
+                }}
+
+            >
+                <div className="card overflow-hidden">
+                    <div className="row no-gutters row-bordered row-border-light">
+                        <div className="col-md-9">
+                            <div className="tab-content">
+                                <div className="tab-pane fade active show" id="account-general">
+                                    <hr className="border-light m-0" />
+                                    <div className="card-body">
+
+
+
                                         <div className="form-group">
-                                            <label className="form-label">img</label>
+                                            <label className="form-label"><strong>User name</strong></label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-1"
-                                                value={userName}
-                                                onChange={(e) => setUserName(e.target.value)}
+                                                value={newUserName}
+                                                onChange={(e) => setNewUserName(e.target.value)}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="form-label"><strong>Image</strong></label>
+
+                                            <input type="file" onChange={handleImageUpload} />
+                                            <img src={newImage || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
+
+
+
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>First name</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={newFirstName}
+                                                onChange={(e) => setNewFirstName(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Last name</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={newLastName}
+                                                onChange={(e) => setNewLastName(e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="form-group"><strong>Gender</strong></label>
+                                            <select id="gender" value={newGender} onChange={(e) => setNewGender(e.target.value)}>
+                                                <option value="">Choose gender</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={newGender}
+                                                onChange={(e) => setNewGender(e.target.value)}
+                                            />
+
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Phone</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={newPhone}
+                                                onChange={(e) => setNewPhone(e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Start Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={newStartDate}
+                                                onChange={(e) => setNewStartDate(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>End Date</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={newEndDate}
+                                                onChange={(e) => setNewEndDate(e.target.value)}
+                                            />
+                                        </div>
+
+
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>E-mail</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-1"
+                                                value={newEmail}
+                                                onChange={(e) => setNewEmail(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label"><strong>Password</strong></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={newPassword}
+                                                onChange={(e) => setNewPassword(e.target.value)}
                                             />
                                         </div>
                                     </div>
@@ -340,114 +562,7 @@ function Table() {
                 </div>
                 <div className="text-right mt-3">
                     <button type="button" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
-                </div>
-            </Modal>
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={() => setModalIsOpen(false)}
-                contentLabel="Add Employee"
-                style={{
-                    overlay: {
-                        zIndex: 9999
-                    },
-                    content: {
-                        width: '600px',
-                        height: '600px',
-                        margin: 'auto'
-                    }
-                }}
-
-            >
-                <div className="card overflow-hidden">
-                    <div className="row no-gutters row-bordered row-border-light">
-                        <div className="col-md-9">
-                            <div className="tab-content">
-                                <div className="tab-pane fade active show" id="account-general">
-                                    <hr className="border-light m-0" />
-                                    <div className="card-body">
-                                        <div className="form-group">
-                                            <label className="form-label">User name</label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={userName}
-                                                onChange={(e) => setUserName(e.target.value)}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="form-label">Image</label>
-
-                                            <input type="file" onChange={handleImageUpload} />
-
-
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">First name</label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={firstName}
-                                                onChange={(e) => setFirstName(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Last name</label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={lastName}
-                                                onChange={(e) => setLastName(e.target.value)}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="form-group">Gender</label>
-                                            <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
-                                                <option value="">Choose gender</option>
-                                                <option value="Male">Male</option>
-                                                <option value="Female">Female</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Phone</label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={phone}
-                                                onChange={(e) => setPhone(e.target.value)}
-                                            />
-                                        </div>
-
-
-                                        <div className="form-group">
-                                            <label className="form-label">E-mail</label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Password</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="text-right mt-3">
-                    <button type="button" className="btn btn-primary" onClick={handleChangeSubmit}>Submit</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
+                    <button type="button" className="btn btn-secondary" onClick={() => setAddModalIsOpen(false)}>Close</button>
                 </div>
             </Modal>
 
@@ -648,12 +763,20 @@ function Table() {
                                     {/* DATA TABLE */}
                                     <h3 className="title-5 m-b-35">Employee List</h3>
                                     <div className="table-data__tool">
+                                        <div class="input-group">
+                                            <input type="search" placeholder="What're you searching for?" aria-describedby="button-addon1" class="form-control border-0 bg-light" style={{ borderRadius: '100px' }}
+                                                // onChange={(e) => { setSearch(e.target.value) }} 
+                                                />
+                                            <div class="input-group-append">
+                                                <button id="button-addon1" type="submit" class="btn btn-link text-primary" style={{ borderRadius: '70px' }} ><i class="fa fa-search"></i></button>
+                                            </div>
+                                        </div>
 
                                         <div className="table-data__tool-right">
                                             {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
                                                 <i className="zmdi zmdi-plus" />add item</button> */}
 
-                                            <button className="btn btn-primary" onClick={() => setModalIsOpen(true)}>
+                                            <button className="btn btn-primary" onClick={() => setAddModalIsOpen(true)}>
                                                 Add employee
                                             </button>
 
@@ -712,7 +835,7 @@ function Table() {
                                                                     data-placement="top"
                                                                     title="Edit"
                                                                     onClick={() => {
-                                                                        setModalIsOpen(true);
+                                                                        setEditModalIsOpen(true);
                                                                         setEmployeeId(employee.employeeId); // Truyền employeeId vào đây
                                                                     }}
                                                                 >

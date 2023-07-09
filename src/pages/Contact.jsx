@@ -10,6 +10,7 @@ import Modal from '@mui/material/Modal';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import "../styles/contact.css";
+import RatingForm from "../components/UI/RatingForm";
 
 const style = {
   position: 'absolute',
@@ -46,6 +47,16 @@ const Contact = () => {
   const handleClose2 = () => setIsOpen(false);
   const [booking, setBooking] = useState([])
   const [process, setProcess] = useState([])
+  const [isRatingOpen, setIsRatingOpen] = useState(false);
+
+  const handleRatingOpen = () => {
+    setIsRatingOpen(true);
+  };
+
+  const handleRatingSubmit = (formData) => {
+    // Xử lý dữ liệu rating và comment ở đây (ví dụ: gửi lên backend)
+    console.log('Rating and comment:', formData);
+  };
 
   useEffect(() => {
     // Gọi API để lấy dữ liệu
@@ -227,6 +238,13 @@ const Contact = () => {
                                       <Button variant="contained" className="container mt-3 mr-3" onClick={handleClick}>Check Out</Button>
                                     </Col>
                                   </Row>
+                                  <Row>
+                                    <Col lg="12" md="12">
+                                      <Button variant="contained" className="container mt-3 mr-3" onClick={handleRatingOpen}>
+                                        Đánh giá dịch vụ
+                                      </Button>
+                                    </Col>
+                                  </Row>
                                 </div>
                               ) : booking.status == 'Incoming' ?
                                 (
@@ -286,6 +304,18 @@ const Contact = () => {
                         </Modal>
                       </Box>
                     </Modal>
+                    {isRatingOpen && (
+                      <Modal
+                        open={isRatingOpen}
+                        onClose={() => setIsRatingOpen(false)}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box sx={style}>
+                          <RatingForm onClose={() => setIsRatingOpen(false)} onRatingSubmit={handleRatingSubmit} />
+                        </Box>
+                      </Modal>
+                    )}
                   </tbody>
                 </table>
               </div>

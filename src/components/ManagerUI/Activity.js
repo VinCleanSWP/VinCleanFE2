@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
+import { FcAlphabeticalSortingAz } from "react-icons/fc";
 
 function Activity() {
     const [bookingData, setBookingData] = useState([]);
     const [modal, setModal] = useState({});
     const [search, setSearch] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc'); // 'asc' để sắp xếp tăng dần, 'desc' để sắp xếp giảm dần
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
@@ -33,6 +35,43 @@ function Activity() {
     }
 
 
+    const formatTime = (timeString) => {
+        if (timeString) {
+            const [hours, minutes] = timeString.split(":");
+            return `${hours}:${minutes}`;
+        }
+        return "";
+    };
+
+    ///Search and sort
+    const handleSearchChange = (e) => {
+        setSearch(e.target.value);
+      };
+    
+      const sortAndFilterData = () => {
+        const sortedData = [...bookingData].sort((a, b) => {
+          const dateA = new Date(a.dateWork);
+          const dateB = new Date(b.dateWork);
+          return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+    
+        const filteredData = sortedData.filter(m =>
+          m.orderId.toString().toLowerCase().includes(search.toLowerCase()) ||
+          m.customerId.toString().toLowerCase().includes(search.toLowerCase()) ||
+          m.type.toLowerCase().includes(search.toLowerCase()) ||
+          m.dateWork.toString().toLowerCase().includes(search.toLowerCase()) ||
+          m.startTime.toString().toLowerCase().includes(search.toLowerCase()) ||
+          m.address.toString().toLowerCase().includes(search.toLowerCase())
+        );
+    
+        return filteredData;
+      };
+    
+      const toggleSortOrder = () => {
+        setSortOrder(prevSortOrder => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
+      };
+
+
     return (
         <div>
             {/* PAGE CONTAINER*/}
@@ -43,56 +82,43 @@ function Activity() {
                         <div className="container-fluid">
                             <div className="row m-t-30">
                                 <div className="col-md-12">
-                                    <form action="">
-                                        <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
-                                            <div class="input-group">
-                                                <input type="search" placeholder="What're you searching for?" aria-describedby="button-addon1" class="form-control border-0 bg-light" style={{ borderRadius: '100px' }}
-                                                    onChange={(e) => { setSearch(e.target.value) }} />
-                                                <div class="input-group-append">
-                                                    <button id="button-addon1" type="submit" class="btn btn-link text-primary" style={{ borderRadius: '70px' }} ><i class="fa fa-search"></i></button>
+                                <form action="">
+                                            <div class="table__header">
+                                                <h2><strong>Customer Order</strong></h2>
+                                                <div class="input-group" >
+                                                    <input type="search" placeholder="Search Data..."
+                                                        value={search}
+                                                        onChange={handleSearchChange}/>
+                                                    <img src="images/icon/search.png" alt=""></img>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
                                     {/* DATA TABLE*/}
                                     <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
                                         <table className="table table-borderless table-data3 shadow-sm">
                                             <thead>
                                                 <tr>
-                                                    <th>Id</th>
-                                                    <th>Customer</th>
-                                                    <th>Type services</th>
-                                                    <th>Date</th>
-                                                    <th>Time</th>
-                                                    <th>Address</th>
-                                                    <th>Price</th>
+                                                    <th>Id <span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></th>
+                                                    <th>Customer <span className='icon-arrow' ><FcAlphabeticalSortingAz/></span> </th>
+                                                    <th>Type services <span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></th>
+                                                    <th onClick={toggleSortOrder}><div>Date<span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></div></th>
+                                                    <th>Time<span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></th>
+                                                    <th>Address<span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></th>
+                                                    <th>Price<span className='icon-arrow' ><FcAlphabeticalSortingAz/></span></th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {bookingData.filter((m) => {
-                                                    if (search.toLowerCase() === '') {
-                                                        return m;
-                                                    }
-                                                    else if (m.orderId.toString().toLowerCase().includes(search.toLowerCase()) ||
-                                                        m.customerId.toString().toLowerCase().includes(search.toLowerCase()) ||
-                                                        m.type.toLowerCase().includes(search.toLowerCase()) ||
-                                                        m.dateWork.toString().toLowerCase().includes(search.toLowerCase()) ||
-                                                        m.startTime.toString().toLowerCase().includes(search.toLowerCase()) ||
-                                                        m.address.toString().toLowerCase().includes(search.toLowerCase()) ||
-                                                        m.customerId.toString().toLowerCase().includes(search.toLowerCase())
-                                                    ) {
-                                                        return m;
-                                                    }
-                                                }).map(booking => (
+                                                {sortAndFilterData()
+                                                .map(booking => (
                                                         <tr key={booking.orderId}>
                                                             <td>{booking.orderId}</td>
                                                             <td>{booking.customerId}</td>
                                                             <td>{booking.type}</td>
                                                             <td>{format(new Date(booking.dateWork), 'dd/MM/yyyy')}</td>
-                                                            <td>{booking.startTime} - {booking.endTime}</td>
+                                                            <td>{formatTime(booking.startTime)} - {formatTime(booking.endTime)}</td>
                                                             <td>{booking.address}</td>
-                                                            <td style={{ color: 'red' }}>{booking.total}.000</td>
+                                                            <td><p className="status Incoming" style={{margin:0}}>{booking.total}.000</p></td>
                                                             <td>
                                                                 <div className="table-data-feature">
                                                                     <button className="item" data-toggle="tooltip" data-placement="top" title="More"
@@ -116,7 +142,7 @@ function Activity() {
                             <div className="modal-content">
                                 <div className="modal-header" >
                                     <h5 className="modal-title" id="exampleModalLabel"><strong>Order Details  ID: {modal.orderId} </strong></h5>
-                                    <h5 className="modal-title" style={{ color: 'green', marginLeft: '400px' }}> <span style={{ marginRight: "5px" }}>Total</span> {modal.total}.000 </h5>
+                                    <h5 className="status Incoming modal-title" style={{ marginLeft: '350px', minWidth:"210px" }}> <span style={{ marginRight: "5px" }}>Total</span> {modal.total}.000 VND </h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>
                                 <div className="modal-body">
@@ -127,7 +153,7 @@ function Activity() {
                                             <input value={modal.customerName} className="form-control" />
                                         </div>
                                         <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '150px', }} />
+                                            <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{width: '150px'}} />
                                         </div>
                                     </form>
                                     <form className="form-inline">
@@ -218,7 +244,6 @@ function Activity() {
                                 </div>
                             </div>
                         </div>
-
 
                     </div>
                     <div className="row">

@@ -4,6 +4,8 @@ import axios from 'axios';
 import { Modal } from "reactstrap";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './FireBaseConfig';
+import { storage } from "./FireBaseConfig";
 
 const Service = () => {
     const [servicetype, setType] = useState([]);
@@ -14,6 +16,7 @@ const Service = () => {
     const accountId = localStorage.getItem('id');
     const [servicetypeid, setServiceTypeId] = useState('');
     const [serviceId, setServiceId] = useState('');
+    const [TempImageUrl,setTempImageUrl] = useState('');
 
     const [Name, setName] = useState('');
     const [Cost, setCost] = useState('');
@@ -304,12 +307,12 @@ const Service = () => {
                             <div className="row">
                                 {/* Rest of the code */}
                             </div>
-
+                            <h1 class="table__header" style={{textAlign: "center"}}><strong>Service List</strong></h1>
                             <div className="row">
                                 <div className="col-md-12">
                                     {/* DATA TABLE */}
-                                    <div className="table-responsive table-responsive-data2">
-                                        <table className="table table-data2">
+                                    <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
+                                        <table className="table table-borderless table-data3 shadow-sm">
                                             <thead>
                                                 <tr>
                                                     <th>Type ID</th>

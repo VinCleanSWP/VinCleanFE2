@@ -39,6 +39,7 @@ function Table() {
     const [employeeId, setEmployeeId] = useState('');
     const [customerId, setCustomerId] = useState('');
     const[ModalIsOpen,setModalIsOpen] = useState('');
+    const [Search, setSearch] = useState('');
 
     const [url, setUrl] = useState('');
 
@@ -77,7 +78,6 @@ function Table() {
 
                 setEmployeeData(data);
                 setUserName(data.account.name);
-
                 setFirstName(data.firstName);
                 setLastName(data.lastName);
                 setGender(data.account.gender);
@@ -458,163 +458,7 @@ function Table() {
                                         <i className="zmdi zmdi-search" />
                                     </button>
                                 </form>
-                                <div className="header-button">
-                                    <div className="noti-wrap">
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-comment-more" />
-                                            <span className="quantity">1</span>
-                                            <div className="mess-dropdown js-dropdown">
-                                                <div className="mess__title">
-                                                    <p>You have 2 news message</p>
-                                                </div>
-                                                <div className="mess__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-06.jpg" alt="Michelle Moreno" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <h6>Michelle Moreno</h6>
-                                                        <p>Have sent a photo</p>
-                                                        <span className="time">3 min ago</span>
-                                                    </div>
-                                                </div>
-                                                <div className="mess__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-04.jpg" alt="Diane Myers" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <h6>Diane Myers</h6>
-                                                        <p>You are now connected on message</p>
-                                                        <span className="time">Yesterday</span>
-                                                    </div>
-                                                </div>
-                                                <div className="mess__footer">
-                                                    <a href="#">View all messages</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-email" />
-                                            <span className="quantity">1</span>
-                                            <div className="email-dropdown js-dropdown">
-                                                <div className="email__title">
-                                                    <p>You have 3 New Emails</p>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-06.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, 3 min ago</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-05.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, Yesterday</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-04.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, April 12,,2018</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__footer">
-                                                    <a href="#">See all emails</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-notifications" />
-                                            <span className="quantity">3</span>
-                                            <div className="notifi-dropdown js-dropdown">
-                                                <div className="notifi__title">
-                                                    <p>You have 3 Notifications</p>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c1 img-cir img-40">
-                                                        <i className="zmdi zmdi-email-open" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>You got a email notification</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c2 img-cir img-40">
-                                                        <i className="zmdi zmdi-account-box" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Your account has been blocked</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c3 img-cir img-40">
-                                                        <i className="zmdi zmdi-file-text" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>You got a new file</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__footer">
-                                                    <a href="#">All notifications</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="account-wrap">
-                                        <div className="account-item clearfix js-item-menu">
-                                            <div className="image">
-                                                <img src="images/icon/avatar-01.jpg" alt="John Doe" />
-                                            </div>
-                                            <div className="content">
-                                                <a className="js-acc-btn" href="#">john doe</a>
-                                            </div>
-                                            <div className="account-dropdown js-dropdown">
-                                                <div className="info clearfix">
-                                                    <div className="image">
-                                                        <a href="#">
-                                                            <img src="images/icon/avatar-01.jpg" alt="John Doe" />
-                                                        </a>
-                                                    </div>
-                                                    <div className="content">
-                                                        <h5 className="name">
-                                                            <a href="#">john doe</a>
-                                                        </h5>
-                                                        <span className="email">johndoe@example.com</span>
-                                                    </div>
-                                                </div>
-                                                <div className="account-dropdown__body">
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-account" />Account</a>
-                                                    </div>
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-settings" />Setting</a>
-                                                    </div>
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-money-box" />Billing</a>
-                                                    </div>
-                                                </div>
-                                                <div className="account-dropdown__footer">
-                                                    <a href="#">
-                                                        <i className="zmdi zmdi-power" />Logout</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -622,7 +466,7 @@ function Table() {
                 {/* END HEADER DESKTOP*/}
                 {/* MAIN CONTENT*/}
                 <div className="main-content">
-                    <div className="section__content section__content--p30">
+                    <div className="section__content section__content--p10">
                         <div className="container-fluid">
 
                             <div className="row">
@@ -633,20 +477,22 @@ function Table() {
                                 </div>
 
                             </div>
+                            <div class="table__header">
+                            <h1  style={{textAlign: "center"}}><strong>Employee List</strong></h1>
+                            <div class="input-group" >
+                                                    <input type="search" placeholder="Search Data..."
+                                                        onChange={(e) => { setSearch(e.target.value) }}/>
+                                                    <img src="images/icon/search.png" alt=""></img>
+                                                </div>
 
+                            </div>
                             <div className="row">
 
                                 <div className="col-md-12">
                                     {/* DATA TABLE */}
-                                    <h3 className="title-5 m-b-35">Employee List</h3>
+                                    
                                     <div className="table-data__tool">
-                                        <div class="input-group">
-                                            <input type="search" placeholder="What're you searching for?" aria-describedby="button-addon1" class="form-control border-0 bg-light" style={{ borderRadius: '100px' }}
-                                                onChange={(e) => { setSearch(e.target.value) }} />
-                                            <div class="input-group-append">
-                                                <button id="button-addon1" type="submit" class="btn btn-link text-primary" style={{ borderRadius: '70px' }} ><i class="fa fa-search"></i></button>
-                                            </div>
-                                        </div>
+                                        
 
                                         <div className="table-data__tool-right">
                                             {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
@@ -655,21 +501,10 @@ function Table() {
                                             <button className="btn btn-primary" onClick={() => setAddModalIsOpen(true)}>
                                                 Add employee
                                             </button>
-
-
-
-                                            <div className="rs-select2--dark rs-select2--sm rs-select2--dark2">
-                                                <select className="js-select2" name="type">
-                                                    <option selected="selected">Export</option>
-                                                    <option value>Option 1</option>
-                                                    <option value>Option 2</option>
-                                                </select>
-                                                <div className="dropDownSelect2" />
-                                            </div>
                                         </div>
                                     </div>
-                                    <div className="table-responsive table-responsive-data2">
-                                        <table className="table table-data2">
+                                    <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
+                                        <table className="table table-borderless table-data3 shadow-sm">
                                             <thead>
                                                 <tr>
                                                     <th>Employee ID</th>
@@ -678,7 +513,7 @@ function Table() {
                                                     <th>First Name</th>
                                                     <th>Phone</th>
                                                     <th>Status</th>
-                                                    <th />
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -687,13 +522,12 @@ function Table() {
 
                                                         <td>{employee.employeeId}</td>
                                                         <td>
-                                                            <img src={employee.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
+                                                            <img src={employee.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px',borderRadius:"50%" }} />
                                                         </td>
                                                         <td>{employee.lastName}</td>
                                                         <td>{employee.firstName}</td>
                                                         <td>{employee.phone}</td>
                                                         <td>{employee.status}</td>
-                                                        <td />
                                                         <td>
                                                             <div className="table-data-feature">
 

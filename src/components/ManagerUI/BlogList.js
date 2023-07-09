@@ -42,15 +42,16 @@ const BlogList = () => {
                                     {/* DATA TABLE*/}
                                     <div className="table-responsive m-b-40" style={{ borderRadius: '15px' }}>
                                         <table className="table table-borderless table-data3 shadow-sm">
-                                            <thead>
+                                            <thead style={{textAlign:'center'}}>
                                                 <tr>
                                                     <th>Blog Id</th>
                                                     <th>Title</th>
+                                                    <th>Img</th>
                                                     <th></th>
 
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody style={{textAlign:'center'}}>
                                                 {blogs.filter((blog) => {
                                                     if (search.toLowerCase() === '') {
                                                         return blog;
@@ -65,7 +66,7 @@ const BlogList = () => {
                                                         <tr key={request.blogId}>
                                                             <td>{request.blogId}</td>
                                                             <td>{request.title}</td>
-
+                                                            <td>{request.img}</td>
                                                             <td>
                                                                 <div className="table-data-feature">
                                                                     <Link to={`/modifyblog/${request.blogId}`}> <button

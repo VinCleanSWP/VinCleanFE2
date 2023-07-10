@@ -1,19 +1,19 @@
 import React from 'react'
-import HeaderManager from '../components/ManagerUI/HeaderManager'
-import SlideBar from '../components/ManagerUI/SlideBar'
 import { Routes, Route, Navigate } from "react-router-dom";
+import MyCalendar from '../components/EmployeeUI/Calender';
+import EPSideBar from '../components/EmployeeUI/SideBar';
+import EPHeader from '../components/EmployeeUI/ADHeader';
 
 export default function EmployeeRouter() {
     return (
-        <div>
-            <div class="d-flex" id="wrapper">
-                <SlideBar />
-                <div id="page-content-wrapper">
-                    <HeaderManager />
-                    <Routes>
-                        <Route></Route>
-                    </Routes>
-                </div>
+        <div >
+            <div className="page-wrapper">
+                <EPHeader />
+                <EPSideBar />
+                <Routes>
+                    <Route path='/calendar' element={<MyCalendar />}></Route>
+
+                </Routes>
             </div>
         </div>
     )

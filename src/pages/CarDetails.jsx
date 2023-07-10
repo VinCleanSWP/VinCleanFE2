@@ -290,28 +290,32 @@ const ServiceTypeDetail = () => {
             <div className="rating-list">
               {rating.map(rating => (
                 <li key={rating.id} className="rating-item">
-                  <div>{rating.customerAccount.account.img}</div>
                   <Row>
-
                     <Col lg="1">
-                      <img class="avatar__img" src="https://i.kym-cdn.com/photos/images/original/002/601/167/c81" alt="Avatar" />
+                      {/* Hiện Avatar */}
+                      <div><img class="avatar__img" src={rating.img} alt="customer avatar" /></div>
+
+                      {/* Dùng tạm để css */}
+                      {/* <img class="avatar__img" src='https://yt3.googleusercontent.com/17vo13ad-ojeaPwYiVkp82Eims1qQufcPrSIiuoQVSb3P9Eu7web4KzyqOXM48UmTORWATn1tg=s900-c-k-c0x00ffffff-no-rj'
+                        alt="customer avatar" /> */}
                     </Col>
 
-
                     <Col lg="10">
-                      <div className="rating-right-container">
-                        <h6>{rating.customer.lastName} {rating.customer.firstName}</h6>
 
-                        <div className="rating-stars">
+                      <div>{rating.customerLastName + " " + rating.customerFirstName}</div>
 
-                          {[...Array(rating.rate)].map((_, index) => (
-                            <i key={index} class="ri-star-s-fill"></i>
-                          ))}</div>
-
-                        <div className="date">{moment(rating.createdDate).format('hh:mm - DD/MM/YYYY')} | Dịch vụ: {rating.service.name}</div>
-
-                        <div>{rating.comment}</div>
+                      {/* Hiện số sao */}
+                      <div className="rating-stars">
+                        {[...Array(rating.rate)].map((_, index) => (
+                          <i key={index} className="ri-star-s-fill"></i>
+                        ))}
                       </div>
+
+                      {/* Hiện ngày giờ | Dịch vụ */}
+                      <div className="date">{moment(rating.createdDate).format('hh:mm a - DD/MM/YYYY ')} | Dịch vụ: {rating.serviceName}</div>
+
+                      {/* Hiện comment */}
+                      <div>Nhận xét: {rating.comment}</div>
                     </Col>
                   </Row>
                 </li>

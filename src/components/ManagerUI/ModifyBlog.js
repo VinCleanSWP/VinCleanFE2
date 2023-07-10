@@ -12,9 +12,9 @@ export default function BlogDetail() {
     const [blogTitle, setBlogTitle] = useState('');
     const [blogSummary, setBlogSummary] = useState('');
     const [blogContent, setBlogContent] = useState('');
+    const [OldImageUrl, setOldImageUrl] = useState('');
 
     const [tempImageUrl, setTempImageUrl] = useState('');
-    const [oldImageUrl,setOldImageUrl] = useState('');
 
 
 
@@ -91,52 +91,72 @@ export default function BlogDetail() {
     };
 
     return (
-        <div className="container left">
-            <div className="card">
-                <div className="card-body">
-                    <h5 className="card-title">Blog Editor Default</h5>
-                    <div>
-                        <label className="form-label">Image</label>
-                        <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>
-                            <img src={tempImageUrl} alt="Temporary Image" />
+        <div className="page-container">
+            {/* MAIN CONTENT*/}
+            <div className="main-content">
+                <div className="section__content section__content--p30">
+                    <div className="container-fluid">
+                        <div className="row m-t-30">
+                            <div className="col-md-12">
+                                <div className="container left">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <h3 style={{ textAlign: "center" }}><strong>Edit Blog #{id}</strong></h3>
+                                            <div>
+                                                <label><strong>Title:</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={blogTitle}
+                                                    onChange={handleTitleChange}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label><strong>Summary:</strong></label>
+                                                <ReactQuill
+                                                    value={blogSummary}
+                                                    onChange={handleSummaryChange}
+                                                    suppressContentEditableWarning={true}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label><strong>Content:</strong></label>
+                                                <ReactQuill
+                                                    value={blogContent}
+                                                    onChange={handleContentChange}
+                                                    suppressContentEditableWarning={true}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="form-label"> <strong>Image</strong></label>
+                                                <div >
+                                                    <img src={tempImageUrl || "http://via.placeholder.com/1080x250"}
+                                                        alt="Temporary Image"
+                                                        style={{ width: '1080px', height: '250px' }} />
+                                                </div>
+                                                <input type="file" onChange={handleImageUpload} />
+                                            </div>
+                                            <div>
+                                                <h2>Preview:</h2>
+                                                <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>
+                                                    <img src={tempImageUrl || "http://via.placeholder.com/1080x250"} alt="Temporary Image"
+                                                        style={{ width: '1080px', height: '250px' }} />
+                                                </div>
+                                                <h3>{blogTitle}</h3>
+                                                <div dangerouslySetInnerHTML={{ __html: blogSummary }} />
+                                                <div dangerouslySetInnerHTML={{ __html: blogContent }} />
+                                            </div>
+                                            <div style={{ textAlign: 'right', marginRight: '5px' }}>
+                                                <button type="button" className="btn btn-primary m-r-5" onClick={handleSaveChanges}>Save Changes</button>
+                                                <button type="button" className="btn btn-primary" onClick={handleDeleteBlog}>Delete</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <input type="file" onChange={handleImageUpload} />
                     </div>
-                    <div>
-                        <label>Title:</label>
-                        <input
-                            type="text"
-                            value={blogTitle}
-                            onChange={handleTitleChange}
-                        />
-                    </div>
-                    <div>
-                        <label>Summary:</label>
-                        <ReactQuill
-                            value={blogSummary}
-                            onChange={handleSummaryChange}
-                            suppressContentEditableWarning={true}
-                        />
-                    </div>
-                    <div>
-                        <label>Content:</label>
-                        <ReactQuill
-                            value={blogContent}
-                            onChange={handleContentChange}
-                            suppressContentEditableWarning={true}
-                        />
-                    </div>
-                    <div>
-                        <h2>Preview:</h2>
-                        <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>
-                            <img src={tempImageUrl} alt="Temporary Image" />
-                        </div>
-                        <h3>{blogTitle}</h3>
-                        <div dangerouslySetInnerHTML={{ __html: blogSummary }} />
-                        <div dangerouslySetInnerHTML={{ __html: blogContent }} />
-                    </div>
-                    <button onClick={handleSaveChanges}>Save Changes</button>
-                    <button onClick={handleDeleteBlog}>Delete</button>
                 </div>
             </div>
         </div>

@@ -48,10 +48,9 @@ function Table() {
     const [createdDate, setCreatedDate] = useState('');
     const [accountId, setAccountId] = useState('')
     const [employeeId, setEmployeeId] = useState('');
-
-
-
-
+    const [customerId, setCustomerId] = useState('');
+    const [ModalIsOpen, setModalIsOpen] = useState('');
+    const [Search, setSearch] = useState('');
 
     const [url, setUrl] = useState('');
 
@@ -138,7 +137,7 @@ function Table() {
             .put(`https://localhost:7013/api/Employee`, updatedEmployee)
             .then(response => {
                 console.log('Employee updated successfully:', response.data);
-                setModalIsOpen(false);
+                // setModalIsOpen(false);
                 // Do something after successful update
             })
             .catch(error => {
@@ -205,7 +204,7 @@ function Table() {
             .then(response => {
                 // Xử lý kết quả từ API (nếu cần)
                 console.log(response.data);
-                setModalIsOpen(false);
+                // setModalIsOpen(false);
             })
             .catch(error => {
                 // Xử lý lỗi (nếu có)
@@ -242,181 +241,120 @@ function Table() {
             >
                 <div className="card overflow-hidden">
                     <div className="row no-gutters row-bordered row-border-light">
-                        <div className="col-md-9">
-                            <div className="tab-content">
-                                <div className="tab-pane fade active show" id="account-general">
-                                    <hr className="border-light m-0" />
-                                    <div className="card-body">
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Employee ID</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={employeeId} readOnly
 
-                                            />
+                        <div className="tab-content">
+                            <div className="tab-pane fade active show" id="account-general">
+                                <hr className="border-light m-0" />
+                                <div className="card-body">
+                                    <h3 style={{ textAlign: "center" }}><strong>Edit Employee</strong></h3>
+
+                                    <div style={{ display: 'flex' }}>
+                                        <div><img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius: '50%' }} /></div>
+                                        <div style={{ paddingTop: '15px', paddingLeft: '10px', width: 'auto', fontSize: '25px' }}><strong>{userName}</strong>
+                                            <br></br>
+                                            <div style={{ fontSize: '13px' }}><strong style={{ marginRight: "5px" }}>Account ID</strong>{accountId}</div>
+                                            <div style={{ fontSize: '13px' }}><strong style={{ marginRight: "5px" }}>Employee ID</strong>{employeeId}</div>
                                         </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Account ID</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={accountId} readOnly
+                                        <div style={{ marginLeft: '300px', marginTop: '15px' }}><strong>createdDate</strong><br></br>{createdDate.split('T')[0]}</div>
 
-                                            />
+                                    </div>
+                                    <div style={{ display: 'flex' }}>
+                                        <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>First name</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={firstName}
+                                                    onChange={(e) => setFirstName(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>Last name</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={lastName}
+                                                    onChange={(e) => setLastName(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>Status</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={status}
+                                                    onChange={(e) => setstatus(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>Start Date</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={moment(startDate).format('YYYY-MM-DD')}
+                                                    onChange={(e) => setStartDate(e.target.value)}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="form-group"><strong>Gender</strong></label>
+                                                <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
+                                                    <option value="">Choose gender</option>
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={gender}
+                                                    onChange={(e) => setGender(e.target.value)}
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>User name</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={userName}
-                                                onChange={(e) => setUserName(e.target.value)}
-                                            />
-                                            <img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
+                                        <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>E-mail</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={email}
+                                                    onChange={(e) => setEmail(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>Password</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={password}
+                                                    onChange={(e) => setPassword(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>Phone</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={phone}
+                                                    onChange={(e) => setPhone(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>End Date</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={moment(endDate).format('YYYY-MM-DD')}
+                                                    onChange={(e) => setendDate(e.target.value)}
+                                                />
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label className="form-label"><strong>Image</strong></label>
-
-                                            <input type="file" onChange={handleImageUpload} />
-
-
-                                            <img src={newImage || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
-
-
-
-
-
-
-
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>First name</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={firstName}
-                                                onChange={(e) => setFirstName(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Last name</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={lastName}
-                                                onChange={(e) => setLastName(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Status</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={status}
-                                                onChange={(e) => setstatus(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Created Date</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={moment(createdDate).format('YYYY-MM-DD')}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="form-group"><strong>Gender</strong></label>
-                                            <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
-                                                <option value="">Choose gender</option>
-                                                <option value="Male">Male</option>
-                                                <option value="Female">Female</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={gender}
-                                                onChange={(e) => setGender(e.target.value)}
-                                            />
-
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Phone</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={phone}
-                                                onChange={(e) => setPhone(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Start Date</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={moment(startDate).format('YYYY-MM-DD')}
-                                                onChange={(e) => setStartDate(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>End Date</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={moment(endDate).format('YYYY-MM-DD')}
-                                                onChange={(e) => setEndDate(e.target.value)}
-                                            />
-                                        </div>
-
-
-
-
-
-
-
-
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Is deleted</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={isDeleted}
-                                                onChange={(e) => isDeleted(e.target.value)} readOnly
-                                            />
-                                        </div>
-
-
-
-
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>E-mail</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                            />
-                                        </div>
-
-
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Password</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
                 <div className="text-right mt-3">
@@ -445,119 +383,126 @@ function Table() {
             >
                 <div className="card overflow-hidden">
                     <div className="row no-gutters row-bordered row-border-light">
-                        <div className="col-md-9">
-                            <div className="tab-content">
-                                <div className="tab-pane fade active show" id="account-general">
-                                    <hr className="border-light m-0" />
-                                    <div className="card-body">
 
-
-
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>User name</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={newUserName}
-                                                onChange={(e) => setNewUserName(e.target.value)}
-                                            />
+                        <div className="tab-content">
+                            <div className="tab-pane fade active show" id="account-general">
+                                <hr className="border-light m-0" />
+                                <div className="card-body">
+                                    <h3 style={{ textAlign: "center" }}><strong>Add Employee</strong></h3>
+                                    <div style={{ display: 'flex' }}>
+                                        <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>User name</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={newUserName}
+                                                    onChange={(e) => setNewUserName(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>First name</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={newFirstName}
+                                                    onChange={(e) => setNewFirstName(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>Last name</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={newLastName}
+                                                    onChange={(e) => setNewLastName(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>Phone</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={newPhone}
+                                                    onChange={(e) => setNewPhone(e.target.value)}
+                                                />
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label className="form-label"><strong>Image</strong></label>
+                                        <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>Start Date</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={newStartDate}
+                                                    onChange={(e) => setNewStartDate(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>End Date</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={newEndDate}
+                                                    onChange={(e) => setNewEndDate(e.target.value)}
+                                                />
+                                            </div>
 
-                                            <input type="file" onChange={handleImageUpload} />
-                                            <img src={newImage || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
 
-
-
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>E-mail</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control mb-1"
+                                                    value={newEmail}
+                                                    onChange={(e) => setNewEmail(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label"><strong>Password</strong></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={newPassword}
+                                                    onChange={(e) => setNewPassword(e.target.value)}
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>First name</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={newFirstName}
-                                                onChange={(e) => setNewFirstName(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Last name</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={newLastName}
-                                                onChange={(e) => setNewLastName(e.target.value)}
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="form-group"><strong>Gender</strong></label>
-                                            <select id="gender" value={newGender} onChange={(e) => setNewGender(e.target.value)}>
-                                                <option value="">Choose gender</option>
-                                                <option value="Male">Male</option>
-                                                <option value="Female">Female</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={newGender}
-                                                onChange={(e) => setNewGender(e.target.value)}
-                                            />
-
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Phone</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={newPhone}
-                                                onChange={(e) => setNewPhone(e.target.value)}
-                                            />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Start Date</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={newStartDate}
-                                                onChange={(e) => setNewStartDate(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>End Date</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={newEndDate}
-                                                onChange={(e) => setNewEndDate(e.target.value)}
-                                            />
+                                    </div>
+                                    <div>
+                                        <label className="form-group"><strong>Gender</strong></label>
+                                        <select id="gender" value={newGender} onChange={(e) => setNewGender(e.target.value)}>
+                                            <option value="">Choose gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <input
+                                            type="text"
+                                            className="form-control mb-1"
+                                            value={newGender}
+                                            onChange={(e) => setNewGender(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="form-label"><strong>Image</strong></label>
+                                        <br></br>
+                                        <div style={{ display: 'flex' }}>
+                                            <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
+                                                <input type="file" onChange={handleImageUpload} />
+                                            </div>
+                                            <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
+                                                <img src={newImage || "http://via.placeholder.com/300"}
+                                                    alt="Avatar" style={{ width: '100px', height: '100px' }} />
+                                            </div>
                                         </div>
 
 
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>E-mail</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={newEmail}
-                                                onChange={(e) => setNewEmail(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Password</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={newPassword}
-                                                onChange={(e) => setNewPassword(e.target.value)}
-                                            />
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
                 <div className="text-right mt-3">
@@ -581,163 +526,7 @@ function Table() {
                                         <i className="zmdi zmdi-search" />
                                     </button>
                                 </form>
-                                <div className="header-button">
-                                    <div className="noti-wrap">
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-comment-more" />
-                                            <span className="quantity">1</span>
-                                            <div className="mess-dropdown js-dropdown">
-                                                <div className="mess__title">
-                                                    <p>You have 2 news message</p>
-                                                </div>
-                                                <div className="mess__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-06.jpg" alt="Michelle Moreno" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <h6>Michelle Moreno</h6>
-                                                        <p>Have sent a photo</p>
-                                                        <span className="time">3 min ago</span>
-                                                    </div>
-                                                </div>
-                                                <div className="mess__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-04.jpg" alt="Diane Myers" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <h6>Diane Myers</h6>
-                                                        <p>You are now connected on message</p>
-                                                        <span className="time">Yesterday</span>
-                                                    </div>
-                                                </div>
-                                                <div className="mess__footer">
-                                                    <a href="#">View all messages</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-email" />
-                                            <span className="quantity">1</span>
-                                            <div className="email-dropdown js-dropdown">
-                                                <div className="email__title">
-                                                    <p>You have 3 New Emails</p>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-06.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, 3 min ago</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-05.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, Yesterday</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__item">
-                                                    <div className="image img-cir img-40">
-                                                        <img src="images/icon/avatar-04.jpg" alt="Cynthia Harvey" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Meeting about new dashboard...</p>
-                                                        <span>Cynthia Harvey, April 12,,2018</span>
-                                                    </div>
-                                                </div>
-                                                <div className="email__footer">
-                                                    <a href="#">See all emails</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="noti__item js-item-menu">
-                                            <i className="zmdi zmdi-notifications" />
-                                            <span className="quantity">3</span>
-                                            <div className="notifi-dropdown js-dropdown">
-                                                <div className="notifi__title">
-                                                    <p>You have 3 Notifications</p>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c1 img-cir img-40">
-                                                        <i className="zmdi zmdi-email-open" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>You got a email notification</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c2 img-cir img-40">
-                                                        <i className="zmdi zmdi-account-box" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>Your account has been blocked</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__item">
-                                                    <div className="bg-c3 img-cir img-40">
-                                                        <i className="zmdi zmdi-file-text" />
-                                                    </div>
-                                                    <div className="content">
-                                                        <p>You got a new file</p>
-                                                        <span className="date">April 12, 2018 06:50</span>
-                                                    </div>
-                                                </div>
-                                                <div className="notifi__footer">
-                                                    <a href="#">All notifications</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="account-wrap">
-                                        <div className="account-item clearfix js-item-menu">
-                                            <div className="image">
-                                                <img src="images/icon/avatar-01.jpg" alt="John Doe" />
-                                            </div>
-                                            <div className="content">
-                                                <a className="js-acc-btn" href="#">john doe</a>
-                                            </div>
-                                            <div className="account-dropdown js-dropdown">
-                                                <div className="info clearfix">
-                                                    <div className="image">
-                                                        <a href="#">
-                                                            <img src="images/icon/avatar-01.jpg" alt="John Doe" />
-                                                        </a>
-                                                    </div>
-                                                    <div className="content">
-                                                        <h5 className="name">
-                                                            <a href="#">john doe</a>
-                                                        </h5>
-                                                        <span className="email">johndoe@example.com</span>
-                                                    </div>
-                                                </div>
-                                                <div className="account-dropdown__body">
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-account" />Account</a>
-                                                    </div>
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-settings" />Setting</a>
-                                                    </div>
-                                                    <div className="account-dropdown__item">
-                                                        <a href="#">
-                                                            <i className="zmdi zmdi-money-box" />Billing</a>
-                                                    </div>
-                                                </div>
-                                                <div className="account-dropdown__footer">
-                                                    <a href="#">
-                                                        <i className="zmdi zmdi-power" />Logout</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -756,61 +545,52 @@ function Table() {
                                 </div>
 
                             </div>
-
+                            <div class="table__header">
+                                <h1 style={{ textAlign: "center" }}><strong>Employee List</strong></h1>
+                                <div class="input-group" >
+                                    <input type="search" placeholder="Search Data..."
+                                        onChange={(e) => { setSearch(e.target.value) }} />
+                                    <img src="images/icon/search.png" alt=""></img>
+                                </div>
+                            </div>
                             <div className="row">
 
                                 <div className="col-md-12">
                                     {/* DATA TABLE */}
-                                    <h3 className="title-5 m-b-35">Employee List</h3>
-                                    <div className="table-data__tool">
-                                        <div class="input-group">
-                                            <input type="search" placeholder="What're you searching for?" aria-describedby="button-addon1" class="form-control border-0 bg-light" style={{ borderRadius: '100px' }}
-                                                onChange={(e) => { setSearch(e.target.value) }} />
-                                            <div class="input-group-append">
-                                                <button id="button-addon1" type="submit" class="btn btn-link text-primary" style={{ borderRadius: '70px' }} ><i class="fa fa-search"></i></button>
-                                            </div>
-                                        </div>
+
+                                    <div style={{ textAlign: 'right', margin: '5px 10px' }}>
+
 
                                         <div className="table-data__tool-right">
                                             {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
                                                 <i className="zmdi zmdi-plus" />add item</button> */}
 
-                                            <button className="btn btn-primary" onClick={() => setAddModalIsOpen(true)}>
+                                            <button className="btn btn-primary " onClick={() => setAddModalIsOpen(true)}>
                                                 Add employee
                                             </button>
-
-
-
-                                            <div className="rs-select2--dark rs-select2--sm rs-select2--dark2">
-                                                <select className="js-select2" name="type">
-                                                    <option selected="selected">Export</option>
-                                                    <option value>Option 1</option>
-                                                    <option value>Option 2</option>
-                                                </select>
-                                                <div className="dropDownSelect2" />
-                                            </div>
                                         </div>
                                     </div>
-                                    <div className="table-responsive table-responsive-data2">
-                                        <table className="table table-data2">
-                                            <thead>
+                                    <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
+                                        <table className="table table-borderless table-data3 shadow-sm">
+                                            <thead style={{ textAlign: 'center' }}>
                                                 <tr>
-                                                    <th>Employee ID</th>
+                                                    <th >Employee ID</th>
                                                     <th>Image</th>
                                                     <th>Last name</th>
                                                     <th>First Name</th>
                                                     <th>Phone</th>
                                                     <th>Status</th>
-                                                    <th />
+                                                    <th></th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody style={{ textAlign: 'center' }}>
                                                 {employeeList.map(employee => (
                                                     <tr key={employee.employeeId}>
 
-                                                        <td>{employee.employeeId}</td>
+                                                        <td >{employee.employeeId}</td>
                                                         <td>
-                                                            <img src={employee.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
+                                                            <img src={employee.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px', borderRadius: "50%" }} />
                                                         </td>
                                                         <td>{employee.lastName}</td>
                                                         <td>{employee.firstName}</td>
@@ -864,11 +644,11 @@ function Table() {
                                 <div />
 
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-            <div />
         </div>
     );
 }

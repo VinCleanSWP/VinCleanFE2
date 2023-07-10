@@ -118,7 +118,7 @@ function Table() {
             .put(`https://localhost:7013/api/Employee`, updatedEmployee)
             .then(response => {
                 console.log('Employee updated successfully:', response.data);
-                setModalIsOpen(false);
+                // setModalIsOpen(false);
                 // Do something after successful update
             })
             .catch(error => {
@@ -185,7 +185,7 @@ function Table() {
             .then(response => {
                 // Xử lý kết quả từ API (nếu cần)
                 console.log(response.data);
-                setModalIsOpen(false);
+                // setModalIsOpen(false);
             })
             .catch(error => {
                 // Xử lý lỗi (nếu có)

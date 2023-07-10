@@ -69,7 +69,7 @@ export default function BlogDetail() {
             .put(`https://localhost:7013/api/Blog`, updatedBlog)
             .then(response => {
                 console.log('Update successful:', response.data);
-                setOldImageUrl(tempImageUrl); // Lưu trữ ảnh mới như là ảnh cũ sau khi lưu
+                // setOldImageUrl(tempImageUrl); // Lưu trữ ảnh mới như là ảnh cũ sau khi lưu
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -88,7 +88,7 @@ export default function BlogDetail() {
     };
 
     return (
-        <div className="container left">
+        <div className="container">
             <div className="card">
                 <div className="card-body">
                     <h5 className="card-title">Blog Editor Default</h5>

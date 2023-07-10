@@ -1,11 +1,13 @@
 import React, { } from 'react';
 import { Link } from 'react-router-dom';
 import { FaTasks } from "react-icons/fa";
+import { FaBlog } from "react-icons/fa";
 import { BiTask } from "react-icons/bi";
 import { BiHistory } from "react-icons/bi";
 import { MdSwitchAccount } from "react-icons/md";
 import { FaUserNurse } from "react-icons/fa";
 import { GrUserAdmin } from "react-icons/gr";
+import { MdOutlineEmail } from "react-icons/md";
 function SideBar() {
   return (
     <div>
@@ -48,7 +50,6 @@ function SideBar() {
               <li>
                 <Link to="/customer">
                 <i className="fas"><MdSwitchAccount/></i>Customer</Link>
-
               </li>
               <li>
                 <Link to="/employee">
@@ -60,8 +61,11 @@ function SideBar() {
               </li>
               <li>
                 <Link to="/bloglist">
-                  <i className="fas fa-table" />Blog
-                </Link>
+                <i className="fas"><FaBlog/></i>Blog</Link>
+              </li>
+              <li>
+                <Link to="/email">
+                <i className="fas"><MdOutlineEmail/></i>Mail</Link>
               </li>
               <li>
                 <Link to="/form">

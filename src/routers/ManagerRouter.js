@@ -17,6 +17,7 @@ import Customer from '..//components/ManagerUI/Customer';
 import BlogList from '../components/ManagerUI/BlogList';
 import BlogDetails from '../pages/BlogDetails';
 import ModifyBlog from '../components/ManagerUI/ModifyBlog';
+import SendEmail from '../components/ManagerUI/Email';
 export default function ManagerRouter() {
     return (
         <div >
@@ -38,6 +39,7 @@ export default function ManagerRouter() {
                     <Route path='/bloglist' element={<BlogList />}></Route>
                     <Route path='/modifyblog/:id' element={<ModifyBlog />}></Route>
                     <Route path='/blogs/:id' element={<BlogDetails />}></Route>
+                    <Route path='/email' element={<SendEmail />}></Route>
 
                 </Routes>
                 <ADFooter />

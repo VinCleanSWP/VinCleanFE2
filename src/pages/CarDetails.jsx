@@ -318,6 +318,7 @@ const ServiceTypeDetail = () => {
               ))}
             </div>
           </div>
+
         </Container>
       </section>
     </Helmet>

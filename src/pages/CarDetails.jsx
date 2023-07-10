@@ -274,8 +274,6 @@ const ServiceTypeDetail = () => {
             </Col>
           </Row>
 
-
-
           <div className="rating">
             <h4>ĐÁNH GIÁ DỊCH VỤ</h4>
             <div className="average-rating">
@@ -292,31 +290,26 @@ const ServiceTypeDetail = () => {
             <div className="rating-list">
               {rating.map(rating => (
                 <li key={rating.id} className="rating-item">
-                  {/* <div>{rating.customerAccount.account.img}</div> */}
+                  <div>{rating.customerAccount.account.img}</div>
                   <Row>
 
                     <Col lg="1">
-                      {/* Hiện Avatar */}
                       <img class="avatar__img" src="https://i.kym-cdn.com/photos/images/original/002/601/167/c81" alt="Avatar" />
                     </Col>
 
 
                     <Col lg="10">
                       <div className="rating-right-container">
-                        {/* Hiện tên */}
                         <h6>{rating.customer.lastName} {rating.customer.firstName}</h6>
 
                         <div className="rating-stars">
 
-                          {/* Hiện số sao */}
                           {[...Array(rating.rate)].map((_, index) => (
                             <i key={index} class="ri-star-s-fill"></i>
                           ))}</div>
 
-                        {/* Hiện ngày giờ | Dịch vụ */}
                         <div className="date">{moment(rating.createdDate).format('hh:mm - DD/MM/YYYY')} | Dịch vụ: {rating.service.name}</div>
 
-                        {/* Hiện comment */}
                         <div>{rating.comment}</div>
                       </div>
                     </Col>
@@ -325,6 +318,7 @@ const ServiceTypeDetail = () => {
               ))}
             </div>
           </div>
+
         </Container>
       </section>
     </Helmet>

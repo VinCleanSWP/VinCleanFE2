@@ -560,97 +560,108 @@ function Table() {
 
                                     <div style={{ textAlign: 'right', margin: '5px 10px' }}>
 
+                                        <h3 className="title-5 m-b-35">Employee List</h3>
+                                        <div className="table-data__tool">
+                                            <div class="input-group">
+                                                <input type="search" placeholder="What're you searching for?" aria-describedby="button-addon1" class="form-control border-0 bg-light" style={{ borderRadius: '100px' }}
+                                                // onChange={(e) => { setSearch(e.target.value) }} 
+                                                />
+                                                <div class="input-group-append">
+                                                    <button id="button-addon1" type="submit" class="btn btn-link text-primary" style={{ borderRadius: '70px' }} ><i class="fa fa-search"></i></button>
+                                                </div>
+                                            </div>
 
-                                        <div className="table-data__tool-right">
-                                            {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
+                                            <div className="table-data__tool-right">
+                                                {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
                                                 <i className="zmdi zmdi-plus" />add item</button> */}
 
-                                            <button className="btn btn-primary " onClick={() => setAddModalIsOpen(true)}>
-                                                Add employee
-                                            </button>
+                                                <button className="btn btn-primary " onClick={() => setAddModalIsOpen(true)}>
+                                                    Add employee
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
-                                        <table className="table table-borderless table-data3 shadow-sm">
-                                            <thead style={{ textAlign: 'center' }}>
-                                                <tr>
-                                                    <th >Employee ID</th>
-                                                    <th>Image</th>
-                                                    <th>Last name</th>
-                                                    <th>First Name</th>
-                                                    <th>Phone</th>
-                                                    <th>Status</th>
-                                                    <th></th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody style={{ textAlign: 'center' }}>
-                                                {employeeList.map(employee => (
-                                                    <tr key={employee.employeeId}>
+                                        <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
+                                            <table className="table table-borderless table-data3 shadow-sm">
+                                                <thead style={{ textAlign: 'center' }}>
+                                                    <tr>
+                                                        <th >Employee ID</th>
+                                                        <th>Image</th>
+                                                        <th>Last name</th>
+                                                        <th>First Name</th>
+                                                        <th>Phone</th>
+                                                        <th>Status</th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody style={{ textAlign: 'center' }}>
+                                                    {employeeList.map(employee => (
+                                                        <tr key={employee.employeeId}>
 
-                                                        <td >{employee.employeeId}</td>
-                                                        <td>
-                                                            <img src={employee.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px', borderRadius: "50%" }} />
-                                                        </td>
-                                                        <td>{employee.lastName}</td>
-                                                        <td>{employee.firstName}</td>
-                                                        <td>{employee.phone}</td>
-                                                        <td>{employee.status}</td>
-                                                        <td />
-                                                        <td>
-                                                            <div className="table-data-feature">
+                                                            <td >{employee.employeeId}</td>
+                                                            <td>
+                                                                <img src={employee.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px', borderRadius: "50%" }} />
+                                                            </td>
+                                                            <td>{employee.lastName}</td>
+                                                            <td>{employee.firstName}</td>
+                                                            <td>{employee.phone}</td>
+                                                            <td>{employee.status}</td>
+                                                            <td />
+                                                            <td>
+                                                                <div className="table-data-feature">
 
 
-                                                                {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                                    {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
                                                                     <i className="zmdi zmdi-edit" />
                                                                 </button> */}
-                                                                {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit" onClick={() => setModalIsOpen(true)}>
+                                                                    {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit" onClick={() => setModalIsOpen(true)}>
                                                                 <i className="zmdi zmdi-edit" />
 
                                                                 </button> */}
-                                                                <button
-                                                                    className="item"
-                                                                    data-toggle="tooltip"
-                                                                    data-placement="top"
-                                                                    title="Edit"
-                                                                    onClick={() => {
-                                                                        setEditModalIsOpen(true);
-                                                                        setEmployeeId(employee.employeeId); // Truyền employeeId vào đây
-                                                                    }}
-                                                                >
-                                                                    <i class="zmdi zmdi-edit" />
-                                                                </button>
-                                                                <button
-                                                                    className="item"
-                                                                    data-toggle="tooltip"
-                                                                    data-placement="top"
-                                                                    title="Delete"
-                                                                    onClick={() => deleteEmployee(employee.employeeId)}
-                                                                >
-                                                                    <i className="zmdi zmdi-delete" />
-                                                                </button>
+                                                                    <button
+                                                                        className="item"
+                                                                        data-toggle="tooltip"
+                                                                        data-placement="top"
+                                                                        title="Edit"
+                                                                        onClick={() => {
+                                                                            setEditModalIsOpen(true);
+                                                                            setEmployeeId(employee.employeeId); // Truyền employeeId vào đây
+                                                                        }}
+                                                                    >
+                                                                        <i class="zmdi zmdi-edit" />
+                                                                    </button>
+                                                                    <button
+                                                                        className="item"
+                                                                        data-toggle="tooltip"
+                                                                        data-placement="top"
+                                                                        title="Delete"
+                                                                        onClick={() => deleteEmployee(employee.employeeId)}
+                                                                    >
+                                                                        <i className="zmdi zmdi-delete" />
+                                                                    </button>
 
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
 
-                                            </tbody>
+                                                </tbody>
 
-                                        </table>
+                                            </table>
+                                        </div>
+                                        {/* END DATA TABLE */}
                                     </div>
-                                    {/* END DATA TABLE */}
+                                    <div />
+
                                 </div>
-                                <div />
 
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default Table;

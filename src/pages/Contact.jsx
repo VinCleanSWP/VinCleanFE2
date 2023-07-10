@@ -24,13 +24,11 @@ const style = {
   p: 4,
 };
 
-const btnstyle = {
-  width: '50%'
-};
-
 const Contact = () => {
   const [open, setOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const handleClose = () => setOpen(false);
+  const handleClose2 = () => setIsOpen(false);
   const [booking, setBooking] = useState([])
   const [process, setProcess] = useState([])
   const [isRatingOpen, setIsRatingOpen] = useState(false);
@@ -48,7 +46,11 @@ const Contact = () => {
     // Gọi API để lấy dữ liệu
     axios.get(`https://localhost:7013/api/Process`)
       .then(response => {
-        setProcess(response.data.data);
+        const data = response.data.data
+        const accId = localStorage.getItem('id');
+        const foundItem = data.filter(item => item.accountId == accId);
+        // setProcess(response.data.data);
+        setProcess(foundItem);
       })
       .catch(error => {
         console.error('Error:', error);
@@ -65,6 +67,40 @@ const Contact = () => {
   const date = new Date(dateDetails);
   const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
   const formattedDate = date.toLocaleDateString(undefined, options);
+
+  const handleClick = () => {
+    const url = 'https://localhost:7013/api/Order';
+    const data = {
+      customerId: booking.customerId,
+      processId: booking.processId,
+      serviceId: booking.serviceId,
+      note: booking.note,
+      total: booking.price,
+      // total: 1000,
+      pointUsed: booking.pointUsed,
+      // pointUsed: 10,
+      orderDate: booking.date,
+      finishedDate: booking.date,
+      employeeId: booking.employeeId,
+      startTime: booking.startTime,
+      endTime: booking.endTime,
+      dateWork: booking.date,
+      startWorking: booking.startWorking,
+      endWorking: booking.endWorking
+    };
+
+    axios.post(url, data)
+      .then(response => {
+        console.log('Success:', response.data);
+        // Thêm các xử lý thành công tại đây (nếu cần)
+      })
+      .catch(error => {
+        console.error('Error:', error.response.data);
+        // Thêm các xử lý lỗi tại đây (nếu cần)
+      });
+
+    setIsOpen(true);
+  };
 
   return (
     <Helmet title="Order">
@@ -183,7 +219,7 @@ const Contact = () => {
                                       <Button variant="contained" className="container mt-3 mr-3" disabled>Edit</Button>
                                     </Col>
                                     <Col lg="6" md="6">
-                                      <Button variant="contained" className="container mt-3 mr-3">Check Out</Button>
+                                      <Button variant="contained" className="container mt-3 mr-3" onClick={handleClick}>Check Out</Button>
                                     </Col>
                                   </Row>
                                   <Row>
@@ -220,6 +256,36 @@ const Contact = () => {
                                 )}
                           </Col>
                         </Row>
+                        <Modal
+                          open={isOpen}
+                          onClose={handleClose2}
+                          aria-labelledby="child-modal-title"
+                          aria-describedby="child-modal-description"
+                        >
+                          <Box sx={{ ...style, width: 450 }}>
+                            <h2 id="child-modal-title">Checkout Thành Công</h2>
+                            <h5 id="child-modal-title">Rating</h5>
+                            <p id="child-modal-description">
+                              Sao sao sao sao sao
+                            </p>
+                            <div className=" d-flex align-items-center gap-2">
+                              <h6 className="mb-0 fs-6">Note:</h6>
+                            </div>
+
+                            <div className=" d-flex align-items-center gap-2">
+                              <p className="section__description mb-0 mt-2 note-container">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <Row>
+                              <Col lg="6" md="6">
+                                <Button variant="contained" className="container mt-3" onClick={handleClose}>Close</Button>
+                              </Col>
+                              <Col lg="6" md="6">
+                                <Button variant="contained" className="container mt-3" onClick={handleClose}>Rating</Button>
+                              </Col>
+                            </Row>
+                            {/* <Button className="mt-3" onClick={handleClose}>Close</Button> */}
+                          </Box>
+                        </Modal>
                       </Box>
                     </Modal>
                     {isRatingOpen && (

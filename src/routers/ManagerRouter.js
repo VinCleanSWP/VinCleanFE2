@@ -15,8 +15,10 @@ import Employee from '../components/ManagerUI/Emloyee';
 import Service from '../components/ManagerUI/Service';
 import Customer from '..//components/ManagerUI/Customer';
 import BlogList from '../components/ManagerUI/BlogList';
-import BlogDetails from '../pages/BlogDetails';
+import BlogDetails from '../components/ManagerUI/BlogDetails';
 import ModifyBlog from '../components/ManagerUI/ModifyBlog';
+import CreateBlog from '../components/ManagerUI/CreateBlog';
+import SendEmail from '../components/ManagerUI/Email';
 export default function ManagerRouter() {
     return (
         <div >
@@ -38,6 +40,8 @@ export default function ManagerRouter() {
                     <Route path='/bloglist' element={<BlogList />}></Route>
                     <Route path='/modifyblog/:id' element={<ModifyBlog />}></Route>
                     <Route path='/blogs/:id' element={<BlogDetails />}></Route>
+                    <Route path='/createblog' element={<CreateBlog />}></Route>
+                    <Route path='/email' element={<SendEmail />}></Route>
 
                 </Routes>
                 <ADFooter />

@@ -132,7 +132,8 @@ const Service = () => {
                 style={{
                     overlay: {
                         zIndex: 9999,
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)'
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: '200px'
                     },
                     content: {
                         width: '800px',
@@ -240,7 +241,7 @@ const Service = () => {
                                                 onChange={e => setEditingServiceCost(e.target.value)}
                                             />
                                         ) : (
-                                            sv.cost
+                                            sv.costs
                                         )}
                                     </td>
                                     <td>
@@ -275,15 +276,16 @@ const Service = () => {
                             ))}
                         </tbody>
                     </table>
-                </div>
-                <div className="text-right mt-3">
-                    <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={() => setTypeModalIsOpen(false)}
-                    >
-                        Close
-                    </button>
+
+                    <div className="text-right mt-3">
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => setTypeModalIsOpen(false)}
+                        >
+                            Close
+                        </button>
+                    </div>
                 </div>
             </Modal>
 
@@ -361,7 +363,7 @@ const Service = () => {
                 </div>
             </div>
             <div />
-            <ToastContainer />
+
         </div>
     );
 };

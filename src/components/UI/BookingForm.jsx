@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/booking-form.css";
 import { Form, FormGroup } from "reactstrap";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 import Modal from 'react-modal';
 import { format, set } from 'date-fns';
@@ -118,7 +118,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
 
     setIsPointUsed(true);
   };
-  
+
   const handleNotUseTotalPoint = () => {
     // setOldTotalPoint(totalPoint);
     // console.log(totalPoint);
@@ -178,7 +178,11 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         <textarea rows={5} type="textarea" className="textarea" placeholder="Write" value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
       </FormGroup>
 
-      <button className="normal-button buttonReset blue" type="submit">Xác nhận</button>
+      {localStorage.getItem('loggedIn') ?
+        <button className="normal-button buttonReset blue" type="submit">Xác nhận</button>
+        : <Link to='/login'><button className="normal-button buttonReset blue">Đăng nhập để đặt dịch vụ</button></Link>
+      }
+      {/* <button className="normal-button buttonReset blue" type="submit">Xác nhận</button> */}
 
       <button class="buttonReset float-right" type="button" onClick={handleReset}>
         <svg viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="currentColor" height="16" width="16" xmlns="http://www.w3.org/2000/svg">
@@ -219,11 +223,11 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
               <p><strong>Bạn có muốn dùng số điểm đã tích không?</strong></p>
 
               <div>
-                <button className="normal-button" onClick={handleUseTotalPoint}>
+                <button className="use-button" onClick={handleUseTotalPoint}>
                   Dùng {Math.floor(totalPoint / 100) * 100} pts
                 </button>
-                <button className="normal-button" onClick={handleNotUseTotalPoint}>
-                  No
+                <button className="cancel-button" onClick={handleNotUseTotalPoint}>
+                  Không
                 </button>
               </div>
               {/* Làm switch button */}
@@ -232,9 +236,9 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
             <br></br>
 
             <p><strong>Tổng tiền:</strong> {discountedPrice}</p>
-            <p><strong>Note:</strong> {message}</p>
+            <p><strong>Ghi chú:</strong>{message}</p>
             {/* Các thông tin khác */}
-            <button className="normal-button" onClick={handleClosePopup}>Close</button>
+            <button className="close-button" onClick={handleClosePopup}>Đóng</button>
             <button className="submit-button" onClick={handleConfirm}>Xác nhận</button>
           </div>
         }

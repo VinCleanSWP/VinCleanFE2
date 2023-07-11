@@ -55,7 +55,8 @@ const Testimonial = () => {
     for (let i = 0; i < ratings.length; i++) {
       const rating = ratings[i];
 
-      if (!commentSet.has(rating.comment)) {
+      // lấy ra những comment tốt từ 4 sao trở lên
+      if (!commentSet.has(rating.comment) && rating.rate >= 4) {
         uniqueRatings.push(rating);
         commentSet.add(rating.comment);
       }
@@ -72,13 +73,29 @@ const Testimonial = () => {
     <Slider {...settings}>
       {rating.map((rating) => (
         <div key={rating.id} className="testimonial py-4 px-3">
+
+          {/* Hiện comment */}
           <p className="section__description">{rating.comment}</p>
+
           <div className="mt-3 d-flex align-items-center gap-4">
+
+            {/* Hiện ảnh */}
             <img src={rating.img} alt="" className="w-25 h-25 rounded-2" />
+
             <div>
+
+              {/* Hiện tên khách hàng */}
               <h6 className="mb-0 mt-3">
                 Tên: {rating.customerLastName} {rating.customerFirstName}
               </h6>
+
+              {/* Hiện sao */}
+              <div className="rating-stars">
+                {[...Array(rating.rate)].map((_, index) => (
+                  <i key={index} class="ri-star-s-fill"></i>
+                ))}</div>
+
+              {/* Hiện tên dịch vụ */}
               <p className="section__description">Dịch vụ: {rating.serviceName}</p>
             </div>
           </div>

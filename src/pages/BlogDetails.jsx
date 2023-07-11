@@ -259,9 +259,21 @@ const BlogDetails = () => {
                       value={comment}
                       onChange={handleCommentChange}
                     ></textarea>
-                    <button type="submit" className="btn comment__btn mt-3">
+                    {localStorage.getItem('loggedIn') ?
+                      <button type="submit" className="btn comment__btn mt-3">
+                        Gửi bình luận
+                      </button>
+                      : <Link to='/login'>
+                        <button className="btn comment__btn mt-3">
+                          Đăng nhập để bình luận
+                        </button>
+                      </Link>
+                    }
+
+                    {/* <button type="submit" className="btn comment__btn mt-3">
                       Gửi bình luận
-                    </button>
+                    </button> */}
+
                   </FormGroup>
                 </Form>
               </div>

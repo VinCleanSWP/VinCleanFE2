@@ -7,9 +7,7 @@ import PaymentMethod from "../components/UI/PaymentMethod";
 import '../styles/rating-list.css';
 import moment from "moment";
 import _ from 'lodash';
-
 import React, { useEffect, useState } from 'react';
-
 import axios from 'axios';
 
 const ServiceTypeDetail = () => {
@@ -21,6 +19,8 @@ const ServiceTypeDetail = () => {
   const [selectedType, setSelectedType] = useState("");
   const [selectedCost, setSelectedServiceCost] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
+
+  const [type, setType] = useState("");
   const id = parseInt(typeId.id);
   console.log(id);
 
@@ -31,6 +31,15 @@ const ServiceTypeDetail = () => {
         const data = response.data.data;
         setService(data);
         setSelectedType(typeId.type1);
+      })
+      .catch(error => {
+        console.error('Error fetching service type detail:', error);
+      });
+
+    axios.get(`https://localhost:7013/api/Type/${id}`)
+      .then(response => {
+        const data = response.data.data;
+        setType(data)
       })
       .catch(error => {
         console.error('Error fetching service type detail:', error);
@@ -103,20 +112,19 @@ const ServiceTypeDetail = () => {
           <Row>
             <Col lg="6" md="6">
               <div className="about__img">
-                <img src='https://static.tintuc.com.vn/images/ver3/2020/01/26/quet-nha.jpg' alt="" className="w-100" />
+                <img src={type.img} alt="" className="w-100" />
               </div>
             </Col>
             <Col lg="6" md="6">
               <div className="about__section-content">
-                <h4 className="section__subtitle">About Service</h4>
-                <h2 className="section__title">Welcome to car rent service</h2>
+                <h4 className="section__subtitle">Bạn đã chọn dịch vụ</h4>
+                <h2 className="section__title">{type.type1}</h2>
                 <p className="section__description">
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Voluptatum blanditiis esse accusantium dignissimos labore
-                  laborum. Veniam, corporis mollitia temporibus, in quaerat vero
-                  deleniti amet dolorem repudiandae, pariatur nam dolore! Impedit
-                  neque sit ad temporibus quam similique dolor ipsam praesentium
-                  sunt.
+                  Nhịp sống đô thị đang dần trở nên bận rộn hơn với công việc và xã hội. Đặc biệt thời gian của người phụ nữ 
+                  dành cho gia đình và chăm sóc nhà cửa cũng càng trở nên eo hẹp hơn. Vậy làm sao để cân bằng được giữa công việc 
+                  và gia đình luôn là vấn đề khúc mắc của nhiều gia đình Việt. Đã có nhiều gia đình bỏ ra một khoản tiền lớn hằng 
+                  tháng chỉ để thuê giúp việc cố định nhưng đôi lúc việc này trở nên không thực sự cần thiết vì không phải lúc nào cũng có 
+                  việc để người giúp việc làm liên tục. Lúc này giúp việc nhà theo giờ sẽ là giải pháp hợp lý cho mọi gia đình!
                 </p>
 
               </div>
@@ -235,7 +243,7 @@ const ServiceTypeDetail = () => {
               <div className="payment__info mt-5">
                 <h5 className="mb-4 fw-bold ">Chọn dịch vụ</h5>
 
-                <ul className="service-list">                  
+                <ul className="service-list">
                   {/* {service.map(service => (
                     <li className={`btn service-item ${service.selected ? 'selected' : ''}`} key={service.serviceId}>{service.name}</li>
                   ))} */}
@@ -270,51 +278,55 @@ const ServiceTypeDetail = () => {
               </div>
             </Col>
           </Row>
+          {rating.length > 0 ? (
+            <div className="rating">
+              <h4>ĐÁNH GIÁ DỊCH VỤ</h4>
+              <div className="average-rating">
+                <h3>Điểm đánh giá: {averageRate.toFixed(1)}/5</h3>
+                <h3>
+                  <div className="rating-stars">
+                    {[...Array(averageRateInt)].map((_, index) => (
+                      <i key={index} class="ri-star-s-fill"></i>
+                    ))}
+                  </div>
+                </h3>
+              </div>
 
-          <div className="rating">
-            <h4>ĐÁNH GIÁ DỊCH VỤ</h4>
-            <div className="average-rating">
-              <h3>Điểm đánh giá: {averageRate.toFixed(1)}/5</h3>
-              <h3>
-                <div className="rating-stars">
-                  {[...Array(averageRateInt)].map((_, index) => (
-                    <i key={index} class="ri-star-s-fill"></i>
-                  ))}
-                </div>
-              </h3>
+              <div className="rating-list">
+                {rating.map(rating => (
+                  <li key={rating.id} className="rating-item">
+                    <Row>
+
+                      <Col lg="1">
+                        <img class="avatar__img" src={rating.img} alt="Avatar" />
+                      </Col>
+
+
+                      <Col lg="10">
+                        <div className="rating-right-container">
+                          <h6>{rating.customerLastName} {rating.customerFirstName}</h6>
+
+                          <div className="rating-stars">
+
+                            {[...Array(rating.rate)].map((_, index) => (
+                              <i key={index} class="ri-star-s-fill"></i>
+                            ))}</div>
+
+                          <div className="date">{moment(rating.createdDate).format('hh:mm - DD/MM/YYYY')} | Dịch vụ: {rating.serviceName}</div>
+
+                          <div>{rating.comment}</div>
+                        </div>
+                      </Col>
+                    </Row>
+                  </li>
+                ))}
+              </div>
             </div>
-
-            <div className="rating-list">
-              {rating.map(rating => (
-                <li key={rating.id} className="rating-item">
-                  <Row>
-
-                    <Col lg="1">
-                      <img class="avatar__img" src={rating.img} alt="Avatar" />
-                    </Col>
-
-
-                    <Col lg="10">
-                      <div className="rating-right-container">
-                        <h6>{rating.customerLastName} {rating.customerFirstName}</h6>
-
-                        <div className="rating-stars">
-
-                          {[...Array(rating.rate)].map((_, index) => (
-                            <i key={index} class="ri-star-s-fill"></i>
-                          ))}</div>
-
-                        <div className="date">{moment(rating.createdDate).format('hh:mm - DD/MM/YYYY')} | Dịch vụ: {rating.serviceName}</div>
-
-                        <div>{rating.comment}</div>
-                      </div>
-                    </Col>
-                  </Row>
-                </li>
-              ))}
+          ) : (
+            <div className="rating">
+              <h2>Không có đánh giá ở dịch vụ hiện tại</h2>
             </div>
-          </div>
-
+          )}
         </Container>
       </section>
     </Helmet>

@@ -68,7 +68,7 @@ function Request() {
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal2(response.data.data);
-                console.log(response.data.data);
+                console.log(id);
             })
             .catch(error => {
                 console.error('Error fetching request data:', error);
@@ -161,8 +161,8 @@ function Request() {
             m.oldEmployeeName.toLowerCase().includes(search.toLowerCase()) ||
             m.address.toLowerCase().includes(search.toLowerCase()) ||
             m.processId.toString().toLowerCase().includes(search.toLowerCase()) ||
-            m.date.toString().toLowerCase().includes(search.toLowerCase()) ||
-            m.startTime.toString().toLowerCase().includes(search.toLowerCase())
+            format(new Date(m.date), 'dd/MM/yyyy').toString().toLowerCase().includes(search.toLowerCase()) ||
+            formatTime(m.startTime).toString().toLowerCase().includes(search.toLowerCase())
         );
 
         return filteredData;
@@ -226,7 +226,7 @@ function Request() {
                                                                         onClick={() => sendEmail(request.processId)}>
                                                                         <i className="zmdi zmdi-mail-send" />
                                                                     </button>
-                                                                    <button className="item" data-toggle="tooltip" data-placement="top" title="Assign"
+                                                                    <button className={`item ${request.NewEmployeeName ? 'assigned' : ''}`} data-toggle="tooltip" data-placement="top" title="Assign"
                                                                         onClick={(p) => {
                                                                             assignTask(request.date, request.startTime, request.endTime);
                                                                             handleProcessSelect(request.processId);
@@ -431,7 +431,7 @@ function Request() {
                                                         </td>
 
                                                     </tr>
-                                                )}
+                                                )}-
                                             </tbody>
                                         </table>
                                         <button style={{ marginLeft: '87%' }} type='button'

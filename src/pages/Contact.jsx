@@ -101,24 +101,24 @@ const Contact = () => {
   };
 
   return (
-    <Helmet title="Order">
-      <CommonSection title="Order" />
+    <Helmet title="Các hoạt động đã đặt">
+      <CommonSection title="Các hoạt động đã đặt" />
       <section>
 
         <Container>
           <Row>
             <Col lg="12" md="12">
-              <h4 className="fw-bold mb-4">Booking</h4>
+              <h4 className="fw-bold mb-4">Hoạt động</h4>
               <div className="table-responsive m-b-40">
                 <table className="table table-borderless table-data3">
                   <thead>
                     <tr>
-                      <th>Service</th>
-                      <th>Option</th>
-                      <th>Employee</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Price</th>
+                      <th>Dịch vụ</th>
+                      <th>Hạng mục</th>
+                      <th>Nhân viên</th>
+                      <th>Ngày đặt</th>
+                      <th>Trạng thái</th>
+                      <th>Tổng</th>
                     </tr>
                   </thead>
                   <tbody>

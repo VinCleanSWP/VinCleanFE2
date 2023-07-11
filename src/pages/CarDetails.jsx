@@ -232,7 +232,7 @@ const ServiceTypeDetail = () => {
               <div className="payment__info mt-5">
                 <h5 className="mb-4 fw-bold ">Chọn dịch vụ</h5>
 
-                <ul className="service-list">
+                <ul className="service-list">                  
                   {/* {service.map(service => (
                     <li className={`btn service-item ${service.selected ? 'selected' : ''}`} key={service.serviceId}>{service.name}</li>
                   ))} */}
@@ -255,7 +255,6 @@ const ServiceTypeDetail = () => {
                         setSelectedServiceId(service.serviceId);
                         setSelectedServiceName(service.name);
                         setSelectedServiceCost(service.cost)
-
                       }}
                     >
                       {service.name} / {service.cost} VND

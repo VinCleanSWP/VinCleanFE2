@@ -1,5 +1,3 @@
-import React from "react";
-
 import HeroSlider from "../components/UI/HeroSlider";
 import Helmet from "../components/Helmet/Helmet";
 
@@ -12,9 +10,13 @@ import CarItem from "../components/UI/CarItem";
 import BecomeDriverSection from "../components/UI/BecomeDriverSection";
 import Testimonial from "../components/UI/Testimonial";
 
+
+
 import BlogList from "../components/UI/BlogList";
 
 const Home = () => {
+  
+  
   return (
     <Helmet title="Home">
       {/* ============= hero section =========== */}
@@ -84,10 +86,9 @@ const Home = () => {
         <Container>
           <Row>
             <Col lg="12" className="mb-4 text-center">
-              <h6 className="section__subtitle">Our clients says</h6>
-              <h2 className="section__title">Testimonials</h2>
+              <h6 className="section__subtitle">Những lời đánh giá</h6>
+              <h2 className="section__title">Dịch Vụ Của Chúng Tôi</h2>
             </Col>
-
             <Testimonial />
           </Row>
         </Container>

@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Container, Row, Col, Button } from "reactstrap";
-import { Link, NavLink } from "react-router-dom";
+import { Container, Row, Col, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import "../../styles/header.css";
 import VinCleanLogo from "../../assets/all-images/logo.png";
 import VinCleanLogo1 from "../../assets/all-images/Vincleanlogo.png";
+import { RiUserLine, RiLogoutBoxLine } from "react-icons/ri";
 
 const navLinks = [
   {
@@ -18,14 +19,13 @@ const navLinks = [
     path: "/cars",
     display: "Đặt dịch vụ",
   },
-
   {
     path: "/blogs",
     display: "Blog",
   },
   {
     path: "/contact",
-    display: "Liên hệ",
+    display: "Hoạt động",
   },
 ];
 
@@ -34,8 +34,14 @@ const Header = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
 
+  const [img, setImg] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const menuRef = useRef(null);
+  const navigate = useNavigate();
   const toggleMenu = () => menuRef.current.classList.toggle("menu__active");
+  const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
+
   const handleLogout = () => {
     // Xóa thông tin đăng nhập từ localStorage
     localStorage.removeItem('loggedIn');
@@ -43,22 +49,32 @@ const Header = () => {
     localStorage.removeItem('name');
     localStorage.removeItem('role');
     localStorage.removeItem('id');
+
+    localStorage.removeItem('img');
+
     setLoggedIn(false);
     setEmail('');
-    window.location.href = '/home';
+    navigate('/home')
+    // window.location.href = '/home';
   };
+
   useEffect(() => {
     // Kiểm tra xem đã có thông tin đăng nhập trong localStorage hay chưa
     const isLoggedIn = localStorage.getItem('loggedIn');
     const storedEmail = localStorage.getItem('email');
     const storedName = localStorage.getItem('name');
 
+    const storedImg = localStorage.getItem('img');
+
+
     if (isLoggedIn && storedEmail) {
       setLoggedIn(true);
       setEmail(storedEmail);
-      setName(storedName)
+      setName(storedName);
+      setImg(storedImg)
     }
   }, []);
+
   return (
     <header className="header">
       <div className="header__middle">
@@ -77,7 +93,7 @@ const Header = () => {
             <Col lg="3" md="3" sm="4">
               <div className="header__location d-flex align-items-center gap-2">
                 <span>
-                  <i class="ri-earth-line"></i>
+                  <i className="ri-earth-line"></i>
                 </span>
                 <div className="header__location-content">
                   <h4>Việt Nam</h4>
@@ -89,7 +105,7 @@ const Header = () => {
             <Col lg="3" md="3" sm="4">
               <div className="header__location d-flex align-items-center gap-2">
                 <span>
-                  <i class="ri-time-line"></i>
+                  <i className="ri-time-line"></i>
                 </span>
                 <div className="header__location-content">
                   <h4>Làm hằng ngày</h4>
@@ -98,28 +114,42 @@ const Header = () => {
               </div>
             </Col>
 
-            <Col
-              lg="2"
-              md="3"
-              sm="0"
-              className=" d-flex align-items-center justify-content-end "
-            >
-              {loggedIn ?
-                (<div>
-                  <button className="header__btn btn" style={{ marginBottom: "8px" }}>
-                    <Link to="/profile">
-                      {name}
-                    </Link>
-                  </button>
-                  <Button className="header__btn btn" onClick={handleLogout}>Logout</Button>
-                </div>) :
-                (<button className="header__btn btn ">
-                  <Link to="/login">
-                    Login
-                  </Link>
-                </button>)
-              }
-            </Col>
+            {/* <Col lg="2" md="3" sm="0" className="d-flex align-items-center justify-content-end">
+              {loggedIn ? (
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                  <DropdownToggle className="header__btn btn" caret>
+                    <img className="avatar-icon" src={img} alt="Avatar" />
+                  </DropdownToggle>
+
+                  <DropdownMenu>
+                    <div className="sub-menu-info">
+                      <img className="avatar-info-icon" src={img} alt="Avatar" />
+                      <strong>{name}</strong>
+                      <hr />
+                    </div>
+
+                    <DropdownItem>
+                      <Link to="/profile" style={{ textDecoration: "none", color: "black" }}>
+                        <RiUserLine style={{ marginRight: "12px", }} />Thông tin cá nhân
+                      </Link>
+                    </DropdownItem>
+
+                    <DropdownItem divider />
+
+                    <DropdownItem onClick={handleLogout} style={{ textDecoration: "none", color: "black" }}>
+                      <RiLogoutBoxLine style={{ marginRight: "12px" }} />Đăng xuất
+                    </DropdownItem>
+
+                  </DropdownMenu>
+
+                </Dropdown>
+              ) : (
+                <button className="header__btn btn">
+                  <Link to="/login">Đăng nhập</Link>
+                </button>
+              )}
+            </Col> */}
+
           </Row>
         </Container>
       </div>
@@ -130,11 +160,8 @@ const Header = () => {
         <Container>
           <div className="navigation__wrapper d-flex align-items-center justify-content-between">
             <span className="mobile__menu">
-              <i class="ri-menu-line" onClick={toggleMenu}></i>
+              <i className="ri-menu-line" onClick={toggleMenu}></i>
             </span>
-
-            
-
             <div className="navigation" ref={menuRef} onClick={toggleMenu}>
               <div className="menu">
                 {navLinks.map((item, index) => (
@@ -146,21 +173,46 @@ const Header = () => {
                     key={index}
                   >
                     {item.display}
+                    
                   </NavLink>
                 ))}
               </div>
             </div>
+            <Col lg="2" md="3" sm="0" className="d-flex align-items-center justify-content-end">
+              {loggedIn ? (
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                  <DropdownToggle className="header__btn btn" caret>
+                    <img className="avatar-icon" src={img} alt="Avatar" />
+                  </DropdownToggle>
 
-            {/* <div className="nav__right">
-              <div className="search__box">
-                <input type="text" placeholder="Search" />
-                
-                <span>
-                  <i class="ri-search-line"></i>
-                </span>
-              
-                </div>
-            </div> */}
+                  <DropdownMenu>
+                    <div className="sub-menu-info">
+                      <img className="avatar-info-icon" src={img} alt="Avatar" />
+                      <strong>{name}</strong>
+                      <hr />
+                    </div>
+
+                    <DropdownItem>
+                      <Link to="/profile" style={{ textDecoration: "none", color: "black" }}>
+                        <RiUserLine style={{ marginRight: "12px", }} />Thông tin cá nhân
+                      </Link>
+                    </DropdownItem>
+
+                    <DropdownItem divider />
+
+                    <DropdownItem onClick={handleLogout} style={{ textDecoration: "none", color: "black" }}>
+                      <RiLogoutBoxLine style={{ marginRight: "12px" }} />Đăng xuất
+                    </DropdownItem>
+
+                  </DropdownMenu>
+
+                </Dropdown>
+              ) : (
+                <button className="header__btn btn">
+                  <Link to="/login">Đăng nhập</Link>
+                </button>
+              )}
+            </Col>
           </div>
         </Container>
       </div>

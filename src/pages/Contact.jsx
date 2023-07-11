@@ -76,9 +76,7 @@ const Contact = () => {
       serviceId: booking.serviceId,
       note: booking.note,
       total: booking.price,
-      // total: 1000,
       pointUsed: booking.pointUsed,
-      // pointUsed: 10,
       orderDate: booking.date,
       finishedDate: booking.date,
       employeeId: booking.employeeId,
@@ -103,24 +101,24 @@ console.log(data)
   };
 
   return (
-    <Helmet title="Order">
-      <CommonSection title="Order" />
+    <Helmet title="Các hoạt động đã đặt">
+      <CommonSection title="Các hoạt động đã đặt" />
       <section>
 
         <Container>
           <Row>
             <Col lg="12" md="12">
-              <h4 className="fw-bold mb-4">Booking</h4>
+              <h4 className="fw-bold mb-4">Hoạt động</h4>
               <div className="table-responsive m-b-40">
                 <table className="table table-borderless table-data3">
                   <thead>
                     <tr>
-                      <th>Service</th>
-                      <th>Option</th>
-                      <th>Employee</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Price</th>
+                      <th>Dịch vụ</th>
+                      <th>Hạng mục</th>
+                      <th>Nhân viên</th>
+                      <th>Ngày đặt</th>
+                      <th>Trạng thái</th>
+                      <th>Tổng</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -222,13 +220,6 @@ console.log(data)
                                       <Button variant="contained" className="container mt-3 mr-3" onClick={handleClick}>Check Out</Button>
                                     </Col>
                                   </Row>
-                                  <Row>
-                                    <Col lg="12" md="12">
-                                      <Button variant="contained" className="container mt-3 mr-3" onClick={handleRatingOpen}>
-                                        Đánh giá dịch vụ
-                                      </Button>
-                                    </Col>
-                                  </Row>
                                 </div>
                               ) : booking.status == 'Incoming' ?
                                 (
@@ -280,7 +271,7 @@ console.log(data)
                                 <Button variant="contained" className="container mt-3" onClick={handleClose}>Close</Button>
                               </Col>
                               <Col lg="6" md="6">
-                                <Button variant="contained" className="container mt-3" onClick={handleClose}>Rating</Button>
+                                <Button variant="contained" className="container mt-3" onClick={handleRatingOpen}>Rating</Button>
                               </Col>
                             </Row>
                             {/* <Button className="mt-3" onClick={handleClose}>Close</Button> */}
@@ -296,7 +287,11 @@ console.log(data)
                         aria-describedby="modal-modal-description"
                       >
                         <Box sx={style}>
-                          <RatingForm onClose={() => setIsRatingOpen(false)} onRatingSubmit={handleRatingSubmit} />
+                        <RatingForm
+                            serviceId={booking.serviceId} // Giá trị serviceId từ UI
+                            customerId={booking.customerId} // Giá trị customerId từ UI
+                            onClose={() => setIsRatingOpen(false)}
+                            onRatingSubmit={handleRatingSubmit} />
                         </Box>
                       </Modal>
                     )}

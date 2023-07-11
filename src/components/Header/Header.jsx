@@ -3,6 +3,7 @@ import { Container, Row, Col, Button } from "reactstrap";
 import { Link, NavLink } from "react-router-dom";
 import "../../styles/header.css";
 import VinCleanLogo from "../../assets/all-images/logo.png";
+import VinCleanLogo1 from "../../assets/all-images/Vincleanlogo.png";
 
 const navLinks = [
   {
@@ -67,7 +68,7 @@ const Header = () => {
               <div className="logo">
                 <h1>
                   <Link to="/home" className=" d-flex align-items-center gap-2">
-                    <img src={VinCleanLogo} alt="" style={{ width: "200px", height: "auto" }} />
+                    <img src={VinCleanLogo1} alt="" style={{ width: "200px", height: "auto" }} />
                   </Link>
                 </h1>
               </div>

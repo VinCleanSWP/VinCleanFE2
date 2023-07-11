@@ -560,16 +560,6 @@ function Table() {
 
                                     <div style={{ textAlign: 'right', margin: '5px 10px' }}>
 
-                                        <h3 className="title-5 m-b-35">Employee List</h3>
-                                        <div className="table-data__tool">
-                                            <div class="input-group">
-                                                <input type="search" placeholder="What're you searching for?" aria-describedby="button-addon1" class="form-control border-0 bg-light" style={{ borderRadius: '100px' }}
-                                                // onChange={(e) => { setSearch(e.target.value) }} 
-                                                />
-                                                <div class="input-group-append">
-                                                    <button id="button-addon1" type="submit" class="btn btn-link text-primary" style={{ borderRadius: '70px' }} ><i class="fa fa-search"></i></button>
-                                                </div>
-                                            </div>
 
                                             <div className="table-data__tool-right">
                                                 {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
@@ -658,7 +648,6 @@ function Table() {
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     );

@@ -1,34 +1,53 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 function Signup() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    roleId: 1,
-    status: "Active"
-  });
+  const [formData, setFormData] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // const handleSubmit1 = (e) => {
+  //   e.preventDefault();
+  //   // Gửi dữ liệu đăng kí lên API sử dụng Axios
+  //   axios
+  //     .post('https://localhost:7013/api/Account', formData) // Thay thế 'API_ENDPOINT' bằng đường dẫn của API đích
+  //     .then((response) => {
+  //       // Xử lý phản hồi từ API (nếu cần)
+  //       console.log(response.data);
+  //       navigate('/verifytoken');
+  //     })
+  //     .catch((error) => {
+  //       // Xử lý lỗi (nếu có)
+  //       console.error(error);
+  //     });
+  // };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Gửi dữ liệu đăng kí lên API sử dụng Axios
+    const requestData = {
+      email: formData.email,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phone,
+      address: formData.address
+    };
     axios
-      .post('https://localhost:7013/api/Account', formData) // Thay thế 'API_ENDPOINT' bằng đường dẫn của API đích
+      .post('https://localhost:7013/api/Customer/registration', requestData)
       .then((response) => {
-        // Xử lý phản hồi từ API (nếu cần)
         console.log(response.data);
+        navigate('/verifytoken');
       })
       .catch((error) => {
-        // Xử lý lỗi (nếu có)
         console.error(error);
       });
   };
+
   return (
     <div className="container">
 
@@ -52,15 +71,27 @@ function Signup() {
                   </div>
 
                   <form className="row g-3 needs-validation" onSubmit={handleSubmit} novalidate>
-                    
-                    <div className="col-12">
+
+                    {/* <div className="col-12">
                       <label for="yourName" className="form-label">Tên của bạn</label>
                       <input type="text" name="name" className="form-control" id="yourName" value={formData.name} onChange={handleChange} required />
                       <div className="invalid-feedback">Hãy nhập tên của bạn</div>
+                    </div> */}
+
+                    <div className="col-12">
+                      <label for="yourFirstName" className="form-label">Họ</label>
+                      <input type="text" name="firstName" className="form-control" id="yourFirstName" value={formData.firstName} onChange={handleChange} required />
+                      <div className="invalid-feedback">Hãy nhập họ của bạn</div>
                     </div>
 
                     <div className="col-12">
-                      <label for="yourUsername" className="form-label">Email</label>
+                      <label for="yourLastName" className="form-label">Tên</label>
+                      <input type="text" name="lastName" className="form-control" id="yourLastName" value={formData.lastName} onChange={handleChange} required />
+                      <div className="invalid-feedback">Hãy nhập họ của bạn</div>
+                    </div>
+
+                    <div className="col-12">
+                      <label for="yourEmail" className="form-label">Email</label>
                       <div className="input-group has-validation">
                         <span className="input-group-text" id="inputGroupPrepend">@</span>
                         <input type="text" name="email" className="form-control" id="yourEmail" value={formData.email} onChange={handleChange} required />
@@ -72,6 +103,24 @@ function Signup() {
                       <label for="yourPassword" className="form-label">Mật khẩu</label>
                       <input type="password" name="password" className="form-control" id="yourPassword" value={formData.password} onChange={handleChange} required />
                       <div className="invalid-feedback">Nhập lại mật khẩu</div>
+                    </div>
+
+                    <div className="col-12">
+                      <label for="yourConfirmPassword" className="form-label">Xác nhận mật khẩu</label>
+                      <input type="password" name="confirmPassword" className="form-control" id="yourConfirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+                      <div className="invalid-feedback">Nhập lại mật khẩu</div>
+                    </div>
+
+                    <div className="col-12">
+                      <label for="yourPhone" className="form-label">Điện thoại</label>
+                      <input type="text" name="phone" className="form-control" id="yourPhone" value={formData.phone} onChange={handleChange} required />
+                      <div className="invalid-feedback">Hãy nhập số điện thoại của bạn</div>
+                    </div>
+
+                    <div className="col-12">
+                      <label for="yourAddress" className="form-label">Địa chỉ</label>
+                      <input type="text" name="address" className="form-control" id="yourAddress" value={formData.address} onChange={handleChange} required />
+                      <div className="invalid-feedback">Hãy nhập địa chỉ của bạn</div>
                     </div>
 
                     <div className="col-12">

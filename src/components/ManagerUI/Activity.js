@@ -59,8 +59,8 @@ function Activity() {
           m.orderId.toString().toLowerCase().includes(search.toLowerCase()) ||
           m.customerId.toString().toLowerCase().includes(search.toLowerCase()) ||
           m.type.toLowerCase().includes(search.toLowerCase()) ||
-          m.dateWork.toString().toLowerCase().includes(search.toLowerCase()) ||
-          m.startTime.toString().toLowerCase().includes(search.toLowerCase()) ||
+          format(new Date(m.dateWork), 'dd/MM/yyyy').toString().toLowerCase().includes(search.toLowerCase()) ||
+          formatTime(m.startTime).toString().toLowerCase().includes(search.toLowerCase()) ||
           m.address.toString().toLowerCase().includes(search.toLowerCase())
         );
     

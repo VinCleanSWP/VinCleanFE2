@@ -7,9 +7,7 @@ import PaymentMethod from "../components/UI/PaymentMethod";
 import '../styles/rating-list.css';
 import moment from "moment";
 import _ from 'lodash';
-
 import React, { useEffect, useState } from 'react';
-
 import axios from 'axios';
 
 const ServiceTypeDetail = () => {
@@ -122,7 +120,11 @@ const ServiceTypeDetail = () => {
                 <h4 className="section__subtitle">Bạn đã chọn dịch vụ</h4>
                 <h2 className="section__title">{type.type1}</h2>
                 <p className="section__description">
-                  Nhịp sống đô thị đang dần trở nên bận rộn hơn với công việc và xã hội. Đặc biệt thời gian của người phụ nữ dành cho gia đình và chăm sóc nhà cửa cũng càng trở nên eo hẹp hơn. Vậy làm sao để cân bằng được giữa công việc và gia đình luôn là vấn đề khúc mắc của nhiều gia đình Việt. Đã có nhiều gia đình bỏ ra một khoản tiền lớn hằng tháng chỉ để thuê giúp việc cố định nhưng đôi lúc việc này trở nên không thực sự cần thiết vì không phải lúc nào cũng có việc để người giúp việc làm liên tục. Lúc này giúp việc nhà theo giờ sẽ là giải pháp hợp lý cho mọi gia đình!
+                  Nhịp sống đô thị đang dần trở nên bận rộn hơn với công việc và xã hội. Đặc biệt thời gian của người phụ nữ 
+                  dành cho gia đình và chăm sóc nhà cửa cũng càng trở nên eo hẹp hơn. Vậy làm sao để cân bằng được giữa công việc 
+                  và gia đình luôn là vấn đề khúc mắc của nhiều gia đình Việt. Đã có nhiều gia đình bỏ ra một khoản tiền lớn hằng 
+                  tháng chỉ để thuê giúp việc cố định nhưng đôi lúc việc này trở nên không thực sự cần thiết vì không phải lúc nào cũng có 
+                  việc để người giúp việc làm liên tục. Lúc này giúp việc nhà theo giờ sẽ là giải pháp hợp lý cho mọi gia đình!
                 </p>
 
               </div>

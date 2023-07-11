@@ -4700,6 +4700,7 @@ section {
     margin-right: 5px;
 }
 
+
 .table-data-feature .item:last-child {
     margin-right: 0;
 }
@@ -4715,6 +4716,11 @@ section {
     -ms-transform: translate(-50%, -50%);
     -o-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+}
+
+.table-data-feature .item.assigned {
+    background-color: rgb(82, 199, 97)!important;
+    color: white;
 }
 
 .block-email {

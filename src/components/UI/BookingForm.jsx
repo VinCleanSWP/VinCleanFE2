@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/booking-form.css";
 import { Form, FormGroup } from "reactstrap";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 import Modal from 'react-modal';
 import { format, set } from 'date-fns';
@@ -178,7 +178,11 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         <textarea rows={5} type="textarea" className="textarea" placeholder="Write" value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
       </FormGroup>
 
-      <button className="normal-button buttonReset blue" type="submit">Xác nhận</button>
+      {localStorage.getItem('loggedIn') ?
+        <button className="normal-button buttonReset blue" type="submit">Xác nhận</button>
+        : <Link to='/login'><button className="normal-button buttonReset blue">Đăng nhập để đặt dịch vụ</button></Link>
+      }
+      {/* <button className="normal-button buttonReset blue" type="submit">Xác nhận</button> */}
 
       <button class="buttonReset float-right" type="button" onClick={handleReset}>
         <svg viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="currentColor" height="16" width="16" xmlns="http://www.w3.org/2000/svg">

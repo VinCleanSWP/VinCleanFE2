@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Container, Row, Col, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import "../../styles/header.css";
 import VinCleanLogo from "../../assets/all-images/logo.png";
 import { RiUserLine, RiLogoutBoxLine } from "react-icons/ri";
@@ -37,6 +37,7 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const menuRef = useRef(null);
+  const navigate = useNavigate();
   const toggleMenu = () => menuRef.current.classList.toggle("menu__active");
   const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
 
@@ -52,7 +53,8 @@ const Header = () => {
 
     setLoggedIn(false);
     setEmail('');
-    window.location.href = '/home';
+    navigate('/home')
+    // window.location.href = '/home';
   };
 
   useEffect(() => {
@@ -159,7 +161,6 @@ const Header = () => {
             <span className="mobile__menu">
               <i className="ri-menu-line" onClick={toggleMenu}></i>
             </span>
-
             <div className="navigation" ref={menuRef} onClick={toggleMenu}>
               <div className="menu">
                 {navLinks.map((item, index) => (

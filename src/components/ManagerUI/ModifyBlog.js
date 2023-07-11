@@ -83,7 +83,7 @@ export default function BlogDetail() {
                     theme: "light",
                 });
                 console.log('Update successful:', response.data);
-                setOldImageUrl(tempImageUrl); // Lưu trữ ảnh mới như là ảnh cũ sau khi lưu
+                // setOldImageUrl(tempImageUrl); // Lưu trữ ảnh mới như là ảnh cũ sau khi lưu
             })
             .catch(error => {
                 console.error('Error:', error);

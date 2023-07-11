@@ -1,28 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
-export default function ResetPassword() {
-    const [emailReset, setEmailReset] = useState('');
+export default function VerifyToken() {
+    const [token, setToken] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const apiUrl = `https://localhost:7013/api/Account/forgot-password?email=${emailReset}`;
-        const requestData = {
-            email: emailReset,
-        };
+        const apiUrl = `https://localhost:7013/api/Account/Verify?token=${token}`;
         axios
-            .post(apiUrl, requestData)
+            .post(apiUrl)
             .then((response) => {
                 console.log('API response:', response.data);
-                navigate('/verification');
+                alert('dang ki thanh cong')
+                navigate('/login');
             })
             .catch((error) => {
                 console.error('API error:', error);
             });
     };
-
     return (
         <div className="container">
             <section className="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
@@ -36,29 +33,29 @@ export default function ResetPassword() {
                             <div className="card mb-3">
                                 <div className="card-body">
                                     <div className="pt-4 pb-2">
-                                        <h5 className="card-title text-center pb-0 fs-4">Reset your password</h5>
-                                        <p className="text-center small">Enter your email to reset password</p>
+                                        <h5 className="card-title text-center pb-0 fs-4">Xác thực tài khoản</h5>
+                                        {/* <p className="text-center small">Enter your email to reset password</p> */}
                                     </div>
 
                                     <form className="row g-3 needs-validation" onSubmit={handleSubmit}>
                                         <div className="col-12">
-                                            <label htmlFor="yourUsername" className="form-label">Email</label>
+                                            <label htmlFor="yourUsername" className="form-label">Token</label>
                                             <div className="input-group has-validation">
                                                 <span className="input-group-text" id="inputGroupPrepend">@</span>
                                                 <input
-                                                    type="email"
-                                                    name="email"
-                                                    id="email"
+                                                    type="text"
+                                                    name="token"
+                                                    id="token"
                                                     className="form-control"
-                                                    value={emailReset}
-                                                    onChange={(e) => setEmailReset(e.target.value)}
+                                                    value={token}
+                                                    onChange={(e) => setToken(e.target.value)}
                                                     required
                                                 />
-                                                <div className="invalid-feedback">Please enter your email.</div>
+                                                <div className="invalid-feedback">Làm ơn nhập token.</div>
                                             </div>
                                         </div>
                                         <div className="col-12 mt-3">
-                                            <button className="btn btn-primary w-100" type="submit">Login</button>
+                                            <button className="btn btn-primary w-100" type="submit">Xác nhận</button>
                                         </div>
                                     </form>
                                 </div>
@@ -68,5 +65,5 @@ export default function ResetPassword() {
                 </div>
             </section>
         </div>
-    );
+    )
 }

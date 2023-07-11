@@ -3,7 +3,7 @@ import axios from 'axios';
 import StarRating from './StarRating';
 import "../../styles/contact.css";
 
-const RatingForm = ({ onClose, onRatingSubmit }) => {
+const RatingForm = ({ onClose, onRatingSubmit, serviceId, customerId }) => {
   const [rate, setRating] = useState(0);
   const [comment, setComment] = useState('');
 
@@ -22,8 +22,11 @@ const RatingForm = ({ onClose, onRatingSubmit }) => {
   const handleSubmit = () => {
     const formData = {
       rate: rate,
-      comment: comment
+      comment: comment,
+      serviceId: serviceId,
+      customerId: customerId
     };
+    console.log(formData)
 
     axios
       .post('https://localhost:7013/api/Rating', formData)
@@ -41,18 +44,18 @@ const RatingForm = ({ onClose, onRatingSubmit }) => {
   return (
     <div className="rating-form">
       <h3>Đánh giá dịch vụ</h3>
-      <StarRating
-        totalStars={5}
-        rate={rate}
-        onStarHover={handleStarHover}
-        onStarClick={handleStarClick}
-      />
-      <input
-        className="comment-input"
-        placeholder="Nhận xét của bạn..."
-        value={comment}
-        onChange={handleCommentChange}
-      ></input>
+        <StarRating
+          totalStars={5}
+          rate={rate}
+          onStarHover={handleStarHover}
+          onStarClick={handleStarClick}
+        />
+        <input
+          className="comment-input"
+          placeholder="Nhận xét của bạn..."
+          value={comment}
+          onChange={handleCommentChange}
+        ></input>
       <button className="submit-button" onClick={handleSubmit}>
         Gửi đánh giá
       </button>

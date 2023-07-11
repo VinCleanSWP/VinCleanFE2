@@ -76,9 +76,7 @@ const Contact = () => {
       serviceId: booking.serviceId,
       note: booking.note,
       total: booking.price,
-      // total: 1000,
       pointUsed: booking.pointUsed,
-      // pointUsed: 10,
       orderDate: booking.date,
       finishedDate: booking.date,
       employeeId: booking.employeeId,
@@ -88,7 +86,7 @@ const Contact = () => {
       startWorking: booking.startWorking,
       endWorking: booking.endWorking
     };
-
+console.log(data)
     axios.post(url, data)
       .then(response => {
         console.log('Success:', response.data);
@@ -222,13 +220,6 @@ const Contact = () => {
                                       <Button variant="contained" className="container mt-3 mr-3" onClick={handleClick}>Check Out</Button>
                                     </Col>
                                   </Row>
-                                  <Row>
-                                    <Col lg="12" md="12">
-                                      <Button variant="contained" className="container mt-3 mr-3" onClick={handleRatingOpen}>
-                                        Đánh giá dịch vụ
-                                      </Button>
-                                    </Col>
-                                  </Row>
                                 </div>
                               ) : booking.status == 'Incoming' ?
                                 (
@@ -280,7 +271,7 @@ const Contact = () => {
                                 <Button variant="contained" className="container mt-3" onClick={handleClose}>Close</Button>
                               </Col>
                               <Col lg="6" md="6">
-                                <Button variant="contained" className="container mt-3" onClick={handleClose}>Rating</Button>
+                                <Button variant="contained" className="container mt-3" onClick={handleRatingOpen}>Rating</Button>
                               </Col>
                             </Row>
                             {/* <Button className="mt-3" onClick={handleClose}>Close</Button> */}
@@ -296,7 +287,11 @@ const Contact = () => {
                         aria-describedby="modal-modal-description"
                       >
                         <Box sx={style}>
-                          <RatingForm onClose={() => setIsRatingOpen(false)} onRatingSubmit={handleRatingSubmit} />
+                        <RatingForm
+                            serviceId={booking.serviceId} // Giá trị serviceId từ UI
+                            customerId={booking.customerId} // Giá trị customerId từ UI
+                            onClose={() => setIsRatingOpen(false)}
+                            onRatingSubmit={handleRatingSubmit} />
                         </Box>
                       </Modal>
                     )}

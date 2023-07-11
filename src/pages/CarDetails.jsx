@@ -37,8 +37,6 @@ const ServiceTypeDetail = () => {
       });
 
 
-
-
     axios.get(`https://localhost:7013/api/Rating/Service/${id}`)
       .then(response => {
         const data = response.data.data;
@@ -237,7 +235,7 @@ const ServiceTypeDetail = () => {
               <div className="payment__info mt-5">
                 <h5 className="mb-4 fw-bold ">Chọn dịch vụ</h5>
 
-                <ul className="service-list">
+                <ul className="service-list">                  
                   {/* {service.map(service => (
                     <li className={`btn service-item ${service.selected ? 'selected' : ''}`} key={service.serviceId}>{service.name}</li>
                   ))} */}
@@ -260,7 +258,6 @@ const ServiceTypeDetail = () => {
                         setSelectedServiceId(service.serviceId);
                         setSelectedServiceName(service.name);
                         setSelectedServiceCost(service.cost)
-
                       }}
                     >
                       {service.name} / {service.cost} VND
@@ -273,8 +270,6 @@ const ServiceTypeDetail = () => {
               </div>
             </Col>
           </Row>
-
-
 
           <div className="rating">
             <h4>ĐÁNH GIÁ DỊCH VỤ</h4>
@@ -292,31 +287,25 @@ const ServiceTypeDetail = () => {
             <div className="rating-list">
               {rating.map(rating => (
                 <li key={rating.id} className="rating-item">
-                  {/* <div>{rating.customerAccount.account.img}</div> */}
                   <Row>
 
                     <Col lg="1">
-                      {/* Hiện Avatar */}
-                      <img class="avatar__img" src="https://i.kym-cdn.com/photos/images/original/002/601/167/c81" alt="Avatar" />
+                      <img class="avatar__img" src={rating.img} alt="Avatar" />
                     </Col>
 
 
                     <Col lg="10">
                       <div className="rating-right-container">
-                        {/* Hiện tên */}
-                        <h6>{rating.customer.lastName} {rating.customer.firstName}</h6>
+                        <h6>{rating.customerLastName} {rating.customerFirstName}</h6>
 
                         <div className="rating-stars">
 
-                          {/* Hiện số sao */}
                           {[...Array(rating.rate)].map((_, index) => (
                             <i key={index} class="ri-star-s-fill"></i>
                           ))}</div>
 
-                        {/* Hiện ngày giờ | Dịch vụ */}
-                        <div className="date">{moment(rating.createdDate).format('hh:mm - DD/MM/YYYY')} | Dịch vụ: {rating.service.name}</div>
+                        <div className="date">{moment(rating.createdDate).format('hh:mm - DD/MM/YYYY')} | Dịch vụ: {rating.serviceName}</div>
 
-                        {/* Hiện comment */}
                         <div>{rating.comment}</div>
                       </div>
                     </Col>
@@ -325,6 +314,7 @@ const ServiceTypeDetail = () => {
               ))}
             </div>
           </div>
+
         </Container>
       </section>
     </Helmet>

@@ -20,6 +20,7 @@ export default function Login() {
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
                     localStorage.setItem('id', response.data.data.accountId);
+                    // localStorage.setItem('cid', response.data.data.customerId);
                     const accountId = localStorage.getItem('id');
                     // navigate('/home')
                     window.location.href = '/';
@@ -89,12 +90,13 @@ export default function Login() {
                                             <div class="invalid-feedback">Hãy nhập lại mật khẩu</div>
                                         </div>
 
-                                        <div class="col-12">
+                                        {/* <div class="col-12">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe" />
                                                 <label class="form-check-label" for="rememberMe">Nhớ tôi</label>
                                             </div>
-                                        </div>
+                                        </div> */}
+
                                         <div class="col-12">
                                             <button class="btn btn-primary w-100" type="submit">Đăng nhập</button>
                                         </div>

@@ -4,6 +4,8 @@ import axios from 'axios';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
+import { async } from 'q';
 import '../styles/profile-customer.css'
 
 
@@ -20,10 +22,18 @@ const style = {
 };
 
 export default function ProfileCustomer() {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const handleClose = () => setOpen(false);
     const [customer, setCustomer] = useState([]);
+    const [gender1, setGender] = useState('');
     const id = localStorage.getItem('id');
+
+    // ------------PasswordState----------
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [message, setMessage] = useState('');
+    // ------------End PasswordState----------
 
     // --- Start Booking Session ---
     const [booking, setBooking] = useState([])
@@ -33,7 +43,11 @@ export default function ProfileCustomer() {
         // Gọi API để lấy dữ liệu
         axios.get(`https://localhost:7013/api/Order`)
             .then(response => {
-                setOrder(response.data.data);
+                const data = response.data.data
+                const mail = localStorage.getItem('email');
+                const foundItem = data.filter(item => item.customerEmail == mail);
+                // setOrder(response.data.data);
+                setOrder(foundItem);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -68,11 +82,6 @@ export default function ProfileCustomer() {
                 console.error('Error:', error);
             });
     }, []);
-
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [message, setMessage] = useState('');
 
     const handleCurrentPasswordChange = (e) => {
         setCurrentPassword(e.target.value);
@@ -111,20 +120,27 @@ export default function ProfileCustomer() {
         }));
     };
 
+    const handleGender = (e) => {
+        e.preventDefault();
+        setGender(e.target.value)
+    };
+
     const handleSubmitInfo = async (e) => {
         e.preventDefault();
 
         const updatedUser = {
             customerId: customer.customerId,
-            email: localStorage.getItem('email'),
+            // email: localStorage.getItem('email'),
+            email: customer.account.email,
             password: customer.account.password,
             firstName: customer.firstName,
             lastName: customer.lastName,
             phone: customer.phone,
             address: customer.address,
-            dob: customer.account.dob,
-            gender: customer.account.gender,
-            // img: "Lam deo gi co",
+            // dob: '2002-07-08T17:15:14.281Z',
+            dob: selectedDate,
+            gender: gender1,
+            img: "Deo co anh"
         };
 
         try {
@@ -137,6 +153,14 @@ export default function ProfileCustomer() {
         } catch (error) {
             // setErrorMessage('An error occurred. Please try again.');
         }
+
+        axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
+            .then(response => {
+                setCustomer(response.data.data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     };
 
     const updateUserPassword = async (newPassword) => {
@@ -164,6 +188,20 @@ export default function ProfileCustomer() {
         } catch (error) {
             console.error('Lỗi:', error);
         }
+    };
+
+    const dob = new Date(customer.account && customer.account.dob);
+    const year = dob.getFullYear();
+    const month = String(dob.getMonth() + 1).padStart(2, '0');
+    const day = String(dob.getDate()).padStart(2, '0');
+    var formattedDOB = `${year}-${month}-${day}`;
+    // const [selectedDate, setSelectedDate] = useState(customer.account && customer.account.dob);
+    const [selectedDate, setSelectedDate] = useState(formattedDOB);
+
+    const handleDateChange = (event) => {
+        event.preventDefault();
+        setSelectedDate(event.target.value);
+        formattedDOB = event.target.value   
     };
 
     return (
@@ -220,18 +258,32 @@ export default function ProfileCustomer() {
                                                 <input type="text" className="form-control" maxlength="30" id="lastName"
                                                     name="lastName" defaultValue={customer.lastName} onChange={handleInputChange} required />
                                             </div>
-                                            {/* <div className="form-group">
-                                                <label className="form-label">Age</label>
-                                                <input type="text" className="form-control" maxlength="30" id="dob"
-                                                    name="dob" defaultValue={customer.account.dob} onChange={handleInputChange} required />
-                                            </div> */}
-                                            <div className="gender-select">
-                                                <label className="form-label">Giới tính</label>
-                                                <select id="gender" name="gender" Value={customer.account && customer.account.gender} onChange={handleInputChange}>
-                                                    <option value="">Chọn</option>
-                                                    <option value="male">Nam</option>
-                                                    <option value="female">Nữ</option>
-                                                    <option value="other">Khác</option>
+
+                                            <div className="form-group">
+                                                <label className="form-label">Birthday</label>
+                                                <TextField
+                                                    id="dob"
+                                                    name="dob"
+                                                    className="form-control"
+                                                    type="date"
+                                                    value={formattedDOB}
+                                                    defaultValue={formattedDOB}
+                                                    // defaultValue={selectedDate}
+                                                    onChange={handleDateChange}
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <label className="form-label">Gender:</label>
+                                                <select id="gender" name="gender" defaultValue={customer.account && customer.account.gender} onChange={handleGender}>
+                                                    {/* <select id="gender" name="gender" defaultValue={customer.account && customer.account.gender} onChange={handleInputChange}> */}
+                                                    <option value={customer.account && customer.account.gender} selected>{customer.account && customer.account.gender} (Current)</option>
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                    <option value="Other">Other</option>
                                                 </select>
                                                 
                                                 {/* Cái gì gây man???? 2 cái gender luôn à */}
@@ -296,7 +348,7 @@ export default function ProfileCustomer() {
                                         </form>
                                     </div>
                                 </div>
-                                {/* Account info */}
+                                {/* Order History */}
                                 <div className="tab-pane fade" id="account-info">
                                     <Container>
                                         <Row>
@@ -400,63 +452,6 @@ export default function ProfileCustomer() {
                                                     </table>
                                                 </div>
                                             </Col>
-                                            {/* {booking.orderId != null ? (
-                                                <Col lg="0" md="0">
-                                                    <div className="contact__info">
-                                                        <h4 className="fw-bold mb-3">Booking Details</h4>
-                                                        <br></br>
-                                                        <div className=" d-flex align-items-center gap-2">
-                                                            <h6 className="fs-6 mb-0">Service:</h6>
-                                                            <p className="section__description mb-0">{booking.type}</p>
-                                                        </div>
-
-                                                        <div className=" d-flex align-items-center gap-2">
-                                                            <h6 className="fs-6 mb-0">Option:</h6>
-                                                            <p className="section__description mb-0">{booking.serviceName}</p>
-                                                        </div>
-
-                                                        <div className=" d-flex align-items-center gap-2">
-                                                            <h6 className="mb-0 fs-6">Address:</h6>
-                                                            <p className="section__description mb-0">{booking.address}</p>
-                                                        </div>
-
-                                                        <div className=" d-flex align-items-center gap-2">
-                                                            <h6 className="mb-0 fs-6">Date:</h6>
-                                                            <p className="section__description mb-0">{booking.dateWork}</p>
-                                                            <p className="section__description mb-0">{formattedDate}</p>
-                                                        </div>
-
-                                                        <div className=" d-flex align-items-center gap-2">
-                                                            <h6 className="mb-0 fs-6">StartTime:</h6>
-                                                            <p className="section__description mb-0">{booking.startTime}</p>
-                                                        </div>
-
-                                                        <div className=" d-flex align-items-center gap-2">
-                                                            <h6 className="mb-0 fs-6">EndTime:</h6>
-                                                            <p className="section__description mb-0">{booking.endTime}</p>
-                                                        </div>
-
-                                                        <div className=" d-flex align-items-center gap-2">
-                                                            <h6 className="mb-0 fs-6">Employee:</h6>
-                                                            <p className="section__description mb-0">{booking.employeeName}</p>
-                                                        </div>
-
-                                                        <div className=" d-flex align-items-center gap-2">
-                                                            <h6 className="mb-0 fs-6">EmployeePhone:</h6>
-                                                            <p className="section__description mb-0">{booking.employeePhone}</p>
-                                                        </div>
-
-                                                        <div className=" d-flex align-items-center gap-2 ">
-                                                            <h6 className="mb-0 h3 mt-3">Total:</h6>
-                                                            <p className="section__description mb-0 h3 mt-3 text-success">{booking.total}.000 VND</p>
-                                                        </div>
-                                                    </div>
-                                                </Col>
-                                            ) : (
-                                                <Col lg="4" md="4">
-
-                                                </Col>
-                                            )} */}
                                         </Row>
                                     </Container >
                                 </div>
@@ -580,10 +575,6 @@ export default function ProfileCustomer() {
                         </div>
                     </div>
                 </div>
-                {/* <div className="text-right mt-3 mb-3">
-                    <button type="button" className="btn btn-primary">Save changes</button>&nbsp;
-                    <button type="button" className="btn btn-default">Cancel</button>
-                </div> */}
             </div>
         </div>
     )

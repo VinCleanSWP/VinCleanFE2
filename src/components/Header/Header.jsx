@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Container, Row, Col, Button } from "reactstrap";
+import { Container, Row, Col, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 import { Link, NavLink } from "react-router-dom";
 import "../../styles/header.css";
 import VinCleanLogo from "../../assets/all-images/logo.png";
+import { RiUserLine, RiLogoutBoxLine } from "react-icons/ri";
 
 const navLinks = [
   {
@@ -17,14 +18,13 @@ const navLinks = [
     path: "/cars",
     display: "Đặt dịch vụ",
   },
-
   {
     path: "/blogs",
     display: "Blog",
   },
   {
     path: "/contact",
-    display: "Liên hệ",
+    display: "Hoạt động",
   },
 ];
 
@@ -32,9 +32,12 @@ const Header = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const menuRef = useRef(null);
   const toggleMenu = () => menuRef.current.classList.toggle("menu__active");
+  const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
+  
   const handleLogout = () => {
     // Xóa thông tin đăng nhập từ localStorage
     localStorage.removeItem('loggedIn');
@@ -46,6 +49,7 @@ const Header = () => {
     setEmail('');
     window.location.href = '/home';
   };
+
   useEffect(() => {
     // Kiểm tra xem đã có thông tin đăng nhập trong localStorage hay chưa
     const isLoggedIn = localStorage.getItem('loggedIn');
@@ -58,6 +62,7 @@ const Header = () => {
       setName(storedName)
     }
   }, []);
+
   return (
     <header className="header">
       <div className="header__middle">
@@ -76,7 +81,7 @@ const Header = () => {
             <Col lg="3" md="3" sm="4">
               <div className="header__location d-flex align-items-center gap-2">
                 <span>
-                  <i class="ri-earth-line"></i>
+                  <i className="ri-earth-line"></i>
                 </span>
                 <div className="header__location-content">
                   <h4>Việt Nam</h4>
@@ -88,7 +93,7 @@ const Header = () => {
             <Col lg="3" md="3" sm="4">
               <div className="header__location d-flex align-items-center gap-2">
                 <span>
-                  <i class="ri-time-line"></i>
+                  <i className="ri-time-line"></i>
                 </span>
                 <div className="header__location-content">
                   <h4>Làm hằng ngày</h4>
@@ -101,23 +106,30 @@ const Header = () => {
               lg="2"
               md="3"
               sm="0"
-              className=" d-flex align-items-center justify-content-end "
+              className="d-flex align-items-center justify-content-end"
             >
-              {loggedIn ?
-                (<div>
-                  <button className="header__btn btn" style={{ marginBottom: "8px" }}>
-                    <Link to="/profile">
-                      {name}
-                    </Link>
-                  </button>
-                  <Button className="header__btn btn" onClick={handleLogout}>Logout</Button>
-                </div>) :
-                (<button className="header__btn btn ">
-                  <Link to="/login">
-                    Login
-                  </Link>
-                </button>)
-              }
+              {loggedIn ? (
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                  <DropdownToggle className="header__btn btn" caret>
+                  {name}
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem>
+                      <Link to="/profile" style={{ textDecoration: "none", color: "black" }}>
+                        <RiUserLine style={{ marginRight: "12px",  }} />Thông tin cá nhân
+                        </Link>                  
+                    </DropdownItem>
+                    <DropdownItem divider />
+                    <DropdownItem onClick={handleLogout} style={{ textDecoration: "none", color: "black" }}>
+                      <RiLogoutBoxLine style={{ marginRight: "12px" }} />Đăng xuất
+                      </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              ) : (
+                <button className="header__btn btn">
+                  <Link to="/login">Đăng nhập</Link>
+                </button>
+              )}
             </Col>
           </Row>
         </Container>
@@ -129,10 +141,8 @@ const Header = () => {
         <Container>
           <div className="navigation__wrapper d-flex align-items-center justify-content-between">
             <span className="mobile__menu">
-              <i class="ri-menu-line" onClick={toggleMenu}></i>
+              <i className="ri-menu-line" onClick={toggleMenu}></i>
             </span>
-
-            
 
             <div className="navigation" ref={menuRef} onClick={toggleMenu}>
               <div className="menu">
@@ -149,17 +159,6 @@ const Header = () => {
                 ))}
               </div>
             </div>
-
-            {/* <div className="nav__right">
-              <div className="search__box">
-                <input type="text" placeholder="Search" />
-                
-                <span>
-                  <i class="ri-search-line"></i>
-                </span>
-              
-                </div>
-            </div> */}
           </div>
         </Container>
       </div>

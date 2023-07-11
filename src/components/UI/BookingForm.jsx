@@ -118,7 +118,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
 
     setIsPointUsed(true);
   };
-  
+
   const handleNotUseTotalPoint = () => {
     // setOldTotalPoint(totalPoint);
     // console.log(totalPoint);
@@ -219,11 +219,11 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
               <p><strong>Bạn có muốn dùng số điểm đã tích không?</strong></p>
 
               <div>
-                <button className="normal-button" onClick={handleUseTotalPoint}>
+                <button className="use-button" onClick={handleUseTotalPoint}>
                   Dùng {Math.floor(totalPoint / 100) * 100} pts
                 </button>
-                <button className="normal-button" onClick={handleNotUseTotalPoint}>
-                  No
+                <button className="cancel-button" onClick={handleNotUseTotalPoint}>
+                  Không
                 </button>
               </div>
               {/* Làm switch button */}
@@ -232,9 +232,9 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
             <br></br>
 
             <p><strong>Tổng tiền:</strong> {discountedPrice}</p>
-            <p><strong>Note:</strong> {message}</p>
+            <p><strong>Ghi chú:</strong>{message}</p>
             {/* Các thông tin khác */}
-            <button className="normal-button" onClick={handleClosePopup}>Close</button>
+            <button className="close-button" onClick={handleClosePopup}>Đóng</button>
             <button className="submit-button" onClick={handleConfirm}>Xác nhận</button>
           </div>
         }

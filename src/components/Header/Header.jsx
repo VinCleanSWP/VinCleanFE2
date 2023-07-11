@@ -32,12 +32,14 @@ const Header = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+
+  const [img, setImg] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const menuRef = useRef(null);
   const toggleMenu = () => menuRef.current.classList.toggle("menu__active");
   const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
-  
+
   const handleLogout = () => {
     // Xóa thông tin đăng nhập từ localStorage
     localStorage.removeItem('loggedIn');
@@ -45,6 +47,9 @@ const Header = () => {
     localStorage.removeItem('name');
     localStorage.removeItem('role');
     localStorage.removeItem('id');
+
+    localStorage.removeItem('img');
+
     setLoggedIn(false);
     setEmail('');
     window.location.href = '/home';
@@ -56,10 +61,14 @@ const Header = () => {
     const storedEmail = localStorage.getItem('email');
     const storedName = localStorage.getItem('name');
 
+    const storedImg = localStorage.getItem('img');
+
+
     if (isLoggedIn && storedEmail) {
       setLoggedIn(true);
       setEmail(storedEmail);
-      setName(storedName)
+      setName(storedName);
+      setImg(storedImg)
     }
   }, []);
 
@@ -102,35 +111,42 @@ const Header = () => {
               </div>
             </Col>
 
-            <Col
-              lg="2"
-              md="3"
-              sm="0"
-              className="d-flex align-items-center justify-content-end"
-            >
+            {/* <Col lg="2" md="3" sm="0" className="d-flex align-items-center justify-content-end">
               {loggedIn ? (
                 <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
                   <DropdownToggle className="header__btn btn" caret>
-                  {name}
+                    <img className="avatar-icon" src={img} alt="Avatar" />
                   </DropdownToggle>
+
                   <DropdownMenu>
+                    <div className="sub-menu-info">
+                      <img className="avatar-info-icon" src={img} alt="Avatar" />
+                      <strong>{name}</strong>
+                      <hr />
+                    </div>
+
                     <DropdownItem>
                       <Link to="/profile" style={{ textDecoration: "none", color: "black" }}>
-                        <RiUserLine style={{ marginRight: "12px",  }} />Thông tin cá nhân
-                        </Link>                  
+                        <RiUserLine style={{ marginRight: "12px", }} />Thông tin cá nhân
+                      </Link>
                     </DropdownItem>
+
                     <DropdownItem divider />
+
                     <DropdownItem onClick={handleLogout} style={{ textDecoration: "none", color: "black" }}>
                       <RiLogoutBoxLine style={{ marginRight: "12px" }} />Đăng xuất
-                      </DropdownItem>
+                    </DropdownItem>
+
                   </DropdownMenu>
+
                 </Dropdown>
               ) : (
                 <button className="header__btn btn">
                   <Link to="/login">Đăng nhập</Link>
                 </button>
               )}
-            </Col>
+            </Col> */}
+
           </Row>
         </Container>
       </div>
@@ -155,10 +171,46 @@ const Header = () => {
                     key={index}
                   >
                     {item.display}
+                    
                   </NavLink>
                 ))}
               </div>
             </div>
+            <Col lg="2" md="3" sm="0" className="d-flex align-items-center justify-content-end">
+              {loggedIn ? (
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                  <DropdownToggle className="header__btn btn" caret>
+                    <img className="avatar-icon" src={img} alt="Avatar" />
+                  </DropdownToggle>
+
+                  <DropdownMenu>
+                    <div className="sub-menu-info">
+                      <img className="avatar-info-icon" src={img} alt="Avatar" />
+                      <strong>{name}</strong>
+                      <hr />
+                    </div>
+
+                    <DropdownItem>
+                      <Link to="/profile" style={{ textDecoration: "none", color: "black" }}>
+                        <RiUserLine style={{ marginRight: "12px", }} />Thông tin cá nhân
+                      </Link>
+                    </DropdownItem>
+
+                    <DropdownItem divider />
+
+                    <DropdownItem onClick={handleLogout} style={{ textDecoration: "none", color: "black" }}>
+                      <RiLogoutBoxLine style={{ marginRight: "12px" }} />Đăng xuất
+                    </DropdownItem>
+
+                  </DropdownMenu>
+
+                </Dropdown>
+              ) : (
+                <button className="header__btn btn">
+                  <Link to="/login">Đăng nhập</Link>
+                </button>
+              )}
+            </Col>
           </div>
         </Container>
       </div>

@@ -1,0 +1,56 @@
+
+.rbc-event{
+    padding: 0 ;
+    font-size: 16px;
+    background-color: #4D96FF;
+    color: black;
+}
+.rbc-header {
+    background-color:  #4D96FF;
+    padding: 5px 3px;
+}
+.rbc-events-container{
+    width: 100%;
+}
+.rbc-time-view{
+    background-color: #f6fcfd;
+}
+.rbc-events-container div.rbc-event-label{
+    font-size: 15px !important;
+}
+.rbc-timeslot-group{
+    min-height: 60px !important;
+}
+.rbc-agenda-table thead{
+    background-color:  #4D96FF;
+}
+.rbc-row rbc-month-header{
+    background-color:  #4D96FF;
+}
+.process{
+    display: flex;
+}
+.process-info, .process-info1{
+    flex: 1;
+    width: 50%;
+    height: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 20% solid black;
+    margin: 0px 10px;
+    padding-left: 3px;
+}
+.info-content {
+    word-wrap: break-word;
+    display: block;
+    margin-top: 10px;
+  }
+.info-content p{
+    margin: 7px 0px;
+}
+.custom-modal {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.event-title p{
+    font-size: 15px;
+    margin: 5px;
+}

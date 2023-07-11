@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useParams } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { storage } from '../../firebase/index';
 
@@ -13,8 +12,8 @@ export default function BlogDetail() {
     const [blogTitle, setBlogTitle] = useState('');
     const [blogSummary, setBlogSummary] = useState('');
     const [blogContent, setBlogContent] = useState('');
-    const [OldImageUrl, setOldImageUrl] = useState('');
-
+    const[OldImageUrl,setOldImageUrl] = useState('');
+    
     const [tempImageUrl, setTempImageUrl] = useState('');
 
 
@@ -72,18 +71,8 @@ export default function BlogDetail() {
         axios
             .put(`https://localhost:7013/api/Blog`, updatedBlog)
             .then(response => {
-                toast.success('Update Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
                 console.log('Update successful:', response.data);
-                // setOldImageUrl(tempImageUrl); // Lưu trữ ảnh mới như là ảnh cũ sau khi lưu
+                setOldImageUrl(tempImageUrl); // Lưu trữ ảnh mới như là ảnh cũ sau khi lưu
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -94,16 +83,6 @@ export default function BlogDetail() {
         axios
             .delete(`https://localhost:7013/api/Blog/${id}`)
             .then(response => {
-                toast.success('Delete Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
                 console.log('Blog deleted:', response.data);
             })
             .catch(error => {
@@ -112,76 +91,54 @@ export default function BlogDetail() {
     };
 
     return (
-        <div className="page-container">
-            {/* MAIN CONTENT*/}
-            <div className="main-content">
-                <div className="section__content section__content--p30">
-                    <div className="container-fluid">
-                        <div className="row m-t-30">
-                            <div className="col-md-12">
-                                <div className="container left">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <h3 style={{ textAlign: "center" }}><strong>Edit Blog #{id}</strong></h3>
-                                            <div>
-                                                <label className="form-label"> <strong>Image</strong></label>
-                                                <div >
-                                                    <img src={tempImageUrl || "http://via.placeholder.com/1080x250"}
-                                                        alt="Temporary Image"
-                                                        style={{ width: '1080px', height: '250px' }} />
-                                                </div>
-                                                <input type="file" onChange={handleImageUpload} />
-                                            </div>
-                                            <div>
-                                                <label><strong>Title:</strong></label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control mb-1"
-                                                    value={blogTitle}
-                                                    onChange={handleTitleChange}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label><strong>Summary:</strong></label>
-                                                <ReactQuill
-                                                    value={blogSummary}
-                                                    onChange={handleSummaryChange}
-                                                    suppressContentEditableWarning={true}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label><strong>Content:</strong></label>
-                                                <ReactQuill
-                                                    value={blogContent}
-                                                    onChange={handleContentChange}
-                                                    suppressContentEditableWarning={true}
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <h2>Preview:</h2>
-                                                <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>
-                                                    <img src={tempImageUrl || "http://via.placeholder.com/1080x250"} alt="Temporary Image"
-                                                        style={{ width: '1080px', height: '250px' }} />
-                                                </div>
-                                                <h3>{blogTitle}</h3>
-                                                <div dangerouslySetInnerHTML={{ __html: blogSummary }} />
-                                                <div dangerouslySetInnerHTML={{ __html: blogContent }} />
-                                            </div>
-                                            <div style={{ textAlign: 'right', marginRight: '5px' }}>
-                                                <button type="button" className="btn btn-primary m-r-5" onClick={handleSaveChanges}>Save Changes</button>
-                                                <button type="button" className="btn btn-primary" onClick={handleDeleteBlog}>Delete</button>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        <div className="container left">
+            <div className="card">
+                <div className="card-body">
+                    <h5 className="card-title">Blog Editor Default</h5>
+                    <div>
+                        <label className="form-label">Image</label>
+                        <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>
+                            <img src={tempImageUrl} alt="Temporary Image" />
                         </div>
+                        <input type="file" onChange={handleImageUpload} />
                     </div>
+                    <div>
+                        <label>Title:</label>
+                        <input
+                            type="text"
+                            value={blogTitle}
+                            onChange={handleTitleChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Summary:</label>
+                        <ReactQuill
+                            value={blogSummary}
+                            onChange={handleSummaryChange}
+                            suppressContentEditableWarning={true}
+                        />
+                    </div>
+                    <div>
+                        <label>Content:</label>
+                        <ReactQuill
+                            value={blogContent}
+                            onChange={handleContentChange}
+                            suppressContentEditableWarning={true}
+                        />
+                    </div>
+                    <div>
+                        <h2>Preview:</h2>
+                        <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>
+                            <img src={tempImageUrl} alt="Temporary Image" />
+                        </div>
+                        <h3>{blogTitle}</h3>
+                        <div dangerouslySetInnerHTML={{ __html: blogSummary }} />
+                        <div dangerouslySetInnerHTML={{ __html: blogContent }} />
+                    </div>
+                    <button onClick={handleSaveChanges}>Save Changes</button>
+                    <button onClick={handleDeleteBlog}>Delete</button>
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 }

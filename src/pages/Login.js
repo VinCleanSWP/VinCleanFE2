@@ -32,11 +32,10 @@ export default function Login() {
                     localStorage.setItem('email', email);
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
-
+                    localStorage.setItem('id', response.data.data.accountId);
                     localStorage.setItem('img', response.data.data.img);
-                    localStorage.setItem('id', response.data.data.accountId)
-                    navigate('/home')
-                    // window.location.href = '/';
+                    // navigate('/home')
+                    window.location.href = '/';
                 }
                 if (response.data.success === true && response.data.message === "OK" && response.data.data.roleId === 3) {
                     localStorage.setItem('loggedIn', 'true');

@@ -7,9 +7,7 @@ import PaymentMethod from "../components/UI/PaymentMethod";
 import '../styles/rating-list.css';
 import moment from "moment";
 import _ from 'lodash';
-
 import React, { useEffect, useState } from 'react';
-
 import axios from 'axios';
 
 const ServiceTypeDetail = () => {
@@ -35,9 +33,6 @@ const ServiceTypeDetail = () => {
       .catch(error => {
         console.error('Error fetching service type detail:', error);
       });
-
-
-
 
     axios.get(`https://localhost:7013/api/Rating/Service/${id}`)
       .then(response => {
@@ -274,7 +269,7 @@ const ServiceTypeDetail = () => {
             </Col>
           </Row>
 
-          <div className="rating">
+          {/* <div className="rating">
             <h4>ĐÁNH GIÁ DỊCH VỤ</h4>
             <div className="average-rating">
               <h3>Điểm đánh giá: {averageRate.toFixed(1)}/5</h3>
@@ -317,7 +312,7 @@ const ServiceTypeDetail = () => {
                 </li>
               ))}
             </div>
-          </div>
+          </div> */}
 
         </Container>
       </section>

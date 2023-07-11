@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { storage } from '../../firebase/index';
 
@@ -71,6 +72,16 @@ export default function BlogDetail() {
         axios
             .put(`https://localhost:7013/api/Blog`, updatedBlog)
             .then(response => {
+                toast.success('Update Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 console.log('Update successful:', response.data);
                 setOldImageUrl(tempImageUrl); // Lưu trữ ảnh mới như là ảnh cũ sau khi lưu
             })
@@ -83,6 +94,16 @@ export default function BlogDetail() {
         axios
             .delete(`https://localhost:7013/api/Blog/${id}`)
             .then(response => {
+                toast.success('Delete Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 console.log('Blog deleted:', response.data);
             })
             .catch(error => {
@@ -160,6 +181,7 @@ export default function BlogDetail() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 }

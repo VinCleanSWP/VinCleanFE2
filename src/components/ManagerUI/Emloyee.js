@@ -57,12 +57,12 @@ function Table() {
 
     const deleteEmployee = (employeeId) => {
         axios.delete(`https://localhost:7013/api/Employee/${employeeId}`)
-            .then(_response => {
-                console.log('Employee deleted successfully');
-                // const updatedEmployeeList = employeeList.filter(employee => employee.employeeId !== employeeId);
-                // setEmployeeList(updatedEmployeeList);
+            .then(response => {
+                console.log('Employee delete successfully:', response.data);
                 fetchEmployeeList();
-                // Thực hiện các hành động khác sau khi xóa thành công
+                setEmployeeList(response.data.data);
+
+
             })
             .catch(error => {
                 console.error('Error deleting customer:', error);
@@ -74,7 +74,20 @@ function Table() {
     const fetchEmployeeList = () => {
         axios.get('https://localhost:7013/api/Employee')
             .then(response => {
+
                 setEmployeeList(response.data.data);
+                toast.success('Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+
+
             })
             .catch(error => {
                 console.error(error);
@@ -189,12 +202,12 @@ function Table() {
         axios.post('https://localhost:7013/api/Employee', formData)
             .then(response => {
                 // Xử lý kết quả từ API (nếu cần)
-                fetchEmpoloyeeList();
+                fetchEmployeeList();
                 console.log(response.data);
 
-                // Cập nhật dữ liệu trên giao diện người dùng
-                // Sử dụng hàm setState hoặc phương thức tương tự
+
                 setData(response.data);
+
 
                 // setModalIsOpen(false);
             })
@@ -303,15 +316,7 @@ function Table() {
                                                         onChange={(e) => setstatus(e.target.value)}
                                                     />
                                                 </div>
-                                                <div className="form-group">
-                                                    <label className="form-label"><strong>Start Date</strong></label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control mb-1"
-                                                        value={moment(startDate).format('YYYY-MM-DD')}
-                                                        onChange={(e) => setStartDate(e.target.value)}
-                                                    />
-                                                </div>
+
                                                 <div>
                                                     <label className="form-group"><strong>Gender</strong></label>
                                                     <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
@@ -356,15 +361,7 @@ function Table() {
                                                         onChange={(e) => setPhone(e.target.value)}
                                                     />
                                                 </div>
-                                                <div className="form-group">
-                                                    <label className="form-label"><strong>End Date</strong></label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control mb-1"
-                                                        value={moment(endDate).format('YYYY-MM-DD')}
-                                                        onChange={(e) => setendDate(e.target.value)}
-                                                    />
-                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -374,11 +371,10 @@ function Table() {
                         </div>
                     </div>
                     <div className="text-right mt-3">
-                        <button type="button" className="btn btn-primary mr-2" onClick={handleChangeSubmit}>Update </button>
+                        <button type="button" className="btn btn-primary mr-2" onClick={handleChangeSubmit} >Update </button>
                         <span className="mr-2"></span>
                         <button type="button" className="btn btn-secondary" onClick={() => setEditModalIsOpen(false)}>Close</button>
                     </div>
-                    <ToastContainer />
                 </div>
 
 
@@ -450,24 +446,6 @@ function Table() {
                                             </div>
                                         </div>
                                         <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
-                                            <div className="form-group">
-                                                <label className="form-label"><strong>Start Date</strong></label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control mb-1"
-                                                    value={newStartDate}
-                                                    onChange={(e) => setNewStartDate(e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label className="form-label"><strong>End Date</strong></label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control mb-1"
-                                                    value={newEndDate}
-                                                    onChange={(e) => setNewEndDate(e.target.value)}
-                                                />
-                                            </div>
 
 
                                             <div className="form-group">
@@ -672,6 +650,7 @@ function Table() {
             </div>
             <ToastContainer />
         </div>
+
     );
 };
 

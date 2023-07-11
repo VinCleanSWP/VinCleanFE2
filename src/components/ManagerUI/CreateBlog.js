@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import CSS cho giao diện trình soạn thảo Quill
 import { useParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { storage } from '../../firebase/index';
 
@@ -13,7 +14,7 @@ export default function BlogDetail() {
     const blogId = useParams();
     const id = parseInt(blogId.id)
     const [tempImageUrl, setTempImageUrl] = useState('');
-    const handleSaveChanges = () => {
+    const handleSave = () => {
         const blogData = {
             ...blog,
             title: title,
@@ -24,7 +25,18 @@ export default function BlogDetail() {
         // Gọi API để lấy dữ liệu
         axios.post(`https://localhost:7013/api/Blog`, blogData)
             .then(response => {
+                toast.success('Create Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 setBlog(response.data.data); // Lưu dữ liệu vào state
+
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -78,7 +90,7 @@ export default function BlogDetail() {
                                                 </div>
                                                 <div>
                                                     <label className="form-label"> <strong>Image</strong></label>
-                                                    <div> <img src={tempImageUrl || "http://via.placeholder.com/1080x250"}
+                                                    <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}> <img src={tempImageUrl || "http://via.placeholder.com/1080x250"}
                                                         alt="Temporary Image"
                                                         style={{ width: '1080px', height: '250px' }} />
                                                     </div>
@@ -96,7 +108,7 @@ export default function BlogDetail() {
                                                     <div dangerouslySetInnerHTML={{ __html: content }} />
                                                 </div>
                                                 <div style={{ textAlign: 'right', marginRight: '5px' }}>
-                                                    <button type="button" className="btn btn-primary m-r-5" onClick={handleSaveChanges}>Save</button>
+                                                    <button type="button" className="btn btn-primary m-r-5" onClick={handleSave}>Save</button>
 
                                                 </div>
 
@@ -115,6 +127,7 @@ export default function BlogDetail() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
 
     )

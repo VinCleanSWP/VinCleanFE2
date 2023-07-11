@@ -69,7 +69,7 @@ function Booking() {
         axios.post('', { processId })
             .then(response => {
                 console.log(response.data);
-                toast.success('Assigned Successfully!', {
+                toast.success('Send Email Successfully!', {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -251,7 +251,7 @@ function Booking() {
                                     <form className="form-inline">
                                         <div className="input-group mb-3">
                                             <label className="px-2.5 input-group-text">Name</label>
-                                            <input value={modal.customerName} className="form-control" />
+                                            <input value={modal.name} className="form-control" />
                                         </div>
                                         <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
                                             <img src={modal.accountImage} alt="react logo" style={{ width: '120px', height: "120px", borderRadius: 100 }} />
@@ -264,7 +264,7 @@ function Booking() {
                                         </div>
                                         <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
                                             <label className="input-group-text">Email</label>
-                                            <input value={modal.customerEmail} className="form-control" />
+                                            <input value={modal.email} className="form-control" />
                                         </div>
                                     </form>
                                     <form className="form-inline">

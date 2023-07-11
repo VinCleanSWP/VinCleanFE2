@@ -53,6 +53,7 @@ function Table() {
     const [customerId, setCustomerId] = useState('');
     const [ModalIsOpen, setModalIsOpen] = useState('');
     const [search, setSearch] = useState('');
+    const [Data, setData] = useState('');
     const [url, setUrl] = useState('');
 
     const deleteEmployee = (employeeId) => {

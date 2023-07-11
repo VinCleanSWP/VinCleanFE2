@@ -2,6 +2,7 @@ import React from "react";
 import { Col } from "reactstrap";
 import "../../styles/services-list.css";
 import servicesData from "../../assets/data/serviceData";
+import { TiTickOutline } from "react-icons/ti";
 
 const ServicesList = () => {
   return (

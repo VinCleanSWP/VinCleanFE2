@@ -362,7 +362,7 @@ function Table() {
                                                 type="text"
                                                 className="form-control mb-1"
                                                 value={moment(endDate).format('YYYY-MM-DD')}
-                                                onChange={(e) => setEndDate(e.target.value)}
+                                                onChange={(e) => setendDate(e.target.value)}
                                             />
                                         </div>
 

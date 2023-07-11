@@ -33,6 +33,7 @@ function Customer() {
     const [accountId, setAccountId] = useState('');
     const [createdDate, setCreatedDate] = useState('');
     const [isDeleted, setIsDeleted] = useState('');
+    const [search, setSearch] = useState('');
 
 
     const [customerId, setCustomerId] = useState('');
@@ -111,6 +112,24 @@ function Customer() {
             });
 
     }, []);
+    const handleSearchChange = (e) => {
+        setSearch(e.target.value);
+    };
+
+    const sortAndFilterData = () => {
+        const sortedData = [...customerList];
+
+        const filteredData = sortedData.filter(m =>
+            m.customerId.toString().toLowerCase().includes(search.toLowerCase()) ||
+            m.firstName.toString().toLowerCase().includes(search.toLowerCase()) ||
+            m.lastName.toLowerCase().includes(search.toLowerCase()) ||
+            m.phone.toString().toLowerCase().includes(search.toLowerCase()) ||
+            m.address.toString().toLowerCase().includes(search.toLowerCase())
+
+        );
+
+        return filteredData;
+    };
 
 
 
@@ -150,6 +169,8 @@ function Customer() {
                                 <div className="modal-header">
                                     <div className="card-body">
                                         <h3 style={{ textAlign: "center" }}><strong>Customer Detail</strong></h3>
+
+
                                         <div style={{ display: 'flex' }}>
                                             <div><img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius: '50%' }} /></div>
                                             <div style={{ paddingTop: '15px', paddingLeft: '10px', width: 'auto', fontSize: '25px' }}><strong>{userName}</strong>
@@ -309,7 +330,17 @@ function Customer() {
                                 </div>
 
                             </div>
-                            <h1 class="table__header" style={{ textAlign: "center" }}><strong>Customer List</strong></h1>
+
+                            <div class="table__header">
+                                <h1 style={{ textAlign: "center" }}><strong>Customer List</strong></h1>
+
+                                <div class="input-group" >
+                                    <input type="search" placeholder="Search Data..."
+                                        value={search}
+                                        onChange={handleSearchChange} />
+                                    <img src="images/icon/search.png" alt=""></img>
+                                </div>
+                            </div>
                             <div className="row">
                                 <div className="col-md-12">
                                     {/* DATA TABLE */}
@@ -328,7 +359,7 @@ function Customer() {
                                                 </tr>
                                             </thead>
                                             <tbody style={{ textAlign: 'center' }}>
-                                                {customerList.map((customer, index) => (
+                                                {sortAndFilterData().map((customer, index) => (
                                                     <tr key={customer.customerId}>
                                                         <td >{customer.customerId}</td>
                                                         <td><img src={customer.account.img

@@ -103,6 +103,15 @@ export default function BlogDetail() {
                                         <div className="card-body">
                                             <h3 style={{ textAlign: "center" }}><strong>Edit Blog #{id}</strong></h3>
                                             <div>
+                                                <label className="form-label"> <strong>Image</strong></label>
+                                                <div >
+                                                    <img src={tempImageUrl || "http://via.placeholder.com/1080x250"}
+                                                        alt="Temporary Image"
+                                                        style={{ width: '1080px', height: '250px' }} />
+                                                </div>
+                                                <input type="file" onChange={handleImageUpload} />
+                                            </div>
+                                            <div>
                                                 <label><strong>Title:</strong></label>
                                                 <input
                                                     type="text"
@@ -127,15 +136,7 @@ export default function BlogDetail() {
                                                     suppressContentEditableWarning={true}
                                                 />
                                             </div>
-                                            <div>
-                                                <label className="form-label"> <strong>Image</strong></label>
-                                                <div >
-                                                    <img src={tempImageUrl || "http://via.placeholder.com/1080x250"}
-                                                        alt="Temporary Image"
-                                                        style={{ width: '1080px', height: '250px' }} />
-                                                </div>
-                                                <input type="file" onChange={handleImageUpload} />
-                                            </div>
+
                                             <div>
                                                 <h2>Preview:</h2>
                                                 <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>

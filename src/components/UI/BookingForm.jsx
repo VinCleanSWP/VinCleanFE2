@@ -118,7 +118,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
 
     setIsPointUsed(true);
   };
-  
+
   const handleNotUseTotalPoint = () => {
     // setOldTotalPoint(totalPoint);
     // console.log(totalPoint);

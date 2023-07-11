@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "reactstrap";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import "../../styles/header.css";
 import VinCleanLogo from "../../assets/all-images/logo.png";
 
@@ -24,7 +24,7 @@ const navLinks = [
   },
   {
     path: "/contact",
-    display: "Liên hệ",
+    display: "Hoạt động",
   },
 ];
 
@@ -32,8 +32,8 @@ const Header = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-
   const menuRef = useRef(null);
+  const navigate = useNavigate();
   const toggleMenu = () => menuRef.current.classList.toggle("menu__active");
   const handleLogout = () => {
     // Xóa thông tin đăng nhập từ localStorage
@@ -44,8 +44,10 @@ const Header = () => {
     localStorage.removeItem('id');
     setLoggedIn(false);
     setEmail('');
-    window.location.href = '/home';
+    navigate('/home')
+    // window.location.href = '/home';
   };
+
   useEffect(() => {
     // Kiểm tra xem đã có thông tin đăng nhập trong localStorage hay chưa
     const isLoggedIn = localStorage.getItem('loggedIn');
@@ -103,11 +105,27 @@ const Header = () => {
               sm="0"
               className=" d-flex align-items-center justify-content-end "
             >
-              {loggedIn ?
+              {/* {loggedIn ?
                 (<div>
                   <button className="header__btn btn" style={{ marginBottom: "8px" }}>
                     <Link to="/profile">
                       {name}
+                    </Link>
+                  </button>
+                  <Button className="header__btn btn" onClick={handleLogout}>Logout</Button>
+                </div>) :
+                (<button className="header__btn btn ">
+                  <Link to="/login">
+                    Login
+                  </Link>
+                </button>)
+              } */}
+
+              {localStorage.getItem('loggedIn') ?
+                (<div>
+                  <button className="header__btn btn" style={{ marginBottom: "8px" }}>
+                    <Link to="/profile">
+                      {localStorage.getItem('name')}
                     </Link>
                   </button>
                   <Button className="header__btn btn" onClick={handleLogout}>Logout</Button>
@@ -132,7 +150,7 @@ const Header = () => {
               <i class="ri-menu-line" onClick={toggleMenu}></i>
             </span>
 
-            
+
 
             <div className="navigation" ref={menuRef} onClick={toggleMenu}>
               <div className="menu">

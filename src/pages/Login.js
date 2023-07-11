@@ -22,8 +22,8 @@ export default function Login() {
                     localStorage.setItem('id', response.data.data.accountId);
                     // localStorage.setItem('cid', response.data.data.customerId);
                     const accountId = localStorage.getItem('id');
-                    // navigate('/home')
-                    window.location.href = '/';
+                    navigate('/home')
+                    // window.location.href = '/';
                 }
                 if (response.data.success === true && response.data.message === "OK" && response.data.data.roleId === 2) {
                     localStorage.setItem('loggedIn', 'true');
@@ -31,8 +31,8 @@ export default function Login() {
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
                     localStorage.setItem('id', response.data.data.accountId)
-                    // navigate('/home')
-                    window.location.href = '/';
+                    navigate('/home')
+                    // window.location.href = '/';
                 }
                 if (response.data.success === true && response.data.message === "OK" && response.data.data.roleId === 3) {
                     localStorage.setItem('loggedIn', 'true');
@@ -40,8 +40,8 @@ export default function Login() {
                     localStorage.setItem('name', response.data.data.name);
                     localStorage.setItem('role', response.data.data.roleId);
                     localStorage.setItem('id', response.data.data.accountId);
-                    // navigate('/home')
-                    window.location.href = '/';
+                    navigate('/home')
+                    // window.location.href = '/';
                 }
                 // Proceed with the desired action upon successful login
             }).catch(error => {

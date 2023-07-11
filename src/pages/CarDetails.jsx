@@ -287,29 +287,24 @@ const ServiceTypeDetail = () => {
                 <li key={rating.id} className="rating-item">
                   <Row>
                     <Col lg="1">
-                      {/* Hiện Avatar */}
                       <div><img class="avatar__img" src={rating.img} alt="customer avatar" /></div>
 
-                      {/* Dùng tạm để css */}
-                      {/* <img class="avatar__img" src='https://yt3.googleusercontent.com/17vo13ad-ojeaPwYiVkp82Eims1qQufcPrSIiuoQVSb3P9Eu7web4KzyqOXM48UmTORWATn1tg=s900-c-k-c0x00ffffff-no-rj'
-                        alt="customer avatar" /> */}
+                      <img class="avatar__img" src='https://yt3.googleusercontent.com/17vo13ad-ojeaPwYiVkp82Eims1qQufcPrSIiuoQVSb3P9Eu7web4KzyqOXM48UmTORWATn1tg=s900-c-k-c0x00ffffff-no-rj'
+                        alt="customer avatar" />
                     </Col>
 
                     <Col lg="10">
 
                       <div>{rating.customerLastName + " " + rating.customerFirstName}</div>
 
-                      {/* Hiện số sao */}
                       <div className="rating-stars">
                         {[...Array(rating.rate)].map((_, index) => (
                           <i key={index} className="ri-star-s-fill"></i>
                         ))}
                       </div>
 
-                      {/* Hiện ngày giờ | Dịch vụ */}
                       <div className="date">{moment(rating.createdDate).format('hh:mm a - DD/MM/YYYY ')} | Dịch vụ: {rating.serviceName}</div>
 
-                      {/* Hiện comment */}
                       <div>Nhận xét: {rating.comment}</div>
                     </Col>
                   </Row>

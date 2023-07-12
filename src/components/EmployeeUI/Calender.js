@@ -13,7 +13,6 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [idEmployee, setIdEmployee] = useState('');
   const formats = {
     monthHeaderFormat: 'MMMM',
     dayHeaderFormat: 'dddd  -  DD/MM/YYYY',
@@ -32,10 +31,6 @@ const MyCalendar = () => {
 
 
   useEffect(() => {
-    const storedId = localStorage.getItem('id');
-      setIdEmployee(storedId);
-      console.log(storedId);
-      console.log(localStorage.getItem('id'));
     fetchData();//loading data
   }, []);
 
@@ -43,8 +38,7 @@ const MyCalendar = () => {
     try {
       const response = await getProcessAPI();
       
-      console.log(idEmployee);
-      const formattedEvents = response.data.filter(event => event.employeeAccountId === parseInt(idEmployee)).map(event => {
+      const formattedEvents = response.data.filter(event => event.employeeAccountId === parseInt(localStorage.getItem('id'))).map(event => {
         const date = new Date(event.date).toISOString().split('T')[0];
         const start = new Date(`${date}T${event.startTime}`);
         const end = new Date(`${date}T${event.endTime}`);

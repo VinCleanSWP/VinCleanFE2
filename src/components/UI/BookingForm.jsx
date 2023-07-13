@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 import Modal from 'react-modal';
 import { format, set } from 'date-fns';
+import moment from 'moment';
 
 const Notification = ({ message, onClose }) => {
   return (
@@ -35,7 +36,9 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   const [lastTotalPoint, setLastTotalPoint] = useState(totalPoint);
   const [discountedPrice, setDiscountedPrice] = useState();
   const [isPointUsed, setIsPointUsed] = useState(false);
+  const [DataAccount, setDataAccount] = useState("");
   const [selectedServiceCostChange, setSelectedServiceCost] = useState(0);
+  const date = moment(journeyDate).format('YYYY-MM-DD');
 
 
 
@@ -45,6 +48,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     axios.get(`https://localhost:7013/api/Customer/Account/${accountID}`)
       .then(response => {
         const data = response.data.data;
+        setDataAccount(data);
         setCustomerid(data.customerId);
         setFirstName(data.firstName);
         setLastName(data.lastName);
@@ -80,7 +84,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     const data = {
       customerId: customerid,
       starTime: journeyTime + ":00",
-      date: journeyDate,
+      date: date,
       serviceId: serviceId,
       address: address,
       phone: phoneNumber,
@@ -217,7 +221,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
             <p><strong>Tên bạn:</strong> {lastName + ' ' + firstName}</p>
             <p><strong>Thời gian bắt đầu làm:</strong> {journeyTime + ":00"}</p>
             <p><strong>Dịch vụ bạn đã chọn:</strong> {selectedServiceName}</p>
-            {/* <p>Date: {format(new Date(journeyDate), 'dd/MM/yyyy')}</p> */}
+            <p><strong>Date:</strong> {journeyDate}</p>
             <p><strong>Tạm tính:</strong> {selectedServiceCost}</p>
             <div>
               <p><strong>Bạn có muốn dùng số điểm đã tích không?</strong></p>

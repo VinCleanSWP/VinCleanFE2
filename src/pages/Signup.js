@@ -37,8 +37,20 @@ function Signup() {
       phone: formData.phone,
       address: formData.address
     };
+    const emailData = {
+      to: formData.email
+    }
     axios
       .post('https://localhost:7013/api/Customer/registration', requestData)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+      axios
+      .post('https://localhost:7013/api/Email/VerifyAccount', emailData)
       .then((response) => {
         console.log(response.data);
         navigate('/verifytoken');

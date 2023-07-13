@@ -153,7 +153,7 @@ function Activity() {
                                             <input value={modal.customerName} className="form-control" />
                                         </div>
                                         <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{width: '150px'}} />
+                                            <img src={modal.customerImage} alt="react logo" style={{width: '150px'}} />
                                         </div>
                                     </form>
                                     <form className="form-inline">
@@ -210,7 +210,7 @@ function Activity() {
                                                     <input type="text" className="form-control" value={modal.employeeName} />
                                                 </div>
                                                 <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                                    <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '150px', }} />
+                                                    <img src={modal.employeeImg} alt="react logo" style={{ width: '150px', }} />
                                                 </div>
                                             </form>
                                             <form className="form-inline">

@@ -56,17 +56,21 @@ function Booking() {
 
     const sendEmail = (processId) => {
         console.log({ processId })
-        toast.success('Send Email Successfully!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
-        axios.post('', { processId })
+        axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', { processId })
+            .then(response => {
+                console.log(response.data);
+                toast.success('Send Email Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            })
+            axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', { processId })
             .then(response => {
                 console.log(response.data);
                 toast.success('Send Email Successfully!', {

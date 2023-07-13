@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function VerifyToken() {
     const [token, setToken] = useState('');
@@ -13,7 +14,16 @@ export default function VerifyToken() {
             .post(apiUrl)
             .then((response) => {
                 console.log('API response:', response.data);
-                alert('dang ki thanh cong')
+                toast.success('Xác Thực Mã Token Thành Công', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 navigate('/login');
             })
             .catch((error) => {
@@ -64,6 +74,7 @@ export default function VerifyToken() {
                     </div>
                 </div>
             </section>
+            <ToastContainer />
         </div>
     )
 }

@@ -7,21 +7,6 @@ function ADHeader() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
-    const [id, setId] = useState('');
-
-
-    const fetchAccountData = async () => {
-        try {
-            if(localStorage.getItem('id')){
-                const response = await axios.get(`https://localhost:7013/api/Account/${localStorage.getItem('id')}`); // Thay đổi đường dẫn API tương ứng
-                // Xử lý dữ liệu tài khoản đã nhận được từ response.data
-                console.log(response.data); // Hoặc cập nhật các state khác trong component của bạn
-            }
-          
-        } catch (error) {
-          console.error(error);
-        }
-      };
 
     const handleLogout = () => {
         // Xóa thông tin đăng nhập từ localStorage
@@ -40,15 +25,11 @@ function ADHeader() {
         const isLoggedIn = localStorage.getItem('loggedIn');
         const storedEmail = localStorage.getItem('email');
         const storedName = localStorage.getItem('name');
-        const storedId = localStorage.getItem('id');
-        console.log(storedId)
 
         if (isLoggedIn && storedEmail) {
             setLoggedIn(true);
             setEmail(storedEmail);
             setName(storedName);
-            setId(storedId);
-            fetchAccountData();
         }
     }, []);
     return (

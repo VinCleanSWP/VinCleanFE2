@@ -4842,6 +4842,9 @@ section {
 .status.Incoming {
     background-color: #ebc474;
 }
+.status.Verify {
+    background-color: #ebc474;
+}
 
 .status.Processing {
     background-color: #6fcaea;
@@ -4896,6 +4899,16 @@ section {
     line-height: -moz-calc(24/14);
     line-height: calc(24/14);
 }
+
+.popup-small {
+    max-width: 600px; /* Đặt chiều rộng tối đa của popup */
+    max-height: 600px; /* Đặt chiều cao tối đa của popup */
+  }
+  
+.popup-small .modal-dialog {
+    justify-content: center;
+    text-align: center; /* Đặt khoảng cách giữa modal-dialog và viền của popup */
+  }
 
 /* ----- Breadcrumb ----- */
 .au-breadcrumb {

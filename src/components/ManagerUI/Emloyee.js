@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
@@ -42,7 +43,7 @@ function Table() {
     const [newPassword, setNewPassword] = useState('');
     const [newGender, setNewGender] = useState('');
     const [newImage, setTempImageUrl] = useState('');
-    const [newStatus, setNewStatus] = useState('');
+    const [Data, setData] = useState('');
     const [newStartDate, setNewStartDate] = useState('');
     const [newEndDate, setNewEndDate] = useState('');
     const [isDeleted, setIsDeleted] = useState('');
@@ -53,7 +54,6 @@ function Table() {
     const [ModalIsOpen, setModalIsOpen] = useState('');
     const [search, setSearch] = useState('');
     const [url, setUrl] = useState('');
-    const [Data, setData] = useState('');
 
     const deleteEmployee = (employeeId) => {
         axios.delete(`https://localhost:7013/api/Employee/${employeeId}`)
@@ -74,6 +74,19 @@ function Table() {
     const fetchEmployeeList = () => {
         axios.get('https://localhost:7013/api/Employee')
             .then(response => {
+
+                setEmployeeList(response.data.data);
+                toast.success('Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+
 
             })
             .catch(error => {
@@ -129,17 +142,6 @@ function Table() {
             .then(response => {
                 console.log('Employee updated successfully:', response.data);
                 fetchEmployeeList();
-                setEmployeeList(response.data.data);
-                toast.success('Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
 
             })
             .catch(error => {
@@ -202,17 +204,8 @@ function Table() {
                 // Xử lý kết quả từ API (nếu cần)
                 fetchEmployeeList();
                 console.log(response.data);
-                setEmployeeList(response.data.data);
-                toast.success('Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
+
+
                 setData(response.data);
 
 
@@ -563,94 +556,90 @@ function Table() {
                                     <div style={{ textAlign: 'right', margin: '5px 10px' }}>
 
 
-                                        <div className="table-data__tool">
-
-
-                                            <div className="table-data__tool-right">
-                                                {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
+                                        <div className="table-data__tool-right">
+                                            {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
                                                 <i className="zmdi zmdi-plus" />add item</button> */}
 
-                                                <button className="btn btn-primary " onClick={() => setAddModalIsOpen(true)}>
-                                                    Add employee
-                                                </button>
-                                            </div>
+                                            <button className="btn btn-primary " onClick={() => setAddModalIsOpen(true)}>
+                                                Add employee
+                                            </button>
                                         </div>
-                                        <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
-                                            <table className="table table-borderless table-data3 shadow-sm">
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
-                                                        <th >Employee ID</th>
-                                                        <th>Image</th>
-                                                        <th>Last name</th>
-                                                        <th>First Name</th>
-                                                        <th>Phone</th>
-                                                        <th>Status</th>
-                                                        <th></th>
-                                                        <th></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody style={{ textAlign: 'center' }}>
-                                                    {sortAndFilterData().map(employee => (
-                                                        <tr key={employee.employeeId}>
+                                    </div>
+                                    <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
+                                        <table className="table table-borderless table-data3 shadow-sm">
+                                            <thead style={{ textAlign: 'center' }}>
+                                                <tr>
+                                                    <th >Employee ID</th>
+                                                    <th>Image</th>
+                                                    <th>Last name</th>
+                                                    <th>First Name</th>
+                                                    <th>Phone</th>
+                                                    <th>Status</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style={{ textAlign: 'center' }}>
+                                                {sortAndFilterData().map(employee => (
+                                                    <tr key={employee.employeeId}>
 
-                                                            <td >{employee.employeeId}</td>
-                                                            <td>
-                                                                <img src={employee.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px', borderRadius: "50%" }} />
-                                                            </td>
-                                                            <td>{employee.lastName}</td>
-                                                            <td>{employee.firstName}</td>
-                                                            <td>{employee.phone}</td>
-                                                            <td>{employee.status}</td>
-                                                            <td />
-                                                            <td>
-                                                                <div className="table-data-feature">
+                                                        <td >{employee.employeeId}</td>
+                                                        <td>
+                                                            <img src={employee.account.img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px', borderRadius: "50%" }} />
+                                                        </td>
+                                                        <td>{employee.lastName}</td>
+                                                        <td>{employee.firstName}</td>
+                                                        <td>{employee.phone}</td>
+                                                        <td>{employee.status}</td>
+                                                        <td />
+                                                        <td>
+                                                            <div className="table-data-feature">
 
 
-                                                                    {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                                {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit">
                                                                     <i className="zmdi zmdi-edit" />
                                                                 </button> */}
-                                                                    {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit" onClick={() => setModalIsOpen(true)}>
+                                                                {/* <button className="item" data-toggle="tooltip" data-placement="top" title="Edit" onClick={() => setModalIsOpen(true)}>
                                                                 <i className="zmdi zmdi-edit" />
 
                                                                 </button> */}
-                                                                    <button
-                                                                        className="item"
-                                                                        data-toggle="tooltip"
-                                                                        data-placement="top"
-                                                                        title="Edit"
-                                                                        onClick={() => {
-                                                                            setEditModalIsOpen(true);
-                                                                            setEmployeeId(employee.employeeId); // Truyền employeeId vào đây
-                                                                        }}
-                                                                    >
-                                                                        <i class="zmdi zmdi-edit" />
-                                                                    </button>
-                                                                    <button
-                                                                        className="item"
-                                                                        data-toggle="tooltip"
-                                                                        data-placement="top"
-                                                                        title="Delete"
-                                                                        onClick={() => deleteEmployee(employee.employeeId)}
-                                                                    >
-                                                                        <i className="zmdi zmdi-delete" />
-                                                                    </button>
+                                                                <button
+                                                                    className="item"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="Edit"
+                                                                    onClick={() => {
+                                                                        setEditModalIsOpen(true);
+                                                                        setEmployeeId(employee.employeeId); // Truyền employeeId vào đây
+                                                                    }}
+                                                                >
+                                                                    <i class="zmdi zmdi-edit" />
+                                                                </button>
+                                                                <button
+                                                                    className="item"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="Delete"
+                                                                    onClick={() => deleteEmployee(employee.employeeId)}
+                                                                >
+                                                                    <i className="zmdi zmdi-delete" />
+                                                                </button>
 
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
 
-                                                </tbody>
+                                            </tbody>
 
-                                            </table>
-                                        </div>
-                                        {/* END DATA TABLE */}
+                                        </table>
                                     </div>
-                                    <div />
-
+                                    {/* END DATA TABLE */}
                                 </div>
+                                <div />
 
                             </div>
+
                         </div>
                     </div>
                 </div>

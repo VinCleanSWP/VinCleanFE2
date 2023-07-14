@@ -94,7 +94,7 @@ const MyCalendar = () => {
     console.log('Status:', status);
     console.log(selectedEvent.data.startWorking);
     console.log(time);
-    if (!data.start && status === 'Đang làm việc') {
+    if (data.start && status === 'Đang làm việc') {
       const sw = {
         processId: selectedEvent.id,
         startWorking: time,
@@ -134,7 +134,7 @@ const MyCalendar = () => {
         record.status !== 'Chờ' && (
           <Button
             onClick={() => handleClick(record.status)}
-            disabled={(record.status === 'Đang làm việc' && selectedEvent.data.startTime) || (record.status === 'Hoàn Thành'&& !selectedEvent.data.endWorking)}
+            disabled={(record.status === 'Đang làm việc' && !selectedEvent.data.startTime) || (record.status === 'Hoàn Thành'&& selectedEvent.data.endWorking)}
           >Cập nhật</Button>
         )
       ),

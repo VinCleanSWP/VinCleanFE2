@@ -15,14 +15,14 @@ import Testimonial from "../components/UI/Testimonial";
 import BlogList from "../components/UI/BlogList";
 
 const Home = () => {
-  
-  
+
+
   return (
     <Helmet title="Home">
       {/* ============= hero section =========== */}
       <section className="p-0 hero__slider-section">
-        
-        <HeroSlider />  
+
+        <HeroSlider />
 
       </section>
 
@@ -41,7 +41,7 @@ const Home = () => {
             </Row>
           </Container>
         </div> */}
-      
+
       {/* =========== about section ================ */}
       <AboutSection />
 
@@ -55,11 +55,11 @@ const Home = () => {
             </Col>
 
             <ServicesList />
-          
+
           </Row>
         </Container>
       </section>
-      
+
       {/* =========== Service section ============= */}
       {/* <section>
         <Container>
@@ -103,7 +103,7 @@ const Home = () => {
             </Col>
 
             <BlogList />
-          
+
           </Row>
         </Container>
       </section>

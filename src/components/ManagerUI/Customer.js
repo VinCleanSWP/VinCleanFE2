@@ -25,7 +25,7 @@ function Customer() {
     const [password, setPassword] = useState('');
     const [gender, setGender] = useState('');
     const [img, setImage] = useState('');
-    const[dob, setdob] = useState('');
+    const [dob, setdob] = useState('');
     const [totalmoney, setTotalMoney] = useState('');
     const [totalpoint, setTotalPoint] = useState('');
     const [status, setStatus] = useState('');
@@ -33,6 +33,7 @@ function Customer() {
     const [accountId, setAccountId] = useState('');
     const [createdDate, setCreatedDate] = useState('');
     const [isDeleted, setIsDeleted] = useState('');
+    const [search, setSearch] = useState('');
 
 
     const [customerId, setCustomerId] = useState('');
@@ -111,6 +112,24 @@ function Customer() {
             });
 
     }, []);
+    const handleSearchChange = (e) => {
+        setSearch(e.target.value);
+    };
+
+    const sortAndFilterData = () => {
+        const sortedData = [...customerList];
+
+        const filteredData = sortedData.filter(m =>
+            m.customerId.toString().toLowerCase().includes(search.toLowerCase()) ||
+            m.firstName.toString().toLowerCase().includes(search.toLowerCase()) ||
+            m.lastName.toLowerCase().includes(search.toLowerCase()) ||
+            m.phone.toString().toLowerCase().includes(search.toLowerCase()) ||
+            m.address.toString().toLowerCase().includes(search.toLowerCase())
+
+        );
+
+        return filteredData;
+    };
 
 
 
@@ -128,7 +147,7 @@ function Customer() {
                         zIndex: 9999,
                         display: 'flex',
                         backgroundColor: 'rgba(0, 0, 0, 0.8)', // Tạo màu nền tối đen
-                        padding:'20px',
+                        padding: '20px',
 
                     },
                     content: {
@@ -143,193 +162,154 @@ function Customer() {
             >
                 <div className="card overflow-hidden">
                     <div className="row no-gutters row-bordered row-border-light">
-                        <div className="col-md-9">
-                            <div className="tab-content">
-                                <div className="tab-pane fade active show" id="account-general">
-                                    <hr className="border-light m-0" />
-                                    <h3 style={{ textAlign: "center" }}><strong>Customer Detail</strong></h3>
-                                    <div style={{display:'flex'}}>
-                                        <div><img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius:'50%'}} /></div>
-                                        <div style={{paddingTop:'20px',paddingLeft:'10px',fontSize:'25px'}}><strong>{userName}</strong></div>
 
-                                    </div>
-                                    <div className="modal-header"> <div className="card-body">
-                                        <div className="form-group">
-                                            <label className="form-label" strong><strong>Account ID</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={accountId}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label" strong><strong>Customer ID</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={customerId}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label" strong><strong>User name</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={userName}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="form-group">
-
-                                            <label className="form-label" strong><strong>Image</strong></label>
-                                            <br></br>
-                                            <img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '100px', height: '100px' }} />
+                        <div className="tab-content">
+                            <div className="tab-pane fade active show" id="account-general">
+                                <hr className="border-light m-0" />
+                                <div className="modal-header">
+                                    <div className="card-body">
+                                        <h3 style={{ textAlign: "center" }}><strong>Customer Detail</strong></h3>
 
 
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>First name</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={firstName}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label" ><strong>Last name</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={lastName}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label" ><strong>Created Date</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={createdDate}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label" ><strong>Date of birth</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={dob}
-                                                readOnly
-                                            />
-                                        </div>
-
-                                        <div><label className="form-group" ><strong>Gender</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={gender}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="form-group" ><strong>Status</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={status}
-                                                readOnly
-                                            />
-
+                                        <div style={{ display: 'flex' }}>
+                                            <div><img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius: '50%' }} /></div>
+                                            <div style={{ paddingTop: '15px', paddingLeft: '10px', width: 'auto', fontSize: '25px' }}><strong>{userName}</strong>
+                                                <br></br>
+                                                <div style={{ fontSize: '13px' }}><strong style={{ marginRight: "5px" }}>Account ID</strong>{accountId}</div>
+                                                <div style={{ fontSize: '13px' }}><strong style={{ marginRight: "5px" }}>Customer ID</strong>{customerId}</div>
+                                            </div>
+                                            <div style={{ marginLeft: '250px', marginTop: '15px' }}><strong>createdDate</strong><br></br>2023-06-12{createdDate}</div>
 
                                         </div>
-                                        <div>
-                                            <label className="form-group" ><strong>Is deleted</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={isDeleted}
-                                                readOnly
-                                            />
+                                        <div style={{ display: 'flex' }}>
+                                            <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
 
+                                                <div className="form-group">
+                                                    <label className="form-label"><strong>First name</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control mb-1"
+                                                        value={firstName}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" ><strong>Last name</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control mb-1"
+                                                        value={lastName}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" ><strong>Email</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control mb-1"
+                                                        value={email}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label"><strong>Password</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        value={password}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" ><strong>Is deleted</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control mb-1"
+                                                        value={isDeleted}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label"><strong>Total Money</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        value={totalmoney}
+                                                        readOnly
+                                                    />
 
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label className="form-label" ><strong>Phone</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={phone}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div><label className="form-group" ><strong>Address</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={address}
-                                                readOnly
-                                            /></div>
-
-
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>E-mail</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={email}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label"><strong>Password</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={password}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="form-label"><strong>Total Money</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={totalmoney}
-                                                readOnly
-                                            />
-
-                                        </div>
-                                        <div>
-                                            <label className="form-label"><strong>Total Point</strong></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={totalpoint}
-                                                readOnly
-                                            />
+                                                </div>
+                                            </div>
+                                            <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
+                                                <div className="form-group">
+                                                    <label className="form-label" ><strong>Gender</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control mb-1"
+                                                        value={gender}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" ><strong>Phone</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control mb-1"
+                                                        value={phone}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" ><strong>Address</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control mb-1"
+                                                        value={address}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" ><strong>Date of birth</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control mb-1"
+                                                        value={dob}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" ><strong>Status</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control mb-1"
+                                                        value={status}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label"><strong>Total Point</strong></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        value={totalpoint}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="text-right mt-3">
-
+                <div style={{ marginBottom: '30px', textAlign: 'right' }}>
                     <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
                 </div>
             </Modal>
             <div className='modal-dialog modal-lg modal-dialog-centered'>
                 <div className="modal-content">
                     <div className="modal-header" >
-
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                     </div>
 
@@ -338,7 +318,7 @@ function Customer() {
 
             <div className="page-container">
                 {/* MAIN CONTENT*/}
-                <div className="main-content">
+                <div >
                     <div className="section__content section__content--p30">
                         <div className="container-fluid">
 
@@ -350,13 +330,23 @@ function Customer() {
                                 </div>
 
                             </div>
-                            <h1 class="table__header" style={{ textAlign: "center" }}><strong>Customer List</strong></h1>
+
+                            <div class="table__header">
+                                <h1 style={{ textAlign: "center" }}><strong>Customer List</strong></h1>
+
+                                <div class="input-group" >
+                                    <input type="search" placeholder="Search Data..."
+                                        value={search}
+                                        onChange={handleSearchChange} />
+                                    <img src="images/icon/search.png" alt=""></img>
+                                </div>
+                            </div>
                             <div className="row">
                                 <div className="col-md-12">
                                     {/* DATA TABLE */}
                                     <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
                                         <table className="table table-borderless table-data3 shadow-sm">
-                                            <thead>
+                                            <thead style={{ textAlign: 'center' }}>
                                                 <tr>
 
                                                     <th>Customer ID</th>
@@ -368,10 +358,10 @@ function Customer() {
                                                     <th></th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                {customerList.map((customer, index) => (
+                                            <tbody style={{ textAlign: 'center' }}>
+                                                {sortAndFilterData().map((customer, index) => (
                                                     <tr key={customer.customerId}>
-                                                        <td>{customer.customerId}</td>
+                                                        <td >{customer.customerId}</td>
                                                         <td><img src={customer.account.img
                                                             || "http://via.placeholder.com/300"}
                                                             alt="Avatar" style={{ width: '100px', height: '100px', borderRadius: "50%" }} /></td>

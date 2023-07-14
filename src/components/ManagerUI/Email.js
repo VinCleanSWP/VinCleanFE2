@@ -41,7 +41,7 @@ export default function SendEmail() {
             .then((response) => {
                 // Xử lý kết quả thành công
                 console.log('Email sent successfully!');
-                toast.success('Assigned Successfully!', {
+                toast.success('Send Email Successfully!', {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,

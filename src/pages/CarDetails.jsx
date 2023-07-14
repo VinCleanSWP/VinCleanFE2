@@ -278,7 +278,7 @@ const ServiceTypeDetail = () => {
               </div>
             </Col>
           </Row>
-          {rating.length > 0 ? (
+          {rating?.length > 0 ? (
             <div className="rating">
               <h4>ĐÁNH GIÁ DỊCH VỤ</h4>
               <div className="average-rating">

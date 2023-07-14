@@ -11,8 +11,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import '../styles/profile-customer.css'
-import { storage } from '../firebase/index';
+import '../../styles/profile-customer.css'
+import { storage } from '../../firebase/index';
 
 
 
@@ -43,7 +43,7 @@ const gioitinh = [
     }
 ]
 
-export default function ProfileCustomer() {
+export default function EmpProfile() {
     const [open, setOpen] = useState(false);
     const handleClose = () => setOpen(false);
     const [customer, setCustomer] = useState([]);
@@ -69,7 +69,7 @@ export default function ProfileCustomer() {
             .then(response => {
                 const data = response.data.data
                 const mail = localStorage.getItem('email');
-                const foundItem = data.filter(item => item.customerEmail == mail);
+                const foundItem = data.filter(item => item.employeeEmail == mail);
                 // setOrder(response.data.data);
                 setOrder(foundItem);
             })
@@ -98,9 +98,11 @@ export default function ProfileCustomer() {
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
+        axios.get(`https://localhost:7013/api/Employee`)
             .then(response => {
-                setCustomer(response.data.data);
+                const data = response.data.data
+                const foundUser = data.find(emp => emp.account.accountId == id);
+                setCustomer(foundUser);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -145,7 +147,7 @@ export default function ProfileCustomer() {
     };
 
     const handleGender = (e) => {
-        // e.preventDefault();
+        e.preventDefault();
         setGender(e.target.value)
         setCheck(e.target.value)
     };
@@ -155,23 +157,23 @@ export default function ProfileCustomer() {
 
     const handleSubmitInfo = async (e) => {
         e.preventDefault();
-
         const updatedUser = {
+            employeeId: customer.employeeId,
+            accountId: id,
+            name: customer.account.name,
             customerId: customer.customerId,
             email: customer.account.email,
             password: customer.account.password,
             firstName: customer.firstName,
             lastName: customer.lastName,
             phone: customer.phone,
-            address: customer.address,
-            dob: selectedDate,
+            status: "Active",
             gender: gender1,
-            // gender: customer.account.gender,
-            img: tempImageUrl
+            img: tempImageUrl,
         };
 
         try {
-            const response = await axios.put('https://localhost:7013/api/Customer', updatedUser);
+            const response = await axios.put('https://localhost:7013/api/Employee', updatedUser);
             if (response.status === 200) {
                 console.log('OK');
                 setErrorMessage('Update Successfully');
@@ -190,6 +192,8 @@ export default function ProfileCustomer() {
                 console.error('Error:', error);
             });
     };
+
+    console.log(customer);
 
     const updateUserPassword = async (newPassword) => {
         try {
@@ -217,16 +221,6 @@ export default function ProfileCustomer() {
             console.error('Lỗi:', error);
         }
     };
-    const dob = new Date(customer.account && customer.account.dob);
-    const year = dob.getFullYear();
-    const month = String(dob.getMonth() + 1).padStart(2, '0');
-    const day = String(dob.getDate()).padStart(2, '0');
-    const formattedDOB = `${year}-${month}-${day}`;
-    const [selectedDate, setSelectedDate] = useState('');
-    const handleDateChange = (event) => {
-        event.preventDefault();
-        setSelectedDate(event.target.value);
-    };
 
     const handleImageUpload = async e => {
         const file = e.target.files[0];
@@ -236,8 +230,6 @@ export default function ProfileCustomer() {
         const imgUrl = await fileRef.getDownloadURL();
         setTempImageUrl(imgUrl);
     };
-
-
 
     return (
         <div className='container'>
@@ -258,7 +250,7 @@ export default function ProfileCustomer() {
                                 </div>
                                 <a className="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">Thông tin chung</a>
                                 <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Bảo mật</a>
-                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-info">Lịch sử đặt</a>
+                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-info">Lịch sử công việc</a>
                                 {/* <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-social-links">Social links</a>
                                 <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-connections">Connections</a>
                                 <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Notifications</a> */}
@@ -295,38 +287,10 @@ export default function ProfileCustomer() {
                                             </div>
 
                                             <div className="form-group">
-                                                <label className="form-label">Birthday</label>
-                                                <TextField
-                                                    id="dob"
-                                                    name="dob"
-                                                    className="form-control"
-                                                    type="date"
-                                                    // defaultValue={formattedDOB}
-                                                    // value={formattedDOB}
-                                                    onChange={handleDateChange}
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                />
-                                                <p>Current Birthday: {formattedDOB}</p>
-                                            </div>
-
-                                            {/* <div className="form-group">
-                                                <label className="form-label">Gender: </label>
-                                                <select id="gender" name="gender" value={customer.account && customer.account.gender} onChange={handleGender}>
-                                                    <select id="gender" name="gender" value={customer.account && customer.account.gender} onChange={handleInputChange}>
-                                                    <option value={customer.account && customer.account.gender}>{customer.account && customer.account.gender} (Current)</option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female" selected>Female</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </div> */}
-
-                                            <div className="form-group">
                                                 <label className="form-label">Gender: </label>
                                                 {gioitinh.map(sex => (
                                                     <div key={sex.id}>
-                                                        <input type='radio' name='gender' value={sex.gender} checked={check === sex.gender} onChange={handleGender}/>{sex.gender}
+                                                        <input type='radio' name='gender' value={sex.gender} checked={check === sex.gender} onChange={handleGender} />{sex.gender}
                                                     </div>
                                                 ))}
                                                 <p>Current gender: {customer.account && customer.account.gender}</p>
@@ -337,11 +301,7 @@ export default function ProfileCustomer() {
                                                 <input type="text" className="form-control" id="phone"
                                                     name="phone" defaultValue={customer.phone} onChange={handleInputChange} required />
                                             </div>
-                                            <div className="form-group">
-                                                <label className="form-label">Địa chỉ</label>
-                                                <input type="text" className="form-control" id="address"
-                                                    name="address" defaultValue={customer.address} onChange={handleInputChange} required />
-                                            </div>
+
                                             <div className="form-group">
                                                 <label className="form-label">E-mail</label>
                                                 <input type="text" className="form-control mb-1" defaultValue={customer.account && customer.account.email} disabled />
@@ -353,7 +313,7 @@ export default function ProfileCustomer() {
                                             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                                             <div className="text-right mt-3 mb-3">
                                                 <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
-                                                <button type="button" className="btn btn-default">Cancel</button>
+                                                <button type="button" className="btn btn-default">Hủy</button>
                                             </div>
                                         </div>
                                     </form>
@@ -361,30 +321,30 @@ export default function ProfileCustomer() {
                                 {/* Change password */}
                                 <div className="tab-pane fade" id="account-change-password">
                                     <div className="card-body pb-2">
-                                        <h4 className="fw-bold mb-4">Change Password</h4>
+                                        <h4 className="fw-bold mb-4">Đổi mật khẩu</h4>
                                         <form onSubmit={handleSubmit}>
                                             {message && <p style={{ color: 'red' }}>{message}</p>}
                                             <div className="form-group">
-                                                <label className="form-label">Current password</label>
+                                                <label className="form-label">Mật khẩu hiện tại</label>
                                                 <input type="password" className="form-control" id="currentPassword"
                                                     value={currentPassword}
                                                     onChange={handleCurrentPasswordChange} />
                                             </div>
                                             <div className="form-group">
-                                                <label className="form-label">New password</label>
+                                                <label className="form-label">Mật khẩu mới</label>
                                                 <input type="password" className="form-control" id="newPassword"
                                                     value={newPassword}
                                                     onChange={handleNewPasswordChange} />
                                             </div>
                                             <div className="form-group">
-                                                <label className="form-label">Repeat new password</label>
+                                                <label className="form-label">Nhập lại mật khẩu</label>
                                                 <input type="password" className="form-control" id="confirmPassword"
                                                     value={confirmPassword}
                                                     onChange={handleConfirmPasswordChange} />
                                             </div>
                                             <div className="text-right mt-3 mb-3">
-                                                <button type="submit" className="btn btn-primary">Save changes</button>&nbsp;
-                                                <button type="button" className="btn btn-default">Cancel</button>
+                                                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
+                                                <button type="button" className="btn btn-default">Hủy</button>
                                             </div>
                                         </form>
                                     </div>
@@ -394,17 +354,17 @@ export default function ProfileCustomer() {
                                     <Container>
                                         <Row>
                                             <Col lg="12" md="12">
-                                                <h4 className="fw-bold mt-4 mb-4">Booking</h4>
+                                                <h4 className="fw-bold mt-4 mb-4">Danh sách công việc</h4>
 
                                                 <div className="table-responsive m-b-40">
                                                     <table className="table table-borderless table-data3">
                                                         <thead>
                                                             <tr>
-                                                                <th>Service</th>
-                                                                <th>Option</th>
-                                                                <th>Employee</th>
-                                                                <th>Date</th>
-                                                                <th>Price</th>
+                                                                <th>Loại dịch vụ</th>
+                                                                <th>Dịch vụ</th>
+                                                                <th>Nhân viên</th>
+                                                                <th>Ngày</th>
+                                                                <th>Giá</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -428,51 +388,51 @@ export default function ProfileCustomer() {
                                                                     <Row>
                                                                         <Col lg="12" md="12">
                                                                             <div className="contact__info">
-                                                                                <h4 className="fw-bold mb-3">Booking Details</h4>
+                                                                                <h4 className="fw-bold mb-3">Chi tiết công việc</h4>
                                                                                 <br></br>
                                                                                 <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="fs-6 mb-0">Service:</h6>
+                                                                                    <h6 className="fs-6 mb-0">Loại dịch vụ:</h6>
                                                                                     <p className="section__description mb-0">{booking.type}</p>
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="fs-6 mb-0">Option:</h6>
+                                                                                    <h6 className="fs-6 mb-0">Dịch vụ:</h6>
                                                                                     <p className="section__description mb-0">{booking.serviceName}</p>
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Address:</h6>
+                                                                                    <h6 className="mb-0 fs-6">Địa chỉ:</h6>
                                                                                     <p className="section__description mb-0">{booking.address}</p>
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Date:</h6>
+                                                                                    <h6 className="mb-0 fs-6">Ngày:</h6>
                                                                                     {/* <p className="section__description mb-0">{booking.date}</p> */}
                                                                                     <p className="section__description mb-0">{formattedDate}</p>
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">StartTime:</h6>
+                                                                                    <h6 className="mb-0 fs-6">Thời gian bắt đầu:</h6>
                                                                                     <p className="section__description mb-0">{booking.startTime}</p>
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">EndTime:</h6>
+                                                                                    <h6 className="mb-0 fs-6">Thời gian kết thúc:</h6>
                                                                                     <p className="section__description mb-0">{booking.endTime}</p>
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Employee:</h6>
+                                                                                    <h6 className="mb-0 fs-6">Nhân viên:</h6>
                                                                                     <p className="section__description mb-0">{booking.employeeName}</p>
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">EmployeePhone:</h6>
+                                                                                    <h6 className="mb-0 fs-6">Số điện thoại nhân viên:</h6>
                                                                                     <p className="section__description mb-0">{booking.employeePhone}</p>
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Note:</h6>
+                                                                                    <h6 className="mb-0 fs-6">Ghi chú:</h6>
                                                                                     {/* <p className="section__description mb-0 bordered">{booking.note}</p> */}
                                                                                 </div>
 
@@ -481,7 +441,7 @@ export default function ProfileCustomer() {
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2 ">
-                                                                                    <h6 className="mb-0 h3 mt-3">Total:</h6>
+                                                                                    <h6 className="mb-0 h3 mt-3">Tổng:</h6>
                                                                                     <p className="section__description mb-0 h3 mt-3 text-success">{booking.total}000 VND</p>
                                                                                 </div>
                                                                             </div>

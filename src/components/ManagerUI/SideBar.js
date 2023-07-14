@@ -76,8 +76,8 @@ function SideBar() {
                   <i className="fas fa-calendar-alt" />Calendar</Link>
               </li>
               <li>
-                <a href="map.html">
-                  <i className="fas fa-map-marker-alt" />Maps</a>
+              <Link to="/map">
+                  <i className="fas fa-map-marker-alt" />Maps</Link>
               </li>
             </ul>
           </nav>

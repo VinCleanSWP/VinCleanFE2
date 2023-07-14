@@ -19,6 +19,7 @@ import BlogDetails from '../components/ManagerUI/BlogDetails';
 import ModifyBlog from '../components/ManagerUI/ModifyBlog';
 import CreateBlog from '../components/ManagerUI/CreateBlog';
 import SendEmail from '../components/ManagerUI/Email';
+import Map from '../components/ManagerUI/Map';
 export default function ManagerRouter() {
     return (
         <div >
@@ -42,6 +43,7 @@ export default function ManagerRouter() {
                     <Route path='/blogs/:id' element={<BlogDetails />}></Route>
                     <Route path='/createblog' element={<CreateBlog />}></Route>
                     <Route path='/email' element={<SendEmail />}></Route>
+                    <Route path='/map' element={<Map />}></Route>
 
                 </Routes>
                 <ADFooter />

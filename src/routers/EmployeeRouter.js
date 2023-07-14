@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, Link } from "react-router-dom";
 import MyCalendar from '../components/EmployeeUI/Calender';
 import EPSideBar from '../components/EmployeeUI/SideBar';
 import EPHeader from '../components/EmployeeUI/EmployeeHeader';
+import EmpProfile from '../components/EmployeeUI/EmpProfile';
 
 export default function EmployeeRouter() {
     return (
@@ -12,6 +13,7 @@ export default function EmployeeRouter() {
 
                 <Routes>
                     <Route path='/calendar' element={<MyCalendar/>}></Route>
+                    <Route path='/profile' element={<EmpProfile />}></Route>
                 </Routes>
                 
             </div>

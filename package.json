@@ -8,6 +8,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/material": "^5.13.7",
     "@popperjs/core": "^2.11.8",
+    "@react-google-maps/api": "^2.18.1",
     "@tabler/icons": "^2.23.0",
     "@tabler/icons-react": "^2.23.0",
     "@testing-library/jest-dom": "^5.16.4",

@@ -4,15 +4,23 @@ import { format } from 'date-fns';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FcAlphabeticalSortingAz } from "react-icons/fc";
+import { BsImage } from "react-icons/bs";
+import { FcAddDatabase } from "react-icons/fc";
+import { FaLocationDot } from "react-icons/fa6";
+import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
 function Booking() {
     const [bookingData, setBookingData] = useState([]);
     const [modal, setModal] = useState({});
     const [employeeData, setEmployeeData] = useState([]);
+    const [processImageData, setProcessImageData] = useState([]);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     const [selectedProcessId, setSelectedProcessId] = useState(null);
     const [search, setSearch] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
+    const [processIdImage, setProcessIdImage] = useState('');
+    const [EmpNameProcessImage, setEmpNameProcessImage] = useState('');
+    const [hasLocationData, setHasLocationData] = useState(false);
 
 
     const handleEmployeeSelect = (employeeId) => {
@@ -48,46 +56,86 @@ function Booking() {
                     progress: undefined,
                     theme: "light",
                 });
+                axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', { selectedProcessId })
+                    .then(response => {
+                        console.log(response.data);
+                        toast.success('Send Email Successfully!', {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
+                    })
+                axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', { selectedProcessId })
+                    .then(response => {
+                        console.log(response.data);
+                        toast.success('Send Email Successfully!', {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
+                    })
             })
             .catch(error => {
                 console.error(error);
             });
     };
 
-    const sendEmail = (processId) => {
-        console.log({ processId })
-        axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', { processId })
+    const handleProcessImage = (processId, employeeName) => {
+        setProcessIdImage(processId)
+        setEmpNameProcessImage(employeeName)
+        axios.get(`https://localhost:7013/api/ProcessImage/Process/${processId}`)
             .then(response => {
-                console.log(response.data);
-                toast.success('Send Email Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            })
-            axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', { processId })
-            .then(response => {
-                console.log(response.data);
-                toast.success('Send Email Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
+                setProcessImageData(response.data.data)
             })
             .catch(error => {
                 console.error(error);
             });
     };
+
+    const handleButtonClick = () => {
+        // Lấy giá trị của "type" và "name" từ các trường input
+        const selectedType = document.getElementById('type').value;
+        const enteredName = document.getElementById('name').value;
+        const processImgData = {
+            processId: processIdImage,
+            type: selectedType,
+            name: enteredName,
+            image: ""
+        }
+        console.log(processImgData)
+        // Gửi dữ liệu đến dịch vụ thông qua axios
+        axios.post('https://localhost:7013/api/ProcessImage', processImgData)
+            .then(response => {
+                // Xử lý phản hồi từ dịch vụ (service) nếu cần thiết
+                console.log(response.data);
+                toast.success('Add Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                handleProcessImage(processIdImage);
+            })
+            .catch(error => {
+                // Xử lý lỗi nếu có
+                console.error(error);
+            });
+    };
+
 
 
     useEffect(() => {
@@ -162,6 +210,63 @@ function Booking() {
     };
 
 
+    {/*-----Location Google Map------ */ }
+    const [coordinate, setCoords] = useState(null);
+    const [address, setAddress] = useState(null);
+    const [isMarkerVisible, setIsMarkerVisible] = useState(false);
+
+
+    const handleLocation = (id) => {
+        console.log(id)
+        axios.get(`https://localhost:7013/api/WorkingBy/Process/${id}`)
+            .then(response => {
+                if (response.data.data.latitude === 0 || response.data.data.longtitude === 0) {
+                    setHasLocationData(false);
+                } else {
+                    setCoords({ lat: response.data.data.latitude, lng: response.data.data.longtitude });
+                    setHasLocationData(true);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    };
+    // Lấy tọa độ
+    // useEffect(() => {
+    //     navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
+    //         setCoords({ lat: latitude, lng: longitude })
+    //     })
+    // }, [])
+    console.log(coordinate)
+    // lấy địa chỉ
+    useEffect(() => {
+        // ...
+        if (coordinate) {
+            const geocoder = new window.google.maps.Geocoder();
+            geocoder.geocode({ location: coordinate }, (results, status) => {
+                if (status === "OK") {
+                    if (results[0]) {
+                        setAddress(results[0].formatted_address);
+                        console.log(address);
+                        // Thực hiện xử lý tên địa chỉ ở đây (ví dụ: lưu vào state)
+                    }
+                } else {
+                    console.error("Geocoder failed due to: " + status);
+                }
+            });
+        }
+    }, [coordinate]);
+    useEffect(() => {
+        setIsMarkerVisible(!!address);
+    }, [address]);
+
+    const { isLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: "AIzaSyBzPHYhJBDKgWJkoXH43NEs7P-SCGTAvnQ"
+    })
+
+    const [map, setMap] = React.useState(null)
+    {/*-----Location Google Map------ */ }
 
 
     return (
@@ -208,14 +313,14 @@ function Booking() {
                                                             <td>{booking.name}</td>
                                                             <td>{booking.typeName}</td>
                                                             <td>{format(new Date(booking.date), 'dd/MM/yyyy')}</td>
-                                                            <td>{formatTime(booking.startWorking)} - {formatTime(booking.endWorking)}</td>
+                                                            <td>{formatTime(booking.startTime)} - {formatTime(booking.endTime)}</td>
                                                             <td>{booking.address}</td>
                                                             <td ><p className={`status ${booking.status}`} style={{ minWidth: '100px' }}>{booking.status}</p></td>
                                                             <td>
                                                                 <div className="table-data-feature">
-                                                                    <button className="item" data-toggle="tooltip" data-placement="top" title="Send"
-                                                                        onClick={() => sendEmail(booking.processId)}>
-                                                                        <i className="zmdi zmdi-mail-send" />
+                                                                    <button className="item" data-toggle="tooltip" data-placement="top" title="Send" data-bs-toggle="modal" data-bs-target="#imageprocess"
+                                                                        onClick={() => handleProcessImage(booking.processId, booking.employeeName)}>
+                                                                        <BsImage></BsImage>
                                                                     </button>
                                                                     <button className={`item ${booking.employeeName ? 'assigned' : ''}`}
                                                                         data-toggle="tooltip" data-placement="top" title="Assign"
@@ -258,7 +363,7 @@ function Booking() {
                                             <input value={modal.name} className="form-control" />
                                         </div>
                                         <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <img src={modal.accountImage} alt="react logo" style={{ width: '120px', height: "120px", borderRadius: 100 }} />
+                                            <img src={modal.accountImage} alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100, marginTop: 0 }} />
                                         </div>
                                     </form>
                                     <form className="form-inline">
@@ -315,7 +420,7 @@ function Booking() {
                                                     <input type="text" className="form-control" value={modal.employeeName} />
                                                 </div>
                                                 <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                                    <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '120px', height: "120px", borderRadius: 100 }} />
+                                                    <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100 }} />
                                                 </div>
                                             </form>
                                             <form className="form-inline">
@@ -422,6 +527,104 @@ function Booking() {
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    {/*-----Modal Assign Employee------ */}
+                    <div className='modal fade' id="imageprocess" tabIndex="-1" aria-hidden="true">
+                        <div className='modal-dialog modal-lg modal-dialog-centered'>
+                            <div className='modal-content'>
+                                <div className='modal-header'>
+                                    <h5 className='modal-title'><strong>Employee: </strong>{EmpNameProcessImage}</h5>
+                                    <button className="item" data-toggle="tooltip" data-placement="top" title="More" data-bs-toggle="modal" data-bs-target="#map"
+                                        style={{ marginLeft: "20px", color: '#d50000' }}
+                                        onClick={() => handleLocation(processIdImage)}>
+                                        <FaLocationDot size={20}></FaLocationDot>
+                                    </button>
+                                    <button type="button" className='btn-close' data-bs-dismiss="modal" aria-label='Close'></button>
+                                </div>
+                                <div className="modal-body">
+                                    <h6><i>*Add more Image Card</i></h6>
+                                    <form className="form-inline" >
+                                        <div className=" input-group mb-3 " style={{ position: "relative" }}>
+                                            <label className="px-2 input-group-text">Type</label>
+                                            <select id="type" className="form-control" style={{ width: "200px" }}>
+                                                <option value="Verify">Verify</option>
+                                                <option value="Processing">Processing</option>
+                                                <option value="Completed">Completed</option>
+                                            </select>
+
+                                        </div>
+                                        <div className=" input-group mb-3" style={{ marginLeft: "50px" }}>
+                                            <label className="input-group-text">Name</label>
+                                            <input className="form-control" id="name" />
+                                        </div>
+                                        <button className=" input-group mb-3" type="button" style={{ marginLeft: "10px" }}
+                                            onClick={() => handleButtonClick()}><FcAddDatabase size={50}></FcAddDatabase></button>
+                                    </form>
+                                    <hr style={{ margin: "10px 0" }} /> {/* Đường thẳng ngăn cách */}
+
+                                    <h5 style={{ textAlign: 'center' }}><b>Image Card</b></h5>
+                                    {processImageData.map((img) => (
+                                        <div key={img.id} className="testimonial py-4 px-3" style={{ boxShadow: "0 4px 4px rgba(0, 0, 0, 0.3)", borderRadius: "20px" }}>
+
+                                            {/* Hiện comment */}
+
+                                            <div className="mt-3 d-flex align-items-center gap-4">
+
+                                                {/* Hiện ảnh */}
+                                                <img src= {img.image ? img.image :"https://firebasestorage.googleapis.com/v0/b/swp-vinclean-7b1d3.appspot.com/o/Employee%2Fuser-default.jpg?alt=media&token=983b62d3-504c-4874-beb9-2b7dffe8f332"} alt="" className="" style={{ width: "150px", height: "150px", borderRadius: "10px" }} />
+
+                                                <div>
+                                                    {/* Hiện tên khách hàng */}
+
+                                                    <h6 className="mb-0 mt-3">
+                                                        <b>Type:</b> <span className={`status ${img.type}`} style={{ padding: "5px 20px" }}>{img.type}</span>
+                                                    </h6>
+                                                    <h6 className="mb-0 mt-3">
+                                                        <b>Name:</b> {img.name}
+                                                    </h6>
+
+
+
+                                                    {/* Hiện tên dịch vụ */}
+                                                    <p className="section__description"> Process Id: {img.processId}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/*-----Modal Assign Employee------ */}
+                    <div className="modal fade show z-index" id="map" tabIndex="-1" aria-hidden="true">
+                        <div className='modal-dialog modal-lg modal-dialog-centered'>
+                            <div className="modal-content">
+                                <div className="modal-header" >
+                                    <h6 className="modal-title" id="exampleModalLabel"><strong>Address: </strong>{address}</h6>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                </div>
+                                <div className="modal-body">
+                                    {isLoaded && (
+                                        <div>
+                                            {hasLocationData ? (
+                                                <GoogleMap
+                                                    mapContainerStyle={{ width: '100%', height: '700px' }}
+                                                    center={coordinate}
+                                                    zoom={13}
+                                                    onLoad={map => setMap(map)}
+                                                >
+                                                    {isMarkerVisible && <Marker position={coordinate} />}
+                                                </GoogleMap>
+                                            ) : (
+                                                <div style={{justifyContent:'center', textAlign:'center', margin:"100px"}} ><h4>Không có dữ liệu vị trí.</h4></div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <div className="row">
                         <div className="col-md-12">

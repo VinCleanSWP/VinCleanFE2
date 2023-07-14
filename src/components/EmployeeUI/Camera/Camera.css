@@ -1,0 +1,12 @@
+.camera-button{
+    padding: 10px 20px;
+    margin: 0px 10px;
+    background-color: rgb(26, 126, 202);
+    border: 2px solid white;
+    border-radius: 12px;
+    color: white;
+}
+.camera-button:hover{
+    background-color: rgb(0, 85, 150);
+    cursor: pointer;
+}

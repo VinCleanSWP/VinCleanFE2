@@ -31,3 +31,9 @@ export const updateStartWorkingAPI = (data) => {
 export const updateEndWorkingAPI = (data) => {
     return api.put(`Process/EndWorking`,data);
 }
+export const getProcessImageAPIbyID = (id) => {
+    return api.get(`ProcessImage/Process/${id}`);
+}
+export const updateProcessImageAPI = (data) => {
+    return api.put(`ProcessImage/UpdateImage`,data);
+}

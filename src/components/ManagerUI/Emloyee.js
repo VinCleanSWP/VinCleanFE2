@@ -61,7 +61,16 @@ function Table() {
                 console.log('Employee delete successfully:', response.data);
                 fetchEmployeeList();
                 setEmployeeList(response.data.data);
-
+                toast.success('Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
 
             })
             .catch(error => {
@@ -76,17 +85,6 @@ function Table() {
             .then(response => {
 
                 setEmployeeList(response.data.data);
-                toast.success('Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-
 
             })
             .catch(error => {
@@ -142,7 +140,16 @@ function Table() {
             .then(response => {
                 console.log('Employee updated successfully:', response.data);
                 fetchEmployeeList();
-
+                toast.success('Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -204,8 +211,16 @@ function Table() {
                 // Xử lý kết quả từ API (nếu cần)
                 fetchEmployeeList();
                 console.log(response.data);
-
-
+                toast.success('Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 setData(response.data);
 
 

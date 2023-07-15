@@ -4,8 +4,8 @@ import moment from 'moment';
 import 'moment/locale/vi';
 import { UploadOutlined } from '@ant-design/icons';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { getProcessAPI, getProcessImageAPIbyID, updateEndWorkingAPI, updateProcessImageAPI, updateStartWorkingAPI } from '../../API/Employee/employeeConfig';
-import { Alert, Button, Image, Modal, Space, Table, Upload } from 'antd';
+import { getProcessAPI, getProcessImageAPIbyID, updateEndWorkingAPI, updateProcessImageAPI, updateStartWorkingAPI, updateSubPriceAPI } from '../../API/Employee/employeeConfig';
+import { Alert, Button, Image, Input, Modal, Select, Space, Table, Upload } from 'antd';
 import '../EmployeeUI/Calender.css';
 import CameraCapture from '../EmployeeUI/Camera/Camera';
 import { storage } from '../../firebase';
@@ -21,6 +21,8 @@ const MyCalendar = () => {
   const [idImage, setIdImage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const [selectedValue, setSelectedValue] = useState('');
+  const [items, setItems] = useState(['30000', '50000']);
   const formats = {
     monthHeaderFormat: 'MMMM',
     dayHeaderFormat: 'dddd  -  DD/MM/YYYY',
@@ -76,7 +78,8 @@ const MyCalendar = () => {
             address: event.address,
             typeName: event.typeName,
             nameservice: event.serviceName,
-            employeeName: event.employeeName
+            employeeName: event.employeeName,
+            subPrice: event.subPrice,
           }
         };
       }
@@ -101,6 +104,8 @@ const MyCalendar = () => {
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
+    console.log('show envent');
+    console.log(event.id);
   };
   const handleShowMore = (events, date) => {
     console.log('Events:', events);
@@ -254,11 +259,11 @@ const MyCalendar = () => {
         key: 'image',
         render: (img) => (
           <img
-        src={img || "http://via.placeholder.com/300"}
-        alt="Hình ảnh"
-        style={{ width: '100px', cursor: 'pointer' }}
-        onClick={() => handleImageClick(img)}
-      />
+            src={img || "http://via.placeholder.com/300"}
+            alt="Hình ảnh"
+            style={{ width: '100px', cursor: 'pointer' }}
+            onClick={() => handleImageClick(img)}
+          />
         ),
       },
       {
@@ -332,8 +337,19 @@ const MyCalendar = () => {
     }
   }
 
+  const Option = Select.Option;
 
 
+  
+  const onSelectChange = (value) => {
+    setSelectedValue(value);
+  };
+
+  const handleSubmit = () => {
+    console.log('Selected value:', selectedValue);
+    // Gọi API ở đây để cập nhật giá trị `selectedValue`
+    // ...
+  };
   return (
     <div>
       <h2 style={{ color: 'black', fontSize: '45px', fontWeight: 'bold', padding: '10px 35px' }}>Calendar</h2>
@@ -356,12 +372,12 @@ const MyCalendar = () => {
           components={component}
         />
         <div>
-      <Modal visible={modalVisible} onCancel={handleCloseModal} footer={null}>
-        <img src={selectedImage} />
-      </Modal>
+          <Modal visible={modalVisible} onCancel={handleCloseModal} footer={null}>
+            <img src={selectedImage} />
+          </Modal>
 
-      
-    </div>
+
+        </div>
         {/* mở camera ở đây */}
         <Modal
           visible={showCamera}
@@ -434,6 +450,16 @@ const MyCalendar = () => {
                 </p>
 
               </div>
+              <div>
+      <Select
+        style={{ width: 300 }}
+        placeholder="Chọn giá trị"
+        onChange={onSelectChange}
+        value={selectedValue}
+        options={items.map((item) => ({ label: item, value: item }))}
+      />
+      <Button onClick={handleSubmit}>Submit</Button>
+    </div>
               <Table
                 columns={columns}
                 dataSource={data}

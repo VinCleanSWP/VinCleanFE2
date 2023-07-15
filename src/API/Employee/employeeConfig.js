@@ -37,3 +37,6 @@ export const getProcessImageAPIbyID = (id) => {
 export const updateProcessImageAPI = (data) => {
     return api.put(`ProcessImage/UpdateImage`,data);
 }
+export const updateSubPriceAPI = (data) => {
+    return api.put(`Process/SubPrice`,data);
+}

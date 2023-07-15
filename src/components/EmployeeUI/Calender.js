@@ -5,7 +5,7 @@ import 'moment/locale/vi';
 import { UploadOutlined } from '@ant-design/icons';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { getProcessAPI, getProcessImageAPIbyID, updateEndWorkingAPI, updateProcessImageAPI, updateStartWorkingAPI } from '../../API/Employee/employeeConfig';
-import { Alert, Button, Modal, Space, Table, Upload } from 'antd';
+import { Alert, Button, Image, Modal, Space, Table, Upload } from 'antd';
 import '../EmployeeUI/Calender.css';
 import CameraCapture from '../EmployeeUI/Camera/Camera';
 import { storage } from '../../firebase';
@@ -19,6 +19,8 @@ const MyCalendar = () => {
   const [showCamera, setShowCamera] = useState(false);
   const [capturedImageUrl, setCapturedImageUrl] = useState('');
   const [idImage, setIdImage] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
   const formats = {
     monthHeaderFormat: 'MMMM',
     dayHeaderFormat: 'dddd  -  DD/MM/YYYY',
@@ -218,6 +220,14 @@ const MyCalendar = () => {
     setShowCamera(false);
 
   };
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
   // bảng dropdown của antd
   const expandedRowRender = (record1) => {
     const columns = [
@@ -243,7 +253,12 @@ const MyCalendar = () => {
         dataIndex: 'image',
         key: 'image',
         render: (img) => (
-          <img src={img || "http://via.placeholder.com/300"} alt="Hình ảnh" style={{ width: '100px' }} />
+          <img
+        src={img || "http://via.placeholder.com/300"}
+        alt="Hình ảnh"
+        style={{ width: '100px', cursor: 'pointer' }}
+        onClick={() => handleImageClick(img)}
+      />
         ),
       },
       {
@@ -340,6 +355,13 @@ const MyCalendar = () => {
           onSelectEvent={handleEventClick}
           components={component}
         />
+        <div>
+      <Modal visible={modalVisible} onCancel={handleCloseModal} footer={null}>
+        <img src={selectedImage} />
+      </Modal>
+
+      
+    </div>
         {/* mở camera ở đây */}
         <Modal
           visible={showCamera}

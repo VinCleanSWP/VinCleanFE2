@@ -13,7 +13,7 @@ function Request() {
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     const [selectedProcessId, setSelectedProcessId] = useState(null);
     const [search, setSearch] = useState('');
-    const [sortOrder, setSortOrder] = useState('asc'); // 'asc' để sắp xếp tăng dần, 'desc' để sắp xếp giảm dần
+    const [sortOrder, setSortOrder] = useState('asc');// 'asc' để sắp xếp tăng dần, 'desc' để sắp xếp giảm dần
 
 
 
@@ -94,8 +94,14 @@ function Request() {
             processId: selectedProcessId,
             employeeId: selectedEmployees
         };
+        const dataMail ={
+            processId: selectedProcessId,
+            to: "example@gmail.com",
+            subject: "",
+            body: ""
+    }
         console.log(data);
-        axios.put('https://localhost:7013/api/WorkingBy', data)
+        axios.put('https://localhost:7013/api/WorkingBy/AcceptedRequest', data)
             .then(response => {
                 console.log(response.data);
                 toast.success('Change Employee Successfully!', {
@@ -108,6 +114,34 @@ function Request() {
                     progress: undefined,
                     theme: "light",
                 });
+                // axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
+                //     .then(response => {
+                //         console.log(response.data);
+                //         toast.success('Send Email Customer Successfully!', {
+                //             position: "top-right",
+                //             autoClose: 5000,
+                //             hideProgressBar: false,
+                //             closeOnClick: true,
+                //             pauseOnHover: true,
+                //             draggable: true,
+                //             progress: undefined,
+                //             theme: "light",
+                //         });
+                //     })
+                // axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
+                //     .then(response => {
+                //         console.log(response.data);
+                //         toast.success('Send Email Employee Successfully!', {
+                //             position: "top-right",
+                //             autoClose: 5000,
+                //             hideProgressBar: false,
+                //             closeOnClick: true,
+                //             pauseOnHover: true,
+                //             draggable: true,
+                //             progress: undefined,
+                //             theme: "light",
+                //         });
+                //     })
             })
             .catch(error => {
                 console.error(error);
@@ -115,17 +149,6 @@ function Request() {
     };
 
     const sendEmail = (processId) => {
-        console.log({ processId })
-        toast.success('Send Email Successfully!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
         axios.post('', { processId })
             .then(response => {
                 console.log(response.data);

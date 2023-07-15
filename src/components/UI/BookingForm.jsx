@@ -7,6 +7,7 @@ import axios from 'axios';
 import Modal from 'react-modal';
 import { format, set } from 'date-fns';
 import moment from 'moment';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Notification = ({ message, onClose }) => {
   return (
@@ -97,6 +98,17 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       .then(response => {
         console.log(response.data);
         setSubmittedData(response.data);
+        setIsPopupOpen(false);
+        toast.success('Successfully!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+      });
       })
       .catch(error => {
         console.error(error);
@@ -247,6 +259,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
           </div>
         }
       </Modal>
+      <ToastContainer />
     </Form>
   );
 };

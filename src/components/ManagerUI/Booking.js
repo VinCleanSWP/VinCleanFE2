@@ -43,6 +43,13 @@ function Booking() {
             processId: selectedProcessId,
             employeeId: selectedEmployees
         };
+        const dataMail ={
+                processId: selectedProcessId,
+                to: "example@gmail.com",
+                subject: "",
+                body: ""
+        }
+        console.log(dataMail)
         axios.post('https://localhost:7013/api/WorkingBy', data)
             .then(response => {
                 console.log(response.data);
@@ -56,10 +63,10 @@ function Booking() {
                     progress: undefined,
                     theme: "light",
                 });
-                axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', { selectedProcessId })
+                axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
                     .then(response => {
                         console.log(response.data);
-                        toast.success('Send Email Successfully!', {
+                        toast.success('Send Email Customer Successfully!', {
                             position: "top-right",
                             autoClose: 5000,
                             hideProgressBar: false,
@@ -70,10 +77,10 @@ function Booking() {
                             theme: "light",
                         });
                     })
-                axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', { selectedProcessId })
+                axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
                     .then(response => {
                         console.log(response.data);
-                        toast.success('Send Email Successfully!', {
+                        toast.success('Send Email Employee Successfully!', {
                             position: "top-right",
                             autoClose: 5000,
                             hideProgressBar: false,

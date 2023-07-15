@@ -224,20 +224,23 @@ function Booking() {
 
 
     const handleLocation = (id) => {
-        console.log(id)
-        axios.get(`https://localhost:7013/api/WorkingBy/Process/${id}`)
-            .then(response => {
-                if (response.data.data.latitude === 0 || response.data.data.longtitude === 0) {
-                    setHasLocationData(false);
-                } else {
-                    setCoords({ lat: response.data.data.latitude, lng: response.data.data.longtitude });
-                    setHasLocationData(true);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-    };
+        setCoords(null);
+        setAddress(null);
+        setHasLocationData(false);
+      
+        axios
+          .get(`https://localhost:7013/api/WorkingBy/Process/${id}`)
+          .then((response) => {
+            const { latitude, longtitude } = response.data.data;
+            if (latitude !== 0 && longtitude !== 0) {
+              setCoords({ lat: latitude, lng: longtitude });
+              setHasLocationData(true);
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching data:', error);
+          });
+      };
     // Lấy tọa độ
     // useEffect(() => {
     //     navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
@@ -247,22 +250,19 @@ function Booking() {
     console.log(coordinate)
     // lấy địa chỉ
     useEffect(() => {
-        // ...
         if (coordinate) {
-            const geocoder = new window.google.maps.Geocoder();
-            geocoder.geocode({ location: coordinate }, (results, status) => {
-                if (status === "OK") {
-                    if (results[0]) {
-                        setAddress(results[0].formatted_address);
-                        console.log(address);
-                        // Thực hiện xử lý tên địa chỉ ở đây (ví dụ: lưu vào state)
-                    }
-                } else {
-                    console.error("Geocoder failed due to: " + status);
-                }
-            });
+          const geocoder = new window.google.maps.Geocoder();
+          geocoder.geocode({ location: coordinate }, (results, status) => {
+            if (status === "OK") {
+              if (results[0]) {
+                setAddress(results[0].formatted_address);
+              }
+            } else {
+              console.error("Geocoder failed due to: " + status);
+            }
+          });
         }
-    }, [coordinate]);
+      }, [coordinate]);
     useEffect(() => {
         setIsMarkerVisible(!!address);
     }, [address]);
@@ -614,7 +614,7 @@ function Booking() {
                                 <div className="modal-body">
                                     {isLoaded && (
                                         <div>
-                                            {hasLocationData ? (
+                                            {hasLocationData && coordinate ? (
                                                 <GoogleMap
                                                     mapContainerStyle={{ width: '100%', height: '700px' }}
                                                     center={coordinate}

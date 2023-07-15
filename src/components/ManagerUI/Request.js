@@ -149,10 +149,10 @@ function Request() {
     };
 
     const sendEmail = (processId) => {
-        axios.post('', { processId })
+        axios.post(`https://localhost:7013/api/ProcessSlot/Denied/${processId}`)
             .then(response => {
                 console.log(response.data);
-                toast.success('Assigned Successfully!', {
+                toast.error('Denied', {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,

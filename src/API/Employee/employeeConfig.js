@@ -40,3 +40,6 @@ export const updateProcessImageAPI = (data) => {
 export const updateSubPriceAPI = (data) => {
     return api.put(`Process/SubPrice`,data);
 }
+export const updateLocationAPI= (data) => {
+    return api.put(`WorkingBy/Location`,data);
+}

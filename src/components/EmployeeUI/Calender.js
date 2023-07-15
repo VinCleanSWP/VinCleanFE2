@@ -6,6 +6,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { getProcessAPI, getProcessImageAPIbyID, updateEndWorkingAPI, updateProcessImageAPI, updateStartWorkingAPI, updateSubPriceAPI } from '../../API/Employee/employeeConfig';
 import { Alert, Button, Image, Input, Modal, Select, Space, Table, Upload } from 'antd';
+import { getProcessAPI, getProcessImageAPIbyID, updateEndWorkingAPI, updateLocationAPI, updateProcessImageAPI, updateStartWorkingAPI } from '../../API/Employee/employeeConfig';
+import { Alert, Button, Image, Modal, Space, Table, Upload } from 'antd';
 import '../EmployeeUI/Calender.css';
 import CameraCapture from '../EmployeeUI/Camera/Camera';
 import { storage } from '../../firebase';
@@ -23,6 +25,8 @@ const MyCalendar = () => {
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedValue, setSelectedValue] = useState('');
   const [items, setItems] = useState(['30000', '50000']);
+  const [latitudeLGPS, setLatitudeGPS] = useState('');
+  const [longtitudeGPS, setLongtitudeGPS] = useState('');
   const formats = {
     monthHeaderFormat: 'MMMM',
     dayHeaderFormat: 'dddd  -  DD/MM/YYYY',
@@ -38,6 +42,9 @@ const MyCalendar = () => {
     day: 'Ngày',
     agenda: 'Lịch công việc',
   };
+
+
+
 
 
   useEffect(() => {
@@ -101,11 +108,23 @@ const MyCalendar = () => {
       console.error('Failed to fetch data:', error);
     }
   };
+ const location = async() =>{
+  navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
+    setLatitudeGPS(latitude)
+    setLongtitudeGPS(longitude)
+})
+ }
 
-  const handleEventClick = (event) => {
+  const handleEventClick = async(event) => {
     setSelectedEvent(event);
-    console.log('show envent');
-    console.log(event.id);
+    location();
+    const dataGPS={
+      processId: event.id,
+      latitude: latitudeLGPS,
+      longtitude: longtitudeGPS
+    }
+     await updateLocationAPI(dataGPS);
+     console.log(dataGPS)
   };
   const handleShowMore = (events, date) => {
     console.log('Events:', events);

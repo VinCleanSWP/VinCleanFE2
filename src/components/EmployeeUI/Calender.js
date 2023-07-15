@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/vi';
@@ -9,6 +9,7 @@ import { Alert, Button, Image, Input, Modal, Select, Space, Table, Upload } from
 import '../EmployeeUI/Calender.css';
 import CameraCapture from '../EmployeeUI/Camera/Camera';
 import { storage } from '../../firebase';
+import { Option } from 'antd/es/mentions';
 moment.locale('vi');
 const localizer = momentLocalizer(moment);
 
@@ -25,6 +26,8 @@ const MyCalendar = () => {
   const [items, setItems] = useState(['30000', '50000']);
   const [latitudeLGPS, setLatitudeGPS] = useState('');
   const [longtitudeGPS, setLongtitudeGPS] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef(null);
   const formats = {
     monthHeaderFormat: 'MMMM',
     dayHeaderFormat: 'dddd  -  DD/MM/YYYY',
@@ -354,18 +357,31 @@ const MyCalendar = () => {
     }
   }
 
-  const Option = Select.Option;
-
 
   
   const onSelectChange = (value) => {
     setSelectedValue(value);
   };
 
-  const handleSubmit = () => {
+  const onInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleAddItem = () => {
+    if (inputValue) {
+      setItems([...items, inputValue]);
+      setInputValue('');
+      inputRef.current.focus();
+    }
+  };
+  const handleSubmit = async () => {
     console.log('Selected value:', selectedValue);
-    // Gọi API ở đây để cập nhật giá trị `selectedValue`
-    // ...
+    const data ={
+      subPrice: parseInt(selectedValue),
+      processId: selectedEvent.id
+    }
+    console.log(data);
+    await updateSubPriceAPI(data);
   };
   return (
     <div>
@@ -465,18 +481,45 @@ const MyCalendar = () => {
                     selectedEvent.data.status
                   )}
                 </p>
-
-              </div>
+                <div>
               <div>
       <Select
         style={{ width: 300 }}
         placeholder="Chọn giá trị"
         onChange={onSelectChange}
-        value={selectedValue}
-        options={items.map((item) => ({ label: item, value: item }))}
-      />
+        value={selectedEvent.data.subPrice}
+        dropdownRender={(menu) => (
+          <div>
+            {menu}
+            <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
+              <Input
+                style={{ flex: 'auto' }}
+                value={inputValue}
+        onChange={onInputChange}
+                ref={inputRef}
+              />
+              <Button
+                type="primary"
+                style={{ flex: 'none', marginLeft: '8px' }}
+                onClick={handleAddItem}
+              >
+                Thêm
+              </Button>
+            </div>
+          </div>
+        )}
+      >
+        {items.map((item) => (
+          <Option key={item} value={item}>
+            {item}
+          </Option>
+        ))}
+      </Select>
       <Button onClick={handleSubmit}>Submit</Button>
     </div>
+    </div>
+              </div>
+          
               <Table
                 columns={columns}
                 dataSource={data}

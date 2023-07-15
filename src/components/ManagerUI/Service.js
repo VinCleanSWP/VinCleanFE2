@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './FireBaseConfig';
 import { storage } from "./FireBaseConfig";
-
+import '../../styles/serviceadmin.css';
 const Service = () => {
     const [servicetype, setType] = useState([]);
     const [servicelist, setServiceList] = useState([]);
@@ -128,27 +128,8 @@ const Service = () => {
                 isOpen={modalTypeIsOpen}
                 onRequestClose={() => setTypeModalIsOpen(false)}
                 contentLabel="Add Employee"
-
-                style={{
-                    overlay: {
-                        zIndex: 9999,
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: '200px'
-                    },
-                    content: {
-                        width: '800px',
-                        height: '600px',
-                        margin: 'auto',
-                        overflow: 'hidden',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: '200px',
-                        overflow: 'auto'
-
-                    }
-                }}
             >
+
                 <div className="card-body">
                     <div className="form-group">
                         <label className="form-label"><strong>Type Id</strong></label>
@@ -184,6 +165,7 @@ const Service = () => {
                                 <th>Status</th>
                                 <th>Description</th>
                                 <th>Cost</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -203,11 +185,7 @@ const Service = () => {
                                     </td>
                                     <td>
                                         {editingServiceId === sv.serviceId ? (
-                                            <div> <input
-                                                type="text"
-                                                className="form-control mb-1"
-                                                value={editingServiceStatus}
-                                                onChange={(e) => setEditingServiceStatus(e.target.value)} /><select type="text"
+                                            <div> <select type="text"
                                                     value={editingServiceStatus}
                                                     onChange={e => setEditingServiceStatus(e.target.value)}>
 

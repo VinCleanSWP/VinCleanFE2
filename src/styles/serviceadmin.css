@@ -1,0 +1,7 @@
+.modal-content {
+    width: 1000px !important;
+}
+.modal.show .modal-dialog {
+    display: flex !important;
+    justify-content:space-around !important;
+}

@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/vi';
 import { UploadOutlined } from '@ant-design/icons';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { getProcessAPI, getProcessImageAPIbyID, updateEndWorkingAPI, updateLocationAPI, updateProcessImageAPI, updateStartWorkingAPI } from '../../API/Employee/employeeConfig';
-import { Alert, Button, Image, Modal, Space, Table, Upload } from 'antd';
+import { getProcessAPI, getProcessImageAPIbyID, updateEndWorkingAPI,updateLocationAPI, updateProcessImageAPI, updateStartWorkingAPI, updateSubPriceAPI } from '../../API/Employee/employeeConfig';
+import { Alert, Button, Image, Input, Modal, Select, Space, Table, Upload } from 'antd';
 import '../EmployeeUI/Calender.css';
 import CameraCapture from '../EmployeeUI/Camera/Camera';
 import { storage } from '../../firebase';
+import { Option } from 'antd/es/mentions';
 moment.locale('vi');
 const localizer = momentLocalizer(moment);
 
@@ -21,8 +22,12 @@ const MyCalendar = () => {
   const [idImage, setIdImage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const [selectedValue, setSelectedValue] = useState('');
+  const [items, setItems] = useState(['30000', '50000']);
   const [latitudeLGPS, setLatitudeGPS] = useState('');
   const [longtitudeGPS, setLongtitudeGPS] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef(null);
   const formats = {
     monthHeaderFormat: 'MMMM',
     dayHeaderFormat: 'dddd  -  DD/MM/YYYY',
@@ -81,7 +86,8 @@ const MyCalendar = () => {
             address: event.address,
             typeName: event.typeName,
             nameservice: event.serviceName,
-            employeeName: event.employeeName
+            employeeName: event.employeeName,
+            subPrice: event.subPrice,
           }
         };
       }
@@ -273,11 +279,11 @@ const MyCalendar = () => {
         key: 'image',
         render: (img) => (
           <img
-        src={img || "http://via.placeholder.com/300"}
-        alt="Hình ảnh"
-        style={{ width: '100px', cursor: 'pointer' }}
-        onClick={() => handleImageClick(img)}
-      />
+            src={img || "http://via.placeholder.com/300"}
+            alt="Hình ảnh"
+            style={{ width: '100px', cursor: 'pointer' }}
+            onClick={() => handleImageClick(img)}
+          />
         ),
       },
       {
@@ -352,7 +358,31 @@ const MyCalendar = () => {
   }
 
 
+  
+  const onSelectChange = (value) => {
+    setSelectedValue(value);
+  };
 
+  const onInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleAddItem = () => {
+    if (inputValue) {
+      setItems([...items, inputValue]);
+      setInputValue('');
+      inputRef.current.focus();
+    }
+  };
+  const handleSubmit = async () => {
+    console.log('Selected value:', selectedValue);
+    const data ={
+      subPrice: parseInt(selectedValue),
+      processId: selectedEvent.id
+    }
+    console.log(data);
+    await updateSubPriceAPI(data);
+  };
   return (
     <div>
       <h2 style={{ color: 'black', fontSize: '45px', fontWeight: 'bold', padding: '10px 35px' }}>Calendar</h2>
@@ -375,12 +405,12 @@ const MyCalendar = () => {
           components={component}
         />
         <div>
-      <Modal visible={modalVisible} onCancel={handleCloseModal} footer={null}>
-        <img src={selectedImage} />
-      </Modal>
+          <Modal visible={modalVisible} onCancel={handleCloseModal} footer={null}>
+            <img src={selectedImage} />
+          </Modal>
 
-      
-    </div>
+
+        </div>
         {/* mở camera ở đây */}
         <Modal
           visible={showCamera}
@@ -451,8 +481,45 @@ const MyCalendar = () => {
                     selectedEvent.data.status
                   )}
                 </p>
-
+                <div>
+              <div>
+      <Select
+        style={{ width: 300 }}
+        placeholder="Chọn giá trị"
+        onChange={onSelectChange}
+        value={selectedEvent.data.subPrice}
+        dropdownRender={(menu) => (
+          <div>
+            {menu}
+            <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
+              <Input
+                style={{ flex: 'auto' }}
+                value={inputValue}
+        onChange={onInputChange}
+                ref={inputRef}
+              />
+              <Button
+                type="primary"
+                style={{ flex: 'none', marginLeft: '8px' }}
+                onClick={handleAddItem}
+              >
+                Thêm
+              </Button>
+            </div>
+          </div>
+        )}
+      >
+        {items.map((item) => (
+          <Option key={item} value={item}>
+            {item}
+          </Option>
+        ))}
+      </Select>
+      <Button onClick={handleSubmit}>Submit</Button>
+    </div>
+    </div>
               </div>
+          
               <Table
                 columns={columns}
                 dataSource={data}

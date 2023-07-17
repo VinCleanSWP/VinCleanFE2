@@ -4,6 +4,8 @@ import 'react-quill/dist/quill.snow.css';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { storage } from '../../firebase/index';
+import { ToastContainer, toast } from 'react-toastify';
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 export default function BlogDetail() {
 
@@ -70,6 +72,16 @@ export default function BlogDetail() {
             .then(response => {
                 console.log('Update successful:', response.data);
                 // setOldImageUrl(tempImageUrl); // Lưu trữ ảnh mới như là ảnh cũ sau khi lưu
+                toast.success('Update Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -81,6 +93,16 @@ export default function BlogDetail() {
             .delete(`https://localhost:7013/api/Blog/${id}`)
             .then(response => {
                 console.log('Blog deleted:', response.data);
+                toast.success('Delete Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             })
             .catch(error => {
                 console.log(error);
@@ -88,54 +110,76 @@ export default function BlogDetail() {
     };
 
     return (
-        <div className="container left">
-            <div className="card">
-                <div className="card-body">
-                    <h5 className="card-title">Blog Editor Default</h5>
-                    <div>
-                        <label className="form-label">Image</label>
-                        <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>
-                            <img src={tempImageUrl} alt="Temporary Image" />
+        <div className="page-container">
+            <div className="main-content">
+                <div className="section__content section__content--p30" style={{ backgroundColor: '#ffffff' }}>
+                    <div className="container-fluid">
+                        <div className="row m-t-30">
+                            <div className="col-md-12">
+
+                                <div className="container left">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <div style={{ display: 'flex' }}>
+                                                <h3 className="card-title" ><b>Blog Editor Default</b></h3>
+                                                <button style={{ marginLeft: "75%", color:'#ff1744' }} onClick={handleDeleteBlog}><RiDeleteBin6Line size={26}></RiDeleteBin6Line></button>
+                                            </div>
+                                            <div>
+                                                <label className="form-label"><i>*Image</i></label>
+                                                <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>
+                                                    <img src={tempImageUrl} alt="Temporary Image" />
+                                                </div>
+                                                <input type="file" onChange={handleImageUpload} />
+                                            </div>
+
+                                            <form className="" style={{ marginTop: "10px" }}>
+                                                <div className="input-group mb-3">
+                                                    <label className=" input-group-text">Title:</label>
+                                                    <input className="form-control"
+                                                        type="text"
+                                                        value={blogTitle}
+                                                        onChange={handleTitleChange}
+                                                    />
+                                                </div>
+                                            </form>
+                                            <div>
+                                                <b><label>Summary:</label></b>
+                                                <ReactQuill
+                                                    value={blogSummary}
+                                                    onChange={handleSummaryChange}
+                                                    suppressContentEditableWarning={true}
+                                                />
+                                            </div>
+                                            <div>
+                                                <b><label>Content:</label></b>
+                                                <ReactQuill
+                                                    value={blogContent}
+                                                    onChange={handleContentChange}
+                                                    suppressContentEditableWarning={true}
+                                                />
+                                            </div>
+                                            <div>
+                                                <h2>Preview:</h2>
+                                                <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>
+                                                    <img src={tempImageUrl} alt="Temporary Image" />
+                                                </div>
+                                                <h3>{blogTitle}</h3>
+                                                <div dangerouslySetInnerHTML={{ __html: blogSummary }} />
+                                                <div dangerouslySetInnerHTML={{ __html: blogContent }} />
+                                            </div>
+                                            <div style={{ textAlign: 'right' }}>
+                                                <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark" onClick={handleSaveChanges}>Save Changes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <input type="file" onChange={handleImageUpload} />
                     </div>
-                    <div>
-                        <label>Title:</label>
-                        <input
-                            type="text"
-                            value={blogTitle}
-                            onChange={handleTitleChange}
-                        />
-                    </div>
-                    <div>
-                        <label>Summary:</label>
-                        <ReactQuill
-                            value={blogSummary}
-                            onChange={handleSummaryChange}
-                            suppressContentEditableWarning={true}
-                        />
-                    </div>
-                    <div>
-                        <label>Content:</label>
-                        <ReactQuill
-                            value={blogContent}
-                            onChange={handleContentChange}
-                            suppressContentEditableWarning={true}
-                        />
-                    </div>
-                    <div>
-                        <h2>Preview:</h2>
-                        <div style={{ border: '1px solid black', padding: '10px', overflow: 'hidden' }}>
-                            <img src={tempImageUrl} alt="Temporary Image" />
-                        </div>
-                        <h3>{blogTitle}</h3>
-                        <div dangerouslySetInnerHTML={{ __html: blogSummary }} />
-                        <div dangerouslySetInnerHTML={{ __html: blogContent }} />
-                    </div>
-                    <button onClick={handleSaveChanges}>Save Changes</button>
-                    <button onClick={handleDeleteBlog}>Delete</button>
                 </div>
             </div>
+            <ToastContainer />
         </div>
+
     );
 }

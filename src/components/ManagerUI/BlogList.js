@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { AiFillFileAdd } from "react-icons/ai";
 
 
 const BlogList = () => {
@@ -41,51 +42,30 @@ const BlogList = () => {
                 <div className="main-content">
                     <div className="section__content section__content--p30">
                         <div className="container-fluid">
-                            <div className="row">
-                                <div className="col-lg-6">
-                                    {/* USER DATA*/}
-
-                                    {/* END USER DATA*/}
-                                </div>
-
-                            </div>
-
-
-
-
-
-
-                            <div class="table__header">
-                                <h1 style={{ textAlign: "center" }}><strong>Blog List</strong></h1>
-
-                                <div class="input-group" >
-                                    <input type="search" placeholder="Search Data..."
-                                        value={search}
-                                        onChange={handleSearchChange} />
-                                    <img src="images/icon/search.png" alt=""></img>
-                                </div>
-                            </div>
-                            <div className="row">
+                            <div className="row m-t-30">
                                 <div className="col-md-12">
-                                    {/* DATA TABLE */}
-
-                                    <div style={{ textAlign: 'right', margin: '5px 10px' }}>
-
-
-                                        <div className="table-data__tool">
-
-
-                                            <div className="table-data__tool-right">
-                                                {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
-                                                <i className="zmdi zmdi-plus" />add item</button> */}
-
-                                                <button className="btn btn-primary " >
-                                                    <Link to="/createblog" style={{ color: "white", textDecoration: "none" }}> Create Blog</Link>
-
-                                                </button>
+                                    <form>
+                                        <div class="table__header">
+                                            <h1 style={{ textAlign: "center" }}><strong>Blog List</strong></h1>
+                                            <div class="input-group" >
+                                                <input type="search" placeholder="Search Data..."
+                                                    value={search}
+                                                    onChange={handleSearchChange} />
+                                                <img src="images/icon/search.png" alt=""></img>
                                             </div>
-
-
+                                        </div>
+                                    </form>
+                                    {/* DATA TABLE */}
+                                    {/* <div style={{ textAlign: 'right', marginRight:"5px"}}>
+                                            <button >
+                                                <Link to="/createblog" style={{ textDecoration: "none", color:'green' }}> <AiFillFileAdd size={30}></AiFillFileAdd></Link>
+                                            </button>
+                                        </div> */}
+                                    <div className="table-data__tool-right">
+                                        {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
+                                                <i className="zmdi zmdi-plus" />add item</button> */}
+                                
+                                        <div className="table-data__tool">
                                             {/* DATA TABLE*/}
                                             <div className="table-responsive m-b-40" style={{ borderRadius: '15px' }}>
                                                 <table className="table table-borderless table-data3 shadow-sm">
@@ -93,8 +73,7 @@ const BlogList = () => {
                                                         <tr>
                                                             <th>Blog Id</th>
                                                             <th>Title</th>
-                                                            <th></th>
-
+                                                            <th><Link to="/createblog" style={{ textDecoration: "none", color:'blueviolet', marginRight:"20px" }}> <AiFillFileAdd size={30}></AiFillFileAdd></Link></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -129,9 +108,6 @@ const BlogList = () => {
                                                                                 <button className="item" data-toggle="tooltip" data-placement="top" title="More"><i className="zmdi zmdi-more" /></button>
 
                                                                             </Link>
-
-
-
                                                                         </div>
                                                                     </td>
                                                                 </tr>
@@ -148,8 +124,6 @@ const BlogList = () => {
 
                         </div>
                     </div>
-
-
                     {/*-----Modal Assign Employee------ */}
 
                     <div className="row">
@@ -161,7 +135,6 @@ const BlogList = () => {
                     </div>
                 </div>
             </div>
-
         </div>
     );
 };

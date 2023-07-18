@@ -4,6 +4,7 @@ import "../../styles/car-item.css";
 import { useEffect, useState } from 'react';
 import React from "react";
 import axios from 'axios';
+import "../../styles/service-booking.css"
 
 const CarItem = (props) => {
   // const { imgUrl, model, carName, automatic, speed, price } = props.item;

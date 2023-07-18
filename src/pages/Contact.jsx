@@ -86,7 +86,7 @@ const Contact = () => {
       startWorking: booking.startWorking,
       endWorking: booking.endWorking
     };
-console.log(data)
+    console.log(data)
     axios.post(url, data)
       .then(response => {
         console.log('Success:', response.data);
@@ -152,51 +152,51 @@ console.log(data)
                         <Row>
                           <Col lg="12" md="12">
                             <div className="contact__info">
-                              <h4 className="fw-bold mb-3">Booking Details</h4>
+                              <h4 className="fw-bold mb-3"><strong>Thông tin đặt</strong></h4>
                               <br></br>
                               <div className=" d-flex align-items-center gap-2">
-                                <h6 className="fs-6 mb-0">Service:</h6>
+                                <h6 className="fs-6 mb-0"><strong>Dịch vụ:</strong></h6>
                                 <p className="section__description mb-0">{booking.typeName}</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
-                                <h6 className="fs-6 mb-0">Option:</h6>
+                                <h6 className="fs-6 mb-0"><strong>Option:</strong></h6>
                                 <p className="section__description mb-0">{booking.serviceName}</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
-                                <h6 className="mb-0 fs-6">Address:</h6>
+                                <h6 className="mb-0 fs-6"><strong>Địa chỉ:</strong></h6>
                                 <p className="section__description mb-0">{booking.address}</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
-                                <h6 className="mb-0 fs-6">Date:</h6>
+                                <h6 className="mb-0 fs-6"><strong>Ngày đặt:</strong></h6>
                                 {/* <p className="section__description mb-0">{booking.date}</p> */}
                                 <p className="section__description mb-0">{formattedDate}</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
-                                <h6 className="mb-0 fs-6">StartTime:</h6>
+                                <h6 className="mb-0 fs-6"><strong>Thời gian bắt đầu:</strong></h6>
                                 <p className="section__description mb-0">{booking.startTime}</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
-                                <h6 className="mb-0 fs-6">EndTime:</h6>
+                                <h6 className="mb-0 fs-6"><strong>Thời gian kết thúc:</strong></h6>
                                 <p className="section__description mb-0">{booking.endTime}</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
-                                <h6 className="mb-0 fs-6">Employee:</h6>
+                                <h6 className="mb-0 fs-6"><strong>Nhân viên:</strong></h6>
                                 <p className="section__description mb-0">{booking.employeeName}</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
-                                <h6 className="mb-0 fs-6">EmployeePhone:</h6>
+                                <h6 className="mb-0 fs-6"><strong>SĐT của nhân viên:</strong></h6>
                                 <p className="section__description mb-0">{booking.employeePhone}</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
-                                <h6 className="mb-0 fs-6">Note:</h6>
+                                <h6 className="mb-0 fs-6"><strong>Ghi chú:</strong></h6>
                                 {/* <p className="section__description mb-0 bordered">{booking.note}</p> */}
                               </div>
 
@@ -205,8 +205,8 @@ console.log(data)
                               </div>
 
                               <div className=" d-flex align-items-center gap-2 ">
-                                <h6 className="mb-0 h3 mt-3">Total:</h6>
-                                <p className="section__description mb-0 h3 mt-3 text-success">{booking.totalMoney} VND</p>
+                                <h6 className="mb-0 h3 mt-3"><strong>Tổng tiền:</strong></h6>
+                                <p className="section__description mb-0 h3 mt-3 text-success"><strong>{booking.totalMoney} VND</strong></p>
                               </div>
                             </div>
                             {booking.status == 'Completed' ?
@@ -214,7 +214,7 @@ console.log(data)
                                 <div>
                                   <Row>
                                     <Col lg="6" md="6">
-                                      <Button variant="contained" className="container mt-3 mr-3" disabled>Edit</Button>
+                                      <Button variant="contained" className="container mt-3 mr-3" disabled>Sửa</Button>
                                     </Col>
                                     <Col lg="6" md="6">
                                       <Button variant="contained" className="container mt-3 mr-3" onClick={handleClick}>Check Out</Button>
@@ -226,7 +226,7 @@ console.log(data)
                                   <div>
                                     <Row>
                                       <Col lg="6" md="6">
-                                        <Button variant="contained" className="container mt-3 mr-3" >Edit</Button>
+                                        <Button variant="contained" className="container mt-3 mr-3" >Sửa</Button>
                                       </Col>
                                       <Col lg="6" md="6">
                                         <Button variant="contained" className="container mt-3 mr-3" disabled>Check Out</Button>
@@ -237,7 +237,7 @@ console.log(data)
                                   <div>
                                     <Row>
                                       <Col lg="6" md="6">
-                                        <Button variant="contained" className="container mt-3 mr-3" disabled>Edit</Button>
+                                        <Button variant="contained" className="container mt-3 mr-3" disabled>Sửa</Button>
                                       </Col>
                                       <Col lg="6" md="6">
                                         <Button variant="contained" className="container mt-3 mr-3" disabled>Check Out</Button>
@@ -268,10 +268,10 @@ console.log(data)
                             </div>
                             <Row>
                               <Col lg="6" md="6">
-                                <Button variant="contained" className="container mt-3" onClick={handleClose}>Close</Button>
+                                <Button variant="contained" className="container mt-3" onClick={handleClose}>Đóng</Button>
                               </Col>
                               <Col lg="6" md="6">
-                                <Button variant="contained" className="container mt-3" onClick={handleRatingOpen}>Rating</Button>
+                                <Button variant="contained" className="container mt-3" onClick={handleRatingOpen}>Đánh giá</Button>
                               </Col>
                             </Row>
                             {/* <Button className="mt-3" onClick={handleClose}>Close</Button> */}
@@ -287,7 +287,7 @@ console.log(data)
                         aria-describedby="modal-modal-description"
                       >
                         <Box sx={style}>
-                        <RatingForm
+                          <RatingForm
                             serviceId={booking.serviceId} // Giá trị serviceId từ UI
                             customerId={booking.customerId} // Giá trị customerId từ UI
                             onClose={() => setIsRatingOpen(false)}
@@ -303,6 +303,7 @@ console.log(data)
         </Container >
       </section >
     </Helmet >
+    
   );
 };
 

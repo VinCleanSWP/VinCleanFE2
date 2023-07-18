@@ -72,7 +72,7 @@ const Testimonial = () => {
   return (
     <Slider {...settings}>
       {rating.map((rating) => (
-        <div key={rating.id} className="testimonial py-4 px-3">
+        <div key={rating.id} className="testimonial py-4 px-3 ">
 
           {/* Hiện comment */}
           <p className="section__description">{rating.comment}</p>

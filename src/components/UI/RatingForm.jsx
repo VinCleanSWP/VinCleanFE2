@@ -44,18 +44,20 @@ const RatingForm = ({ onClose, onRatingSubmit, serviceId, customerId }) => {
   return (
     <div className="rating-form">
       <h3>Đánh giá dịch vụ</h3>
-        <StarRating
-          totalStars={5}
-          rate={rate}
-          onStarHover={handleStarHover}
-          onStarClick={handleStarClick}
-        />
-        <input
-          className="comment-input"
-          placeholder="Nhận xét của bạn..."
-          value={comment}
-          onChange={handleCommentChange}
-        ></input>
+      Điểm đánh giá:
+      <StarRating
+        totalStars={5}
+        rate={rate}
+        onStarHover={handleStarHover}
+        onStarClick={handleStarClick}
+      />
+      <div className='rating-subtitle'>Nhận xét</div>
+      <textarea
+        className="comment-input"
+        placeholder="Nhận xét của bạn..."
+        value={comment}
+        onChange={handleCommentChange}
+      ></textarea>
       <button className="submit-button" onClick={handleSubmit}>
         Gửi đánh giá
       </button>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import "../styles/login.css";
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -56,8 +57,8 @@ export default function Login() {
     };
 
     return (
-        <div class="container">
-            <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="container" >
+            <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4" >
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">

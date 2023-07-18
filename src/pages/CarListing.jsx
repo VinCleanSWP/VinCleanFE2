@@ -41,12 +41,16 @@ const CarListing = () => {
                 </select>
               </div>
             </Col> */}
-       
-        
+
+            <Col lg="12" className="mb-5 text-center">
+              <h6 className="section__subtitle">Đặt dịch vụ vệ sinh của chúng tôi</h6>
+              <h2 className="section__title">Tìm dịch vụ mà bạn muốn</h2>
+            </Col>
+
             {servicetype.map((item) => (
               <CarItem item={item} key={item.typeId} />
             ))}
-          
+
           </Row>
         </Container>
       </section>

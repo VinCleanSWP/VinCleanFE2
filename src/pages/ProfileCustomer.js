@@ -13,6 +13,7 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import '../styles/profile-customer.css'
 import { storage } from '../firebase/index';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -51,6 +52,8 @@ export default function ProfileCustomer() {
     const id = localStorage.getItem('id');
     const [errorMessage, setErrorMessage] = useState('')
     const [tempImageUrl, setTempImageUrl] = useState('');
+    const [currentImg, setCurrentImg]  = useState('');
+    const [currentGender, setCurrentGender]  = useState('');
 
     // ------------PasswordState----------
     const [currentPassword, setCurrentPassword] = useState('');
@@ -101,6 +104,8 @@ export default function ProfileCustomer() {
         axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
+                setCurrentGender(response.data.data.account.gender);
+                setCurrentImg(response.data.data.account.img);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -164,17 +169,28 @@ export default function ProfileCustomer() {
             lastName: customer.lastName,
             phone: customer.phone,
             address: customer.address,
-            dob: selectedDate,
-            gender: gender1,
+            dob: selectedDate ||  customer.account.dob,
+            gender: gender1 || currentGender,
             // gender: customer.account.gender,
-            img: tempImageUrl
+            img: tempImageUrl || customer.account.img
         };
+        console.log(updatedUser)
 
         try {
             const response = await axios.put('https://localhost:7013/api/Customer', updatedUser);
             if (response.status === 200) {
                 console.log('OK');
                 setErrorMessage('Update Successfully');
+                toast.success('Updated Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             } else {
                 console.log('KO');
             }
@@ -222,11 +238,16 @@ export default function ProfileCustomer() {
     const month = String(dob.getMonth() + 1).padStart(2, '0');
     const day = String(dob.getDate()).padStart(2, '0');
     const formattedDOB = `${year}-${month}-${day}`;
+
     const [selectedDate, setSelectedDate] = useState('');
     const handleDateChange = (event) => {
         event.preventDefault();
-        setSelectedDate(event.target.value);
+        const value = event.target.value;
+        setSelectedDate(value !== selectedDate ? value : customer.account.dob);
     };
+
+
+
 
     const handleImageUpload = async e => {
         const file = e.target.files[0];
@@ -250,7 +271,7 @@ export default function ProfileCustomer() {
                         <div className="col-md-3 pt-0">
                             <div className="list-group list-group-flush account-settings-links">
                                 <div class="Account__StyledAvatar-sc-1d5h8iz-3 profile-left">
-                                    <img src={tempImageUrl} alt="avatar" />
+                                    <img style={{width:"100px", height:"100px"}} src={tempImageUrl || currentImg} alt="avatar" />
                                     <div class="info">
                                         Tài khoản của
                                         <strong>{customer.lastName} {customer.firstName}</strong>
@@ -271,7 +292,7 @@ export default function ProfileCustomer() {
                                     <form onSubmit={handleSubmitInfo}>
                                         <h4 className="card-body fw-bold">Thông tin cá nhân</h4>
                                         <div className="card-body media align-items-center">
-                                            <img src={tempImageUrl} alt className="d-block ui-w-80" />
+                                            <img style={{width:"100px", height:"100px", borderRadius:'100%'}}  src={tempImageUrl || currentImg} alt className=" " />
                                             <div className="media-body ml-4">
                                                 <label className="btn btn-outline-primary">
                                                     Chọn ảnh
@@ -301,14 +322,12 @@ export default function ProfileCustomer() {
                                                     name="dob"
                                                     className="form-control"
                                                     type="date"
-                                                    // defaultValue={formattedDOB}
-                                                    // value={formattedDOB}
+                                                    value={selectedDate || formattedDOB}
                                                     onChange={handleDateChange}
                                                     InputLabelProps={{
                                                         shrink: true,
                                                     }}
                                                 />
-                                                <p>Current Birthday: {formattedDOB}</p>
                                             </div>
 
                                             {/* <div className="form-group">
@@ -326,11 +345,15 @@ export default function ProfileCustomer() {
                                                 <label className="form-label">Gender: </label>
                                                 {gioitinh.map(sex => (
                                                     <div key={sex.id}>
-                                                        <input type='radio' name='gender' value={sex.gender} checked={check === sex.gender} onChange={handleGender}/>{sex.gender}
+                                                        <input type='radio'
+                                                        name='gender' 
+                                                        value={sex.gender} 
+                                                        checked={check === sex.gender|| (!check && sex.gender === currentGender)} 
+                                                        onChange={handleGender} />{sex.gender}
                                                     </div>
                                                 ))}
-                                                <p>Current gender: {customer.account && customer.account.gender}</p>
                                             </div>
+                                           
 
                                             <div className="form-group">
                                                 <label className="form-label">Số điện thoại</label>
@@ -345,10 +368,7 @@ export default function ProfileCustomer() {
                                             <div className="form-group">
                                                 <label className="form-label">E-mail</label>
                                                 <input type="text" className="form-control mb-1" defaultValue={customer.account && customer.account.email} disabled />
-                                                <div className="alert alert-warning mt-3">
-                                                    Email chưa được xác nhận. Hãy vào inbox để xác nhận!<br />
-                                                    <a href="javascript:void(0)">Gửi lại xác nhận</a>
-                                                </div>
+                                               
                                             </div>
                                             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                                             <div className="text-right mt-3 mb-3">
@@ -617,6 +637,7 @@ export default function ProfileCustomer() {
                     </div>
                 </div>
             </div >
+            <ToastContainer />
         </div >
     )
 }

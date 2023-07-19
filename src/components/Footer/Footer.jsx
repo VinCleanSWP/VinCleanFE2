@@ -5,29 +5,51 @@ import { Link } from "react-router-dom";
 import "../../styles/footer.css";
 import WhiteVinCleanLogo from"../../assets/all-images/whitelogo.png";
 
+import { AiOutlineHome } from "react-icons/ai";
+
+import { TbBrandBooking } from "react-icons/tb";
+
+import { FaBlog } from "react-icons/fa";
+
+import { RxActivityLog } from "react-icons/rx";
+
+import { BsFillInfoCircleFill } from "react-icons/bs";
+
 const quickLinks = [
   {
-    path: "/about",
-    display: "Giới thiệu",
+    path: "/home",
+    display:
+      <>
+        <AiOutlineHome/> Trang chủ
+      </>
   },
-
   {
-    path: "#",
-    display: "Privacy Policy",
+    path: "/about",
+    display:
+      <>
+        <BsFillInfoCircleFill/> Giới thiệu
+      </>
   },
-
   {
     path: "/cars",
-    display: "Đặt dịch vụ",
+    display:
+      <>
+        <TbBrandBooking/> Đặt dịch vụ
+      </>
   },
   {
     path: "/blogs",
-    display: "Blog",
+    display:
+      <>
+        <FaBlog/> Blog
+      </>
   },
-
   {
     path: "/contact",
-    display: "Liên hệ",
+    display:
+      <>
+        <RxActivityLog/> Hoạt động
+      </>
   },
 ];
 
@@ -70,12 +92,12 @@ const Footer = () => {
           <Col lg="3" md="4" sm="6">
             <div className="mb-4">
               <h5 className="footer__link-title mb-4">Head Office</h5>
-              <p className="office__info">123 Zindabazar, Sylhet, Bangladesh</p>
-              <p className="office__info">Phone: +0995345875365</p>
+              <p className="office__info">Vinhome Grand Park</p>
+              <p className="office__info">Số điện thoại: +0995345875365</p>
 
               <p className="office__info">Email: muhib5532@gmail.com</p>
 
-              <p className="office__info">Office Time: 10am - 7pm</p>
+              <p className="office__info">Giờ làm: 7am - 8pm</p>
             </div>
           </Col>
 

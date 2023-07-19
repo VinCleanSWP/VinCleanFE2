@@ -173,25 +173,32 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       )} */}
 
       <FormGroup className="booking__form d-inline-block me-4 mb-4">
-        <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+      <label className="form-label">Tên</label>
+        <input type="text" placeholder="Nhập tên" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block ms-1 mb-4">
-        <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+      <label className="form-label">Họ</label>
+        <input type="text" placeholder="Nhập họ" value={lastName} onChange={(e) => setLastName(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block me-4 mb-4">
-        <input type="text" placeholder="Phone Number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+      <label className="form-label">Số điện thoại</label>
+        <input type="text" placeholder="Số điện thoại" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block ms-1 mb-4">
-        <input type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
+      <label className="form-label">Địa chỉ</label>
+        <input type="text" placeholder="Địa chỉ" value={address} onChange={(e) => setAddress(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block me-4 mb-4">
-        <input type="date" placeholder="Journey Date" value={journeyDate} onChange={(e) => setJourneyDate(e.target.value)} />
+      <label className="form-label">Chọn ngày</label>
+        <input type="date" placeholder="Chọn ngày làm" value={journeyDate} onChange={(e) => setJourneyDate(e.target.value)} />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block ms-1 mb-4">
-        <input type="time" placeholder="Journey Time" className="time__picker" value={journeyTime} onChange={(e) => setJourneyTime(e.target.value)} />
+      <label className="form-label">Chọn giờ</label>
+        <input type="time" placeholder="Chọn giờ làm" className="time__picker" value={journeyTime} onChange={(e) => setJourneyTime(e.target.value)} />
       </FormGroup>
       <FormGroup>
-        <textarea rows={5} type="textarea" className="textarea" placeholder="Write" value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
+      <label className="form-label">Ghi chú</label>
+        <textarea rows={5} type="textarea" className="textarea" placeholder="Ghi ở đây ..." value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
       </FormGroup>
 
       {localStorage.getItem('loggedIn') ?
@@ -227,7 +234,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         {/* Render the content of the popup */}
         {
           <div class="submit-form mb-4">
-            <h3>Submitted Data</h3>
+            <h3><strong>Xác nhận thông tin</strong></h3>
             <br></br>
             <p><strong>ID của bạn:</strong> {customerid}</p>
             <p><strong>Tên bạn:</strong> {lastName + ' ' + firstName}</p>

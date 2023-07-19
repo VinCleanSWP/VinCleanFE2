@@ -28,7 +28,7 @@ const navLinks = [
     )
   },
   {
-    path: "/cars",
+    path: "/services",
     display: (
       <>
         <TbBrandBooking /> Đặt dịch vụ
@@ -44,7 +44,7 @@ const navLinks = [
     )
   },
   {
-    path: "/contact",
+    path: "/activity",
     display: (
       <>
         <RxActivityLog /> Hoạt động
@@ -70,6 +70,7 @@ const Header = () => {
     // Kiểm tra xem đã có thông tin đăng nhập trong localStorage hay chưa
     const isLoggedIn = localStorage.getItem('loggedIn');
     const storedName = localStorage.getItem('name');
+    
 
     if (isLoggedIn && storedName) {
       setLoggedIn(true);
@@ -167,7 +168,7 @@ const Header = () => {
                 ))}
               </div>
             </div>
-
+{/* 
             <Col lg="2" md="3" sm="0" className="d-flex align-items-center justify-content-end">
               {loggedIn && (
                 <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
@@ -176,7 +177,7 @@ const Header = () => {
                   </DropdownToggle>
                 </Dropdown>
               )}
-            </Col>
+            </Col> */}
           </div>
         </Container>
       </div>

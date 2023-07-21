@@ -577,7 +577,7 @@ function Table() {
                                             {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
                                                 <i className="zmdi zmdi-plus" />add item</button> */}
 
-                                            <button className="btn btn-primary " onClick={() => setAddModalIsOpen(true)}>
+                                            <button type="button" class="btn btn-outline-primary" data-mdb-ripple-color="dark" onClick={() => setAddModalIsOpen(true)}>
                                                 Add employee
                                             </button>
                                         </div>

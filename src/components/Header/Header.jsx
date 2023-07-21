@@ -1,64 +1,83 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Container, Row, Col, Button } from "reactstrap";
+import { Container, Row, Col, Button, Dropdown, DropdownToggle } from "reactstrap";
 import { Link, NavLink } from "react-router-dom";
 import "../../styles/header.css";
 import VinCleanLogo from "../../assets/all-images/logo.png";
-import VinCleanLogo1 from "../../assets/all-images/Vincleanlogo.png";
+import { RiUserLine, RiLogoutBoxLine } from "react-icons/ri";
+import { AiOutlineHome } from "react-icons/ai";
+import { TbBrandBooking } from "react-icons/tb";
+import { FaBlog } from "react-icons/fa";
+import { RxActivityLog } from "react-icons/rx";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 
 const navLinks = [
   {
     path: "/home",
-    display: "Trang chủ",
+    display: (
+      <>
+        <AiOutlineHome /> Trang chủ
+      </>
+    )
   },
   {
     path: "/about",
-    display: "Giới thiệu",
+    display: (
+      <>
+        <BsFillInfoCircleFill /> Giới thiệu
+      </>
+    )
   },
   {
     path: "/services",
-    display: "Đặt dịch vụ",
+    display: (
+      <>
+        <TbBrandBooking /> Đặt dịch vụ
+      </>
+    )
   },
-
   {
     path: "/blogs",
-    display: "Blog",
+    display: (
+      <>
+        <FaBlog /> Blog
+      </>
+    )
   },
   {
     path: "/activity",
-    display: "Hoạt Động",
-  },
+    display: (
+      <>
+        <RxActivityLog /> Hoạt động
+      </>
+    )
+  }
 ];
 
 const Header = () => {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [email, setEmail] = useState('');
   const [name, setName] = useState('');
 
   const menuRef = useRef(null);
   const toggleMenu = () => menuRef.current.classList.toggle("menu__active");
   const handleLogout = () => {
     // Xóa thông tin đăng nhập từ localStorage
-    localStorage.removeItem('loggedIn');
-    localStorage.removeItem('email');
-    localStorage.removeItem('name');
-    localStorage.removeItem('role');
-    localStorage.removeItem('id');
+    localStorage.clear();
     setLoggedIn(false);
-    setEmail('');
     window.location.href = '/home';
   };
+
   useEffect(() => {
     // Kiểm tra xem đã có thông tin đăng nhập trong localStorage hay chưa
     const isLoggedIn = localStorage.getItem('loggedIn');
-    const storedEmail = localStorage.getItem('email');
     const storedName = localStorage.getItem('name');
+    
 
-    if (isLoggedIn && storedEmail) {
+    if (isLoggedIn && storedName) {
       setLoggedIn(true);
-      setEmail(storedEmail);
-      setName(storedName)
+      setName(storedName);
     }
   }, []);
+
   return (
     <header className="header">
       <div className="header__middle">
@@ -68,7 +87,7 @@ const Header = () => {
               <div className="logo">
                 <h1>
                   <Link to="/home" className=" d-flex align-items-center gap-2">
-                    <img src={VinCleanLogo1} alt="" style={{ width: "200px", height: "auto" }} />
+                    <img src={VinCleanLogo} alt="" style={{ width: "200px", height: "auto" }} />
                   </Link>
                 </h1>
               </div>
@@ -77,7 +96,7 @@ const Header = () => {
             <Col lg="3" md="3" sm="4">
               <div className="header__location d-flex align-items-center gap-2">
                 <span>
-                  <i class="ri-earth-line"></i>
+                  <i className="ri-earth-line"></i>
                 </span>
                 <div className="header__location-content">
                   <h4>Việt Nam</h4>
@@ -89,7 +108,7 @@ const Header = () => {
             <Col lg="3" md="3" sm="4">
               <div className="header__location d-flex align-items-center gap-2">
                 <span>
-                  <i class="ri-time-line"></i>
+                  <i className="ri-time-line"></i>
                 </span>
                 <div className="header__location-content">
                   <h4>Làm hằng ngày</h4>
@@ -102,23 +121,24 @@ const Header = () => {
               lg="2"
               md="3"
               sm="0"
-              className=" d-flex align-items-center justify-content-end "
+              className="d-flex align-items-center justify-content-end "
             >
-              {loggedIn ?
-                (<div>
+              {loggedIn ? (
+                <div>
                   <button className="header__btn btn" style={{ marginBottom: "8px" }}>
                     <Link to="/profile">
                       {name}
                     </Link>
                   </button>
                   <Button className="header__btn btn" onClick={handleLogout}>Logout</Button>
-                </div>) :
-                (<button className="header__btn btn ">
+                </div>
+              ) : (
+                <button className="header__btn btn ">
                   <Link to="/login">
                     Login
                   </Link>
-                </button>)
-              }
+                </button>
+              )}
             </Col>
           </Row>
         </Container>
@@ -130,12 +150,8 @@ const Header = () => {
         <Container>
           <div className="navigation__wrapper d-flex align-items-center justify-content-between">
             <span className="mobile__menu">
-              <i class="ri-menu-line" onClick={toggleMenu}></i>
+              <i className="ri-menu-line" onClick={toggleMenu}></i>
             </span>
-
-
-
-            
 
             <div className="navigation" ref={menuRef} onClick={toggleMenu}>
               <div className="menu">
@@ -152,17 +168,16 @@ const Header = () => {
                 ))}
               </div>
             </div>
-
-            {/* <div className="nav__right">
-              <div className="search__box">
-                <input type="text" placeholder="Search" />
-                
-                <span>
-                  <i class="ri-search-line"></i>
-                </span>
-              
-                </div>
-            </div> */}
+{/* 
+            <Col lg="2" md="3" sm="0" className="d-flex align-items-center justify-content-end">
+              {loggedIn && (
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                  <DropdownToggle className="header__btn btn " caret>
+                    <img className="avatar-icon" src={img} alt="Avatar" />
+                  </DropdownToggle>
+                </Dropdown>
+              )}
+            </Col> */}
           </div>
         </Container>
       </div>

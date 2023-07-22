@@ -25,6 +25,7 @@ function Booking() {
 
     const handleEmployeeSelect = (employeeId) => {
         setSelectedEmployees(employeeId);
+        
     };
     const resetSelection = () => {
         setSelectedEmployees([]);
@@ -155,8 +156,7 @@ function Booking() {
         fetchData();
     }, []);
 
-    const fetchData = async () =>{
-        // Gọi API để lấy dữ liệu
+    const fetchData = () => {
         axios.get('https://localhost:7013/api/Process')
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
@@ -190,7 +190,8 @@ function Booking() {
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setEmployeeData(response.data);
-                console.log(response.data)
+                console.log(response.data);
+                fetchData();
             })
             .catch(error => {
                 console.error('Error fetching booking data:', error);

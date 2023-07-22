@@ -43,3 +43,6 @@ export const updateSubPriceAPI = (data) => {
 export const updateLocationAPI= (data) => {
     return api.put(`WorkingBy/Location`,data);
 }
+export const updateCanncelJobAPI = (data) => {
+    return api.post(`ProcessSlot`,data);
+}

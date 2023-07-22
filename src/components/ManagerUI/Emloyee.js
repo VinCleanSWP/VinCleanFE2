@@ -181,12 +181,14 @@ function Table() {
 
     }, []);
 
-    const handleImageUpload = async e => {
+    const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        const storageRef = storage.ref(`Employee/${file.name}`);
-        const fileRef = storageRef.child(file.name);
+        console.log(file.name);
+        const storageRef = storage.ref();
+        const fileRef = storageRef.child(`Employee/${file.name}`);
         await fileRef.put(file);
         const imgUrl = await fileRef.getDownloadURL();
+        console.log(imgUrl);
         setTempImageUrl(imgUrl);
     };
 

@@ -26,10 +26,15 @@ function Booking() {
     const handleEmployeeSelect = (employeeId) => {
         setSelectedEmployees(employeeId);
     };
+    const resetSelection = () => {
+        setSelectedEmployees([]);
+        setSelectedProcessId(null);
+      };
 
-    const handleProcessSelect = (processId) => {
+      const handleProcessSelect = (processId) => {
+        resetSelection();
         setSelectedProcessId(processId);
-    };
+      };
 
     const formatTime = (timeString) => {
         if (timeString) {
@@ -63,6 +68,7 @@ function Booking() {
                     progress: undefined,
                     theme: "light",
                 });
+                fetchData();
                 axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
                     .then(response => {
                         console.log(response.data);
@@ -146,6 +152,10 @@ function Booking() {
 
 
     useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () =>{
         // Gọi API để lấy dữ liệu
         axios.get('https://localhost:7013/api/Process')
             .then(response => {
@@ -155,7 +165,7 @@ function Booking() {
             .catch(error => {
                 console.error('Error fetching booking data:', error);
             });
-    }, []);
+        };
 
     useEffect(() => {
         assignTask();
@@ -579,7 +589,7 @@ function Booking() {
                                             <div className="mt-3 d-flex align-items-center gap-4">
 
                                                 {/* Hiện ảnh */}
-                                                <img src= {img.image ? img.image :"https://firebasestorage.googleapis.com/v0/b/swp-vinclean-7b1d3.appspot.com/o/Employee%2Fuser-default.jpg?alt=media&token=983b62d3-504c-4874-beb9-2b7dffe8f332"} alt="" className="" style={{ width: "150px", height: "150px", borderRadius: "10px" }} />
+                                                <img src= {img.image ? img.image :"http://via.placeholder.com/300"} alt="" className="" style={{ width: "150px", height: "150px", borderRadius: "10px" }} />
 
                                                 <div>
                                                     {/* Hiện tên khách hàng */}

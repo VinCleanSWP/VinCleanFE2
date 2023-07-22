@@ -62,11 +62,11 @@ export default function BlogDetail() {
         const updatedBlog = {
             ...blog,
             title: blogTitle,
-            summary: blogSummary,
+            sumarry: blogSummary,
             content: blogContent,
             img: tempImageUrl
         };
-
+console.log(updatedBlog)
         axios
             .put(`https://localhost:7013/api/Blog`, updatedBlog)
             .then(response => {

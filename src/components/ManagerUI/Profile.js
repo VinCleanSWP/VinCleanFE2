@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './profile.css'
+import 'firebase/storage';
+import './FireBaseConfig';
+import { storage } from './FireBaseConfig';
 
 
 function Profile() {
  const [accountData, setAccountData] = useState({});
+ const [tempImageUrl, setTempImageUrl] = useState('');
+ const [currentImg, setCurrentImg]  = useState('');
 
  useEffect(() => {
     const fetchAccountData = async () => {
@@ -13,6 +18,7 @@ function Profile() {
         if (id) {
           const response = await axios.get(`https://localhost:7013/api/Account/${id}`);
           setAccountData(response.data.data);
+          setCurrentImg(response.data.data.img);
         }
       } catch (error) {
         console.error(error);
@@ -21,6 +27,15 @@ function Profile() {
 
     fetchAccountData();
   }, []);
+
+  const handleImageUpload = async e => {
+    const file = e.target.files[0];
+    const storageRef = storage.ref(`Employee/${file.name}`);
+    const fileRef = storageRef.child(file.name);
+    await fileRef.put(file);
+    const imgUrl = await fileRef.getDownloadURL();
+    setTempImageUrl(imgUrl);
+};
 
     return (
         <div className="page-container">
@@ -44,11 +59,11 @@ function Profile() {
                             <div className="tab-content">
                                 <div className="tab-pane fade active show" id="account-general">
                                     <div className="card-body media align-items-center">
-                                        <img style={{borderRadius:"50%", objectFit:'cover'}} src={accountData.img ? accountData.img : 'http://via.placeholder.com/300' } alt className="d-block ui-w-80" />
+                                        <img style={{borderRadius:"100%", objectFit:'cover',width: '100px', height: "100px"}} src={tempImageUrl||currentImg  } alt="" className="" />
                                         <div className="media-body ml-4">
-                                            <label className="btn btn-outline-primary">
+                                            <label className="btn btn-outline-primary"  >
                                                 Upload new photo
-                                                <input type="file" className="account-settings-fileinput" />
+                                                <input type="file" onChange={handleImageUpload} className="account-settings-fileinput" />
                                             </label> &nbsp;
                                             <button type="button" className="btn btn-default md-btn-flat">Reset</button>
                                             <div className="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>

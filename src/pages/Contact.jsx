@@ -139,7 +139,7 @@ const Contact = () => {
                               <td className="process">{processing.status}</td>
                             )}
                         {/* <td className="complete">{processing.status}</td> */}
-                        <td className="process">{processing.totalMoney} VND</td>
+                        <td className="process">{processing.price} VND</td>
                       </tr>
                     ))}
                     <Modal
@@ -194,6 +194,10 @@ const Contact = () => {
                                 <h6 className="mb-0 fs-6"><strong>SĐT của nhân viên:</strong></h6>
                                 <p className="section__description mb-0">{booking.employeePhone}</p>
                               </div>
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-6"><strong>Phụ thu:</strong></h6>
+                                <p className="section__description mb-0">{booking.subPrice ? booking.subPrice:0 } VND</p>
+                              </div>
 
                               <div className=" d-flex align-items-center gap-2">
                                 <h6 className="mb-0 fs-6"><strong>Ghi chú:</strong></h6>
@@ -206,7 +210,7 @@ const Contact = () => {
 
                               <div className=" d-flex align-items-center gap-2 ">
                                 <h6 className="mb-0 h3 mt-3"><strong>Tổng tiền:</strong></h6>
-                                <p className="section__description mb-0 h3 mt-3 text-success"><strong>{booking.totalMoney} VND</strong></p>
+                                <p className="section__description mb-0 h3 mt-3 text-success"><strong>{booking.price} VND</strong></p>
                               </div>
                             </div>
                             {booking.status == 'Completed' ?

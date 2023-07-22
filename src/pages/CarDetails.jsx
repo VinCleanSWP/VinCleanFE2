@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import BookingForm from "../components/UI/BookingForm";
 import PaymentMethod from "../components/UI/PaymentMethod";
 import '../styles/rating-list.css';
+import aboutImg from "../assets/all-images/maygait2.png";
+import jpImg from "../assets/all-images/slider_f09a6abdbf.png";
 import moment from "moment";
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -113,6 +115,7 @@ const ServiceTypeDetail = () => {
             <Col lg="6" md="6">
               <div className="about__img">
                 <img src={type.img} alt="" className="w-100" />
+                <img style={{width:"500px", height:"350px"}} src={aboutImg}></img>
               </div>
             </Col>
             <Col lg="6" md="6">
@@ -126,6 +129,9 @@ const ServiceTypeDetail = () => {
                   tháng chỉ để thuê giúp việc cố định nhưng đôi lúc việc này trở nên không thực sự cần thiết vì không phải lúc nào cũng có 
                   việc để người giúp việc làm liên tục. Lúc này giúp việc nhà theo giờ sẽ là giải pháp hợp lý cho mọi gia đình!
                 </p>
+
+                <img style={{width:"500px", height:"350px"}} src={jpImg}></img>
+
 
               </div>
             </Col>

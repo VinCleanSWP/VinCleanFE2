@@ -21,13 +21,13 @@ const HeroSlider = () => {
     <Slider {...settings} className="hero__slider">
       <div className="slider__item slider__item-01 mt0">
         <Container>
-          <div className="slider__content ">
-            <h4 className="text-light mb-3">Một trong dịch vụ vệ sinh tốt nhất từ trước đến nay!</h4>
-            <h1 className="text-light mb-4">CHÚNG TÔI CÓ THỂ LÀM CHO BẠN</h1>
-            <h1 className="text-light mb-4">THÀNH NƠI TUYỆT VỜI HƠN</h1>
-            <button className="btn reserve__btn mt-4">
-              <Link to="/cars">Bấm vào đây để đặt ➔</Link>
-            </button>
+        <div className="slider__content ">
+            {/* <h4 className="text-light mb-3">Một trong dịch vụ vệ sinh tốt nhất từ trước đến nay!</h4>
+            <h1 className="text-light mb-4">VỆ SINH LÀM TỐT</h1>
+            <h1 className="text-light mb-4">MÔI TRƯỜNG CỦA BẠN</h1> */}
+            <button style={{textAlign:"right",paddingTop:"31%", paddingRight:"10%"}}>
+              <Link style={{padding:"30px 100px"}} to="/services"> </Link>
+              </button>
           </div>
         </Container>
       </div>
@@ -39,7 +39,7 @@ const HeroSlider = () => {
             <h1 className="text-light mb-4">VỆ SINH LÀM TỐT</h1>
             <h1 className="text-light mb-4">MÔI TRƯỜNG CỦA BẠN</h1>
             <button className="btn reserve__btn mt-4">
-              <Link to="/cars">Bấm vào đây để đặt ➔</Link>
+              <Link to="/services">Bấm vào đây để đặt ➔</Link>
             </button>
           </div>
         </Container>
@@ -52,7 +52,7 @@ const HeroSlider = () => {
             <h1 className="text-light mb-4">CHÚNG TÔI DỌN DẸP</h1>
             <h1 className="text-light mb-4">BẠN CỨ THOẢI MÁI</h1>
             <button className="btn reserve__btn mt-4">
-              <Link to="/cars">Bấm vào đây để đặt ➔</Link>
+              <Link to="/services">Bấm vào đây để đặt ➔</Link>
             </button>
           </div>
         </Container>

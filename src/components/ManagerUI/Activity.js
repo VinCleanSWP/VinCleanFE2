@@ -153,7 +153,7 @@ function Activity() {
                                             <input value={modal.customerName} className="form-control" />
                                         </div>
                                         <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <img src={modal.customerImage} alt="react logo" style={{width: '150px'}} />
+                                            <img src={modal.customerImage?modal.customerImage:"https://firebasestorage.googleapis.com/v0/b/swp-vinclean-7b1d3.appspot.com/o/Employee%2Fuser-default.jpg?alt=media&token=983b62d3-504c-4874-beb9-2b7dffe8f332"} alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100, marginTop: 0 }} />
                                         </div>
                                     </form>
                                     <form className="form-inline">
@@ -210,7 +210,7 @@ function Activity() {
                                                     <input type="text" className="form-control" value={modal.employeeName} />
                                                 </div>
                                                 <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                                    <img src={modal.employeeImg} alt="react logo" style={{ width: '150px', }} />
+                                                    <img src={modal.employeeImg} alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100, marginTop: 0 }} />
                                                 </div>
                                             </form>
                                             <form className="form-inline">

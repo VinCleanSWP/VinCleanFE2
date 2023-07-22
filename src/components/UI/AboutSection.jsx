@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import "../../styles/about-section.css";
-import aboutImg from "../../assets/all-images/aboutImg.png";
+import aboutImg from "../../assets/all-images/left_2_7f199debcf.png";
 
 const AboutSection = ({ aboutClass }) => {
   return (

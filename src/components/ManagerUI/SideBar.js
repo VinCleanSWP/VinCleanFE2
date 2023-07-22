@@ -67,14 +67,14 @@ function SideBar() {
                 <Link to="/email">
                 <i className="fas"><MdOutlineEmail/></i>Mail</Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/form">
                   <i className="far fa-check-square" />Forms</Link>
               </li>
               <li>
                 <Link to="/calendar">
                   <i className="fas fa-calendar-alt" />Calendar</Link>
-              </li>
+              </li> */}
               <li>
               <Link to="/map">
                   <i className="fas fa-map-marker-alt" />Maps</Link>

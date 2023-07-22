@@ -1,80 +1,101 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Container, Row, Col, Button, Dropdown, DropdownToggle } from "reactstrap";
-import { Link, NavLink } from "react-router-dom";
+import { Container, Row, Col, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import "../../styles/header.css";
 import VinCleanLogo from "../../assets/all-images/logo.png";
+// import VinCleanLogo1 from "../../assets/all-images/Vincleanlogo.png";
 import { RiUserLine, RiLogoutBoxLine } from "react-icons/ri";
-import { AiOutlineHome } from "react-icons/ai";
-import { TbBrandBooking } from "react-icons/tb";
-import { FaBlog } from "react-icons/fa";
-import { RxActivityLog } from "react-icons/rx";
-import { BsFillInfoCircleFill } from "react-icons/bs";
 
+import { AiOutlineHome } from "react-icons/ai";
+
+import { TbBrandBooking } from "react-icons/tb";
+
+import { FaBlog } from "react-icons/fa";
+
+import { RxActivityLog } from "react-icons/rx";
+
+import { BsFillInfoCircleFill } from "react-icons/bs";
 const navLinks = [
   {
     path: "/home",
-    display: (
+    display:
       <>
-        <AiOutlineHome /> Trang chủ
+        <AiOutlineHome/> Trang chủ
       </>
-    )
   },
   {
     path: "/about",
-    display: (
+    display:
       <>
-        <BsFillInfoCircleFill /> Giới thiệu
+        <BsFillInfoCircleFill/> Giới thiệu
       </>
-    )
   },
   {
     path: "/services",
-    display: (
+    display:
       <>
-        <TbBrandBooking /> Đặt dịch vụ
+        <TbBrandBooking/> Đặt dịch vụ
       </>
-    )
   },
   {
     path: "/blogs",
-    display: (
+    display:
       <>
-        <FaBlog /> Blog
+        <FaBlog/> Blog
       </>
-    )
   },
   {
     path: "/activity",
-    display: (
+    display:
       <>
-        <RxActivityLog /> Hoạt động
+        <RxActivityLog/> Hoạt động
       </>
-    )
-  }
+  },
 ];
 
 const Header = () => {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
   const [name, setName] = useState('');
 
+  const [img, setImg] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const menuRef = useRef(null);
+  const navigate = useNavigate();
   const toggleMenu = () => menuRef.current.classList.toggle("menu__active");
+  const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
+
   const handleLogout = () => {
     // Xóa thông tin đăng nhập từ localStorage
-    localStorage.clear();
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('email');
+    localStorage.removeItem('name');
+    localStorage.removeItem('role');
+    localStorage.removeItem('id');
+
+    localStorage.removeItem('img');
+
     setLoggedIn(false);
-    window.location.href = '/home';
+    setEmail('');
+    navigate('/home')
+    // window.location.href = '/home';
   };
 
   useEffect(() => {
     // Kiểm tra xem đã có thông tin đăng nhập trong localStorage hay chưa
     const isLoggedIn = localStorage.getItem('loggedIn');
+    const storedEmail = localStorage.getItem('email');
     const storedName = localStorage.getItem('name');
-    
 
-    if (isLoggedIn && storedName) {
+    const storedImg = localStorage.getItem('img');
+
+
+    if (isLoggedIn && storedEmail) {
       setLoggedIn(true);
+      setEmail(storedEmail);
       setName(storedName);
+      setImg(storedImg)
     }
   }, []);
 
@@ -117,29 +138,42 @@ const Header = () => {
               </div>
             </Col>
 
-            <Col
-              lg="2"
-              md="3"
-              sm="0"
-              className="d-flex align-items-center justify-content-end "
-            >
+            {/* <Col lg="2" md="3" sm="0" className="d-flex align-items-center justify-content-end">
               {loggedIn ? (
-                <div>
-                  <button className="header__btn btn" style={{ marginBottom: "8px" }}>
-                    <Link to="/profile">
-                      {name}
-                    </Link>
-                  </button>
-                  <Button className="header__btn btn" onClick={handleLogout}>Logout</Button>
-                </div>
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                  <DropdownToggle className="header__btn btn" caret>
+                    <img className="avatar-icon" src={img} alt="Avatar" />
+                  </DropdownToggle>
+
+                  <DropdownMenu>
+                    <div className="sub-menu-info">
+                      <img className="avatar-info-icon" src={img} alt="Avatar" />
+                      <strong>{name}</strong>
+                      <hr />
+                    </div>
+
+                    <DropdownItem>
+                      <Link to="/profile" style={{ textDecoration: "none", color: "black" }}>
+                        <RiUserLine style={{ marginRight: "12px", }} />Thông tin cá nhân
+                      </Link>
+                    </DropdownItem>
+
+                    <DropdownItem divider />
+
+                    <DropdownItem onClick={handleLogout} style={{ textDecoration: "none", color: "black" }}>
+                      <RiLogoutBoxLine style={{ marginRight: "12px" }} />Đăng xuất
+                    </DropdownItem>
+
+                  </DropdownMenu>
+
+                </Dropdown>
               ) : (
-                <button className="header__btn btn ">
-                  <Link to="/login">
-                    Login
-                  </Link>
+                <button className="header__btn btn">
+                  <Link to="/login">Đăng nhập</Link>
                 </button>
               )}
-            </Col>
+            </Col> */}
+
           </Row>
         </Container>
       </div>
@@ -152,7 +186,6 @@ const Header = () => {
             <span className="mobile__menu">
               <i className="ri-menu-line" onClick={toggleMenu}></i>
             </span>
-
             <div className="navigation" ref={menuRef} onClick={toggleMenu}>
               <div className="menu">
                 {navLinks.map((item, index) => (
@@ -164,20 +197,47 @@ const Header = () => {
                     key={index}
                   >
                     {item.display}
+
                   </NavLink>
                 ))}
               </div>
             </div>
-{/* 
+
             <Col lg="2" md="3" sm="0" className="d-flex align-items-center justify-content-end">
-              {loggedIn && (
-                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
-                  <DropdownToggle className="header__btn btn " caret>
+              {loggedIn ? (
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown} >
+                  <DropdownToggle className="header__btn btn " caret >
                     <img className="avatar-icon" src={img} alt="Avatar" />
                   </DropdownToggle>
+
+                  <DropdownMenu>
+                    <div className="sub-menu-info">
+                      <img  style={{width:"60px", height:"60px"}} className="avatar-info-icon" src={img} alt="Avatar" />
+                      <strong>{name}</strong>
+                      <hr />
+                    </div>
+
+                    <DropdownItem>
+                      <Link to="/profile" style={{ textDecoration: "none", color: "black" }}>
+                        <RiUserLine style={{ marginRight: "12px", }} />Thông tin cá nhân
+                      </Link>
+                    </DropdownItem>
+
+                    <DropdownItem divider />
+
+                    <DropdownItem onClick={handleLogout} style={{ textDecoration: "none", color: "black" }}>
+                      <RiLogoutBoxLine style={{ marginRight: "12px" }} />Đăng xuất
+                    </DropdownItem>
+
+                  </DropdownMenu>
+
                 </Dropdown>
+              ) : (
+                <button className="header__btn btn">
+                  <Link to="/login">Đăng nhập</Link>
+                </button>
               )}
-            </Col> */}
+            </Col>
           </div>
         </Container>
       </div>

@@ -4,7 +4,7 @@ import moment from 'moment';
 import 'moment/locale/vi';
 import { UploadOutlined } from '@ant-design/icons';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { getProcessAPI, getProcessImageAPIbyID, updateEndWorkingAPI,updateLocationAPI, updateProcessImageAPI, updateStartWorkingAPI, updateSubPriceAPI } from '../../API/Employee/employeeConfig';
+import { getProcessAPI, getProcessImageAPIbyID, updateCanncelJobAPI, updateEndWorkingAPI, updateLocationAPI, updateProcessImageAPI, updateStartWorkingAPI, updateSubPriceAPI } from '../../API/Employee/employeeConfig';
 import { Alert, Button, Image, Input, Modal, Select, Space, Table, Upload } from 'antd';
 import '../EmployeeUI/Calender.css';
 import CameraCapture from '../EmployeeUI/Camera/Camera';
@@ -21,12 +21,14 @@ const MyCalendar = () => {
   const [capturedImageUrl, setCapturedImageUrl] = useState('');
   const [idImage, setIdImage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalOther, setModalOther] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedValue, setSelectedValue] = useState('');
   const [items, setItems] = useState(['30000', '50000']);
   const [latitudeLGPS, setLatitudeGPS] = useState('');
   const [longtitudeGPS, setLongtitudeGPS] = useState('');
   const [inputValue, setInputValue] = useState('');
+  const [inputNote, setInputNote] = useState('');
   const inputRef = useRef(null);
   const formats = {
     monthHeaderFormat: 'MMMM',
@@ -74,20 +76,25 @@ const MyCalendar = () => {
               <p>Note: {event.note}</p>
             </div>
           ),
+          
+          phone: event.phone,
+          email: event.email,
           data: {
             status: event.status,
             startTime: event.startTime,
             startWorking: event.startWorking,
             endWorking: event.endWorking,
             name: event.name,
-            phone: event.phone,
-            email: event.email,
+            employeeAccountId: event.employeeAccountId,
+          employeeId: event.employeeId,
             note: event.note,
             address: event.address,
             typeName: event.typeName,
             nameservice: event.serviceName,
             employeeName: event.employeeName,
             subPrice: event.subPrice,
+
+
           }
         };
       }
@@ -109,23 +116,23 @@ const MyCalendar = () => {
       console.error('Failed to fetch data:', error);
     }
   };
- const location = async() =>{
-  navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
-    setLatitudeGPS(latitude)
-    setLongtitudeGPS(longitude)
-})
- }
+  const location = async () => {
+    navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
+      setLatitudeGPS(latitude)
+      setLongtitudeGPS(longitude)
+    })
+  }
 
-  const handleEventClick = async(event) => {
+  const handleEventClick = async (event) => {
     setSelectedEvent(event);
     location();
-    const dataGPS={
+    const dataGPS = {
       processId: event.id,
       latitude: latitudeLGPS,
       longtitude: longtitudeGPS
     }
-     await updateLocationAPI(dataGPS);
-     console.log(dataGPS)
+    await updateLocationAPI(dataGPS);
+    console.log(dataGPS)
   };
   const handleShowMore = (events, date) => {
     console.log('Events:', events);
@@ -178,7 +185,7 @@ const MyCalendar = () => {
         record.status !== 'Chờ' && (
           <Button
             onClick={() => handleClick(record.status)}
-            disabled={(record.status === 'Đang làm việc' && !selectedEvent.data.startTime) || (record.status === 'Hoàn Thành' && selectedEvent.data.endWorking)}
+            disabled={(record.status === 'Đang làm việc' && selectedEvent.data.startTime) || (record.status === 'Hoàn Thành' && selectedEvent.data.endWorking)}
           >Cập nhật</Button>
         )
       ),
@@ -249,9 +256,12 @@ const MyCalendar = () => {
     setSelectedImage(image);
     setModalVisible(true);
   };
-
+  const handleOther = () => {
+    setModalOther(true);
+  };
   const handleCloseModal = () => {
     setModalVisible(false);
+    setModalOther(false);
   };
   // bảng dropdown của antd
   const expandedRowRender = (record1) => {
@@ -358,7 +368,7 @@ const MyCalendar = () => {
   }
 
 
-  
+
   const onSelectChange = (value) => {
     setSelectedValue(value);
   };
@@ -366,7 +376,9 @@ const MyCalendar = () => {
   const onInputChange = (event) => {
     setInputValue(event.target.value);
   };
-
+  const onInputNote = (event) => {
+    setInputNote(event.target.value);
+  };
   const handleAddItem = () => {
     if (inputValue) {
       setItems([...items, inputValue]);
@@ -376,12 +388,26 @@ const MyCalendar = () => {
   };
   const handleSubmit = async () => {
     console.log('Selected value:', selectedValue);
-    const data ={
+    const data = {
       subPrice: parseInt(selectedValue),
       processId: selectedEvent.id
     }
     console.log(data);
     await updateSubPriceAPI(data);
+    setModalOther(false);
+  };
+  const handleSubmitCanncel = async () => {
+    console.log('Selected value:',selectedEvent);
+    const data = {
+      processId: selectedEvent.id,
+      oldEmployeeId: selectedEvent.data.employeeId,
+      note: inputNote,
+      createBy: selectedEvent.data.employeeAccountId
+    }
+    console.log(data);
+    await updateCanncelJobAPI(data);
+    setModalOther(false);
+    setInputNote('');
   };
   return (
     <div>
@@ -408,8 +434,63 @@ const MyCalendar = () => {
           <Modal visible={modalVisible} onCancel={handleCloseModal} footer={null}>
             <img src={selectedImage} />
           </Modal>
+        </div>
+        <div>
+          <Modal visible={modalOther} onCancel={handleCloseModal} footer={null}>
+            <div>
+              <h2 style={{ textAlign: "center" }}>Tác Vụ Khác Công Việc</h2>
+              <p style={{ marginBottom: '3px' }}><strong>Phụ Thu Thêm: </strong></p>
+              <Select
+                style={{ width: 300, margin: '5px' }}
+                placeholder="Chọn giá trị"
+                onChange={onSelectChange}
+                value={selectedEvent ? selectedEvent.data.subPrice : ''}
+                dropdownRender={(menu) => (
+                  <div>
+                    {menu}
+                    <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
+                      <Input
+                        style={{ flex: 'auto' }}
+                        value={inputValue}
+                        onChange={onInputChange}
+                        ref={inputRef}
+                      />
+                      <Button
+                        type="primary"
+                        style={{ flex: 'none', marginLeft: '8px' }}
+                        onClick={handleAddItem}
+                      >
+                        Thêm
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              >
+                {items.map((item) => (
+                  <Option key={item} value={item}>
+                    {item}
+                  </Option>
+                ))}
+              </Select>
+              <Button onClick={handleSubmit}>Xác Nhận</Button>
+              <p><strong>Lưu Ý:</strong> Phụ thu phải báo trước với khách hàng và được sự đồng ý của khách hàng.</p>
 
 
+              <p style={{ marginBottom: '3px' }}><strong>Yêu Cầu Huỷ Công Việc:</strong></p>
+              <div style={{ display: 'flex', flexWrap: 'nowrap', margin: '5px' }}>
+                <Input
+                  style={{ width: 300, marginRight: '5px' }}
+                  placeholder="Lý do huỷ"
+                  value={inputNote}
+                  onChange={onInputNote}
+                  ref={inputRef}
+                />
+                <Button onClick={handleSubmitCanncel}>Xác Nhận</Button>
+
+              </div>
+              <p><strong>Lưu Ý:</strong> Huỷ công việc chỉ được thực hiện khi trạng thái công việc là CHỜ.</p>
+            </div>
+          </Modal>
         </div>
         {/* mở camera ở đây */}
         <Modal
@@ -420,6 +501,7 @@ const MyCalendar = () => {
         >
           <CameraCapture onCaptureImage={handleCaptureImage} processId={selectedEvent?.id} />
         </Modal>
+
         <Modal
           visible={!!selectedEvent}
           onCancel={() => setSelectedEvent(null)}
@@ -429,7 +511,6 @@ const MyCalendar = () => {
               Đóng
             </Button>,
           ]}
-
         >
 
           {selectedEvent && (
@@ -440,8 +521,8 @@ const MyCalendar = () => {
                   <h4 style={{ textAlign: "center", margin: "10px" }}> Thông tin khách hàng</h4>
                   <div class="info-content">
                     <p><strong>Tên KH:</strong> {selectedEvent.data.name} </p>
-                    <p><strong>SĐT:</strong> {selectedEvent.data.phone}</p>
-                    <p><strong>Email:</strong> {selectedEvent.data.email}</p>
+                    <p><strong>SĐT:</strong> {selectedEvent.phone}</p>
+                    <p><strong>Email:</strong> {selectedEvent.email}</p>
                   </div>
                 </div>
                 <div class="process-info1">
@@ -469,6 +550,10 @@ const MyCalendar = () => {
                     hour: '2-digit',
                     minute: '2-digit',
                   })}</p>
+                
+              </div>
+              <div style={{display: 'flex', flexWrap: 'nowrap', margin: '5px'}}>
+                <div style={{flex: '1'}}>
                 <p>
                   <strong>Trạng Thái hiện tại:</strong>{" "}
                   {selectedEvent.data.status === "Incoming" ? (
@@ -481,45 +566,14 @@ const MyCalendar = () => {
                     selectedEvent.data.status
                   )}
                 </p>
-                <div>
-              <div>
-      <Select
-        style={{ width: 300 }}
-        placeholder="Chọn giá trị"
-        onChange={onSelectChange}
-        value={selectedEvent.data.subPrice}
-        dropdownRender={(menu) => (
-          <div>
-            {menu}
-            <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
-              <Input
-                style={{ flex: 'auto' }}
-                value={inputValue}
-        onChange={onInputChange}
-                ref={inputRef}
-              />
-              <Button
-                type="primary"
-                style={{ flex: 'none', marginLeft: '8px' }}
-                onClick={handleAddItem}
-              >
-                Thêm
-              </Button>
-            </div>
-          </div>
-        )}
-      >
-        {items.map((item) => (
-          <Option key={item} value={item}>
-            {item}
-          </Option>
-        ))}
-      </Select>
-      <Button onClick={handleSubmit}>Submit</Button>
-    </div>
-    </div>
-              </div>
-          
+
+                </div>
+                <div style={{flex: '1', marginRight: '5px', justifyContent: 'flex-end'}}>
+                <Button onClick={handleOther}>Tác vụ khác</Button>
+                </div>
+                </div>
+                
+              
               <Table
                 columns={columns}
                 dataSource={data}

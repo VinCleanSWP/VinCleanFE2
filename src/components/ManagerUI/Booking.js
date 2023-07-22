@@ -25,6 +25,7 @@ function Booking() {
 
     const handleEmployeeSelect = (employeeId) => {
         setSelectedEmployees(employeeId);
+        
     };
 
     const handleProcessSelect = (processId) => {
@@ -63,6 +64,8 @@ function Booking() {
                     progress: undefined,
                     theme: "light",
                 });
+                console.log(data);
+        fetchData();
                 axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
                     .then(response => {
                         console.log(response.data);
@@ -147,6 +150,9 @@ function Booking() {
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
+        fetchData();
+    }, []);
+    const fetchData = () => {
         axios.get('https://localhost:7013/api/Process')
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
@@ -155,8 +161,7 @@ function Booking() {
             .catch(error => {
                 console.error('Error fetching booking data:', error);
             });
-    }, []);
-
+    }
     useEffect(() => {
         assignTask();
     }, []);
@@ -180,7 +185,8 @@ function Booking() {
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setEmployeeData(response.data);
-                console.log(response.data)
+                console.log(response.data);
+                fetchData();
             })
             .catch(error => {
                 console.error('Error fetching booking data:', error);

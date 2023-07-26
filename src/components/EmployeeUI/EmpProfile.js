@@ -31,15 +31,15 @@ const style = {
 const gioitinh = [
     {
         id: 1,
-        gender: "Male",
+        gender: "Nam",
     },
     {
         id: 2,
-        gender: "Female",
+        gender: "Nữ",
     },
     {
         id: 3,
-        gender: "Other",
+        gender: "Khác",
     }
 ]
 
@@ -105,8 +105,8 @@ export default function EmpProfile() {
                 const data = response.data.data
                 const foundUser = data.find(emp => emp.account.accountId == id);
                 setCustomer(foundUser);
-                setCurrentGender(response.data.data.account.gender);
-                setCurrentImg(response.data.data.account.img);
+                setCurrentGender(foundUser.account.gender);
+                setCurrentImg(foundUser.account.img);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -157,7 +157,6 @@ export default function EmpProfile() {
     };
 
     const [check, setCheck] = useState(customer.account && customer.account.gender)
-    console.log(check);
 
     const handleSubmitInfo = async (e) => {
         e.preventDefault();
@@ -165,7 +164,7 @@ export default function EmpProfile() {
             employeeId: customer.employeeId,
             accountId: id,
             // name: customer.account.name,
-            name: customer.firstName + customer.lastName,
+            name: customer.firstName + " " + customer.lastName,
             customerId: customer.customerId,
             email: customer.account.email,
             password: customer.account.password,
@@ -174,7 +173,7 @@ export default function EmpProfile() {
             phone: customer.phone,
             status: "Active",
             gender: gender1 || currentGender,
-            img: tempImageUrl,
+            img: tempImageUrl || customer.account.img,
         };
 
         try {
@@ -200,8 +199,6 @@ export default function EmpProfile() {
                 console.error('Error:', error);
             });
     };
-
-    console.log(customer);
 
     const updateUserPassword = async (newPassword) => {
         try {
@@ -232,8 +229,8 @@ export default function EmpProfile() {
 
     const handleImageUpload = async e => {
         const file = e.target.files[0];
-        const storageRef = storage.ref(`Employee/${file.name}`);
-        const fileRef = storageRef.child(file.name);
+        const storageRef = storage.ref();
+        const fileRef = storageRef.child(`Employee/${file.name}`);
         await fileRef.put(file);
         const imgUrl = await fileRef.getDownloadURL();
         setTempImageUrl(imgUrl);
@@ -295,7 +292,7 @@ export default function EmpProfile() {
                                             </div>
 
                                             <div className="form-group">
-                                                <label className="form-label">Gender: </label>
+                                                <label className="form-label">Giới tính: </label>
                                                 {gioitinh.map(sex => (
                                                     <div key={sex.id}>
                                                         <input type='radio'

@@ -37,15 +37,15 @@ const style = {
 const gioitinh = [
     {
         id: 1,
-        gender: "Male",
+        gender: "Nam",
     },
     {
         id: 2,
-        gender: "Female",
+        gender: "Nữ",
     },
     {
         id: 3,
-        gender: "Other",
+        gender: "Khác",
     }
 ]
 
@@ -299,8 +299,8 @@ export default function ProfileCustomer() {
                                                     Chọn ảnh
                                                     <input type="file" className="account-settings-fileinput" onChange={handleImageUpload} />
                                                 </label> &nbsp;
-                                                <button type="button" className="btn btn-default md-btn-flat">Reset</button>
-                                                <div className="text small mt-1">Allowed JPG, GIF or PNG.</div>
+                                                <button type="button" className="btn btn-default md-btn-flat">Đặt lại</button>
+                                                <div className="text small mt-1">Cho phép JPG, GIF or PNG.</div>
                                             </div>
                                         </div>
                                         <hr className="border-light m-0" />
@@ -317,7 +317,7 @@ export default function ProfileCustomer() {
                                             </div>
 
                                             <div className="form-group">
-                                                <label className="form-label">Birthday</label>
+                                                <label className="form-label">Ngày sinh</label>
                                                 <TextField
                                                     id="dob"
                                                     name="dob"
@@ -343,7 +343,7 @@ export default function ProfileCustomer() {
                                             </div> */}
 
                                             <div className="form-group">
-                                                <label className="form-label">Gender: </label>
+                                                <label className="form-label">Giới tính: </label>
                                                 {gioitinh.map(sex => (
                                                     <div key={sex.id}>
                                                         <input type='radio'
@@ -374,7 +374,7 @@ export default function ProfileCustomer() {
                                             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                                             <div className="text-right mt-3 mb-3">
                                                 <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
-                                                <button type="button" className="btn btn-default">Cancel</button>
+                                                <button type="button" className="btn btn-default">Hủy</button>
                                             </div>
                                         </div>
                                     </form>

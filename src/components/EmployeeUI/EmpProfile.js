@@ -51,6 +51,8 @@ export default function EmpProfile() {
     const id = localStorage.getItem('id');
     const [errorMessage, setErrorMessage] = useState('')
     const [tempImageUrl, setTempImageUrl] = useState('');
+    const [currentGender, setCurrentGender] = useState('');
+    const [currentImg, setCurrentImg]  = useState('');
 
     // ------------PasswordState----------
     const [currentPassword, setCurrentPassword] = useState('');
@@ -103,6 +105,8 @@ export default function EmpProfile() {
                 const data = response.data.data
                 const foundUser = data.find(emp => emp.account.accountId == id);
                 setCustomer(foundUser);
+                setCurrentGender(response.data.data.account.gender);
+                setCurrentImg(response.data.data.account.img);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -160,7 +164,8 @@ export default function EmpProfile() {
         const updatedUser = {
             employeeId: customer.employeeId,
             accountId: id,
-            name: customer.account.name,
+            // name: customer.account.name,
+            name: customer.firstName + customer.lastName,
             customerId: customer.customerId,
             email: customer.account.email,
             password: customer.account.password,
@@ -168,7 +173,7 @@ export default function EmpProfile() {
             lastName: customer.lastName,
             phone: customer.phone,
             status: "Active",
-            gender: gender1,
+            gender: gender1 || currentGender,
             img: tempImageUrl,
         };
 
@@ -184,9 +189,12 @@ export default function EmpProfile() {
             setErrorMessage('An error occurred. Please try again.');
         }
 
-        axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
+        // Gọi API để lấy dữ liệu
+        axios.get(`https://localhost:7013/api/Employee`)
             .then(response => {
-                setCustomer(response.data.data);
+                const data = response.data.data
+                const foundUser = data.find(emp => emp.account.accountId == id);
+                setCustomer(foundUser);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -242,7 +250,7 @@ export default function EmpProfile() {
                         <div className="col-md-3 pt-0">
                             <div className="list-group list-group-flush account-settings-links">
                                 <div class="Account__StyledAvatar-sc-1d5h8iz-3 profile-left">
-                                    <img src={tempImageUrl} alt="avatar" />
+                                    <img src={tempImageUrl || currentImg} alt="avatar" />
                                     <div class="info">
                                         Tài khoản của
                                         <strong>{customer.lastName} {customer.firstName}</strong>
@@ -263,7 +271,7 @@ export default function EmpProfile() {
                                     <form onSubmit={handleSubmitInfo}>
                                         <h4 className="card-body fw-bold">Thông tin cá nhân</h4>
                                         <div className="card-body media align-items-center">
-                                            <img src={tempImageUrl} alt className="d-block ui-w-80" />
+                                            <img src={tempImageUrl || currentImg} alt className="d-block ui-w-80" />
                                             <div className="media-body ml-4">
                                                 <label className="btn btn-outline-primary">
                                                     Chọn ảnh
@@ -290,10 +298,13 @@ export default function EmpProfile() {
                                                 <label className="form-label">Gender: </label>
                                                 {gioitinh.map(sex => (
                                                     <div key={sex.id}>
-                                                        <input type='radio' name='gender' value={sex.gender} checked={check === sex.gender} onChange={handleGender} />{sex.gender}
+                                                        <input type='radio'
+                                                            name='gender'
+                                                            value={sex.gender}
+                                                            checked={check === sex.gender || (!check && sex.gender === currentGender)}
+                                                            onChange={handleGender} />{sex.gender}
                                                     </div>
                                                 ))}
-                                                <p>Current gender: {customer.account && customer.account.gender}</p>
                                             </div>
 
                                             <div className="form-group">

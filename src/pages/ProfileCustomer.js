@@ -156,7 +156,7 @@ export default function ProfileCustomer() {
     };
 
     const handleGender = (e) => {
-        // e.preventDefault();
+        e.preventDefault();
         setGender(e.target.value)
         setCheck(e.target.value)
     };
@@ -252,9 +252,6 @@ export default function ProfileCustomer() {
         setSelectedDate(value !== selectedDate ? value : customer.account.dob);
     };
 
-
-
-
     const handleImageUpload = async e => {
         const file = e.target.files[0];
         const storageRef = storage.ref();
@@ -263,8 +260,6 @@ export default function ProfileCustomer() {
         const imgUrl = await fileRef.getDownloadURL();
         setTempImageUrl(imgUrl);
     };
-
-
 
     return (
         <div className='container'>
@@ -354,7 +349,7 @@ export default function ProfileCustomer() {
                                                         <input type='radio'
                                                         name='gender' 
                                                         value={sex.gender} 
-                                                        checked={check === sex.gender|| (!check && sex.gender === currentGender)} 
+                                                        checked={check === sex.gender || (!check && sex.gender === currentGender)} 
                                                         onChange={handleGender} />{sex.gender}
                                                     </div>
                                                 ))}

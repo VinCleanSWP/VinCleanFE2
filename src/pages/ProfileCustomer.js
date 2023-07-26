@@ -58,8 +58,8 @@ export default function ProfileCustomer() {
     const id = localStorage.getItem('id');
     const [errorMessage, setErrorMessage] = useState('')
     const [tempImageUrl, setTempImageUrl] = useState('');
-    const [currentImg, setCurrentImg]  = useState('');
-    const [currentGender, setCurrentGender]  = useState('');
+    const [currentImg, setCurrentImg] = useState('');
+    const [currentGender, setCurrentGender] = useState('');
 
     // ------------PasswordState----------
     const [currentPassword, setCurrentPassword] = useState('');
@@ -175,7 +175,7 @@ export default function ProfileCustomer() {
             lastName: customer.lastName,
             phone: customer.phone,
             address: customer.address,
-            dob: selectedDate ||  customer.account.dob,
+            dob: selectedDate || customer.account.dob,
             gender: gender1 || currentGender,
             // gender: customer.account.gender,
             img: tempImageUrl || customer.account.img
@@ -272,15 +272,15 @@ export default function ProfileCustomer() {
                         <div className="col-md-3 pt-0">
                             <div className="list-group list-group-flush account-settings-links">
                                 <div class="Account__StyledAvatar-sc-1d5h8iz-3 profile-left">
-                                    <img style={{width:"100px", height:"100px"}} src={tempImageUrl || currentImg} alt="avatar" />
+                                    <img style={{ width: "100px", height: "100px" }} src={tempImageUrl || currentImg} alt="avatar" />
                                     <div class="info">
                                         Tài khoản của
                                         <strong>{customer.lastName} {customer.firstName}</strong>
                                     </div>
                                 </div>
-                                <a className="list-group-item list-group-item-action active" data-toggle="list" href="#account-general"><BiSolidUser/> Thông tin chung</a>
-                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password"><AiOutlineLock/> Bảo mật</a>
-                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-info"><AiOutlineHistory/> Lịch sử đặt</a>
+                                <a className="list-group-item list-group-item-action active" data-toggle="list" href="#account-general"><BiSolidUser /> Thông tin chung</a>
+                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password"><AiOutlineLock /> Bảo mật</a>
+                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-info"><AiOutlineHistory /> Lịch sử đặt</a>
                                 {/* <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-social-links">Social links</a>
                                 <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-connections">Connections</a>
                                 <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Notifications</a> */}
@@ -293,7 +293,7 @@ export default function ProfileCustomer() {
                                     <form onSubmit={handleSubmitInfo}>
                                         <h4 className="card-body fw-bold">Thông tin cá nhân</h4>
                                         <div className="card-body media align-items-center">
-                                            <img style={{width:"100px", height:"100px", borderRadius:'100%'}}  src={tempImageUrl || currentImg} alt className=" " />
+                                            <img style={{ width: "100px", height: "100px", borderRadius: '100%' }} src={tempImageUrl || currentImg} alt className=" " />
                                             <div className="media-body ml-4">
                                                 <label className="btn btn-outline-primary">
                                                     Chọn ảnh
@@ -307,13 +307,15 @@ export default function ProfileCustomer() {
                                         <div className="card-body">
                                             <div className="form-group">
                                                 <label className="form-label">Tên</label>
-                                                <input type="text" className="form-control" maxlength="15" id="firstName"
-                                                    name="firstName" defaultValue={customer.firstName} onChange={handleInputChange} required />
+                                                <input type="text" className="form-control" maxLength="30" id="firstName" pattern="^[A-Za-z ]+$"
+                                                    name="firstName" defaultValue={customer.firstName} onChange={handleInputChange}
+                                                    title="Tên không được xuất hiện số và kí tự đặc biệt." required />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Họ</label>
-                                                <input type="text" className="form-control" maxlength="30" id="lastName"
-                                                    name="lastName" defaultValue={customer.lastName} onChange={handleInputChange} required />
+                                                <input type="text" className="form-control" maxLength="30" id="lastName" pattern="^[A-Za-z ]+$"
+                                                    name="lastName" defaultValue={customer.lastName} onChange={handleInputChange}
+                                                    title="Tên không được xuất hiện số và kí tự đặc biệt." required />
                                             </div>
 
                                             <div className="form-group">
@@ -331,35 +333,24 @@ export default function ProfileCustomer() {
                                                 />
                                             </div>
 
-                                            {/* <div className="form-group">
-                                                <label className="form-label">Gender: </label>
-                                                <select id="gender" name="gender" value={customer.account && customer.account.gender} onChange={handleGender}>
-                                                    <select id="gender" name="gender" value={customer.account && customer.account.gender} onChange={handleInputChange}>
-                                                    <option value={customer.account && customer.account.gender}>{customer.account && customer.account.gender} (Current)</option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female" selected>Female</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </div> */}
-
                                             <div className="form-group">
                                                 <label className="form-label">Giới tính: </label>
                                                 {gioitinh.map(sex => (
                                                     <div key={sex.id}>
                                                         <input type='radio'
-                                                        name='gender' 
-                                                        value={sex.gender} 
-                                                        checked={check === sex.gender || (!check && sex.gender === currentGender)} 
-                                                        onChange={handleGender} />{sex.gender}
+                                                            name='gender'
+                                                            value={sex.gender}
+                                                            checked={check === sex.gender || (!check && sex.gender === currentGender)}
+                                                            onChange={handleGender} />{sex.gender}
                                                     </div>
                                                 ))}
                                             </div>
-                                           
+
 
                                             <div className="form-group">
                                                 <label className="form-label">Số điện thoại</label>
-                                                <input type="text" className="form-control" id="phone"
-                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} required />
+                                                <input type="text" className="form-control" id="phone" title="Số điện thoại bao gồm 10-12 chữ số."
+                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10,12}" required />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Địa chỉ</label>
@@ -369,7 +360,7 @@ export default function ProfileCustomer() {
                                             <div className="form-group">
                                                 <label className="form-label">E-mail</label>
                                                 <input type="text" className="form-control mb-1" defaultValue={customer.account && customer.account.email} disabled />
-                                               
+
                                             </div>
                                             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                                             <div className="text-right mt-3 mb-3">
@@ -394,12 +385,14 @@ export default function ProfileCustomer() {
                                             <div className="form-group">
                                                 <label className="form-label">Mật khẩu mới</label>
                                                 <input type="password" className="form-control" id="newPassword"
+                                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
                                                     value={newPassword}
                                                     onChange={handleNewPasswordChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Nhập lại mật khẩu mới</label>
                                                 <input type="password" className="form-control" id="confirmPassword"
+                                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
                                                     value={confirmPassword}
                                                     onChange={handleConfirmPasswordChange} />
                                             </div>
@@ -425,7 +418,7 @@ export default function ProfileCustomer() {
                                                                 <th>Hạng mục</th>
                                                                 <th>Nhân viên</th>
                                                                 <th>Ngày đặt</th>
-                                                                <th>Tổng tiền</th>
+                                                                <th className='left'>Tổng tiền</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>

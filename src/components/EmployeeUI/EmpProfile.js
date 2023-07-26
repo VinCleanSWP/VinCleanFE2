@@ -52,7 +52,7 @@ export default function EmpProfile() {
     const [errorMessage, setErrorMessage] = useState('')
     const [tempImageUrl, setTempImageUrl] = useState('');
     const [currentGender, setCurrentGender] = useState('');
-    const [currentImg, setCurrentImg]  = useState('');
+    const [currentImg, setCurrentImg] = useState('');
 
     // ------------PasswordState----------
     const [currentPassword, setCurrentPassword] = useState('');
@@ -282,12 +282,12 @@ export default function EmpProfile() {
                                         <div className="card-body">
                                             <div className="form-group">
                                                 <label className="form-label">Tên</label>
-                                                <input type="text" className="form-control" maxlength="15" id="firstName"
+                                                <input type="text" className="form-control" maxLength="30" id="firstName" pattern="^[A-Za-z ]+$"
                                                     name="firstName" defaultValue={customer.firstName} onChange={handleInputChange} required />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Họ</label>
-                                                <input type="text" className="form-control" maxlength="30" id="lastName"
+                                                <input type="text" className="form-control" maxLength="30" id="lastName" pattern="^[A-Za-z ]+$"
                                                     name="lastName" defaultValue={customer.lastName} onChange={handleInputChange} required />
                                             </div>
 
@@ -306,8 +306,8 @@ export default function EmpProfile() {
 
                                             <div className="form-group">
                                                 <label className="form-label">Số điện thoại</label>
-                                                <input type="text" className="form-control" id="phone"
-                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} required />
+                                                <input type="text" className="form-control" id="phone" title="Số điện thoại bao gồm 10-12 chữ số."
+                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10,12}" required />
                                             </div>
 
                                             <div className="form-group">
@@ -337,12 +337,14 @@ export default function EmpProfile() {
                                             <div className="form-group">
                                                 <label className="form-label">Mật khẩu mới</label>
                                                 <input type="password" className="form-control" id="newPassword"
+                                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
                                                     value={newPassword}
                                                     onChange={handleNewPasswordChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Nhập lại mật khẩu</label>
                                                 <input type="password" className="form-control" id="confirmPassword"
+                                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
                                                     value={confirmPassword}
                                                     onChange={handleConfirmPasswordChange} />
                                             </div>

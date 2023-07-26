@@ -313,15 +313,11 @@ export default function EmpProfile() {
                                             <div className="form-group">
                                                 <label className="form-label">E-mail</label>
                                                 <input type="text" className="form-control mb-1" defaultValue={customer.account && customer.account.email} disabled />
-                                                <div className="alert alert-warning mt-3">
-                                                    Email chưa được xác nhận. Hãy vào inbox để xác nhận!<br />
-                                                    <a href="javascript:void(0)">Gửi lại xác nhận</a>
-                                                </div>
                                             </div>
                                             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                                             <div className="text-right mt-3 mb-3">
-                                                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
                                                 <button type="button" className="btn btn-default">Hủy</button>
+                                                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
                                             </div>
                                         </div>
                                     </form>
@@ -351,8 +347,8 @@ export default function EmpProfile() {
                                                     onChange={handleConfirmPasswordChange} />
                                             </div>
                                             <div className="text-right mt-3 mb-3">
-                                                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
                                                 <button type="button" className="btn btn-default">Hủy</button>
+                                                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
                                             </div>
                                         </form>
                                     </div>

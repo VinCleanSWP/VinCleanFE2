@@ -89,9 +89,11 @@ export default function Dashboard() {
       }, [orders]);
 
     return (
-        <div className='container'>
-
-            <h2 style={{ color: 'black', fontSize: '45px', fontWeight: 'bold', padding: '10px 35px' }}>Dashboard</h2>
+<div>
+      <div style={{paddingBottom: '0px',paddingLeft: '15px',paddingRight: '15px',paddingTop: '5px'}}>
+      <h2 style={{ color: 'black', fontSize: '45px', fontWeight: 'bold',border:'1px solid black', padding: '10px 35px',borderRadius:'10px',background:'#4D96FF'}}>Lịch Công Việc</h2>
+      </div>
+      <div style={{ height: '1300px', backgroundColor: 'white', padding: "20px",border:'1px solid black', borderRadius: "10px", margin: '15px' }}>
             <Row>
                 <Col lg="8" md="8">
                     <div className="tab-content">
@@ -224,6 +226,7 @@ export default function Dashboard() {
                         </Col>
                     </Row>
                 </Container >
+            </div>
             </div>
         </div>
 

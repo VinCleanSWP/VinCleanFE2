@@ -248,7 +248,6 @@ const MyCalendar = () => {
   };
 
   const handleCloseCamera = () => {
-
     setShowCamera(false);
 
   };
@@ -345,19 +344,19 @@ const MyCalendar = () => {
       switch (eventType) {
         case "Processing":
           return (
-            <div class="rbc-event" style={{ background: "#fbec15", color: 'black', height: '100%', width: '100%' }}>
+            <div class="rbc-event" style={{ background: "#f4a700", color: 'black', height: '100%', width: '100%' }}>
               {props.title}
             </div>
           );
         case "Completed":
           return (
-            <div class="rbc-event" style={{ background: "#6BCB77", color: 'black', height: '100%', width: '100%' }}>
+            <div class="rbc-event" style={{ background: "green", color: 'black', height: '100%', width: '100%' }}>
               {props.title}
             </div>
           );
         case "Incoming":
           return (
-            <div class="rbc-event" style={{ background: "#FF6B6B", color: 'black', height: '100%', width: '100%' }}>
+            <div class="rbc-event" style={{ background: "#fbec15", color: 'black', height: '100%', width: '100%' }}>
               {props.title}
             </div>
           );
@@ -411,9 +410,10 @@ const MyCalendar = () => {
   };
   return (
     <div>
-      <h2 style={{ color: 'black', fontSize: '45px', fontWeight: 'bold', padding: '10px 35px' }}>Calendar</h2>
-
-      <div style={{ height: '1300px', backgroundColor: 'white', padding: "20px", borderRadius: "10px", margin: '15px' }}>
+      <div style={{paddingBottom: '0px',paddingLeft: '15px',paddingRight: '15px',paddingTop: '5px'}}>
+      <h2 style={{ color: 'black', fontSize: '45px', fontWeight: 'bold',border:'1px solid black', padding: '10px 35px',borderRadius:'10px',background:'#4D96FF'}}>Lịch Công Việc</h2>
+      </div>
+      <div style={{ height: '1300px', backgroundColor: 'white', padding: "20px",border:'1px solid black', borderRadius: "10px", margin: '15px' }}>
 
         <Calendar
           formats={formats}
@@ -429,6 +429,7 @@ const MyCalendar = () => {
           onShowMore={handleShowMore}
           onSelectEvent={handleEventClick}
           components={component}
+          showAllEvents
         />
         <div>
           <Modal visible={modalVisible} onCancel={handleCloseModal} footer={null}>
@@ -561,7 +562,7 @@ const MyCalendar = () => {
                   ) : selectedEvent.data.status === "Completed" ? (
                     <span style={{ color: "green" }}><strong>hoàn thành</strong></span>
                   ) : selectedEvent.data.status === "Processing" ? (
-                    <span style={{ color: "#fbec15" }}><strong>Đang làm việc</strong></span>
+                    <span style={{ color: "#f4a700" }}><strong>Đang làm việc</strong></span>
                   ) : (
                     selectedEvent.data.status
                   )}

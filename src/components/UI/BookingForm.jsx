@@ -230,7 +230,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     setJourneyDate("");
     setJourneyTime("");
     setMessage("");
-    handleClosePopup
+    handleClosePopup()
   };
   const handleClosePopup = () => {
     setIsPopupOpen(false);

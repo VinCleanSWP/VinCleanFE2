@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // import { storage } from 'firebase/storage';
 import { storage } from './FireBaseConfig';
 import moment from 'moment';
-
+import Swal from 'sweetalert2';
 
 
 function Table() {
@@ -61,29 +61,53 @@ function Table() {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [genderError, setGenderError] = useState('');
+    const [statusError, setStatusError] = useState('');
 
     const deleteEmployee = (employeeId) => {
-        axios.delete(`https://localhost:7013/api/Employee/${employeeId}`)
-            .then(response => {
-                console.log('Employee delete successfully:', response.data);
-                fetchEmployeeList();
-                setEmployeeList(response.data.data);
-                toast.success('Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'btn btn-success',
+              cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+          })
+          swalWithBootstrapButtons.fire({
+            title: 'Are you sure to Delete this Account?',
+            text: "Double-check before you delete this account!!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`https://localhost:7013/api/Employee/${employeeId}`)
+                .then(response => {
+                    console.log('Employee delete successfully:', response.data);
+                    fetchEmployeeList();
+                    setEmployeeList(response.data.data);
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'This Account has been deleted.',
+                        'success'
+                      )
+                })
+                .catch(error => {
+                    console.error('Error deleting customer:', error);
+                    // Xử lý lỗi khi xóa khách hàng
                 });
-
-            })
-            .catch(error => {
-                console.error('Error deleting customer:', error);
-                // Xử lý lỗi khi xóa khách hàng
-            });
+              
+            } else if (
+              /* Read more about handling dismissals below */
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              swalWithBootstrapButtons.fire(
+                'Cancelled',
+                'this account is safe :)',
+                'error'
+              )
+            }
+          })
     };
 
 
@@ -111,7 +135,7 @@ function Table() {
                 setEmployeeId(data.employeeId)
                 setAccountId(data.account.accountId);
                 setUserName(data.account.name);
-                setstatus(data.account.status);
+                setstatus(data.status);
                 setStartDate(data.startDate);
                 setendDate(data.endDate);
                 setIsDeleted(data.account.isDeleted);
@@ -176,11 +200,12 @@ function Table() {
             setPhoneError('Please enter a valid 10-digit phone number.');
             return;
         }
+        const selectedStatus = document.getElementById('statusType').value;
         const updatedEmployee = {
             employeeId: employeeId,
             // accountId: 27,
             img: newImage,//them vao giup tao Phung
-            status: "Available",
+            status: selectedStatus,
             name: userName,
             firstName: firstName,
             lastName: lastName,
@@ -298,13 +323,14 @@ function Table() {
             return;
         }
 
+        const selectedStatus = document.getElementById('statusType').value;
 
         const formData = {
             name: newUserName,
             email: newEmail,
             img: newImage,
             password: newPassword,
-            status: 'Available',
+            status: selectedStatus,
             gender: newGender,
             firstName: newFirstName,
             lastName: newLastName,
@@ -362,9 +388,7 @@ function Table() {
 
 
     return (
-
         <div>
-
             <Modal
                 isOpen={modalEditIsOpen}
                 onRequestClose={() => setEditModalIsOpen(false)}
@@ -373,16 +397,14 @@ function Table() {
                     overlay: {
                         zIndex: 9999,
                         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-
                     },
                     content: {
                         width: '800px',
-                        height: '800px',
+                        height: 'auto',
                         margin: 'auto',
                         overflow: 'auto'
                     }
                 }}
-
             >
                 <div>
                     <div className="card overflow-hidden">
@@ -391,11 +413,11 @@ function Table() {
                             <div className="tab-content">
                                 <div className="tab-pane fade active show" id="account-general">
                                     <hr className="border-light m-0" />
-                                    <div className="card-body" style={{ height: '700px' }}>
+                                    <div className="card-body" >
                                         <h3 style={{ textAlign: "center" }}><strong>Edit Employee</strong></h3>
 
                                         <div style={{ display: 'flex' }}>
-                                            <div><img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius: '50%' }} /></div>
+                                            <div><img src={newImage || img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius: '100%' }} /></div>
                                             <div style={{ paddingTop: '15px', paddingLeft: '10px', width: 'auto', fontSize: '25px' }}><strong>{userName}</strong>
                                                 <br></br>
                                                 <div style={{ fontSize: '13px' }}><strong style={{ marginRight: "5px" }}>Account ID</strong>{accountId}</div>
@@ -406,7 +428,6 @@ function Table() {
                                         </div>
 
                                         <div>
-                                            <div><img src={newImage} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius: '50%' }} /></div>
                                             <input type="file" onChange={handleImageUpload} />
 
                                         </div>
@@ -434,12 +455,10 @@ function Table() {
                                                 </div>
                                                 <div className="form-group">
                                                     <label className="form-label"><strong>Status</strong></label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control mb-1"
-                                                        value={status}
-                                                        onChange={(e) => setstatus(e.target.value)}
-                                                    />
+                                                    <select id="statusType" className="form-control" >
+                                                        <option value="Available">Available</option>
+                                                        <option value="NonAvailable">NonAvailable</option>
+                                                    </select>
 
                                                 </div>
 
@@ -507,8 +526,6 @@ function Table() {
                         </div>
                     </div>
                     <div className="text-right mt-3">
-
-
                         <button type="button" className="btn btn-secondary" onClick={() => setEditModalIsOpen(false)}>Close</button>
                         <span className="mr-2"></span>
                         <button type="button" className="btn btn-primary mr-2" onClick={handleChangeSubmit} >Update </button>

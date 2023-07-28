@@ -163,19 +163,25 @@ const ServiceTypeDetail = () => {
               <ul className="service-list" style={{ border: '2px solid gray', borderRadius: '10px', margin: '0' }}>
 
 
-                {service.map(service => (
-                  <li
-                    className={`btn service-item ${service.serviceId === selectedServiceId ? 'selected' : ''}`}
-                    key={service.serviceId}
-                    onClick={() => {
-                      setSelectedServiceId(service.serviceId);
-                      setSelectedServiceName(service.name);
-                      setSelectedServiceCost(service.cost)
-                    }}
-                  >
-                    {service.name} / {service.cost} VND
-                  </li>
-                ))}
+                {service.map((service) => {
+                  if (service.status === "Available") {
+                    return (
+                      <li
+                        className={`btn service-item ${service.serviceId === selectedServiceId ? 'selected' : ''}`}
+                        key={service.serviceId}
+                        onClick={() => {
+                          setSelectedServiceId(service.serviceId);
+                          setSelectedServiceName(service.name);
+                          setSelectedServiceCost(service.cost);
+                        }}
+                      >
+                        {service.name} / {service.cost} VND
+                      </li>
+                    );
+                  } else {
+                    return null; // Nếu service.status không phải "Available", trả về null để không hiển thị gì cả
+                  }
+                })}
 
               </ul>
 

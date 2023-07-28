@@ -48,7 +48,7 @@ const BlogDetails = () => {
             });
     }, [id]);
     const fetchComments = (blogid) => {
-        axios.get(`https://localhost:7013/api/Comment?blogId=${blogId}`)
+        axios.get(`https://localhost:7013/api/Comment?blogId=${blogid}`)
             .then(response => {
                 setComments(response.data.data);
             })

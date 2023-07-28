@@ -79,7 +79,7 @@ export default function Dashboard() {
     const totalIncome = () => {
         let sum = 0;
         orders.forEach(order => {
-            sum += order.total; // Giả sử mỗi đơn hàng có thuộc tính "amount" chứa giá trị tiền
+            sum += order.total;
         });
         setTotalAmount(sum);
     };

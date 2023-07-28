@@ -17,7 +17,7 @@ export default function BlogDetail() {
     const id = parseInt(blogId.id)
     const [tempImageUrl, setTempImageUrl] = useState('');
     const navigate = useNavigate();
-    const handleSave = () => {
+    const handleSave = async () => {
         const blogData = {
             ...blog,
             title: title,
@@ -28,6 +28,7 @@ export default function BlogDetail() {
         // Gọi API để lấy dữ liệu
         axios.post(`https://localhost:7013/api/Blog`, blogData)
             .then(response => {
+
                 toast.success('Create Successfully!', {
                     position: "top-right",
                     autoClose: 5000,
@@ -40,7 +41,7 @@ export default function BlogDetail() {
                 });// Lưu dữ liệu vào state
 
                 setBlog(response.data.data);
-                navigate("/bloglist");
+
 
 
 
@@ -48,6 +49,8 @@ export default function BlogDetail() {
             .catch(error => {
                 console.error('Error:', error);
             });
+        navigate("/bloglist");
+
 
 
     };
@@ -71,6 +74,7 @@ export default function BlogDetail() {
     const handleContentChange = (value) => {
         setContent(value);
     };
+
     return (
         <div className="page-container">
             {/* MAIN CONTENT*/}
@@ -88,6 +92,7 @@ export default function BlogDetail() {
                                                 <div>
                                                     <label><strong>Title:</strong></label>
                                                     <input type="text" className="form-control mb-1" value={title} onChange={handleTitleChange} />
+
                                                 </div>
                                                 <div>
                                                     <label><strong>Summary:</strong></label>

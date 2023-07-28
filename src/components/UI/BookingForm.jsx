@@ -41,10 +41,14 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   const [validDate, setValidDate] = useState(true);
   const [validAddress, setValidAddress] = useState(true);
   const [validTime, setValidTime] = useState(true);
-  const [validService, setValidSerVice] = useState(true);
+  const [validService, setValidService] = useState(true);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
 
   const accountID = localStorage.getItem('id');
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowString = tomorrow.toISOString().split('T')[0];
 
   useEffect(() => {
     axios.get(`https://localhost:7013/api/Customer/Account/${accountID}`)
@@ -67,6 +71,13 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     //   alert('Vui lòng điền thông tin');
     //   return false;
     // }
+    setValidTime(true);
+    setValidAddress(true);
+    setValidFirstName(true);
+    setValidPhone(true);
+    setValidLastName(true);
+    setValidDate(true);
+    setValidService(true);
     const phoneRegex = /^\d{10}$/;
     const addressRegex = /^S\d+\.\d+\s\d+$/;
     if (!firstName.trim()) {
@@ -114,15 +125,12 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         setValidAddress(true);
       }
     }
-    if (!date.trim()) {
+    if (!journeyDate.trim()) {
       setValidDate("Vui lòng nhập ngày");
 
       return false;
     }
-    if (serviceId == null) {
-      setValidService("Vui lòng chọn dịch vụ")
-      return false;
-    }
+
     if (journeyTime == null) {
       setValidTime("Vui lòng chọn thời gian");
 
@@ -141,6 +149,11 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         return false;
       }
     }
+    if (serviceId == null) {
+      setValidService("Vui lòng chọn dịch vụ");
+      return false;
+    }
+
     return true;
   }
 
@@ -239,7 +252,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   return (
     <Form onSubmit={handleSubmit}>
       <div style={{ display: 'flex' }}>  <div> {validFirstName && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validFirstName}</div>}
-        <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validFirstName ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+        <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validFirstName ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
 
           <input type="text" placeholder="Tên" value={firstName} onChange={(e) => setFirstName(e.target.value)}
             style={{
@@ -254,7 +267,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         </FormGroup>
 
         {validLastName && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validLastName}</div>}
-        <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validLastName ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+        <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validLastName ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
           <input type="text" placeholder="Họ" value={lastName} onChange={(e) => setLastName(e.target.value)}
             style={{
               fontWeight: 'bold',
@@ -264,7 +277,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
           />
         </FormGroup>
         {validPhone && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validPhone}</div>}
-        <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validPhone ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+        <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validPhone ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
           <input type="text" placeholder="SĐT" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
             style={{
               fontWeight: 'bold',
@@ -276,7 +289,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       </div>
 
         <div> {validAddress && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validAddress}</div>}
-          <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validAddress ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+          <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validAddress ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
             <input type="text" placeholder="Địa chỉ" value={address} onChange={(e) => setAddress(e.target.value)}
               style={{
                 fontWeight: 'bold',
@@ -286,8 +299,8 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
             />
           </FormGroup>
           {validDate && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validDate}</div>}
-          <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validDate ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
-            <input type="date" placeholder="Ngày đặt" value={journeyDate} onChange={(e) => setJourneyDate(e.target.value)}
+          <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validDate ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
+            <input type="date" placeholder="Ngày đặt" value={journeyDate} min={tomorrowString} onChange={(e) => setJourneyDate(e.target.value)}
               style={{
                 fontWeight: 'bold',
                 color: journeyDate ? 'black' : 'gray',
@@ -296,7 +309,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
             />
           </FormGroup>
           {validTime && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validTime}</div>}
-          <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validTime ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+          <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validTime ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
             <input type="time" placeholder="Thời gian" value={journeyTime} onChange={(e) => setJourneyTime(e.target.value)}
               style={{
                 fontWeight: 'bold',
@@ -307,7 +320,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
           </FormGroup></div>
       </div>
 
-
+      {validService && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validService}</div>}
       <FormGroup style={{ border: '2px solid gray', borderRadius: '10px' }}>
         <textarea rows={5} type="textarea" className="textarea" placeholder="Ghi chú" value={message} onChange={(e) => setMessage(e.target.value)}
           style={{

@@ -16,7 +16,7 @@ const Service = () => {
     const accountId = localStorage.getItem('id');
     const [servicetypeid, setServiceTypeId] = useState('');
     const [serviceId, setServiceId] = useState('');
-    const [TempImageUrl,setTempImageUrl] = useState('');
+    const [TempImageUrl, setTempImageUrl] = useState('');
 
     const [Name, setName] = useState('');
     const [Cost, setCost] = useState('');
@@ -65,7 +65,7 @@ const Service = () => {
     }, [servicetypeid]);
 
     useEffect(() => {
-        axios.get(`https://localhost:7013/api/Service/Type/`)
+        axios.get(`https://localhost:7013/api/Service/Type`)
             .then(response => {
                 const data = response;
                 setServiceId(data.ServiceId);
@@ -83,12 +83,15 @@ const Service = () => {
 
 
 
-    const startEditingService = (serviceId, serviceName, serviceCost, serviceDescription, serviceStatus) => {
+    const startEditingService = (serviceId, serviceName, serviceStatus, serviceDescription, serviceCost) => {
+
         setEditingServiceId(serviceId);
         setEditingServiceName(serviceName);
-        setEditingServiceCost(serviceCost);
-        setEditingServiceDescription(serviceDescription);
         setEditingServiceStatus(serviceStatus);
+        setEditingServiceCost(serviceCost);
+
+        setEditingServiceDescription(serviceDescription);
+
     };
     console.log(editingServiceStatus);
     const saveEditedService = () => {
@@ -105,6 +108,16 @@ const Service = () => {
         // Gửi yêu cầu PUT để cập nhật dịch vụ
         axios.put(`https://localhost:7013/api/Service`, editedService)
             .then(response => {
+                toast.success('Save successfull!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
 
 
             })
@@ -112,6 +125,31 @@ const Service = () => {
                 console.log("Put fail");
             });
     };
+    const saveType = () => {
+        const editedType = {
+            typeId: servicetype.typeId,
+            type1: TypeName,
+            img: TempImageUrl,
+            avaiable: true
+
+        }
+        axios.put(`https://localhost:7013/api/Type`, editedType)
+            .then((response) => {
+                toast.success('Save successfull!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+
+            }).catch(error => {
+                console.log("Put fail");
+            });
+    }
     const handleImageUpload = async e => {
         const file = e.target.files[0];
         const storageRef = storage.ref(`Employee/${file.name}`);
@@ -128,50 +166,51 @@ const Service = () => {
                 isOpen={modalTypeIsOpen}
                 onRequestClose={() => setTypeModalIsOpen(false)}
                 contentLabel="Add Employee"
+                style={{ width: '60%' }}
             >
 
-                <div className="card-body">
-                    <div className="form-group">
-                        <label className="form-label"><strong>Type Id</strong></label>
-                        <input
-                            type="text"
-                            className="form-control mb-1"
-                            value={servicetypeid}
-                            onChange={(e) => setServiceTypeId(e.target.value)}
-                        />
-                    </div>
+                <div className="card-body" >
                     <div>
-                        <label className="form-label"><strong>Image</strong></label>
-                        <br></br>
-                        <input type="file" onChange={handleImageUpload} />
-                        <img src={TypeImage || "http://via.placeholder.com/300"} alt="Type" style={{ width: '100px', height: '100px' }} />
+                        <div>
+                            <label className="form-label"><strong>Image</strong></label>
+                            <br></br>
+                            <input type="file" onChange={handleImageUpload} />
+                            <img src={TypeImage || "http://via.placeholder.com/300"} alt="Type" style={{ width: '100px', height: '100px' }} />
+                            <img src={TempImageUrl} alt="Type" style={{ width: '100px', height: '100px' }} />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label"><strong>Type Name</strong></label>
+                            <input
+                                type="text"
+                                className="form-control mb-1"
+                                value={TypeName}
+                                onChange={(e) => setTypeName(e.target.value)}
+                            />
+                        </div>
+                        <button type="button" className="btn btn-primary mr-2" onClick={saveType} style={{ marginBottom: '10px' }}>
+                            Save Type
+                        </button>
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label"><strong>Type Name</strong></label>
-                        <input
-                            type="text"
-                            className="form-control mb-1"
-                            value={TypeName}
-                            onChange={(e) => setDescription(e.target.value)}
-                        />
-                    </div>
 
                     <table style={{ width: '100%', borderCollapse: 'collapse' }} >
                         <thead>
-                            <tr style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
-                                <th>Type ID</th>
-                                <th>Name</th>
-                                <th>Status</th>
-                                <th>Description</th>
-                                <th>Cost</th>
-                                <th></th>
+                            <tr style={{ padding: '8px', textAlign: 'center', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
+                                <th style={{ width: '20%' }}>Type ID</th>
+                                <th style={{ width: '20%' }}>Name</th>
+                                <th style={{ width: '20%' }}>Status</th>
+                                <th style={{ width: '20%' }}>Description</th>
+                                <th style={{ width: '20%' }}>Cost</th>
+                                <th style={{ width: '20%' }}></th>
+
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style={{ textAlign: 'center' }}>
                             {servicelist.map(sv => (
-                                <tr key={sv.serviceId}>
-                                    <td>{sv.serviceId}</td>
+                                <tr key={sv.serviceId} >
+
+                                    <td >{sv.serviceId}</td>
                                     <td>
                                         {editingServiceId === sv.serviceId ? (
                                             <input
@@ -185,13 +224,13 @@ const Service = () => {
                                     </td>
                                     <td>
                                         {editingServiceId === sv.serviceId ? (
-                                            <div> <select type="text"
-                                                    value={editingServiceStatus}
-                                                    onChange={e => setEditingServiceStatus(e.target.value)}>
-
-                                                    <option value="Available">Available</option>
-                                                    <option value="Deleted">Deleted</option>
-                                                </select></div>
+                                            <select
+                                                value={editingServiceStatus}
+                                                onChange={e => setEditingServiceStatus(e.target.value)}
+                                            >
+                                                <option value="Available">Available</option>
+                                                <option value="Deleted">Deleted</option>
+                                            </select>
 
                                         ) : (
                                             sv.status
@@ -219,7 +258,7 @@ const Service = () => {
                                                 onChange={e => setEditingServiceCost(e.target.value)}
                                             />
                                         ) : (
-                                            sv.costs
+                                            sv.cost
                                         )}
                                     </td>
                                     <td>
@@ -240,8 +279,11 @@ const Service = () => {
                                                     data-toggle="tooltip"
                                                     data-placement="top"
                                                     title="Edit"
+
                                                     onClick={() =>
-                                                        startEditingService(sv.serviceId, sv.name, sv.cost, sv.description)
+
+                                                        startEditingService(sv.serviceId, sv.name, sv.status, sv.description, sv.cost)
+
                                                     }
                                                 >
                                                     <i className="zmdi zmdi-edit" />
@@ -287,19 +329,19 @@ const Service = () => {
                             <div className="row">
                                 {/* Rest of the code */}
                             </div>
-                            <h1 class="table__header" style={{textAlign: "center"}}><strong>Service List</strong></h1>
+                            <h1 class="table__header" style={{ textAlign: "center" }}><strong>Service List</strong></h1>
                             <div className="row">
                                 <div className="col-md-12">
                                     {/* DATA TABLE */}
                                     <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
-                                        <table className="table table-borderless table-data3 shadow-sm">
+                                        <table className="table table-borderless table-data3 shadow-sm" style={{ tableLayout: 'fixed', width: '100%' }}>
                                             <thead>
                                                 <tr>
-                                                    <th>Type ID</th>
-                                                    <th>Name</th>
-                                                    <th>Status</th>
-                                                    <th>Image</th>
-                                                    <th />
+                                                    <th style={{ width: '20%' }}>Type ID</th>
+                                                    <th style={{ width: '20%' }}>Name</th>
+                                                    <th style={{ width: '20%' }}>Status</th>
+                                                    <th style={{ width: '20%' }}>Image</th>
+                                                    <th style={{ width: '20%' }} />
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -341,6 +383,7 @@ const Service = () => {
                 </div>
             </div>
             <div />
+            <ToastContainer />
 
         </div>
     );

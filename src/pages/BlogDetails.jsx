@@ -23,6 +23,7 @@ const BlogDetails = () => {
   const [commentDate, setCommentDate] = useState([]);
 
 
+
   useEffect(() => {
     axios.get(`https://localhost:7013/api/Blog/${blogid}`)
       .then(response => {

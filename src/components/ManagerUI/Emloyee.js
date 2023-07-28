@@ -391,7 +391,7 @@ function Table() {
                             <div className="tab-content">
                                 <div className="tab-pane fade active show" id="account-general">
                                     <hr className="border-light m-0" />
-                                    <div className="card-body">
+                                    <div className="card-body" style={{ height: '700px' }}>
                                         <h3 style={{ textAlign: "center" }}><strong>Edit Employee</strong></h3>
 
                                         <div style={{ display: 'flex' }}>
@@ -542,7 +542,7 @@ function Table() {
                         <div className="tab-content">
                             <div className="tab-pane fade active show" id="account-general">
                                 <hr className="border-light m-0" />
-                                <div className="card-body">
+                                <div className="card-body" style={{ height: '700px' }}>
                                     <h3 style={{ textAlign: "center" }}><strong>Add Employee</strong></h3>
                                     <div style={{ display: 'flex' }}>
                                         <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>

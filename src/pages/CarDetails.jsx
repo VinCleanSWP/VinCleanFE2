@@ -104,6 +104,10 @@ const ServiceTypeDetail = () => {
 
   const averageRate = _.meanBy(rating, 'rate');
   const averageRateInt = Math.round(averageRate);
+  // if (selectedServiceId == null) {
+  //   setValidService("Vui lòng chọn dịch vụ")
+  //   return false;
+  // }
 
   if (!service) {
     return <div>Loading...</div>;

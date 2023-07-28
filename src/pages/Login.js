@@ -36,7 +36,7 @@ export default function Login() {
                     localStorage.setItem('id', response.data.data.accountId);
                     localStorage.setItem('img', response.data.data.img);
                     // navigate('/')
-                    window.location.href = '/';
+                    window.location.href = '/dashboard';
                 }
                 if (response.data.success === true && response.data.message === "OK" && response.data.data.roleId === 3) {
                     localStorage.setItem('loggedIn', 'true');
@@ -46,7 +46,7 @@ export default function Login() {
                     localStorage.setItem('img', response.data.data.img);
                     localStorage.setItem('id', response.data.data.accountId);
                     // navigate('/')
-                    window.location.href = '/';
+                    window.location.href = '/booking';
                 }
                 // Proceed with the desired action upon successful login
             }).catch(error => {

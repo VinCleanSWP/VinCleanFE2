@@ -7,6 +7,8 @@ import { FcAlphabeticalSortingAz } from "react-icons/fc";
 import { BsImage } from "react-icons/bs";
 import { FcAddDatabase } from "react-icons/fc";
 import { FaLocationDot } from "react-icons/fa6";
+import { VscError } from "react-icons/vsc";
+import Swal from 'sweetalert2';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
 function Booking() {
@@ -25,17 +27,17 @@ function Booking() {
 
     const handleEmployeeSelect = (employeeId) => {
         setSelectedEmployees(employeeId);
-        
+
     };
     const resetSelection = () => {
         setSelectedEmployees([]);
         setSelectedProcessId(null);
-      };
+    };
 
-      const handleProcessSelect = (processId) => {
+    const handleProcessSelect = (processId) => {
         resetSelection();
         setSelectedProcessId(processId);
-      };
+    };
 
     const formatTime = (timeString) => {
         if (timeString) {
@@ -49,60 +51,88 @@ function Booking() {
             processId: selectedProcessId,
             employeeId: selectedEmployees
         };
-        const dataMail ={
-                processId: selectedProcessId,
-                to: "example@gmail.com",
-                subject: "",
-                body: ""
+        const dataMail = {
+            processId: selectedProcessId,
+            to: "example@gmail.com",
+            subject: "",
+            body: ""
         }
-        console.log(dataMail)
-        axios.post('https://localhost:7013/api/WorkingBy', data)
-            .then(response => {
-                console.log(response.data);
-                toast.success('Assigned Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+        swalWithBootstrapButtons.fire({
+            title: 'Do you want to assgin this task?',
+            text: "Double check before you assign!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Iam sure!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                swalWithBootstrapButtons.fire(
+                    'Assigned!',
+                    'You have assigned successfully.',
+                    'success'
+                )
+                console.log(dataMail)
+                axios.post('https://localhost:7013/api/WorkingBy', data)
+                    .then(response => {
+                        console.log(response.data);
+
+                        fetchData();
+                        axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
+                            .then(response => {
+                                console.log(response.data);
+                                toast.success('Send Email Customer Successfully!', {
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "light",
+                                });
+                            })
+                        axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
+                            .then(response => {
+                                console.log(response.data);
+                                toast.success('Send Email Employee Successfully!', {
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "light",
+                                });
+                            })
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
                 fetchData();
-                axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
-                    .then(response => {
-                        console.log(response.data);
-                        toast.success('Send Email Customer Successfully!', {
-                            position: "top-right",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                        });
-                    })
-                axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
-                    .then(response => {
-                        console.log(response.data);
-                        toast.success('Send Email Employee Successfully!', {
-                            position: "top-right",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                        });
-                    })
-            })
-            .catch(error => {
-                console.error(error);
-            });
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                )
+            }
+        })
+
     };
+
+
 
     const handleProcessImage = (processId, employeeName) => {
         setProcessIdImage(processId)
@@ -115,6 +145,97 @@ function Booking() {
                 console.error(error);
             });
     };
+    const handleDined = async (processId) => {
+        closeModal();
+        const { value: text } = await Swal.fire({
+            input: 'textarea',
+            inputLabel: 'Reason',
+            inputPlaceholder: 'Type your message here...',
+            inputAttributes: {
+                'aria-label': 'Type your message here'
+            },
+            showCancelButton: true
+        })
+
+        if (text) {
+            const dataMail = {
+                processId: processId,
+                to: "example@gmail.com",
+                subject: text,
+                body: ""
+            }
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+            swalWithBootstrapButtons.fire({
+                title: 'Do you want to Cancel this Process?',
+                text: "Double-check before what you do!!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, cancel it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'This Process has been Denied.',
+                        'success'
+                    )
+                    axios.put(`https://localhost:7013/api/Process/Denied?processid=${processId}`)
+                        .then(response => {
+                            swalWithBootstrapButtons.fire(
+                                'Deleted!',
+                                'Your file has been deleted.',
+                                'success'
+                            )
+                        });
+                    axios.post('https://localhost:7013/api/Email/DeniedProcess', dataMail)
+                        .then(response => {
+                            console.log(response.data);
+                            toast.success('Send Email Customer Successfully!', {
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            });
+                        })
+                    fetchData();
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'Your imaginary file is safe :)',
+                        'error'
+                    )
+                }
+            })
+        }
+
+    };
+
+    const closeModal = () => {
+        const modal = document.getElementById('myModal');
+        if (modal) {
+          const backdrop = document.getElementsByClassName('modal-backdrop')[0];
+          modal.classList.remove('show');
+          modal.style.display = 'none';
+          if (backdrop) {
+            backdrop.remove();
+          }
+        }
+      };
+
 
     const handleButtonClick = () => {
         // Lấy giá trị của "type" và "name" từ các trường input
@@ -165,7 +286,7 @@ function Booking() {
             .catch(error => {
                 console.error('Error fetching booking data:', error);
             });
-        };
+    };
 
     useEffect(() => {
         assignTask();
@@ -213,10 +334,10 @@ function Booking() {
         const filteredData = sortedData.filter(booking =>
             booking.processId.toString().toLowerCase().includes(search.toLowerCase()) ||
             booking.name.toString().toLowerCase().includes(search.toLowerCase()) ||
-            // booking.typeName.toLowerCase().includes(search.toLowerCase()) ||
+            booking.typeName.toLowerCase().includes(search.toLowerCase()) ||
             format(new Date(booking.date), 'dd/MM/yyyy').toString().toLowerCase().includes(search.toLowerCase()) ||
-            // booking.startWorking.toString().toLowerCase().includes(search.toLowerCase()) ||
-            // booking.address.toString().toLowerCase().includes(search.toLowerCase()) ||
+            booking.startTime.toString().toLowerCase().includes(search.toLowerCase()) ||
+            booking.address.toString().toLowerCase().includes(search.toLowerCase()) ||
             booking.status.toString().toLowerCase().includes(search.toLowerCase())
         );
 
@@ -238,20 +359,20 @@ function Booking() {
         setCoords(null);
         setAddress(null);
         setHasLocationData(false);
-      
+
         axios
-          .get(`https://localhost:7013/api/WorkingBy/Process/${id}`)
-          .then((response) => {
-            const { latitude, longtitude } = response.data.data;
-            if (latitude !== 0 && longtitude !== 0) {
-              setCoords({ lat: latitude, lng: longtitude });
-              setHasLocationData(true);
-            }
-          })
-          .catch((error) => {
-            console.error('Error fetching data:', error);
-          });
-      };
+            .get(`https://localhost:7013/api/WorkingBy/Process/${id}`)
+            .then((response) => {
+                const { latitude, longtitude } = response.data.data;
+                if (latitude !== 0 && longtitude !== 0) {
+                    setCoords({ lat: latitude, lng: longtitude });
+                    setHasLocationData(true);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            });
+    };
     // Lấy tọa độ
     // useEffect(() => {
     //     navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
@@ -262,18 +383,18 @@ function Booking() {
     // lấy địa chỉ
     useEffect(() => {
         if (coordinate) {
-          const geocoder = new window.google.maps.Geocoder();
-          geocoder.geocode({ location: coordinate }, (results, status) => {
-            if (status === "OK") {
-              if (results[0]) {
-                setAddress(results[0].formatted_address);
-              }
-            } else {
-              console.error("Geocoder failed due to: " + status);
-            }
-          });
+            const geocoder = new window.google.maps.Geocoder();
+            geocoder.geocode({ location: coordinate }, (results, status) => {
+                if (status === "OK") {
+                    if (results[0]) {
+                        setAddress(results[0].formatted_address);
+                    }
+                } else {
+                    console.error("Geocoder failed due to: " + status);
+                }
+            });
         }
-      }, [coordinate]);
+    }, [coordinate]);
     useEffect(() => {
         setIsMarkerVisible(!!address);
     }, [address]);
@@ -370,7 +491,12 @@ function Booking() {
                             <div className="modal-content">
                                 <div className="modal-header" >
                                     <h5 className="modal-title" id="exampleModalLabel"><strong>Booking Details  ID: {modal.processId} </strong></h5>
-                                    <h5 className={`status ${modal.status} modal-title`} style={{ marginLeft: '400px', width: '130px' }}> <span style={{ marginRight: "5px" }}>•</span> {modal.status} </h5>
+                                    <button style={{ marginLeft: '30px', }}
+                                        onClick={() => handleDined(modal.processId)}
+                                        data-bs-dismiss="modal">
+                                        <VscError color='red' size={26}></VscError>
+                                    </button>
+                                    <h5 className={`status ${modal.status} modal-title`} style={{ marginLeft: '300px', width: '130px' }}> <span style={{ marginRight: "5px" }}>•</span> {modal.status} </h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>
                                 <div className="modal-body">
@@ -590,7 +716,7 @@ function Booking() {
                                             <div className="mt-3 d-flex align-items-center gap-4">
 
                                                 {/* Hiện ảnh */}
-                                                <img src= {img.image ? img.image :"http://via.placeholder.com/300"} alt="" className="" style={{ width: "150px", height: "150px", borderRadius: "10px" }} />
+                                                <img src={img.image ? img.image : "http://via.placeholder.com/300"} alt="" className="" style={{ width: "150px", height: "150px", borderRadius: "10px" }} />
 
                                                 <div>
                                                     {/* Hiện tên khách hàng */}
@@ -635,7 +761,7 @@ function Booking() {
                                                     {isMarkerVisible && <Marker position={coordinate} />}
                                                 </GoogleMap>
                                             ) : (
-                                                <div style={{justifyContent:'center', textAlign:'center', margin:"100px"}} ><h4>Không có dữ liệu vị trí.</h4></div>
+                                                <div style={{ justifyContent: 'center', textAlign: 'center', margin: "100px" }} ><h4>Không có dữ liệu vị trí.</h4></div>
                                             )}
                                         </div>
                                     )}
@@ -645,7 +771,7 @@ function Booking() {
 
                     </div>
 
-                    
+
                     <div className="row">
                         <div className="col-md-12">
                             <div className="copyright">

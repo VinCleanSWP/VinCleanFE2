@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FcAlphabeticalSortingAz } from "react-icons/fc";
+import Swal from 'sweetalert2';
 
 function Request() {
     const [requestData, setrequestData] = useState([]);
@@ -38,6 +39,10 @@ function Request() {
     };
 
     useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = () => {
         // Gọi API để lấy dữ liệu
         axios.get('https://localhost:7013/api/ProcessSlot')
             .then(response => {
@@ -47,7 +52,7 @@ function Request() {
             .catch(error => {
                 console.error('Error fetching request data:', error);
             });
-    }, []);
+    };
     const showDetail = (id) => {
 
         // Gọi API để lấy dữ liệu
@@ -94,12 +99,12 @@ function Request() {
             processId: selectedProcessId,
             employeeId: selectedEmployees
         };
-        const dataMail ={
+        const dataMail = {
             processId: selectedProcessId,
             to: "example@gmail.com",
             subject: "",
             body: ""
-    }
+        }
         console.log(data);
         axios.put('https://localhost:7013/api/WorkingBy/AcceptedRequest', data)
             .then(response => {
@@ -114,58 +119,121 @@ function Request() {
                     progress: undefined,
                     theme: "light",
                 });
-                // axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
-                //     .then(response => {
-                //         console.log(response.data);
-                //         toast.success('Send Email Customer Successfully!', {
-                //             position: "top-right",
-                //             autoClose: 5000,
-                //             hideProgressBar: false,
-                //             closeOnClick: true,
-                //             pauseOnHover: true,
-                //             draggable: true,
-                //             progress: undefined,
-                //             theme: "light",
-                //         });
-                //     })
-                // axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
-                //     .then(response => {
-                //         console.log(response.data);
-                //         toast.success('Send Email Employee Successfully!', {
-                //             position: "top-right",
-                //             autoClose: 5000,
-                //             hideProgressBar: false,
-                //             closeOnClick: true,
-                //             pauseOnHover: true,
-                //             draggable: true,
-                //             progress: undefined,
-                //             theme: "light",
-                //         });
-                //     })
+                axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
+                    .then(response => {
+                        console.log(response.data);
+                        toast.success('Send Email Customer Successfully!', {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
+                    })
+                axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
+                    .then(response => {
+                        console.log(response.data);
+                        toast.success('Send Email Employee Successfully!', {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
+                    })
             })
             .catch(error => {
                 console.error(error);
             });
     };
 
-    const sendEmail = (processId) => {
-        axios.post(`https://localhost:7013/api/ProcessSlot/Denied/${processId}`)
-            .then(response => {
-                console.log(response.data);
-                toast.error('Denied', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            })
-            .catch(error => {
-                console.error(error);
-            });
+    const sendEmail = async (processId,oldEmployeEmail) => {
+        const { value: text } = await Swal.fire({
+            input: 'textarea',
+            inputLabel: 'Reason',
+            inputPlaceholder: 'Type your message here...',
+            inputAttributes: {
+              'aria-label': 'Type your message here'
+            },
+            showCancelButton: true
+          })
+          
+          if (text) {
+            
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                  confirmButton: 'btn btn-success',
+                  cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+              })
+              swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "Do you want to Denied this Process!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, denied it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  swalWithBootstrapButtons.fire(
+                    'Denied!',
+                    'this process has been denied.',
+                    'success'
+                  )
+                  const dataMail = {
+                    processId: 0,
+                    to: oldEmployeEmail,
+                    subject: "Từ Chối Yêu Cầu Đổi Việc",
+                    body: ` <p><b>Process ID: ${processId}</b></p>
+                    <p>Yêu cầu của bạn ${oldEmployeEmail} không được chấp thuận.</p>
+                    <p><b>Lý do: </b> ${text}</p>
+                    <p>Nếu Có Thắc Mắc gì vui lòng liên hệ trực tiếp với ban quản lý.</p>`
+                }
+                  axios.put(`https://localhost:7013/api/ProcessSlot/Denied/${processId}`)
+                  .then(response => {
+                      console.log(response.data);
+                      axios.post('https://localhost:7013/api/Email', dataMail)
+                          .then(response => {
+                              console.log(response.data);
+                              toast.success('Send Email Denied Successfully!', {
+                                  position: "top-right",
+                                  autoClose: 5000,
+                                  hideProgressBar: false,
+                                  closeOnClick: true,
+                                  pauseOnHover: true,
+                                  draggable: true,
+                                  progress: undefined,
+                                  theme: "light",
+                              });
+                          })
+                      fetchData();
+                  })
+                  .catch(error => {
+                      console.error(error);
+                  });
+                            fetchData();
+                } else if (
+                  /* Read more about handling dismissals below */
+                  result.dismiss === Swal.DismissReason.cancel
+                ) {
+                  swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                  )
+                }
+              })
+          }
+  
+        
     };
 
     const handleSearchChange = (e) => {
@@ -174,8 +242,8 @@ function Request() {
 
     const sortAndFilterData = () => {
         const sortedData = [...requestData].sort((a, b) => {
-            const dateA = new Date(a.dateWork);
-            const dateB = new Date(b.dateWork);
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
             return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
         });
 
@@ -246,7 +314,7 @@ function Request() {
                                                             <td>
                                                                 <div className="table-data-feature">
                                                                     <button className="item" data-toggle="tooltip" data-placement="top" title="Send"
-                                                                        onClick={() => sendEmail(request.processId)}>
+                                                                        onClick={() => sendEmail(request.processId,request.oldEmployeEmail)}>
                                                                         <i className="zmdi zmdi-mail-send" />
                                                                     </button>
                                                                     <button className={`item ${request.NewEmployeeName ? 'assigned' : ''}`} data-toggle="tooltip" data-placement="top" title="Assign"
@@ -291,7 +359,7 @@ function Request() {
                                     <form className="form-inline">
                                         <div className="input-group mb-3">
                                             <label className="px-2.5 input-group-text">Name</label>
-                                            <input value={modal2.customerName} className="form-control" />
+                                            <input value={modal2.name} className="form-control" />
                                         </div>
                                         <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
                                             <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '150px', }} />
@@ -304,7 +372,7 @@ function Request() {
                                         </div>
                                         <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
                                             <label className="input-group-text">Email</label>
-                                            <input value={modal2.customerEmail} className="form-control" />
+                                            <input value={modal2.email} className="form-control" />
                                         </div>
                                     </form>
                                     <form className="form-inline">
@@ -449,8 +517,8 @@ function Request() {
                                                         </td>
                                                         <td className="desc">{u.phone}</td>
                                                         <td style={{ color: getStatusColor(u.status) }}>{u.status}</td>
-                                                        <td style={{ display: 'inline', padding: "10px"}}>
-                                                            <img src={u.account.img ? u.account.img : 'http://via.placeholder.com/300'} alt="img" style={{ width: '100px', height: '80px',borderRadius: "50%", margin:"5px 0px" }} />
+                                                        <td style={{ display: 'inline', padding: "10px" }}>
+                                                            <img src={u.account.img ? u.account.img : 'http://via.placeholder.com/300'} alt="img" style={{ width: '100px', height: '80px', borderRadius: "50%", margin: "5px 0px" }} />
                                                         </td>
 
                                                     </tr>

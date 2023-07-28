@@ -1,234 +1,182 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col } from "reactstrap";
-import axios from 'axios';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 700,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
+import { GetOrderRangeAPI, GetOrderbyIDAPI } from '../../API/Employee/employeeConfig';
+import { Button, DatePicker, Modal, Table } from 'antd';
+import moment from 'moment';
 
 export default function Dashboard() {
-    const [open, setOpen] = useState(false);
-    const handleClose = () => setOpen(false);
     const [employee, setEmployee] = useState([]);
-    const [tempImageUrl, setTempImageUrl] = useState('');
     const id = localStorage.getItem('id');
+    const [startDate, setStartDate] = useState(moment().startOf('month'));
+    const [endDate, setEndDate] = useState(moment().endOf('month'));
+    const [totalJobs, setTotalJobs] = useState(0);
+    const [totalRevenue, setTotalRevenue] = useState(0);
+    const [selectedRow, setSelectedRow] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [orderDetail, setOrderDetail] = useState(null);
 
     useEffect(() => {
-        // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Employee`)
-            .then(response => {
-                const data = response.data.data
-                const foundUser = data.find(emp => emp.account.accountId == id);
-                setEmployee(foundUser);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }, []);
+        // Gọi API để lấy dữ liệu khi startMonth và endMonth thay đổi
+        fetchData();
+    }, [startDate, endDate]);
 
-    // --- Start Booking Session ---
-    const [booking, setBooking] = useState([])
-    const [orders, setOrder] = useState([])
+    const fetchData = async () => {
+        const data = {
+            startMonth: startDate.format('YYYY-MM-DD'),
+            endMonth: endDate.format('YYYY-MM-DD'),
+            employeeId: 5,
+        };
+        try {
+            const response = await GetOrderRangeAPI(data);
+            setEmployee(response);
+            console.log(employee);
+            const totalJobs = response.length;
+            const totalRevenue = response.reduce((acc, curr) => acc + curr.total, 0);
 
-    useEffect(() => {
-        // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Order`)
-            .then(response => {
-                const data = response.data.data
-                const mail = localStorage.getItem('email');
-                const foundItem = data.filter(item => item.employeeEmail == mail);
-                // setOrder(response.data.data);
-                setOrder(foundItem);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }, []);
-
-    const handleRowClick = (order) => {
-        setOpen(true);
-        setBooking(order);
+            setTotalJobs(totalJobs);
+            setTotalRevenue(totalRevenue);
+        } catch (error) {
+            console.error('Failed to fetch data:', error);
+        }
     };
 
-    // DateDetails
-    const dateDetails = booking.dateWork;
-    const date = new Date(dateDetails);
-    const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
-    const formattedDate = date.toLocaleDateString(undefined, options);
-
-    // DateList
-    const dateList = orders.dateWork;
-    const date1 = new Date(dateList);
-    const options1 = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
-
-    // --- End Booking Session ---
-
-    const [totalAmount, setTotalAmount] = useState(0);
-
-    const totalIncome = () => {
-        let sum = 0;
-        orders.forEach(order => {
-            sum += order.total;
-        });
-        setTotalAmount(sum);
+    const handleCurrentMonthClick = () => {
+        const startMonth = moment().startOf('month');
+        const endMonth = moment().endOf('month');
+        setStartDate(startMonth);
+        setEndDate(endMonth);
     };
 
-    useEffect(() => {
-        totalIncome();
-      }, [orders]);
+    const handlePreviousMonthClick = () => {
+        const startMonth = startDate.clone().subtract(1, 'month').startOf('month');
+        const endMonth = startDate.clone().subtract(1, 'month').endOf('month');
+        setStartDate(startMonth);
+        setEndDate(endMonth);
+    };
 
+    const handleNextMonthClick = () => {
+        const startMonth = endDate.clone().add(1, 'month').startOf('month');
+        const endMonth = endDate.clone().add(1, 'month').endOf('month');
+        setStartDate(startMonth);
+        setEndDate(endMonth);
+    };
+    const handleRowClick = async (record) => {
+        setSelectedRow(record);
+        try {
+          const response = await GetOrderbyIDAPI(record.orderId);
+          setOrderDetail(response.data);
+          console.log(orderDetail);
+          setIsModalVisible(true);
+        } catch (error) {
+          console.error('Failed to fetch order detail:', error);
+        }
+      };
+      const handleModalClose = () => {
+        setIsModalVisible(false);
+      };
+    const columns = [
+        {
+            title: 'Mã Công Việc',
+            dataIndex: 'orderId',
+            key: 'orderId',
+        },
+        {
+            title: 'Loại dịch vụ',
+            dataIndex: 'type',
+            key: 'type',
+        },
+        {
+            title: 'Tên dịch vụ',
+            dataIndex: 'serviceName',
+            key: 'serviceName',
+        },
+        {
+            title: 'Ngày làm việc',
+            dataIndex: 'dateWork',
+            key: 'dateWork',
+            render: (dateWork) => {
+                const dateWithoutTime = dateWork.split('T')[0];
+                return dateWithoutTime;
+            },
+        },
+        {
+            title: 'Tổng dịch vụ',
+            dataIndex: 'total',
+            key: 'total',
+            render: (total) => `${total}.000VND`,
+        }
+    ];
+    const buttonStyle = {
+        marginRight: '10px',
+        backgroundColor: 'white', // Màu nền mặc định của button
+        '&:hover': {
+            backgroundColor: '#40a9ff', // Màu nền khi hover
+        },
+        '&:active': {
+            backgroundColor: '#096dd9', // Màu nền khi nhấn (active)
+        },
+    };
+
+
+  // ... fetchData và columns như trước
+
+    const monthRange = `${startDate.format('MMMM')}`;
     return (
-<div>
-      <div style={{paddingBottom: '0px',paddingLeft: '15px',paddingRight: '15px',paddingTop: '5px'}}>
-      <h2 style={{ color: 'black', fontSize: '45px', fontWeight: 'bold',border:'1px solid black', padding: '10px 35px',borderRadius:'10px',background:'#4D96FF'}}>Lịch Công Việc</h2>
+        <div>
+            <div style={{ paddingBottom: '0px', paddingLeft: '15px', paddingRight: '15px', paddingTop: '5px' }}>
+                <h2 style={{ color: 'black', fontSize: '45px', fontWeight: 'bold', border: '1px solid black', padding: '10px 35px', borderRadius: '10px', background: '#4D96FF' }}>Tổng Quan Công Việc</h2>
+            </div>
+            <div style={{ height: '100%', backgroundColor: 'white', padding: "20px", border: '1px solid black', borderRadius: "10px", margin: '15px' }}>
+                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                    
+                    <div style={{ textAlign: 'left' }}>
+                        <p style={{fontSize: '20px', marginLeft: '20px'}}><strong>Xin chào!! {localStorage.getItem('name')}.</strong></p>
+                        <h3 style={{ textAlign: 'center', color: 'black' }}><strong>Danh sách các công việc đã hoành thành trong {monthRange}</strong></h3>
+                    <div style={{ textAlign: 'right', marginRight: '30px' }}>
+                        <p><strong>Tổng số công việc hoành thành trong {monthRange}:</strong><strong style={{ color: 'red'}}> {totalJobs}</strong></p>
+                        <p><strong>Tổng số tiền đã thu trong {monthRange}:</strong> <strong style={{ color: 'red'}}>{totalRevenue}.000VND</strong></p>
+                    </div>
+                    </div>
+                    
+                </div>
+                
+                <div style={{ margin: '10px' }}>
+                    <Button style={buttonStyle} onClick={handleCurrentMonthClick}>Tháng hiện tại</Button>
+                    <Button style={buttonStyle} onClick={handlePreviousMonthClick}>Tháng trước</Button>
+                    <Button style={buttonStyle} onClick={handleNextMonthClick}>Tháng sau</Button>
+                </div>
+                <Table dataSource={employee} columns={columns} pagination={false} onRow={(record) => ({
+        onClick: () => handleRowClick(record),
+      })} />
+            
+            <Modal
+
+        visible={isModalVisible}
+        onCancel={handleModalClose}
+        footer={null}
+      >
+        {orderDetail && (
+          <div>
+            <p style={{ textAlign: 'center',fontSize: '20px' }}><strong>Thông tin chi tiết công việc</strong></p>
+            <p>Mã Công Việc: {orderDetail.orderId}</p>
+            <p>Loại dịch vụ: {orderDetail.type}</p>
+            <p>Tên dịch vụ: {orderDetail.serviceName}</p>
+            <p>Ngày làm việc: {orderDetail.dateWork.split('T')[0]}</p>
+            <p>Thời gian bắt đầu: {orderDetail.startTime}</p>
+            <p>Thời gian kết thúc: {orderDetail.endTime}</p>
+            <p>Address: {orderDetail.address}</p>
+            <p>Tên Khách Hàng: {orderDetail.customerName}</p>
+            <p>Địa chỉ email: {orderDetail.customerEmail}</p>
+            <p>SDT liên hệ: {orderDetail.phone}</p>
+            <p>Phụ Thu: {orderDetail.subPrice}</p>
+            <p>Tổng phí dịch vụ: {orderDetail.total}</p>
+            
+            
+          </div>
+        )}
+      </Modal>
       </div>
-      <div style={{ height: '1300px', backgroundColor: 'white', padding: "20px",border:'1px solid black', borderRadius: "10px", margin: '15px' }}>
-            <Row>
-                <Col lg="8" md="8">
-                    <div className="tab-content">
-                        <div class="Account__StyledAvatar-sc-1d5h8iz-3 profile-left">
-                            <img src={employee.account && employee.account.img} alt="avatar" />
-                            <div class="info">
-                                Tài khoản của
-                                <strong>{employee.lastName} {employee.firstName}</strong>
-                            </div>
-                        </div>
-                    </div>
-                </Col>
-                <Col lg="4" md="4">
-                    <div className="tab-content">
-                        <div class="Account__StyledAvatar-sc-1d5h8iz-3 profile-left">
-                            <div class="info">
-                                Tổng doanh thu:
-                                <strong>{totalAmount}.000 VND</strong>
-                            </div>
-                        </div>
-                    </div>
-                </Col>
-            </Row>
-
-
-
-
-            <div className="tab-pane" id="account-info">
-                <Container>
-                    <Row>
-                        <Col lg="12" md="12">
-                            <h4 className="fw-bold mt-4 mb-4">Danh sách công việc</h4>
-
-                            <div className="table-responsive m-b-40">
-                                <table className="table table-borderless table-data3">
-                                    <thead>
-                                        <tr>
-                                            <th>Loại dịch vụ</th>
-                                            <th>Dịch vụ</th>
-                                            <th>Nhân viên</th>
-                                            <th>Ngày</th>
-                                            <th>Giá</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {orders.map((order) => (
-                                            <tr className="pointer pointertext" key={order.orderId} onClick={() => handleRowClick(order)}>
-                                                <td>{order.type}</td>
-                                                <td>{order.serviceName}</td>
-                                                <td>{order.employeeName}</td>
-                                                {/* <td>{order.dateWork}</td> */}
-                                                <td>{new Date(order.dateWork).toLocaleDateString(undefined, options1)}</td>
-                                                <td className="process">{order.total}.000 VND</td>
-                                            </tr>
-                                        ))}
-                                        <Modal
-                                            open={open}
-                                            onClose={handleClose}
-                                            aria-labelledby="modal-modal-title"
-                                            aria-describedby="modal-modal-description"
-                                        >
-                                            <Box sx={style}>
-                                                <Row>
-                                                    <Col lg="12" md="12">
-                                                        <div className="contact__info">
-                                                            <h4 className="fw-bold mb-3">Chi tiết công việc</h4>
-                                                            <br></br>
-                                                            <div className=" d-flex align-items-center gap-2">
-                                                                <h6 className="fs-6 mb-0">Loại dịch vụ:</h6>
-                                                                <p className="section__description mb-0">{booking.type}</p>
-                                                            </div>
-
-                                                            <div className=" d-flex align-items-center gap-2">
-                                                                <h6 className="fs-6 mb-0">Dịch vụ:</h6>
-                                                                <p className="section__description mb-0">{booking.serviceName}</p>
-                                                            </div>
-
-                                                            <div className=" d-flex align-items-center gap-2">
-                                                                <h6 className="mb-0 fs-6">Địa chỉ:</h6>
-                                                                <p className="section__description mb-0">{booking.address}</p>
-                                                            </div>
-
-                                                            <div className=" d-flex align-items-center gap-2">
-                                                                <h6 className="mb-0 fs-6">Ngày:</h6>
-                                                                {/* <p className="section__description mb-0">{booking.date}</p> */}
-                                                                <p className="section__description mb-0">{formattedDate}</p>
-                                                            </div>
-
-                                                            <div className=" d-flex align-items-center gap-2">
-                                                                <h6 className="mb-0 fs-6">Thời gian bắt đầu:</h6>
-                                                                <p className="section__description mb-0">{booking.startTime}</p>
-                                                            </div>
-
-                                                            <div className=" d-flex align-items-center gap-2">
-                                                                <h6 className="mb-0 fs-6">Thời gian kết thúc:</h6>
-                                                                <p className="section__description mb-0">{booking.endTime}</p>
-                                                            </div>
-
-                                                            <div className=" d-flex align-items-center gap-2">
-                                                                <h6 className="mb-0 fs-6">Nhân viên:</h6>
-                                                                <p className="section__description mb-0">{booking.employeeName}</p>
-                                                            </div>
-
-                                                            <div className=" d-flex align-items-center gap-2">
-                                                                <h6 className="mb-0 fs-6">Số điện thoại nhân viên:</h6>
-                                                                <p className="section__description mb-0">{booking.employeePhone}</p>
-                                                            </div>
-
-                                                            <div className=" d-flex align-items-center gap-2">
-                                                                <h6 className="mb-0 fs-6">Ghi chú:</h6>
-                                                                {/* <p className="section__description mb-0 bordered">{booking.note}</p> */}
-                                                            </div>
-
-                                                            <div className=" d-flex align-items-center gap-2">
-                                                                <p className="section__description mb-0 mt-2 note-container">{booking.note}</p>
-                                                            </div>
-
-                                                            <div className=" d-flex align-items-center gap-2 ">
-                                                                <h6 className="mb-0 h3 mt-3">Tổng:</h6>
-                                                                <p className="section__description mb-0 h3 mt-3 text-success">{booking.total}000 VND</p>
-                                                            </div>
-                                                        </div>
-                                                    </Col>
-                                                </Row>
-                                            </Box>
-                                        </Modal>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </Col>
-                    </Row>
-                </Container >
-            </div>
-            </div>
         </div>
+
 
     )
 }

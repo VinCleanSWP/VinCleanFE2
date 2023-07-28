@@ -8,6 +8,8 @@ function ADHeader() {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
 
+    const [img, setImg] = useState('');
+
     const handleLogout = () => {
         // Xóa thông tin đăng nhập từ localStorage
         localStorage.removeItem('loggedIn');
@@ -25,11 +27,12 @@ function ADHeader() {
         const isLoggedIn = localStorage.getItem('loggedIn');
         const storedEmail = localStorage.getItem('email');
         const storedName = localStorage.getItem('name');
-
+        const img = localStorage.getItem('img');
         if (isLoggedIn && storedEmail) {
             setLoggedIn(true);
             setEmail(storedEmail);
             setName(storedName);
+            setImg(img);
         }
     }, []);
     return (
@@ -40,7 +43,7 @@ function ADHeader() {
                     <div className="container-fluid">
                         <div className="header-mobile-inner">
                             <a className="logo" href="index.html">
-                                <img src="images/icon/logo.png" alt="CoolAdmin" />
+                                <img src="images/icon/logo.png" alt="CoolAdmin" style={{ width: "20%", height: "20%" }} />
                             </a>
                             <button className="hamburger hamburger--slider" type="button">
                                 <span className="hamburger-box">
@@ -168,7 +171,7 @@ function ADHeader() {
                                         </div>
                                         <div className="image">
                                             <Link to="/profile">
-                                                <img src="images/icon/avatar-01.jpg" alt={name} />
+                                                <img src={img || "http://via.placeholder.com/300"}style={{ width: '50px', height: '50px' }} alt={name} />
                                             </Link>
                                         </div>
                                         <div className="logout">

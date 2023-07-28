@@ -269,15 +269,7 @@ const Service = () => {
             {/* PAGE CONTAINER*/}
             <div className="page-container">
                 {/* HEADER DESKTOP*/}
-                <header className="header-desktop">
-                    <div className="section__content section__content--p30">
-                        <div className="container-fluid">
-                            <div className="header-wrap">
-                                {/* Rest of the header code */}
-                            </div>
-                        </div>
-                    </div>
-                </header>
+
                 {/* END HEADER DESKTOP*/}
                 {/* MAIN CONTENT*/}
                 <div className="main-content">

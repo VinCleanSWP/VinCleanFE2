@@ -46,3 +46,12 @@ export const updateLocationAPI= (data) => {
 export const updateCanncelJobAPI = (data) => {
     return api.post(`ProcessSlot`,data);
 }
+export const GetOrderRangeAPI = (data) => {
+    return api.post(`Order/OrderRange`,data);
+}
+export const GetOrderbyIDAPI = (id) => {
+    return api.get(`Order/${id}`);
+}
+export const GetAllOrderRangeAPI = (data) => {
+    return api.post(`Order/GetAllOrderRange`,data);
+}

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Button, Modal, Table } from 'antd';
+import { GetAllOrderRangeAPI, GetOrderbyIDAPI } from '../../API/Employee/employeeConfig';
+import moment from 'moment';
+import { bottom } from '@popperjs/core';
 
 export default function DashboardAdmin() {
     const [income, setIncome] = useState();
@@ -32,7 +36,13 @@ export default function DashboardAdmin() {
     const numberOfType4 = type4 ? type4.length : 0;
     const numberOfType5 = type5 ? type5.length : 0;
     const numberOfType6 = type6 ? type6.length : 0;
-
+    const [employeetable, setEmployeetable] = useState([]);
+    const id = localStorage.getItem('id');
+    const [startDate, setStartDate] = useState(moment().startOf('month'));
+    const [endDate, setEndDate] = useState(moment().endOf('month'));
+    const [selectedRow, setSelectedRow] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [orderDetail, setOrderDetail] = useState(null);
 
     // Tổng income
     const totalIncome = () => {
@@ -46,7 +56,10 @@ export default function DashboardAdmin() {
     useEffect(() => {
         totalIncome();
     }, [booking]);
-
+    useEffect(() => {
+        // Gọi API để lấy dữ liệu khi startMonth và endMonth thay đổi
+        fetchData();
+    }, [startDate, endDate]);
 
     // Trung bình cộng Rating
     const calculateAverageRating = () => {
@@ -189,8 +202,110 @@ export default function DashboardAdmin() {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
+        
     }, []);
 
+    const fetchData = async () => {
+        const data = {
+            startMonth: startDate.format('YYYY-MM-DD'),
+            endMonth: endDate.format('YYYY-MM-DD'),
+            employeeId: 0,
+        };
+        try {
+            const response = await GetAllOrderRangeAPI(data);
+            setEmployeetable(response);
+            console.log(employeetable);
+        } catch (error) {
+            console.error('Failed to fetch data:', error);
+        }
+    };
+
+    const handleCurrentMonthClick = () => {
+        const startMonth = moment().startOf('month');
+        const endMonth = moment().endOf('month');
+        setStartDate(startMonth);
+        setEndDate(endMonth);
+    };
+
+    const handlePreviousMonthClick = () => {
+        const startMonth = startDate.clone().subtract(1, 'month').startOf('month');
+        const endMonth = startDate.clone().subtract(1, 'month').endOf('month');
+        setStartDate(startMonth);
+        setEndDate(endMonth);
+    };
+
+    const handleNextMonthClick = () => {
+        const startMonth = endDate.clone().add(1, 'month').startOf('month');
+        const endMonth = endDate.clone().add(1, 'month').endOf('month');
+        setStartDate(startMonth);
+        setEndDate(endMonth);
+    };
+    const handleRowClick = async (record) => {
+        setSelectedRow(record);
+        try {
+            const response = await GetOrderbyIDAPI(record.orderId);
+            setOrderDetail(response.data);
+            console.log(orderDetail);
+            setIsModalVisible(true);
+        } catch (error) {
+            console.error('Failed to fetch order detail:', error);
+        }
+    };
+    const handleModalClose = () => {
+        setIsModalVisible(false);
+    };
+    const columns = [
+        {
+            title: 'Order ID',
+            dataIndex: 'orderId',
+            key: 'orderId',
+        },
+        {
+            title: 'employeeId',
+            dataIndex: 'employeeId',
+            key: 'employeeId',
+        },
+        {
+            title: 'Type Service',
+            dataIndex: 'type',
+            key: 'type',
+        },
+        {
+            title: 'Service Name',
+            dataIndex: 'serviceName',
+            key: 'serviceName',
+        },
+        {
+            title: 'Date Work',
+            dataIndex: 'dateWork',
+            key: 'dateWork',
+            render: (dateWork) => {
+                const dateWithoutTime = dateWork.split('T')[0];
+                return dateWithoutTime;
+            },
+        },
+        {
+            title: 'total',
+            dataIndex: 'total',
+            key: 'total',
+            render: (total) => `${total}.000VND`,
+        }
+    ];
+    const buttonStyle = {
+        marginRight: '10px',
+        backgroundColor: 'white', // Màu nền mặc định của button
+        '&:hover': {
+            backgroundColor: '#40a9ff', // Màu nền khi hover
+        },
+        '&:active': {
+            backgroundColor: '#096dd9', // Màu nền khi nhấn (active)
+        },
+    };
+
+
+    // ... fetchData và columns như trước
+
+    const monthRange = `${startDate.format('MM')}`;
     return (
         <div className="page-container">
             {/* MAIN CONTENT*/}
@@ -524,61 +639,60 @@ export default function DashboardAdmin() {
                                 </div>
                             </div>
 
-                            <div className="col-xl-8 col-md-6">
+                            
                                 <div className="card Recent-Users">
                                     <div className="card-header">
                                         <h5>Recent Booking</h5>
                                     </div>
-                                    <div className="card-block px-0 py-3">
-                                        <div className="table-responsive">
-                                            <table className="table table-hover">
-                                                <tbody>
-                                                    {/* <tr className="unread">
-                                                        <td><img className="rounded-circle" style={{ width: "40px" }} src="assets/images/user/avatar-1.jpg" alt="activity-user" /></td>
-                                                        <td>
-                                                            <h6 className="mb-1">Isabella Christensen</h6>
-                                                        </td>
-                                                        <td>
-                                                            <h6 className="text-muted"><i className="fas fa-circle text-c-green f-10 m-r-15"></i>11 MAY 12:56</h6>
-                                                        </td>
-                                                        <td><a href="#!" className="label theme-bg2 text-black f-12 mr-2">Reject</a><a href="#!" className="label theme-bg text-black f-12">Approve</a></td>
-                                                    </tr> */}
+                                    <div>
+                                        <div style={{ height: '100%', backgroundColor: 'white', padding: "20px", border: '1px solid black', borderRadius: "10px", margin: '15px' }}>
+                                            <div style={{ textAlign: 'center', marginTop: '20px' }}>
 
-                                                    {booking && booking
-                                                        .slice()
-                                                        .sort((a, b) => b.orderId - a.orderId)
-                                                        .slice(0, 6)
-                                                        .reverse()
-                                                        .map((item) => (
-                                                            <tr key={item.id} className="unread">
-                                                                <td>
-                                                                    <img
-                                                                        className="rounded-circle"
-                                                                        style={{ width: "40px" }}
-                                                                        src={item.customerImage}
-                                                                        alt="activity-user"
-                                                                    />
-                                                                </td>
-                                                                <td>
-                                                                    <h6 className="mb-1">{item.customerName}</h6>
-                                                                </td>
-                                                                <td>
-                                                                    <h6 className="mb-1">{item.type}</h6>
-                                                                </td>
-                                                                <td>
-                                                                    <h6 className="text-muted">{formatDateTime(item.dateWork)}</h6>
-                                                                </td>
-                                                                <td>
-                                                                    <h6 className="mb-1">{formatCurrency(item.total)}</h6>
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                </tbody>
-                                            </table>
+                                                <div style={{ textAlign: 'left' }}>
+
+                                                    <h3 style={{ textAlign: 'center', color: 'black' }}><strong>List Order in month {monthRange}</strong></h3>
+                                                </div>
+
+                                            </div>
+
+                                            <div style={{ margin: '10px' }}>
+                                                <Button style={buttonStyle} onClick={handleCurrentMonthClick}>Current</Button>
+                                                <Button style={buttonStyle} onClick={handlePreviousMonthClick}>Back</Button>
+                                                <Button style={buttonStyle} onClick={handleNextMonthClick}>Next</Button>
+                                            </div>
+                                            <Table dataSource={employeetable} columns={columns} pagination={bottom} onRow={(record) => ({
+                                                onClick: () => handleRowClick(record),
+                                            })} />
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            
+                            <Modal
+
+                                visible={isModalVisible}
+                                onCancel={handleModalClose}
+                                footer={null}
+                            >
+                                {orderDetail && (
+                                    <div>
+                                        <p style={{ textAlign: 'center', fontSize: '20px' }}><strong>Order Detail</strong></p>
+                                        <p>Order ID: {orderDetail.orderId}</p>
+                                        <p>Service type: {orderDetail.type}</p>
+                                        <p>Service Name: {orderDetail.serviceName}</p>
+                                        <p>Work dated: {orderDetail.dateWork.split('T')[0]}</p>
+                                        <p>Start Time: {orderDetail.startTime}</p>
+                                        <p>End Time: {orderDetail.endTime}</p>
+                                        <p>Address: {orderDetail.address}</p>
+                                        <p>Customer: {orderDetail.customerName}</p>
+                                        <p>email: {orderDetail.customerEmail}</p>
+                                        <p>Phone Number: {orderDetail.phone}</p>
+                                        <p>SubPrice: {orderDetail.subPrice}</p>
+                                        <p>Total: {orderDetail.total}</p>
+
+
+                                    </div>
+                                )}
+                            </Modal>
                         </div>
                     </div>
                 </div>

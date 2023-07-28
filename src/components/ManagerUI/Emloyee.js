@@ -531,16 +531,7 @@ function Table() {
             {/* PAGE CONTAINER*/}
             <div className="page-container">
                 {/* HEADER DESKTOP*/}
-                <header className="header-desktop">
-                    <div className="section__content section__content--p30">
-                        <div className="container-fluid">
-                            <div className="header-wrap">
-
-
-                            </div>
-                        </div>
-                    </div>
-                </header>
+                
                 {/* END HEADER DESKTOP*/}
                 {/* MAIN CONTENT*/}
                 <div className="main-content">

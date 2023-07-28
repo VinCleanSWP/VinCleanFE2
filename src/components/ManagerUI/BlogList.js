@@ -38,15 +38,7 @@ const BlogList = () => {
         <div >
             {/* PAGE CONTAINER*/}
             <div className="page-container">
-            <header className="header-desktop">
-                    <div className="section__content section__content--p30">
-                        <div className="container-fluid">
-                            <div className="header-wrap">
-                                {/* Rest of the header code */}
-                            </div>
-                        </div>
-                    </div>
-                </header>
+
                 {/* MAIN CONTENT*/}
                 <div className="main-content">
                     <div className="section__content section__content--p30">

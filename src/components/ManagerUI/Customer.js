@@ -318,6 +318,7 @@ function Customer() {
 
             <div className="page-container">
                 {/* MAIN CONTENT*/}
+                
                 <div >
                     <div className="section__content section__content--p30">
                         <div className="container-fluid">

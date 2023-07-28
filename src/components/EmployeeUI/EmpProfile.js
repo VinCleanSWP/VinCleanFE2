@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Form, FormGroup, Input } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import { async } from 'q';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import '../../styles/profile-customer.css'
 import { storage } from '../../firebase/index';
+import { ToastContainer, toast } from 'react-toastify';
+
 
 
 
@@ -180,6 +177,16 @@ export default function EmpProfile() {
             const response = await axios.put('https://localhost:7013/api/Employee', updatedUser);
             if (response.status === 200) {
                 console.log('OK');
+                toast.success('Updated Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 setErrorMessage('Update Successfully');
             } else {
                 console.log('KO');
@@ -218,6 +225,16 @@ export default function EmpProfile() {
             const response = await axios.put(apiUrl, updatedUserData);
             // Kiểm tra trạng thái phản hồi từ API
             if (response.status === 200) {
+                toast.success('Updated Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 console.log('Mật khẩu của người dùng đã được cập nhật thành công.');
             } else {
                 console.log('Có lỗi xảy ra trong quá trình cập nhật mật khẩu của người dùng.');
@@ -348,6 +365,16 @@ export default function EmpProfile() {
                                                     value={confirmPassword}
                                                     onChange={handleConfirmPasswordChange} />
                                             </div>
+                                            <div className="text-left mt-3 mb-3">
+                                                <h5>Mật khẩu phải đáp ứng được những yêu cầu dưới đây</h5>
+                                                <ol>
+                                                    <li>Mật khẩu phải chứa ít nhất một ký tự viết thường.</li>
+                                                    <li>Mật khẩu phải chứa ít nhất một ký tự viết hoa.</li>
+                                                    <li>Mật khẩu phải chứa ít nhất một chữ số.</li>
+                                                    <li>Mật khẩu chỉ được chứa các ký tự chữ và số (viết thường, viết hoa).</li>
+                                                    <li>Mật khẩu phải có ít nhất 8 ký tự.</li>
+                                                </ol>
+                                            </div>
                                             <div className="text-right mt-3 mb-3">
                                                 <button type="button" className="btn btn-default">Hủy</button>
                                                 <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
@@ -462,127 +489,12 @@ export default function EmpProfile() {
                                         </Row>
                                     </Container >
                                 </div>
-                                {/* Social */}
-                                <div className="tab-pane fade" id="account-social-links">
-                                    <div className="card-body pb-2">
-                                        <div className="form-group">
-                                            <label className="form-label">Twitter</label>
-                                            <input type="text" className="form-control" defaultValue="https://twitter.com/user" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Facebook</label>
-                                            <input type="text" className="form-control" defaultValue="https://www.facebook.com/user" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Google+</label>
-                                            <input type="text" className="form-control" defaultValue />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">LinkedIn</label>
-                                            <input type="text" className="form-control" defaultValue />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Instagram</label>
-                                            <input type="text" className="form-control" defaultValue="https://www.instagram.com/user" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="tab-pane fade" id="account-connections">
-                                    <div className="card-body">
-                                        <button type="button" className="btn btn-twitter">Connect to <strong>Twitter</strong></button>
-                                    </div>
-                                    <hr className="border-light m-0" />
-                                    <div className="card-body">
-                                        <h5 className="mb-2">
-                                            <a href="javascript:void(0)" className="float-right text-muted text-tiny"><i className="ion ion-md-close" /> Remove</a>
-                                            <i className="ion ion-logo-google text-google" />
-                                            You are connected to Google:
-                                        </h5>
-                                        nmaxwell@mail.com
-                                    </div>
-                                    <hr className="border-light m-0" />
-                                    <div className="card-body">
-                                        <button type="button" className="btn btn-facebook">Connect to <strong>Facebook</strong></button>
-                                    </div>
-                                    <hr className="border-light m-0" />
-                                    <div className="card-body">
-                                        <button type="button" className="btn btn-instagram">Connect to <strong>Instagram</strong></button>
-                                    </div>
-                                </div>
-                                <div className="tab-pane fade" id="account-notifications">
-                                    <div className="card-body pb-2">
-                                        <h6 className="mb-4">Activity</h6>
-                                        <div className="form-group">
-                                            <label className="switcher">
-                                                <input type="checkbox" className="switcher-input" defaultChecked />
-                                                <span className="switcher-indicator">
-                                                    <span className="switcher-yes" />
-                                                    <span className="switcher-no" />
-                                                </span>
-                                                <span className="switcher-label">Email me when someone comments on my article</span>
-                                            </label>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="switcher">
-                                                <input type="checkbox" className="switcher-input" defaultChecked />
-                                                <span className="switcher-indicator">
-                                                    <span className="switcher-yes" />
-                                                    <span className="switcher-no" />
-                                                </span>
-                                                <span className="switcher-label">Email me when someone answers on my forum thread</span>
-                                            </label>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="switcher">
-                                                <input type="checkbox" className="switcher-input" />
-                                                <span className="switcher-indicator">
-                                                    <span className="switcher-yes" />
-                                                    <span className="switcher-no" />
-                                                </span>
-                                                <span className="switcher-label">Email me when someone follows me</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <hr className="border-light m-0" />
-                                    <div className="card-body pb-2">
-                                        <h6 className="mb-4">Application</h6>
-                                        <div className="form-group">
-                                            <label className="switcher">
-                                                <input type="checkbox" className="switcher-input" defaultChecked />
-                                                <span className="switcher-indicator">
-                                                    <span className="switcher-yes" />
-                                                    <span className="switcher-no" />
-                                                </span>
-                                                <span className="switcher-label">News and announcements</span>
-                                            </label>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="switcher">
-                                                <input type="checkbox" className="switcher-input" />
-                                                <span className="switcher-indicator">
-                                                    <span className="switcher-yes" />
-                                                    <span className="switcher-no" />
-                                                </span>
-                                                <span className="switcher-label">Weekly product updates</span>
-                                            </label>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="switcher">
-                                                <input type="checkbox" className="switcher-input" defaultChecked />
-                                                <span className="switcher-indicator">
-                                                    <span className="switcher-yes" />
-                                                    <span className="switcher-no" />
-                                                </span>
-                                                <span className="switcher-label">Weekly blog digest</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div >
+            <ToastContainer />
         </div >
     )
 }

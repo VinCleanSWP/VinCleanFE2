@@ -22,13 +22,8 @@ function SideBar() {
           <nav className="navbar-sidebar" >
             <ul className="list-unstyled navbar__list" >
               <li class=" has-sub">
-                <a class="js-arrow" href=" ">
-                  <i class="fas fa-tachometer-alt"></i>Dashboard</a>
-                <ul class="list-unstyled navbar__sub-list js-sub-list">
-                  <li>
-                    <a href="index.html">Dashboard 1</a>
-                  </li>
-                </ul>
+                <Link class="js-arrow" to="/dashboard">
+                  <i class="fas fa-tachometer-alt"></i>Dashboard</Link>
               </li>
               <li >
                 <Link to="/profile">

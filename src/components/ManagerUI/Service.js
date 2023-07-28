@@ -214,7 +214,6 @@ const Service = () => {
                                     <td>
                                         {editingServiceId === sv.serviceId ? (
                                             <input
-                                                type="text"
                                                 value={editingServiceName}
                                                 onChange={e => setEditingServiceName(e.target.value)}
                                             />

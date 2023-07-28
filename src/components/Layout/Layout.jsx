@@ -2,8 +2,6 @@ import React, { Fragment, useEffect, useState } from "react";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import Routers from "../../routers/Routers";
-import Customer from "../../pages/Customer";
-import Manager from "../../pages/Manager";
 import EmployeeRouter from "../../routers/EmployeeRouter";
 import ManagerRouter from "../../routers/ManagerRouter";
 import Loading from "../../../src/components/UI/Loading";
@@ -15,7 +13,7 @@ const Layout = () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 3500);
+    }, 2000);
   }, []);
 
   return (

@@ -64,12 +64,12 @@ function EPHeader() {
                 
                 <li className="nav-links-db">
                     <img src={logo} alt="logo" style={{  height: '75px' }} />
-                    <Link to="/dashboard">Dashboard</Link>
-                    <Link to="/calendar">Calendar</Link>
+                    <Link to="/dashboard">Tổng quan</Link>
+                    <Link to="/calendar">Lịch Công Việc</Link>
                 </li>
                 <div className="nav-links-welcome">
                 <li >
-                    <a>Welcome, {name}</a>
+                    <a>Xin chào, {name}</a>
                 </li>
                 <li className="nav-links-profile">
                     <Link to="/profile">

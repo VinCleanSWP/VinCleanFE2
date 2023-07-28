@@ -12,8 +12,9 @@ export default function EmployeeRouter() {
             <div className="page-wrapper">
                 < EPHeader />
                 <Routes>
+                    <Route path='/calendar' element={<MyCalendar/>}></Route>      
+                    <Route path='/' element={<MyCalendar/>}></Route>
                     <Route path='/dashboard' element={<Dashboard />}></Route>
-                    <Route path='/calendar' element={<MyCalendar />}></Route>
                     <Route path='/profile' element={<EmpProfile />}></Route>
                 </Routes>
 

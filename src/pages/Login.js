@@ -46,7 +46,7 @@ export default function Login() {
                     localStorage.setItem('img', response.data.data.img);
                     localStorage.setItem('id', response.data.data.accountId);
                     // navigate('/')
-                    window.location.href = '/booking';
+                    window.location.href = '/dashboard';
                 }
                 // Proceed with the desired action upon successful login
             }).catch(error => {

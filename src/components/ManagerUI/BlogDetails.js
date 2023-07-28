@@ -47,6 +47,15 @@ const BlogDetails = () => {
                 console.log(error);
             });
     }, [id]);
+    const fetchComments = (blogid) => {
+        axios.get(`https://localhost:7013/api/Comment?blogId=${blogid}`)
+            .then(response => {
+                setComments(response.data.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
 
     useEffect(() => {
         const fetchCommentAuthors = async () => {
@@ -109,6 +118,8 @@ const BlogDetails = () => {
         } catch (error) {
             console.log(error);
         }
+        fetchComments(blogid);
+
     };
 
     const handleDeleteComment = (commentId) => {
@@ -150,7 +161,9 @@ const BlogDetails = () => {
                                                                     <i className="ri-time-line"></i>{formattedDateTime}
                                                                 </span>
                                                             </div>
-                                                            <p className="section__description">{blog.content}</p>
+                                                            <p className="section__description" dangerouslySetInnerHTML={{ __html: blog.sumarry }}></p>
+                                                            <p className="section__description" dangerouslySetInnerHTML={{ __html: blog.content }}></p>
+
                                                             <h6 className="ps-5 fw-normal">
                                                                 <blockquote className="fs-4"></blockquote>
                                                             </h6>

@@ -35,45 +35,47 @@ const BlogList = () => {
 
   return (
     <>
-    <Col lg="12" className="mb-5 text-center">
-      <h2 className="section__title">Bài Blog Mới Nhất</h2>
-    </Col>
+      <Col lg="12" className="mb-5 text-center">
+        <h2 className="section__title">Bài Blog Mới Nhất</h2>
+      </Col>
       <div className="search-blog">
-        <Input type="text" 
-        value={searchTerm} 
-        onChange={handleChange} 
-        placeholder="Tìm kiếm Blog"
+        <Input type="text"
+          value={searchTerm}
+          onChange={handleChange}
+          placeholder="Tìm kiếm Blog"
         />
       </div>
-      
+
 
       {filteredBlogs.map(blog => (
         <Col lg="4" md="6" sm="6" className="mb-5" key={blog.id}>
           <div className="blog__item">
-            
+
             {/* Bấm vào ảnh để xem blog details */}
-            <Link to = {`/blogs/${blog.blogId}`} >
-              <img src = {blog.img} alt="" className="blog-image" style={{ width: '415px', height: '297.17px'}}/>
-            </Link>         
-            
-            <div className="blog__info p-3">            
-                    
+            <Link to={`/blogs/${blog.blogId}`} >
+              <img src={blog.img} alt="" className="blog-image" style={{ width: '415px', height: '297.17px' }} />
+            </Link>
+
+            <div className="blog__info p-3">
+
               {/* Bấm vào title để xem Blog Details */}
               <Link to={`/blogs/${blog.blogId}`} className="blog__title">
                 {blog.title}
-              </Link>             
+              </Link>
 
-              <p className="section__description mt-3">
-                {blog.sumarry.length > 100
-                ? blog.sumarry.substr(0, 100)
-                : blog.sumarry}
-              </p>
-              
+
+              <p className="section__description" dangerouslySetInnerHTML={{
+                __html: blog.sumarry.length > 100
+                  ? blog.sumarry.substr(0, 100)
+                  : blog.sumarry
+              }}></p>
+
+
               {/* Bấm vào để xem Blog Details */}
               <Link to={`/blogs/${blog.blogId}`} className="read__more">
-              ⊳ Xem chi tiết
+                ⊳ Xem chi tiết
               </Link>
-              
+
               <div className="blog__time pt-3 mt-3 d-flex align-items-center justify-content-between">
                 <span className="blog__author">
                   <i className="ri-user-line"></i>

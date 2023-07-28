@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // import { storage } from 'firebase/storage';
 import { storage } from './FireBaseConfig';
 import moment from 'moment';
-
+import Swal from 'sweetalert2';
 
 
 function Table() {
@@ -54,29 +54,60 @@ function Table() {
     const [ModalIsOpen, setModalIsOpen] = useState('');
     const [search, setSearch] = useState('');
     const [url, setUrl] = useState('');
+    const [userNameError, setUserNameError] = useState('');
+    const [firstNameError, setFirstNameError] = useState('');
+    const [lastNameError, setLastNameError] = useState('');
+    const [phoneError, setPhoneError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [genderError, setGenderError] = useState('');
+    const [statusError, setStatusError] = useState('');
 
     const deleteEmployee = (employeeId) => {
-        axios.delete(`https://localhost:7013/api/Employee/${employeeId}`)
-            .then(response => {
-                console.log('Employee delete successfully:', response.data);
-                fetchEmployeeList();
-                setEmployeeList(response.data.data);
-                toast.success('Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'btn btn-success',
+              cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+          })
+          swalWithBootstrapButtons.fire({
+            title: 'Are you sure to Delete this Account?',
+            text: "Double-check before you delete this account!!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`https://localhost:7013/api/Employee/${employeeId}`)
+                .then(response => {
+                    console.log('Employee delete successfully:', response.data);
+                    fetchEmployeeList();
+                    setEmployeeList(response.data.data);
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'This Account has been deleted.',
+                        'success'
+                      )
+                })
+                .catch(error => {
+                    console.error('Error deleting customer:', error);
+                    // Xử lý lỗi khi xóa khách hàng
                 });
-
-            })
-            .catch(error => {
-                console.error('Error deleting customer:', error);
-                // Xử lý lỗi khi xóa khách hàng
-            });
+              
+            } else if (
+              /* Read more about handling dismissals below */
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              swalWithBootstrapButtons.fire(
+                'Cancelled',
+                'this account is safe :)',
+                'error'
+              )
+            }
+          })
     };
 
 
@@ -104,7 +135,7 @@ function Table() {
                 setEmployeeId(data.employeeId)
                 setAccountId(data.account.accountId);
                 setUserName(data.account.name);
-                setstatus(data.account.status);
+                setstatus(data.status);
                 setStartDate(data.startDate);
                 setendDate(data.endDate);
                 setIsDeleted(data.account.isDeleted);
@@ -121,12 +152,60 @@ function Table() {
                 console.error('Error:', error);
             });
     }, [employeeId]);
-    const handleChangeSubmit = () => {
+    const handleChangeSubmit = (e) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^\d{10}$/;
+        e.preventDefault();
+        setUserNameError('');
+        setFirstNameError('');
+        setLastNameError('');
+        setPhoneError('');
+        setEmailError('');
+        setPasswordError('');
+        setGenderError('');
+
+        if (!firstName.trim()) {
+            setFirstNameError('Please enter a first name.');
+            return;
+        }
+        if (!lastName.trim()) {
+            setLastNameError('Please enter a last name.');
+            return;
+        }
+        if (!status.trim()) {
+            setStatusError('Please enter a status.');
+            return;
+        }
+        if (!gender.trim()) {
+            setGenderError('Please select a gender.');
+            return;
+        }
+        if (!email.trim()) {
+            setEmailError('Please enter an email.');
+            return;
+        }
+        if (!emailRegex.test(email.trim())) {
+            setEmailError('Please enter a valid email address.');
+            return;
+        }
+        if (!password.trim()) {
+            setPasswordError('Please enter a password.');
+            return;
+        }
+        if (!phone.trim()) {
+            setPhoneError('Please enter a phone number.');
+            return;
+        }
+        if (!phoneRegex.test(phone.trim())) {
+            setPhoneError('Please enter a valid 10-digit phone number.');
+            return;
+        }
+        const selectedStatus = document.getElementById('statusType').value;
         const updatedEmployee = {
             employeeId: employeeId,
             // accountId: 27,
             img: newImage,//them vao giup tao Phung
-            status: "Available",
+            status: selectedStatus,
             name: userName,
             firstName: firstName,
             lastName: lastName,
@@ -155,6 +234,7 @@ function Table() {
                 console.error('Error:', error);
                 // Handle error
             });
+
     };
 
     useEffect(() => {
@@ -193,14 +273,64 @@ function Table() {
     };
 
 
-    const handleSubmit = () => {
-        // Tạo object chứa dữ liệu form
+    const handleSubmit = (e) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^\d{10}$/;
+        e.preventDefault();
+        setUserNameError('');
+        setFirstNameError('');
+        setLastNameError('');
+        setPhoneError('');
+        setEmailError('');
+        setPasswordError('');
+        setGenderError('');
+
+        // Validation for each field
+        if (!newUserName.trim()) {
+            setUserNameError('Please enter a username.');
+            return;
+        }
+        if (!newFirstName.trim()) {
+            setFirstNameError('Please enter a first name.');
+            return;
+        }
+        if (!newLastName.trim()) {
+            setLastNameError('Please enter a last name.');
+            return;
+        }
+        if (!newPhone.trim()) {
+            setPhoneError('Please enter a phone number.');
+            return;
+        }
+        if (!phoneRegex.test(newPhone.trim())) {
+            setPhoneError('Please enter a valid 10-digit phone number.');
+            return;
+        }
+        if (!emailRegex.test(newEmail.trim())) {
+            setEmailError('Please enter a valid email address.');
+            return;
+        }
+        if (!newEmail.trim()) {
+            setEmailError('Please enter an email.');
+            return;
+        }
+        if (!newPassword.trim()) {
+            setPasswordError('Please enter a password.');
+            return;
+        }
+        if (!newGender.trim()) {
+            setGenderError('Please select a gender.');
+            return;
+        }
+
+        const selectedStatus = document.getElementById('statusType').value;
+
         const formData = {
             name: newUserName,
             email: newEmail,
             img: newImage,
             password: newPassword,
-            status: 'Available',
+            status: selectedStatus,
             gender: newGender,
             firstName: newFirstName,
             lastName: newLastName,
@@ -232,6 +362,8 @@ function Table() {
                 // Xử lý lỗi (nếu có)
                 console.error(error);
             });
+        setAddModalIsOpen(false);
+
     };
 
     const handleSearchChange = (e) => {
@@ -256,9 +388,7 @@ function Table() {
 
 
     return (
-
         <div>
-
             <Modal
                 isOpen={modalEditIsOpen}
                 onRequestClose={() => setEditModalIsOpen(false)}
@@ -267,16 +397,14 @@ function Table() {
                     overlay: {
                         zIndex: 9999,
                         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-
                     },
                     content: {
                         width: '800px',
-                        height: '800px',
+                        height: 'auto',
                         margin: 'auto',
                         overflow: 'auto'
                     }
                 }}
-
             >
                 <div>
                     <div className="card overflow-hidden">
@@ -285,11 +413,11 @@ function Table() {
                             <div className="tab-content">
                                 <div className="tab-pane fade active show" id="account-general">
                                     <hr className="border-light m-0" />
-                                    <div className="card-body">
+                                    <div className="card-body" >
                                         <h3 style={{ textAlign: "center" }}><strong>Edit Employee</strong></h3>
 
                                         <div style={{ display: 'flex' }}>
-                                            <div><img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius: '50%' }} /></div>
+                                            <div><img src={newImage || img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius: '100%' }} /></div>
                                             <div style={{ paddingTop: '15px', paddingLeft: '10px', width: 'auto', fontSize: '25px' }}><strong>{userName}</strong>
                                                 <br></br>
                                                 <div style={{ fontSize: '13px' }}><strong style={{ marginRight: "5px" }}>Account ID</strong>{accountId}</div>
@@ -300,7 +428,6 @@ function Table() {
                                         </div>
 
                                         <div>
-                                            <div><img src={newImage || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius: '50%' }} /></div>
                                             <input type="file" onChange={handleImageUpload} />
 
                                         </div>
@@ -314,6 +441,7 @@ function Table() {
                                                         value={firstName}
                                                         onChange={(e) => setFirstName(e.target.value)}
                                                     />
+                                                    {firstNameError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{firstNameError}</div>}
                                                 </div>
                                                 <div className="form-group">
                                                     <label className="form-label"><strong>Last name</strong></label>
@@ -323,15 +451,15 @@ function Table() {
                                                         value={lastName}
                                                         onChange={(e) => setLastName(e.target.value)}
                                                     />
+                                                    {lastNameError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{lastNameError}</div>}
                                                 </div>
                                                 <div className="form-group">
                                                     <label className="form-label"><strong>Status</strong></label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control mb-1"
-                                                        value={status}
-                                                        onChange={(e) => setstatus(e.target.value)}
-                                                    />
+                                                    <select id="statusType" className="form-control" >
+                                                        <option value="Available">Available</option>
+                                                        <option value="NonAvailable">NonAvailable</option>
+                                                    </select>
+
                                                 </div>
 
                                                 <div>
@@ -341,13 +469,20 @@ function Table() {
                                                         <option value="Male">Male</option>
                                                         <option value="Female">Female</option>
                                                         <option value="Other">Other</option>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control mb-1"
+                                                            value={gender}
+                                                            onChange={(e) => setGender(e.target.value)}
+                                                        />
                                                     </select>
-                                                    <input
+                                                    {genderError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{genderError}</div>}
+                                                    {/* <input
                                                         type="text"
                                                         className="form-control mb-1"
                                                         value={gender}
                                                         onChange={(e) => setGender(e.target.value)}
-                                                    />
+                                                    /> */}
                                                 </div>
                                             </div>
                                             <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
@@ -359,6 +494,7 @@ function Table() {
                                                         value={email}
                                                         onChange={(e) => setEmail(e.target.value)}
                                                     />
+                                                    {emailError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{emailError}</div>}
                                                 </div>
                                                 <div className="form-group">
                                                     <label className="form-label"><strong>Password</strong></label>
@@ -368,6 +504,7 @@ function Table() {
                                                         value={password}
                                                         onChange={(e) => setPassword(e.target.value)}
                                                     />
+                                                    {passwordError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{passwordError}</div>}
                                                 </div>
                                                 <div className="form-group">
                                                     <label className="form-label"><strong>Phone</strong></label>
@@ -377,6 +514,7 @@ function Table() {
                                                         value={phone}
                                                         onChange={(e) => setPhone(e.target.value)}
                                                     />
+                                                    {phoneError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{phoneError}</div>}
                                                 </div>
 
                                             </div>
@@ -388,9 +526,9 @@ function Table() {
                         </div>
                     </div>
                     <div className="text-right mt-3">
-                        <button type="button" className="btn btn-primary mr-2" onClick={handleChangeSubmit} >Update </button>
-                        <span className="mr-2"></span>
                         <button type="button" className="btn btn-secondary" onClick={() => setEditModalIsOpen(false)}>Close</button>
+                        <span className="mr-2"></span>
+                        <button type="button" className="btn btn-primary mr-2" onClick={handleChangeSubmit} >Update </button>
                     </div>
                 </div>
 
@@ -421,7 +559,7 @@ function Table() {
                         <div className="tab-content">
                             <div className="tab-pane fade active show" id="account-general">
                                 <hr className="border-light m-0" />
-                                <div className="card-body">
+                                <div className="card-body" style={{ height: '700px' }}>
                                     <h3 style={{ textAlign: "center" }}><strong>Add Employee</strong></h3>
                                     <div style={{ display: 'flex' }}>
                                         <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
@@ -433,6 +571,7 @@ function Table() {
                                                     value={newUserName}
                                                     onChange={(e) => setNewUserName(e.target.value)}
                                                 />
+                                                {userNameError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{userNameError}</div>}
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label"><strong>First name</strong></label>
@@ -442,6 +581,7 @@ function Table() {
                                                     value={newFirstName}
                                                     onChange={(e) => setNewFirstName(e.target.value)}
                                                 />
+                                                {firstNameError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{firstNameError}</div>}
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label"><strong>Last name</strong></label>
@@ -451,6 +591,7 @@ function Table() {
                                                     value={newLastName}
                                                     onChange={(e) => setNewLastName(e.target.value)}
                                                 />
+                                                {lastNameError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{lastNameError}</div>}
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label"><strong>Phone</strong></label>
@@ -460,6 +601,7 @@ function Table() {
                                                     value={newPhone}
                                                     onChange={(e) => setNewPhone(e.target.value)}
                                                 />
+                                                {phoneError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{phoneError}</div>}
                                             </div>
                                         </div>
                                         <div style={{ flex: '1', width: '50%', height: 'auto', margin: '0px 10px' }}>
@@ -473,6 +615,7 @@ function Table() {
                                                     value={newEmail}
                                                     onChange={(e) => setNewEmail(e.target.value)}
                                                 />
+                                                {emailError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{emailError}</div>}
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label"><strong>Password</strong></label>
@@ -482,23 +625,20 @@ function Table() {
                                                     value={newPassword}
                                                     onChange={(e) => setNewPassword(e.target.value)}
                                                 />
+                                                {passwordError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{passwordError}</div>}
                                             </div>
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="form-group"><strong>Gender</strong></label>
+                                        <label className="form-label"><strong>Gender</strong></label>
                                         <select id="gender" value={newGender} onChange={(e) => setNewGender(e.target.value)}>
                                             <option value="">Choose gender</option>
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
                                             <option value="Other">Other</option>
                                         </select>
-                                        <input
-                                            type="text"
-                                            className="form-control mb-1"
-                                            value={newGender}
-                                            onChange={(e) => setNewGender(e.target.value)}
-                                        />
+                                        {genderError && <div style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{genderError}</div>}
+
                                     </div>
                                     <div>
                                         <label className="form-label"><strong>Image</strong></label>
@@ -522,9 +662,11 @@ function Table() {
                     </div>
                 </div>
                 <div className="text-right mt-3">
-                    <button type="button" className="btn btn-primary mr-2" onClick={handleSubmit}>Submit</button>
-                    <span className="mr-2"></span>
                     <button type="button" className="btn btn-secondary" onClick={() => setAddModalIsOpen(false)}>Close</button>
+                    <span className="mr-2"></span>
+                    <button type="button" className="btn btn-primary mr-2" onClick={handleSubmit}>Submit</button>
+
+
                 </div>
 
             </Modal>
@@ -568,7 +710,7 @@ function Table() {
                                             {/* <button className="au-btn au-btn-icon au-btn--green au-btn--small">
                                                 <i className="zmdi zmdi-plus" />add item</button> */}
 
-                                            <button type="button" class="btn btn-outline-primary" data-mdb-ripple-color="dark" onClick={() => setAddModalIsOpen(true)}>
+                                            <button type="button" class="btn btn-primary mr-2" data-mdb-ripple-color="dark" onClick={() => setAddModalIsOpen(true)}>
                                                 Add employee
                                             </button>
                                         </div>

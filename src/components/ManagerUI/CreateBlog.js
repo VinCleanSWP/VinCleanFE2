@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { storage } from '../../firebase/index';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function BlogDetail() {
     const [title, setTitle] = useState('');
@@ -14,7 +16,8 @@ export default function BlogDetail() {
     const blogId = useParams();
     const id = parseInt(blogId.id)
     const [tempImageUrl, setTempImageUrl] = useState('');
-    const handleSave = () => {
+    const navigate = useNavigate();
+    const handleSave = async () => {
         const blogData = {
             ...blog,
             title: title,
@@ -25,6 +28,7 @@ export default function BlogDetail() {
         // Gọi API để lấy dữ liệu
         axios.post(`https://localhost:7013/api/Blog`, blogData)
             .then(response => {
+
                 toast.success('Create Successfully!', {
                     position: "top-right",
                     autoClose: 5000,
@@ -34,13 +38,21 @@ export default function BlogDetail() {
                     draggable: true,
                     progress: undefined,
                     theme: "light",
-                });
-                setBlog(response.data.data); // Lưu dữ liệu vào state
+                });// Lưu dữ liệu vào state
+
+                setBlog(response.data.data);
+
+
+
 
             })
             .catch(error => {
                 console.error('Error:', error);
             });
+        navigate("/bloglist");
+
+
+
     };
     const handleImageUpload = async e => {
         const file = e.target.files[0];
@@ -62,6 +74,7 @@ export default function BlogDetail() {
     const handleContentChange = (value) => {
         setContent(value);
     };
+
     return (
         <div className="page-container">
             {/* MAIN CONTENT*/}
@@ -79,6 +92,7 @@ export default function BlogDetail() {
                                                 <div>
                                                     <label><strong>Title:</strong></label>
                                                     <input type="text" className="form-control mb-1" value={title} onChange={handleTitleChange} />
+
                                                 </div>
                                                 <div>
                                                     <label><strong>Summary:</strong></label>
@@ -108,7 +122,16 @@ export default function BlogDetail() {
                                                     <div dangerouslySetInnerHTML={{ __html: content }} />
                                                 </div>
                                                 <div style={{ textAlign: 'right', marginRight: '5px' }}>
-                                                    <button type="button" className="btn btn-primary m-r-5" onClick={handleSave}>Save</button>
+
+                                                    <Link to='/bloglist'>
+                                                        <button type="button" class="btn btn-secondary" data-mdb-ripple-color="dark" style={{ marginRight: '20px' }}>
+                                                            Close
+                                                        </button>
+                                                    </Link>
+
+
+                                                    <button type="button" class="btn btn-primary mr-2" data-mdb-ripple-color="dark" onClick={handleSave}>Save</button>
+
 
                                                 </div>
 

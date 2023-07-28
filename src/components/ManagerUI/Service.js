@@ -7,6 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import './FireBaseConfig';
 import { storage } from "./FireBaseConfig";
 import '../../styles/serviceadmin.css';
+import { FcAddDatabase } from "react-icons/fc";
+import Swal from 'sweetalert2';
 const Service = () => {
     const [servicetype, setType] = useState([]);
     const [servicelist, setServiceList] = useState([]);
@@ -16,7 +18,7 @@ const Service = () => {
     const accountId = localStorage.getItem('id');
     const [servicetypeid, setServiceTypeId] = useState('');
     const [serviceId, setServiceId] = useState('');
-    const [TempImageUrl,setTempImageUrl] = useState('');
+    const [TempImageUrl, setTempImageUrl] = useState('');
 
     const [Name, setName] = useState('');
     const [Cost, setCost] = useState('');
@@ -32,7 +34,12 @@ const Service = () => {
     const [editingServiceDescription, setEditingServiceDescription] = useState('');
     const [editingServiceStatus, setEditingServiceStatus] = useState('');
 
+
     useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = () => {
         axios.get(`https://localhost:7013/api/Type`)
             .then(response => {
                 const data = response.data.data;
@@ -41,20 +48,30 @@ const Service = () => {
             .catch(error => {
                 console.error('Error fetching blog list:', error);
             });
+    };
+
+    useEffect(() => {
+        fetchData();
     }, []);
 
     useEffect(() => {
-        axios.get(`https://localhost:7013/api/Type/${servicetypeid}`)
+        handelDetal(servicetypeid);
+    }, [servicetypeid]);
+
+    const handelDetal = (servicetypeId) => {
+        axios.get(`https://localhost:7013/api/Type/${servicetypeId}`)
             .then(response => {
                 const data = response.data.data;
                 setTypeName(data.type1)
-                setTypeImage(data.img)
+                setTypeImage(response.data.data)
+                setEditingServiceId(data.typeId)
+                console.log(response.data.data.img);
             })
             .catch(error => {
                 console.error('Error fetching blog list:', error);
             });
 
-        axios.get(`https://localhost:7013/api/Service/Type/${servicetypeid}`)
+        axios.get(`https://localhost:7013/api/Service/Type/${servicetypeId}`)
             .then(response => {
                 const data = response.data.data;
                 setServiceList(data)
@@ -62,10 +79,10 @@ const Service = () => {
             .catch(error => {
                 console.error('Error fetching blog list:', error);
             });
-    }, [servicetypeid]);
+    };
 
     useEffect(() => {
-        axios.get(`https://localhost:7013/api/Service/Type/`)
+        axios.get(`https://localhost:7013/api/Service/Type`)
             .then(response => {
                 const data = response;
                 setServiceId(data.ServiceId);
@@ -83,12 +100,15 @@ const Service = () => {
 
 
 
-    const startEditingService = (serviceId, serviceName, serviceCost, serviceDescription, serviceStatus) => {
+    const startEditingService = (serviceId, serviceName, serviceStatus, serviceDescription, serviceCost) => {
+
         setEditingServiceId(serviceId);
         setEditingServiceName(serviceName);
-        setEditingServiceCost(serviceCost);
-        setEditingServiceDescription(serviceDescription);
         setEditingServiceStatus(serviceStatus);
+        setEditingServiceCost(serviceCost);
+
+        setEditingServiceDescription(serviceDescription);
+
     };
     console.log(editingServiceStatus);
     const saveEditedService = () => {
@@ -105,6 +125,16 @@ const Service = () => {
         // Gửi yêu cầu PUT để cập nhật dịch vụ
         axios.put(`https://localhost:7013/api/Service`, editedService)
             .then(response => {
+                toast.success('Save successfull!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
 
 
             })
@@ -112,6 +142,155 @@ const Service = () => {
                 console.log("Put fail");
             });
     };
+    const saveType = () => {
+        const updateTypeStatus = document.getElementById('updateTypeStatus').value;
+        const editedType = {
+            typeId: editingServiceId,
+            type1: TypeName,
+            img: TypeImage.img || TempImageUrl,
+            avaiable: updateTypeStatus === "true" ? true : false
+
+        }
+        console.log(editedType)
+        axios.put(`https://localhost:7013/api/Type`, editedType)
+            .then((response) => {
+                toast.success('Save successfull!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                fetchData();
+                setTypeModalIsOpen(false);
+                
+
+
+            }).catch(error => {
+                console.log("Put fail");
+            });
+    }
+
+    const handleButtonAddTypeClick = () => {
+        // Lấy giá trị của "type" và "name" từ các trường input
+        const selectedStatus = document.getElementById('statusType').value;
+        const enteredName = document.getElementById('name').value;
+        const processImgData = {
+            avaiable: selectedStatus === "true" ? true : false,
+            type1: enteredName,
+            img: TypeImage.img || TempImageUrl
+        }
+        console.log(processImgData)
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Do you want to create this Service?',
+            text: "Double-check before you create this service!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, create it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post('https://localhost:7013/api/Type', processImgData)
+                    .then(response => {
+                        // Xử lý phản hồi từ dịch vụ (service) nếu cần thiết
+                        console.log(response.data);
+                        swalWithBootstrapButtons.fire(
+                            'Successfully!',
+                            'This service created successfully.',
+                            'success'
+                        )
+                        fetchData();
+                        handleImageUpload(TempImageUrl);
+                    })
+                    .catch(error => {
+                        // Xử lý lỗi nếu có
+                        console.error(error);
+                    });
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                )
+            }
+        })
+
+    };
+
+    const handleButtonAddServiceClick = (typeId) => {
+        // Lấy giá trị của "type" và "name" từ các trường input
+        const serviceName = document.getElementById('serviceName').value;
+        const cost = document.getElementById('cost').value;
+        const discription = document.getElementById('discription').value;
+        const processImgData = {
+            typeId: typeId,
+            name: serviceName,
+            cost: parseFloat(cost),
+            description: discription,
+        }
+        console.log(processImgData)
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Do you want to create this Service?',
+            text: "Double-check before you create this service!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, create it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post('https://localhost:7013/api/Service', processImgData)
+                    .then(response => {
+                        // Xử lý phản hồi từ dịch vụ (service) nếu cần thiết
+                        console.log(response.data);
+                        swalWithBootstrapButtons.fire(
+                            'Successfully!',
+                            'This service created successfully.',
+                            'success'
+                        )
+                        handelDetal(typeId);
+                    })
+                    .catch(error => {
+                        // Xử lý lỗi nếu có
+                        console.error(error);
+                    });
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                )
+            }
+        })
+
+    };
+
     const handleImageUpload = async e => {
         const file = e.target.files[0];
         const storageRef = storage.ref(`Employee/${file.name}`);
@@ -128,50 +307,75 @@ const Service = () => {
                 isOpen={modalTypeIsOpen}
                 onRequestClose={() => setTypeModalIsOpen(false)}
                 contentLabel="Add Employee"
+                style={{ width: '60%' }}
             >
 
-                <div className="card-body">
-                    <div className="form-group">
-                        <label className="form-label"><strong>Type Id</strong></label>
-                        <input
-                            type="text"
-                            className="form-control mb-1"
-                            value={servicetypeid}
-                            onChange={(e) => setServiceTypeId(e.target.value)}
-                        />
-                    </div>
+                <div className="card-body" >
                     <div>
-                        <label className="form-label"><strong>Image</strong></label>
-                        <br></br>
-                        <input type="file" onChange={handleImageUpload} />
-                        <img src={TypeImage || "http://via.placeholder.com/300"} alt="Type" style={{ width: '100px', height: '100px' }} />
-                    </div>
-
-                    <div className="form-group">
+                        <div>
+                            <label className="form-label"><strong>Image</strong></label>
+                            <br></br>
+                            <input type="file" onChange={handleImageUpload} />
+                            <img src={TempImageUrl || TypeImage.img || "http://via.placeholder.com/300"} alt="Type" style={{ width: '100px', height: '100px' }} />
+                        </div>
                         <label className="form-label"><strong>Type Name</strong></label>
-                        <input
-                            type="text"
-                            className="form-control mb-1"
-                            value={TypeName}
-                            onChange={(e) => setDescription(e.target.value)}
-                        />
+                        <div className="form-group" style={{ display: "flex" }}>
+
+                            <input
+                                type="text"
+                                className="form-control mb-1"
+                                value={TypeName}
+                                onChange={(e) => setTypeName(e.target.value)}
+                            />
+                            <select id="updateTypeStatus" className="form-control" style={{ width: "200px" }}>
+                                <option value="true">Available</option>
+                                <option value="false">Deleted</option>
+                            </select>
+
+                        </div>
+                        <form className="form-inline" style={{ display: "block" }} >
+                            <div className=" input-group mb-3 " style={{ position: "relative" }}>
+                                <label className="px-2 input-group-text">Service Name</label>
+                                <input className="form-control" id="serviceName" />
+
+                            </div>
+                            <div className=" input-group mb-3" >
+                                <label className="input-group-text">Cost</label>
+                                <input className="form-control" id="cost" type="number" min="0" required />
+                            </div>
+                            <div className=" input-group mb-3" >
+                                <label className="input-group-text">Discription</label>
+                                <textarea className="form-control" id="discription" />
+                            </div>
+                        </form>
+                        <div style={{ display: "flex" }}>
+                            <button type="button" className="btn btn-primary mr-2" onClick={saveType} style={{ marginBottom: '10px' }}>
+                                Save Type
+                            </button>
+                            <button type="button" style={{ marginLeft: "65%" }}
+                                onClick={() => handleButtonAddServiceClick(servicetypeid)}
+                            ><FcAddDatabase size={50}></FcAddDatabase></button>
+                        </div>
                     </div>
 
                     <table style={{ width: '100%', borderCollapse: 'collapse' }} >
                         <thead>
-                            <tr style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
-                                <th>Type ID</th>
-                                <th>Name</th>
-                                <th>Status</th>
-                                <th>Description</th>
-                                <th>Cost</th>
-                                <th></th>
+                            <tr style={{ padding: '8px', textAlign: 'center', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
+                                <th style={{ width: '20%' }}>Type ID</th>
+                                <th style={{ width: '20%' }}>Name</th>
+                                <th style={{ width: '20%' }}>Status</th>
+                                <th style={{ width: '20%' }}>Description</th>
+                                <th style={{ width: '20%' }}>Cost</th>
+                                <th style={{ width: '20%' }}></th>
+
+
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style={{ textAlign: 'center' }}>
                             {servicelist.map(sv => (
-                                <tr key={sv.serviceId}>
-                                    <td>{sv.serviceId}</td>
+                                <tr key={sv.serviceId} >
+
+                                    <td >{sv.serviceId}</td>
                                     <td>
                                         {editingServiceId === sv.serviceId ? (
                                             <input
@@ -184,13 +388,13 @@ const Service = () => {
                                     </td>
                                     <td>
                                         {editingServiceId === sv.serviceId ? (
-                                            <div> <select type="text"
-                                                    value={editingServiceStatus}
-                                                    onChange={e => setEditingServiceStatus(e.target.value)}>
-
-                                                    <option value="Available">Available</option>
-                                                    <option value="Deleted">Deleted</option>
-                                                </select></div>
+                                            <select
+                                                value={editingServiceStatus}
+                                                onChange={e => setEditingServiceStatus(e.target.value)}
+                                            >
+                                                <option value="Available">Available</option>
+                                                <option value="Deleted">Deleted</option>
+                                            </select>
 
                                         ) : (
                                             sv.status
@@ -218,7 +422,7 @@ const Service = () => {
                                                 onChange={e => setEditingServiceCost(e.target.value)}
                                             />
                                         ) : (
-                                            sv.costs
+                                            sv.cost
                                         )}
                                     </td>
                                     <td>
@@ -239,8 +443,11 @@ const Service = () => {
                                                     data-toggle="tooltip"
                                                     data-placement="top"
                                                     title="Edit"
+
                                                     onClick={() =>
-                                                        startEditingService(sv.serviceId, sv.name, sv.cost, sv.description)
+
+                                                        startEditingService(sv.serviceId, sv.name, sv.status, sv.description, sv.cost)
+
                                                     }
                                                 >
                                                     <i className="zmdi zmdi-edit" />
@@ -278,19 +485,21 @@ const Service = () => {
                             <div className="row">
                                 {/* Rest of the code */}
                             </div>
-                            <h1 class="table__header" style={{textAlign: "center"}}><strong>Service List</strong></h1>
+                            <h1 class="table__header" style={{ textAlign: "center" }}><strong>Service List</strong></h1>
                             <div className="row">
                                 <div className="col-md-12">
                                     {/* DATA TABLE */}
                                     <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
-                                        <table className="table table-borderless table-data3 shadow-sm">
+                                        <table className="table table-borderless table-data3 shadow-sm" style={{ tableLayout: 'fixed', width: '100%' }}>
                                             <thead>
                                                 <tr>
-                                                    <th>Type ID</th>
-                                                    <th>Name</th>
-                                                    <th>Status</th>
-                                                    <th>Image</th>
-                                                    <th />
+                                                    <th style={{ width: '20%' }}>Type ID</th>
+                                                    <th style={{ width: '20%' }}>Name</th>
+                                                    <th style={{ width: '20%' }}>Status</th>
+                                                    <th style={{ width: '20%' }}>Image</th>
+                                                    <th style={{ width: '20%' }}><button
+                                                        style={{ marginRight: "25px" }} data-bs-toggle="modal" data-bs-target="#imageprocess"
+                                                    ><FcAddDatabase size={30}></FcAddDatabase></button></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -312,6 +521,7 @@ const Service = () => {
                                                                     onClick={() => {
                                                                         setTypeModalIsOpen(true);
                                                                         setServiceTypeId(Service.typeId);
+                                                                        handelDetal(Service.typeId);
                                                                     }}
                                                                 >
                                                                     <i className="zmdi zmdi-edit" />
@@ -331,7 +541,52 @@ const Service = () => {
                     </div>
                 </div>
             </div>
+            <div className='modal fade' id="imageprocess" tabIndex="-1" aria-hidden="true">
+                <div className='modal-dialog modal-lg modal-dialog-centered'>
+                    <div className='modal-content'>
+                        <div className='modal-header'>
+                            <h5 className='modal-title'><strong>Create a new service: </strong></h5>
+                            <button className="item" data-toggle="tooltip" data-placement="top" title="More" data-bs-toggle="modal" data-bs-target="#map"
+                                style={{ marginLeft: "20px", color: '#d50000' }}
+                            >
+                            </button>
+                            <button type="button" className='btn-close' data-bs-dismiss="modal" aria-label='Close'></button>
+                        </div>
+                        <div className="modal-body">
+                            <h6><i>*Double-check before you create a new service</i></h6>
+                            <form className="form-inline" >
+                                <div className=" input-group mb-3 " style={{ position: "relative" }}>
+                                    <label className="px-2 input-group-text">Type</label>
+                                    <select id="statusType" className="form-control" style={{ width: "200px" }}>
+                                        <option value="true">Available</option>
+                                        <option value="false">Deleted</option>
+                                    </select>
+
+                                </div>
+                                <div className=" input-group mb-3" style={{ marginLeft: "50px" }}>
+                                    <label className="input-group-text">Name</label>
+                                    <input className="form-control" id="name" />
+                                </div>
+                                <button className=" input-group mb-3" type="button" style={{ marginLeft: "10px" }}
+                                    onClick={() => handleButtonAddTypeClick()}
+                                ><FcAddDatabase size={50}></FcAddDatabase></button>
+                            </form>
+                            <form className="form-inline" >
+
+                            </form>
+                            <hr style={{ margin: "10px 0" }} /> {/* Đường thẳng ngăn cách */}
+
+                            <h5 style={{ textAlign: 'center' }}><b>Image Card</b></h5>
+                            <div >
+                                <input type="file" onChange={handleImageUpload} />
+                                <img src={TempImageUrl || "http://via.placeholder.com/300"} alt="Type" style={{ width: '200px', height: '200px' }} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div />
+            <ToastContainer />
 
         </div>
     );

@@ -47,9 +47,13 @@ const CarListing = () => {
               <h2 className="section__title">Tìm dịch vụ mà bạn muốn</h2>
             </Col>
 
-            {servicetype.map((item) => (
-              <CarItem item={item} key={item.typeId} />
-            ))}
+            {servicetype.map((item) => {
+              if (item.avaiable === true) {
+                return <CarItem item={item} key={item.typeId} />;
+              } else {
+                return null; // Nếu item.status không phải "available", trả về null để không hiển thị gì cả
+              }
+            })}
 
           </Row>
         </Container>

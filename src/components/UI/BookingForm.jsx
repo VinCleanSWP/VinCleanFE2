@@ -149,6 +149,11 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     }
   };
 
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowString = tomorrow.toISOString().split('T')[0];
+
   return (
     <Form onSubmit={handleSubmit}>
       <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: '2px solid gray', borderRadius: '10px' }}>
@@ -189,7 +194,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         />
       </FormGroup>
       <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: '2px solid gray', borderRadius: '10px' }}>
-        <input type="date" placeholder="Ngày đặt" value={journeyDate} onChange={(e) => setJourneyDate(e.target.value)}
+        <input type="date" placeholder="Ngày đặt" value={journeyDate} min={tomorrowString} onChange={(e) => setJourneyDate(e.target.value)}
           style={{
             fontWeight: 'bold',
             color: journeyDate ? 'black' : 'gray',

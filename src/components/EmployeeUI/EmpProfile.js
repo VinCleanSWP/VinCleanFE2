@@ -31,15 +31,15 @@ const style = {
 const gioitinh = [
     {
         id: 1,
-        gender: "Male",
+        gender: "Nam",
     },
     {
         id: 2,
-        gender: "Female",
+        gender: "Nữ",
     },
     {
         id: 3,
-        gender: "Other",
+        gender: "Khác",
     }
 ]
 
@@ -51,6 +51,8 @@ export default function EmpProfile() {
     const id = localStorage.getItem('id');
     const [errorMessage, setErrorMessage] = useState('')
     const [tempImageUrl, setTempImageUrl] = useState('');
+    const [currentGender, setCurrentGender] = useState('');
+    const [currentImg, setCurrentImg] = useState('');
 
     // ------------PasswordState----------
     const [currentPassword, setCurrentPassword] = useState('');
@@ -103,6 +105,8 @@ export default function EmpProfile() {
                 const data = response.data.data
                 const foundUser = data.find(emp => emp.account.accountId == id);
                 setCustomer(foundUser);
+                setCurrentGender(foundUser.account.gender);
+                setCurrentImg(foundUser.account.img);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -153,14 +157,14 @@ export default function EmpProfile() {
     };
 
     const [check, setCheck] = useState(customer.account && customer.account.gender)
-    console.log(check);
 
     const handleSubmitInfo = async (e) => {
         e.preventDefault();
         const updatedUser = {
             employeeId: customer.employeeId,
             accountId: id,
-            name: customer.account.name,
+            // name: customer.account.name,
+            name: customer.firstName + " " + customer.lastName,
             customerId: customer.customerId,
             email: customer.account.email,
             password: customer.account.password,
@@ -168,8 +172,8 @@ export default function EmpProfile() {
             lastName: customer.lastName,
             phone: customer.phone,
             status: "Active",
-            gender: gender1,
-            img: tempImageUrl,
+            gender: gender1 || currentGender,
+            img: tempImageUrl || customer.account.img,
         };
 
         try {
@@ -184,16 +188,17 @@ export default function EmpProfile() {
             setErrorMessage('An error occurred. Please try again.');
         }
 
-        axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
+        // Gọi API để lấy dữ liệu
+        axios.get(`https://localhost:7013/api/Employee`)
             .then(response => {
-                setCustomer(response.data.data);
+                const data = response.data.data
+                const foundUser = data.find(emp => emp.account.accountId == id);
+                setCustomer(foundUser);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     };
-
-    console.log(customer);
 
     const updateUserPassword = async (newPassword) => {
         try {
@@ -242,7 +247,7 @@ export default function EmpProfile() {
                         <div className="col-md-3 pt-0">
                             <div className="list-group list-group-flush account-settings-links">
                                 <div class="Account__StyledAvatar-sc-1d5h8iz-3 profile-left">
-                                    <img src={tempImageUrl} alt="avatar" />
+                                    <img src={tempImageUrl || currentImg} alt="avatar" />
                                     <div class="info">
                                         Tài khoản của
                                         <strong>{customer.lastName} {customer.firstName}</strong>
@@ -263,7 +268,7 @@ export default function EmpProfile() {
                                     <form onSubmit={handleSubmitInfo}>
                                         <h4 className="card-body fw-bold">Thông tin cá nhân</h4>
                                         <div className="card-body media align-items-center">
-                                            <img src={tempImageUrl} alt className="d-block ui-w-80" />
+                                            <img src={tempImageUrl || currentImg} alt className="d-block ui-w-80" />
                                             <div className="media-body ml-4">
                                                 <label className="btn btn-outline-primary">
                                                     Chọn ảnh
@@ -277,43 +282,42 @@ export default function EmpProfile() {
                                         <div className="card-body">
                                             <div className="form-group">
                                                 <label className="form-label">Tên</label>
-                                                <input type="text" className="form-control" maxlength="15" id="firstName"
+                                                <input type="text" className="form-control" maxLength="30" id="firstName" pattern="^[A-Za-z ]+$"
                                                     name="firstName" defaultValue={customer.firstName} onChange={handleInputChange} required />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Họ</label>
-                                                <input type="text" className="form-control" maxlength="30" id="lastName"
+                                                <input type="text" className="form-control" maxLength="30" id="lastName" pattern="^[A-Za-z ]+$"
                                                     name="lastName" defaultValue={customer.lastName} onChange={handleInputChange} required />
                                             </div>
 
                                             <div className="form-group">
-                                                <label className="form-label">Gender: </label>
+                                                <label className="form-label">Giới tính: </label>
                                                 {gioitinh.map(sex => (
                                                     <div key={sex.id}>
-                                                        <input type='radio' name='gender' value={sex.gender} checked={check === sex.gender} onChange={handleGender} />{sex.gender}
+                                                        <input type='radio'
+                                                            name='gender'
+                                                            value={sex.gender}
+                                                            checked={check === sex.gender || (!check && sex.gender === currentGender)}
+                                                            onChange={handleGender} />{sex.gender}
                                                     </div>
                                                 ))}
-                                                <p>Current gender: {customer.account && customer.account.gender}</p>
                                             </div>
 
                                             <div className="form-group">
                                                 <label className="form-label">Số điện thoại</label>
-                                                <input type="text" className="form-control" id="phone"
-                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} required />
+                                                <input type="text" className="form-control" id="phone" title="Số điện thoại bao gồm 10-12 chữ số."
+                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10,12}" required />
                                             </div>
 
                                             <div className="form-group">
                                                 <label className="form-label">E-mail</label>
                                                 <input type="text" className="form-control mb-1" defaultValue={customer.account && customer.account.email} disabled />
-                                                <div className="alert alert-warning mt-3">
-                                                    Email chưa được xác nhận. Hãy vào inbox để xác nhận!<br />
-                                                    <a href="javascript:void(0)">Gửi lại xác nhận</a>
-                                                </div>
                                             </div>
                                             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                                             <div className="text-right mt-3 mb-3">
-                                                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
                                                 <button type="button" className="btn btn-default">Hủy</button>
+                                                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
                                             </div>
                                         </div>
                                     </form>
@@ -333,18 +337,20 @@ export default function EmpProfile() {
                                             <div className="form-group">
                                                 <label className="form-label">Mật khẩu mới</label>
                                                 <input type="password" className="form-control" id="newPassword"
+                                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
                                                     value={newPassword}
                                                     onChange={handleNewPasswordChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Nhập lại mật khẩu</label>
                                                 <input type="password" className="form-control" id="confirmPassword"
+                                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
                                                     value={confirmPassword}
                                                     onChange={handleConfirmPasswordChange} />
                                             </div>
                                             <div className="text-right mt-3 mb-3">
-                                                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
                                                 <button type="button" className="btn btn-default">Hủy</button>
+                                                <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
                                             </div>
                                         </form>
                                     </div>

@@ -45,6 +45,7 @@
     "remixicon": "^2.5.0",
     "slick-carousel": "^1.8.1",
     "storage": "^0.2.0",
+    "sweetalert2": "^11.7.20",
     "uuid": "^9.0.0",
     "web-vitals": "^2.1.4",
     "webpack": "^5.88.1"

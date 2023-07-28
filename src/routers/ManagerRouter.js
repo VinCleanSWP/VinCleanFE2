@@ -20,6 +20,7 @@ import ModifyBlog from '../components/ManagerUI/ModifyBlog';
 import CreateBlog from '../components/ManagerUI/CreateBlog';
 import SendEmail from '../components/ManagerUI/Email';
 import Map from '../components/ManagerUI/Map';
+import DashboardAdmin from '../components/ManagerUI/DashboardAdmin';
 export default function ManagerRouter() {
     return (
         <div >
@@ -28,6 +29,7 @@ export default function ManagerRouter() {
                 <SideBar />
                 <Routes>
                     <Route path='/manager' element={<ADHome />}></Route>
+                    <Route path='/dashboard' element={<DashboardAdmin />}></Route>
                     <Route path='/profile' element={<Profile />}></Route>
                     <Route path='/booking' element={<Booking />}></Route>
                     <Route path='/calendar' element={<Calendar />}></Route>

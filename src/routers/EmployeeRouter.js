@@ -12,7 +12,8 @@ export default function EmployeeRouter() {
                 < EPHeader/>
 
                 <Routes>
-                    <Route path='/calendar' element={<MyCalendar/>}></Route>
+                    <Route path='/calendar' element={<MyCalendar/>}></Route>      
+                    <Route path='/' element={<MyCalendar/>}></Route>
                     <Route path='/profile' element={<EmpProfile />}></Route>
                 </Routes>
                 

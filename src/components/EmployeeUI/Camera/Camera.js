@@ -41,15 +41,12 @@ function CameraCapture({ processId,onCaptureImage }) {
     if (capturedImage) {
       const storageRef = storage.ref();
       const imageRef = storageRef.child(`Process/process${processId}/${Date.now()}.png`);
-  
       await imageRef.putString(capturedImage, 'data_url');
-  
       const imgUrl = await imageRef.getDownloadURL();
       console.log('Đã tải ảnh lên Firebase Storage:', imgUrl);
       onCaptureImage(imgUrl);
     }
   };
-
   const switchCamera = () => {
     setCurrentCamera(prevCamera => (prevCamera === 'user' ? 'environment' : 'user'));
     openCamera();

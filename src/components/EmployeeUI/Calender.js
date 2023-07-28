@@ -5,7 +5,7 @@ import 'moment/locale/vi';
 import { UploadOutlined } from '@ant-design/icons';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { getProcessAPI, getProcessImageAPIbyID, updateCanncelJobAPI, updateEndWorkingAPI, updateLocationAPI, updateProcessImageAPI, updateStartWorkingAPI, updateSubPriceAPI } from '../../API/Employee/employeeConfig';
-import { Alert, Button, Image, Input, Modal, Select, Space, Table, Upload } from 'antd';
+import { Alert, Button, Input, Modal, Select, Space, Table, Upload } from 'antd';
 import '../EmployeeUI/Calender.css';
 import CameraCapture from '../EmployeeUI/Camera/Camera';
 import { storage } from '../../firebase';
@@ -185,7 +185,7 @@ const MyCalendar = () => {
         record.status !== 'Chờ' && (
           <Button
             onClick={() => handleClick(record.status)}
-            disabled={(record.status === 'Đang làm việc' && selectedEvent.data.startTime) || (record.status === 'Hoàn Thành' && selectedEvent.data.endWorking)}
+            disabled={(record.status === 'Đang làm việc' && selectedEvent.data.startWorking) || (record.status === 'Hoàn Thành' && selectedEvent.data.endWorking)}
           >Cập nhật</Button>
         )
       ),
@@ -561,7 +561,7 @@ const MyCalendar = () => {
                   ) : selectedEvent.data.status === "Completed" ? (
                     <span style={{ color: "green" }}><strong>hoàn thành</strong></span>
                   ) : selectedEvent.data.status === "Processing" ? (
-                    <span style={{ color: "#fbec15" }}><strong>chờ</strong></span>
+                    <span style={{ color: "#fbec15" }}><strong>Đang làm việc</strong></span>
                   ) : (
                     selectedEvent.data.status
                   )}

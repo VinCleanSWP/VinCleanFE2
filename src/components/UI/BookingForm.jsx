@@ -9,15 +9,9 @@ import moment from 'moment';
 import { ToastContainer, toast } from 'react-toastify';
 import Switch from "react-switch";
 import { TbReload } from "react-icons/tb";
+import { fi } from "date-fns/locale";
 
-const Notification = ({ message, onClose }) => {
-  return (
-    <div className="notification">
-      <p>{message}</p>
-      <button className="normal-button" onClick={onClose}>Close</button>
-    </div>
-  );
-};
+
 
 const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, selectedServiceCost }) => {
   const { id } = useParams();
@@ -41,6 +35,13 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   const [DataAccount, setDataAccount] = useState("");
   const [selectedServiceCostChange, setSelectedServiceCost] = useState(0);
   const date = moment(journeyDate).format('YYYY-MM-DD');
+  const [validFirstName, setValidFirstName] = useState(true);
+  const [validLastName, setValidLastName] = useState(true);
+  const [validPhone, setValidPhone] = useState(true);
+  const [validDate, setValidDate] = useState(true);
+  const [validAddress, setValidAddress] = useState(true);
+  const [validTime, setValidTime] = useState(true);
+  const [validService, setValidSerVice] = useState(true);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
 
   const accountID = localStorage.getItem('id');
@@ -61,11 +62,95 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         console.error("Error fetching customer account:", error);
       });
   }, []);
+  const validateData = () => {
+    // if (!(firstName.trim() & lastName.trim() & phoneNumber.trim() & address.trim() & date.trim() & journeyTime.trim())) {
+    //   alert('Vui lòng điền thông tin');
+    //   return false;
+    // }
+    const phoneRegex = /^\d{10}$/;
+    const addressRegex = /^S\d+\.\d+\s\d+$/;
+    if (!firstName.trim()) {
+      setValidFirstName("vui lòng nhập tên");
+
+
+      return false;
+    } else {
+      setValidFirstName(true);
+    }
+
+    if (!lastName.trim()) {
+      setValidLastName("Vui lòng nhập họ");
+
+      return false;
+    } else {
+      setValidLastName(true);
+    }
+
+    if (!phoneNumber.trim()) {
+      setValidPhone("Vui lòng nhập số điện thoại");
+
+
+      return false;
+    } else {
+      if (!phoneRegex.test(phoneNumber.trim())) {
+        setValidPhone("Số điện thoại phải là một dãy số gồm 10 kí tự");
+
+        return false;
+      } else {
+        setValidPhone(true);
+      }
+
+    }
+    if (!address.trim()) {
+      setValidAddress("Vui lòng nhập địa chỉ");
+
+      return false;
+    } else {
+      if (!addressRegex.test(address.trim())) {
+        setValidAddress("Địa chỉ không hợp lệ");
+
+        return false;
+      } else {
+        setValidAddress(true);
+      }
+    }
+    if (!date.trim()) {
+      setValidDate("Vui lòng nhập ngày");
+
+      return false;
+    }
+    if (serviceId == null) {
+      setValidService("Vui lòng chọn dịch vụ")
+      return false;
+    }
+    if (journeyTime == null) {
+      setValidTime("Vui lòng chọn thời gian");
+
+      return false;
+    } else {
+      const [hours, minutes] = journeyTime.split(":");
+
+
+
+
+      if (hours >= 7 && hours <= 20) {
+        setValidTime(true);
+      } else {
+        setValidTime("Thời gian phải từ 7h sáng đến 8h tối.");
+
+        return false;
+      }
+    }
+    return true;
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsPopupOpen(true);
-    setDiscountedPrice(0);
+    if (validateData()) {
+
+      setIsPopupOpen(true);
+      setDiscountedPrice(0);
+    }
   };
 
   const handleConfirm = (e) => {
@@ -132,6 +217,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     setJourneyDate("");
     setJourneyTime("");
     setMessage("");
+    handleClosePopup
   };
   const handleClosePopup = () => {
     setIsPopupOpen(false);
@@ -149,63 +235,79 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     }
   };
 
+
   return (
     <Form onSubmit={handleSubmit}>
-      <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: '2px solid gray', borderRadius: '10px' }}>
-        <input type="text" placeholder="Tên" value={firstName} onChange={(e) => setFirstName(e.target.value)}
-          style={{
-            fontWeight: 'bold',
-            color: firstName ? 'black' : 'gray',
-            opacity: firstName ? '1' : '0.5',
-            fontFamily: 'Arial'
-          }}
-        />
-      </FormGroup>
-      <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: '2px solid gray', borderRadius: '10px' }}>
-        <input type="text" placeholder="Họ" value={lastName} onChange={(e) => setLastName(e.target.value)}
-          style={{
-            fontWeight: 'bold',
-            color: lastName ? 'black' : 'gray',
-            opacity: lastName ? '1' : '0.5'
-          }}
-        />
-      </FormGroup>
-      <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: '2px solid gray', borderRadius: '10px' }}>
-        <input type="text" placeholder="SĐT" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
-          style={{
-            fontWeight: 'bold',
-            color: phoneNumber ? 'black' : 'gray',
-            opacity: phoneNumber ? '1' : '0.5'
-          }}
-        />
-      </FormGroup>
-      <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: '2px solid gray', borderRadius: '10px' }}>
-        <input type="text" placeholder="Địa chỉ" value={address} onChange={(e) => setAddress(e.target.value)}
-          style={{
-            fontWeight: 'bold',
-            color: address ? 'black' : 'gray',
-            opacity: address ? '1' : '0.5'
-          }}
-        />
-      </FormGroup>
-      <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: '2px solid gray', borderRadius: '10px' }}>
-        <input type="date" placeholder="Ngày đặt" value={journeyDate} onChange={(e) => setJourneyDate(e.target.value)}
-          style={{
-            fontWeight: 'bold',
-            color: journeyDate ? 'black' : 'gray',
-            opacity: journeyDate ? '1' : '0.5'
-          }}
-        />
-      </FormGroup>
-      <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: '2px solid gray', borderRadius: '10px' }}>
-        <input type="time" placeholder="Thời gian" value={journeyTime} onChange={(e) => setJourneyTime(e.target.value)}
-          style={{
-            fontWeight: 'bold',
-            color: journeyTime ? 'black' : 'gray',
-            opacity: journeyTime ? '1' : '0.5'
-          }}
-        />
-      </FormGroup>
+      <div style={{ display: 'flex' }}>  <div> {validFirstName && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validFirstName}</div>}
+        <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validFirstName ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+
+          <input type="text" placeholder="Tên" value={firstName} onChange={(e) => setFirstName(e.target.value)}
+            style={{
+              fontWeight: 'bold',
+              color: firstName ? 'black' : 'gray',
+              opacity: firstName ? '1' : '0.5',
+              fontFamily: 'Arial'
+            }}
+          />
+
+
+        </FormGroup>
+
+        {validLastName && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validLastName}</div>}
+        <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validLastName ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+          <input type="text" placeholder="Họ" value={lastName} onChange={(e) => setLastName(e.target.value)}
+            style={{
+              fontWeight: 'bold',
+              color: lastName ? 'black' : 'gray',
+              opacity: lastName ? '1' : '0.5'
+            }}
+          />
+        </FormGroup>
+        {validPhone && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validPhone}</div>}
+        <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validPhone ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+          <input type="text" placeholder="SĐT" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
+            style={{
+              fontWeight: 'bold',
+              color: phoneNumber ? 'black' : 'gray',
+              opacity: phoneNumber ? '1' : '0.5'
+            }}
+          />
+        </FormGroup>
+      </div>
+
+        <div> {validAddress && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validAddress}</div>}
+          <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validAddress ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+            <input type="text" placeholder="Địa chỉ" value={address} onChange={(e) => setAddress(e.target.value)}
+              style={{
+                fontWeight: 'bold',
+                color: address ? 'black' : 'gray',
+                opacity: address ? '1' : '0.5'
+              }}
+            />
+          </FormGroup>
+          {validDate && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validDate}</div>}
+          <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validDate ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+            <input type="date" placeholder="Ngày đặt" value={journeyDate} onChange={(e) => setJourneyDate(e.target.value)}
+              style={{
+                fontWeight: 'bold',
+                color: journeyDate ? 'black' : 'gray',
+                opacity: journeyDate ? '1' : '0.5'
+              }}
+            />
+          </FormGroup>
+          {validTime && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validTime}</div>}
+          <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validTime ? '2px solid gray' : '2px solid red', borderRadius: '10px' }}>
+            <input type="time" placeholder="Thời gian" value={journeyTime} onChange={(e) => setJourneyTime(e.target.value)}
+              style={{
+                fontWeight: 'bold',
+                color: journeyTime ? 'black' : 'gray',
+                opacity: journeyTime ? '1' : '0.5'
+              }}
+            />
+          </FormGroup></div>
+      </div>
+
+
       <FormGroup style={{ border: '2px solid gray', borderRadius: '10px' }}>
         <textarea rows={5} type="textarea" className="textarea" placeholder="Ghi chú" value={message} onChange={(e) => setMessage(e.target.value)}
           style={{
@@ -217,16 +319,17 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       </FormGroup>
 
 
-      <div style={{textAlign:"right"}}>
-      <button onClick={handleReset} style={{marginRight:"25px"}}>
-        <TbReload size={30} color="grey"></TbReload>
-      </button>
-      {localStorage.getItem('loggedIn') ?
-      
-        <button type="submit" class="btn btn-success" >Xác nhận</button>
-        : <Link to='/login'><button className="normal-button buttonReset blue">Đăng nhập để đặt dịch vụ</button></Link>
-      }
-      {/* <button className="normal-button buttonReset blue" type="submit">Xác nhận</button> */}
+      <div style={{ textAlign: "right" }}>
+
+        <button type="button" onClick={handleReset} style={{ marginRight: "25px" }}>
+          <TbReload size={30} color="black"></TbReload>
+        </button>
+        {localStorage.getItem('loggedIn') ?
+
+          <button type="submit" class="btn btn-success" >Xác nhận</button>
+          : <Link to='/login'><button className="normal-button buttonReset blue">Đăng nhập để đặt dịch vụ</button></Link>
+        }
+        {/* <button className="normal-button buttonReset blue" type="submit">Xác nhận</button> */}
       </div>
 
       <Modal
@@ -305,14 +408,16 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
               </div>
             </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <button className=" btn btn-primary" onClick={handleClosePopup}>Đóng</button>
-            <button className=" btn btn-success" onClick={handleConfirm}>Xác nhận</button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '50px' }}>
+            <button className=" btn btn-secondary" onClick={handleClosePopup}>Đóng</button>
+            <button className=" btn btn-primary" onClick={handleConfirm}>Xác nhận</button>
           </div>
         </div>
       </Modal>
       <ToastContainer />
     </Form>
+
+
   );
 };
 

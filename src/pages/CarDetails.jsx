@@ -11,6 +11,7 @@ import moment from "moment";
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { bottom } from "@popperjs/core";
 
 const ServiceTypeDetail = () => {
   const typeId = useParams();
@@ -115,7 +116,7 @@ const ServiceTypeDetail = () => {
             <Col lg="6" md="6">
               <div className="about__img">
                 <img src={type.img} alt="" className="w-100" />
-                <img style={{width:"500px", height:"350px"}} src={aboutImg}></img>
+                <img style={{ width: "500px", height: "350px" }} src={aboutImg}></img>
               </div>
             </Col>
             <Col lg="6" md="6">
@@ -123,167 +124,62 @@ const ServiceTypeDetail = () => {
                 <h4 className="section__subtitle">Bạn đã chọn dịch vụ</h4>
                 <h2 className="section__title">{type.type1}</h2>
                 <p className="section__description">
-                  Nhịp sống đô thị đang dần trở nên bận rộn hơn với công việc và xã hội. Đặc biệt thời gian của người phụ nữ 
-                  dành cho gia đình và chăm sóc nhà cửa cũng càng trở nên eo hẹp hơn. Vậy làm sao để cân bằng được giữa công việc 
-                  và gia đình luôn là vấn đề khúc mắc của nhiều gia đình Việt. Đã có nhiều gia đình bỏ ra một khoản tiền lớn hằng 
-                  tháng chỉ để thuê giúp việc cố định nhưng đôi lúc việc này trở nên không thực sự cần thiết vì không phải lúc nào cũng có 
+                  Nhịp sống đô thị đang dần trở nên bận rộn hơn với công việc và xã hội. Đặc biệt thời gian của người phụ nữ
+                  dành cho gia đình và chăm sóc nhà cửa cũng càng trở nên eo hẹp hơn. Vậy làm sao để cân bằng được giữa công việc
+                  và gia đình luôn là vấn đề khúc mắc của nhiều gia đình Việt. Đã có nhiều gia đình bỏ ra một khoản tiền lớn hằng
+                  tháng chỉ để thuê giúp việc cố định nhưng đôi lúc việc này trở nên không thực sự cần thiết vì không phải lúc nào cũng có
                   việc để người giúp việc làm liên tục. Lúc này giúp việc nhà theo giờ sẽ là giải pháp hợp lý cho mọi gia đình!
                 </p>
 
-                <img style={{width:"500px", height:"350px"}} src={jpImg}></img>
+                <img style={{ width: "500px", height: "350px" }} src={jpImg}></img>
 
 
               </div>
             </Col>
           </Row>
-
-          <Row>
+          <div style={{ width: '80%' }}>    <Row style={{ border: '2px solid gray', borderRadius: '10px', marginLeft: 'auto', paddingBottom: '5%', paddingTop: '-5%' }}>
             <Col lg="6">
               <img src={service.img} alt="" className="w-100" />
             </Col>
 
-            {/* <Col lg="6">
-              <div className="car__info">
-                <h2 className="section__title"></h2>
 
-                <div className=" d-flex align-items-center gap-5 mb-4 mt-3">
-                  <h6 className="rent__price fw-bold fs-4">
-
-                  </h6>
-
-                  <span className=" d-flex align-items-center gap-2">
-                    {/* <span style={{ color: "#f9a826" }}>
-                      <i class="ri-star-s-fill"></i>
-                      <i class="ri-star-s-fill"></i>
-                      <i class="ri-star-s-fill"></i>
-                      <i class="ri-star-s-fill"></i>
-                      <i class="ri-star-s-fill"></i>
-                    </span>
-                    ({singleCarItem.rating} ratings)
-                  </span>
-                </div>
-              </Col>
-              <Col lg="6" md="6">
-                <div className="about__section-content">
-                  <h4 className="section__subtitle">About Service</h4>
-                  <h2 className="section__title">Welcome to car rent service</h2>
-                  <p className="section__description">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Voluptatum blanditiis esse accusantium dignissimos labore
-                    laborum. Veniam, corporis mollitia temporibus, in quaerat vero
-                    deleniti amet dolorem repudiandae, pariatur nam dolore! Impedit
-                    neque sit ad temporibus quam similique dolor ipsam praesentium
-                    sunt.
-                  </p>
-
-                <p className="section__description">
-                  {singleCarItem.description}
-                </p>
-
-                <div
-                  className=" d-flex align-items-center mt-3"
-                  style={{ columnGap: "4rem" }}
-                >
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i
-                      class="ri-roadster-line"
-                      style={{ color: "#f9a826" }}
-                    ></i>{" "}
-                    {singleCarItem.model}
-                  </span>
-
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i
-                      class="ri-settings-2-line"
-                      style={{ color: "#f9a826" }}
-                    ></i>{" "}
-                    {singleCarItem.automatic}
-                  </span>
-
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i
-                      class="ri-timer-flash-line"
-                      style={{ color: "#f9a826" }}
-                    ></i>{" "}
-                    {singleCarItem.speed}
-                  </span>
-                </div>
-
-                <div
-                  className=" d-flex align-items-center mt-3"
-                  style={{ columnGap: "2.8rem" }}
-                >
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i class="ri-map-pin-line" style={{ color: "#f9a826" }}></i>{" "}
-                    {singleCarItem.gps}
-                  </span>
-
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i
-                      class="ri-wheelchair-line"
-                      style={{ color: "#f9a826" }}
-                    ></i>{" "}
-                    {singleCarItem.seatType}
-                  </span>
-
-                  <span className=" d-flex align-items-center gap-1 section__description">
-                    <i
-                      class="ri-building-2-line"
-                      style={{ color: "#f9a826" }}
-                    ></i>{" "}
-                    {singleCarItem.brand}
-                  </span>
-                </div>
-              </div>
-            </Col> */}
 
             <Col lg="7" className="mt-5">
-              <div className="booking-info mt-5">
-                <h5 className="mb-4 fw-bold ">Thông tin đặt</h5>
-                <BookingForm serviceId={selectedServiceId} selectedServiceName={selectedServiceName}
-                  selectedServiceType={selectedType} selectedServiceCost={selectedCost} />
-              </div>
+
+              <h5 className="mb-4 fw-bold ">Thông tin đặt</h5>
+              <BookingForm serviceId={selectedServiceId} selectedServiceName={selectedServiceName}
+                selectedServiceType={selectedType} selectedServiceCost={selectedCost} />
+
             </Col>
 
             <Col lg="4" className="mt-5">
-              <div className="payment__info mt-5">
-                <h5 className="mb-4 fw-bold ">Chọn dịch vụ</h5>
 
-                <ul className="service-list">
-                  {/* {service.map(service => (
-                    <li className={`btn service-item ${service.selected ? 'selected' : ''}`} key={service.serviceId}>{service.name}</li>
-                  ))} */}
-                  {/* {service.map(service => (
-                    <li
-                      className={`btn service-item ${service.serviceId === selectedServiceId ? 'selected' : ''}`}
-                      key={service.serviceId}
-                      onClick={() => setSelectedServiceId(service.serviceId)}
-                    >
-                      {service.name}/
-                      {service.costPerSlot}vnd
-                    </li>
-                  ))} */}
+              <h5 className="mb-4 fw-bold ">Chọn dịch vụ</h5>
 
-                  {service.map(service => (
-                    <li
-                      className={`btn service-item ${service.serviceId === selectedServiceId ? 'selected' : ''}`}
-                      key={service.serviceId}
-                      onClick={() => {
-                        setSelectedServiceId(service.serviceId);
-                        setSelectedServiceName(service.name);
-                        setSelectedServiceCost(service.cost)
-                      }}
-                    >
-                      {service.name} / {service.cost} VND
-                    </li>
-                  ))}
-
-                </ul>
+              <ul className="service-list" style={{ border: '2px solid gray', borderRadius: '10px', margin: '0' }}>
 
 
-              </div>
+                {service.map(service => (
+                  <li
+                    className={`btn service-item ${service.serviceId === selectedServiceId ? 'selected' : ''}`}
+                    key={service.serviceId}
+                    onClick={() => {
+                      setSelectedServiceId(service.serviceId);
+                      setSelectedServiceName(service.name);
+                      setSelectedServiceCost(service.cost)
+                    }}
+                  >
+                    {service.name} / {service.cost} VND
+                  </li>
+                ))}
+
+              </ul>
+
+
+
             </Col>
-          </Row>
+          </Row></div>
+
           {rating?.length > 0 ? (
             <div className="rating">
               <h4>ĐÁNH GIÁ DỊCH VỤ</h4>

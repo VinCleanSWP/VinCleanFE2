@@ -187,8 +187,8 @@ const BlogDetails = () => {
                     <i className="ri-time-line"></i>{formattedDateTime}
                   </span>
                 </div>
-
-                <p className="section__description">{blog.content}</p>
+                <p className="section__description" dangerouslySetInnerHTML={{ __html: blog.sumarry }}></p>
+                <p className="section__description" dangerouslySetInnerHTML={{ __html: blog.content }}></p>
                 <h6 className="ps-5 fw-normal">
                   <blockquote className="fs-4"></blockquote>
                 </h6>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { storage } from '../../firebase/index';
 import { ToastContainer, toast } from 'react-toastify';
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useNavigate } from 'react-router-dom';
 
 export default function BlogDetail() {
 
@@ -17,9 +18,10 @@ export default function BlogDetail() {
 
     const [tempImageUrl, setTempImageUrl] = useState('');
 
+
     const blogId = useParams();
     const id = parseInt(blogId.id);
-
+    const navigate = useNavigate();
     useEffect(() => {
         axios
             .get(`https://localhost:7013/api/Blog/${id}`)
@@ -58,7 +60,7 @@ export default function BlogDetail() {
         setBlogContent(value);
     };
 
-    const handleSaveChanges = () => {
+    const handleSaveChanges = async () => {
         const updatedBlog = {
             ...blog,
             title: blogTitle,
@@ -66,7 +68,7 @@ export default function BlogDetail() {
             content: blogContent,
             img: tempImageUrl
         };
-console.log(updatedBlog)
+        console.log(updatedBlog)
         axios
             .put(`https://localhost:7013/api/Blog`, updatedBlog)
             .then(response => {
@@ -82,10 +84,18 @@ console.log(updatedBlog)
                     progress: undefined,
                     theme: "light",
                 });
+                navigate("/bloglist");
+
+
+
+
             })
+
             .catch(error => {
                 console.error('Error:', error);
             });
+
+
     };
 
     const handleDeleteBlog = () => {
@@ -103,11 +113,31 @@ console.log(updatedBlog)
                     progress: undefined,
                     theme: "light",
                 });
+                navigate("/bloglist");
+
+
+
+
+
+
+
+
+
             })
+
             .catch(error => {
                 console.log(error);
             });
+
+
+
+
+
+
     };
+
+
+
 
     return (
         <div className="page-container">
@@ -121,8 +151,11 @@ console.log(updatedBlog)
                                     <div className="card">
                                         <div className="card-body">
                                             <div style={{ display: 'flex' }}>
+
                                                 <h3 className="card-title" ><b>Blog Editor Default</b></h3>
-                                                <button style={{ marginLeft: "75%", color:'#ff1744' }} onClick={handleDeleteBlog}><RiDeleteBin6Line size={26}></RiDeleteBin6Line></button>
+                                                <button style={{ marginLeft: "75%", color: '#ff1744' }} onClick={handleDeleteBlog}><RiDeleteBin6Line size={26}></RiDeleteBin6Line></button>
+
+
                                             </div>
                                             <div>
                                                 <label className="form-label"><i>*Image</i></label>
@@ -168,8 +201,17 @@ console.log(updatedBlog)
                                                 <div dangerouslySetInnerHTML={{ __html: blogContent }} />
                                             </div>
                                             <div style={{ textAlign: 'right' }}>
-                                                <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark" onClick={handleSaveChanges}>Save Changes</button>
+                                                <Link to='/bloglist'>
+                                                    <button type="button" class="btn btn-secondary" data-mdb-ripple-color="dark" style={{ marginRight: '20px' }}>
+                                                        Close
+                                                    </button>
+                                                </Link>
+
+                                                <button type="button" class="btn btn-primary mr-2" data-mdb-ripple-color="dark" onClick={handleSaveChanges}>
+                                                    Save Changes
+                                                </button>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>

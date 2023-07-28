@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { storage } from '../../firebase/index';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function BlogDetail() {
     const [title, setTitle] = useState('');
@@ -14,6 +16,7 @@ export default function BlogDetail() {
     const blogId = useParams();
     const id = parseInt(blogId.id)
     const [tempImageUrl, setTempImageUrl] = useState('');
+    const navigate = useNavigate();
     const handleSave = () => {
         const blogData = {
             ...blog,
@@ -34,13 +37,19 @@ export default function BlogDetail() {
                     draggable: true,
                     progress: undefined,
                     theme: "light",
-                });
-                setBlog(response.data.data); // Lưu dữ liệu vào state
+                });// Lưu dữ liệu vào state
+
+                setBlog(response.data.data);
+                navigate("/bloglist");
+
+
 
             })
             .catch(error => {
                 console.error('Error:', error);
             });
+
+
     };
     const handleImageUpload = async e => {
         const file = e.target.files[0];
@@ -108,7 +117,16 @@ export default function BlogDetail() {
                                                     <div dangerouslySetInnerHTML={{ __html: content }} />
                                                 </div>
                                                 <div style={{ textAlign: 'right', marginRight: '5px' }}>
-                                                    <button type="button" className="btn btn-primary m-r-5" onClick={handleSave}>Save</button>
+
+                                                    <Link to='/bloglist'>
+                                                        <button type="button" class="btn btn-secondary" data-mdb-ripple-color="dark" style={{ marginRight: '20px' }}>
+                                                            Close
+                                                        </button>
+                                                    </Link>
+
+
+                                                    <button type="button" class="btn btn-primary mr-2" data-mdb-ripple-color="dark" onClick={handleSave}>Save</button>
+
 
                                                 </div>
 

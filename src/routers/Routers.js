@@ -10,7 +10,7 @@ import NotFound from "../pages/NotFound";
 import Contact from "../pages/Contact";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
-import Manager from "../pages/Manager";
+// import Manager from "../pages/Manager";
 import Customer from "../pages/Customer";
 import ProfileCustomer from "../pages/ProfileCustomer";
 import ResetPassword from "../pages/ResetPassword";
@@ -27,10 +27,10 @@ const Routers = () => {
       <Route path="/reset" element={<ResetPassword />} />
       <Route path="/verification" element={<Verification />} />
       <Route path="verifytoken" element={<VerifyToken />} />
-      <Route path="/" element={(role == 1) ? <Navigate to="/home" /> : ((role == 2) ? <Navigate to="/customer" /> : <Navigate to="/manager" />)} />
+      <Route path="/" element={(role == 1) ? <Navigate to="/home" /> : ((role == 2) ? <Navigate to="/customer" /> :(role == 3) ? <Navigate to="/manager" /> : <Navigate to="/home" />)} />
       <Route path="/home" element={<Home />} />
-      {/* <Route path="/manager" element={<Manager />} />
-      <Route path="/customer" element={<Customer />} /> */}
+      {/* { <Route path="/manager" element={<Manager />} />
+      <Route path="/customer" element={<Customer />} /> } */}
       <Route path="/about" element={<About />} />
       <Route path="/services" element={<CarListing />} />
       <Route path="/servicetype/:id" element={<CarDetails />} />

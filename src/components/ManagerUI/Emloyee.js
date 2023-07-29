@@ -323,19 +323,18 @@ function Table() {
             return;
         }
 
-        const selectedStatus = document.getElementById('statusType').value;
 
         const formData = {
             name: newUserName,
             email: newEmail,
             img: newImage,
             password: newPassword,
-            status: selectedStatus,
             gender: newGender,
             firstName: newFirstName,
             lastName: newLastName,
             phone: newPhone
         };
+        console.log(formData);
 
         // Gửi dữ liệu form đến API
         axios.post('https://vinclean.azurewebsites.net/api/Employee', formData)
@@ -353,16 +352,27 @@ function Table() {
                     progress: undefined,
                     theme: "light",
                 });
+                setAddModalIsOpen(false);
                 setData(response.data);
 
 
                 // setModalIsOpen(false);
             })
             .catch(error => {
+                toast.error('Faild!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 // Xử lý lỗi (nếu có)
                 console.error(error);
             });
-        setAddModalIsOpen(false);
+       
 
     };
 

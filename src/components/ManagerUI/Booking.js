@@ -189,14 +189,15 @@ function Booking() {
                     )
                     axios.put(`https://vinclean.azurewebsites.net/api/Process/Denied?processid=${processId}`)
                         .then(response => {
+                            fetchData();
+                         console.log(fetchData());
                             swalWithBootstrapButtons.fire(
                                 'Deleted!',
                                 'Your file has been deleted.',
                                 'success'
                             )
                         });
-                        fetchData();
-                        console.log(fetchData());
+                        
                     axios.post('https://vinclean.azurewebsites.net/api/Email/DeniedProcess', dataMail)
                         .then(response => {
                             console.log(response.data);

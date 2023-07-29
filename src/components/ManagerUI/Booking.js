@@ -112,12 +112,13 @@ function Booking() {
                                     progress: undefined,
                                     theme: "light",
                                 });
+                               
                             })
                     })
                     .catch(error => {
                         console.error(error);
                     });
-                fetchData();
+                
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel
@@ -194,6 +195,8 @@ function Booking() {
                                 'success'
                             )
                         });
+                        fetchData();
+                        console.log(fetchData());
                     axios.post('https://vinclean.azurewebsites.net/api/Email/DeniedProcess', dataMail)
                         .then(response => {
                             console.log(response.data);
@@ -208,7 +211,7 @@ function Booking() {
                                 theme: "light",
                             });
                         })
-                    fetchData();
+                    
                 } else if (
                     /* Read more about handling dismissals below */
                     result.dismiss === Swal.DismissReason.cancel

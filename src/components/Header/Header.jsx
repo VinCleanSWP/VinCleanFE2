@@ -8,13 +8,13 @@ import { RiUserLine, RiLogoutBoxLine } from "react-icons/ri";
 
 import { AiOutlineHome } from "react-icons/ai";
 
-import { TbBrandBooking } from "react-icons/tb";
+import { MdOutlineCleaningServices } from "react-icons/md";
 
-import { FaBlog } from "react-icons/fa";
+import { RiFileList3Line } from "react-icons/ri";
 
 import { RxActivityLog } from "react-icons/rx";
 
-import { BsFillInfoCircleFill } from "react-icons/bs";
+import { BsInfoCircle } from "react-icons/bs";
 const navLinks = [
   {
     path: "/home",
@@ -27,21 +27,21 @@ const navLinks = [
     path: "/about",
     display:
       <>
-        <BsFillInfoCircleFill/> Giới thiệu
+        <BsInfoCircle/> Giới thiệu
       </>
   },
   {
     path: "/services",
     display:
       <>
-        <TbBrandBooking/> Đặt dịch vụ
+        <MdOutlineCleaningServices/> Đặt dịch vụ
       </>
   },
   {
     path: "/blogs",
     display:
       <>
-        <FaBlog/> Blog
+        <RiFileList3Line/> Blog
       </>
   },
   {

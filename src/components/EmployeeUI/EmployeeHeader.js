@@ -15,7 +15,7 @@ function EPHeader() {
     const fetchAccountData = async () => {
         try {
             if (localStorage.getItem('id')) {
-                const response = await axios.get(`https://localhost:7013/api/Account/${localStorage.getItem('id')}`); // Thay đổi đường dẫn API tương ứng
+                const response = await axios.get(`https://vinclean.azurewebsites.net/api/Account/${localStorage.getItem('id')}`); // Thay đổi đường dẫn API tương ứng
                 // Xử lý dữ liệu tài khoản đã nhận được từ response.data
                 console.log(response.data); // Hoặc cập nhật các state khác trong component của bạn
             }

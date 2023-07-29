@@ -80,12 +80,12 @@ function Booking() {
                     'success'
                 )
                 console.log(dataMail)
-                axios.post('https://localhost:7013/api/WorkingBy', data)
+                axios.post('https://vinclean.azurewebsites.net/api/WorkingBy', data)
                     .then(response => {
                         console.log(response.data);
 
                         fetchData();
-                        axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
+                        axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToCustomer', dataMail)
                             .then(response => {
                                 console.log(response.data);
                                 toast.success('Send Email Customer Successfully!', {
@@ -99,7 +99,7 @@ function Booking() {
                                     theme: "light",
                                 });
                             })
-                        axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
+                        axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToEmployee', dataMail)
                             .then(response => {
                                 console.log(response.data);
                                 toast.success('Send Email Employee Successfully!', {
@@ -137,7 +137,7 @@ function Booking() {
     const handleProcessImage = (processId, employeeName) => {
         setProcessIdImage(processId)
         setEmpNameProcessImage(employeeName)
-        axios.get(`https://localhost:7013/api/ProcessImage/Process/${processId}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/ProcessImage/Process/${processId}`)
             .then(response => {
                 setProcessImageData(response.data.data)
             })
@@ -186,7 +186,7 @@ function Booking() {
                         'This Process has been Denied.',
                         'success'
                     )
-                    axios.put(`https://localhost:7013/api/Process/Denied?processid=${processId}`)
+                    axios.put(`https://vinclean.azurewebsites.net/api/Process/Denied?processid=${processId}`)
                         .then(response => {
                             swalWithBootstrapButtons.fire(
                                 'Deleted!',
@@ -194,7 +194,7 @@ function Booking() {
                                 'success'
                             )
                         });
-                    axios.post('https://localhost:7013/api/Email/DeniedProcess', dataMail)
+                    axios.post('https://vinclean.azurewebsites.net/api/Email/DeniedProcess', dataMail)
                         .then(response => {
                             console.log(response.data);
                             toast.success('Send Email Customer Successfully!', {
@@ -249,7 +249,7 @@ function Booking() {
         }
         console.log(processImgData)
         // Gửi dữ liệu đến dịch vụ thông qua axios
-        axios.post('https://localhost:7013/api/ProcessImage', processImgData)
+        axios.post('https://vinclean.azurewebsites.net/api/ProcessImage', processImgData)
             .then(response => {
                 // Xử lý phản hồi từ dịch vụ (service) nếu cần thiết
                 console.log(response.data);
@@ -278,7 +278,7 @@ function Booking() {
     }, []);
 
     const fetchData = () => {
-        axios.get('https://localhost:7013/api/Process')
+        axios.get('https://vinclean.azurewebsites.net/api/Process')
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setBookingData(response.data.data);
@@ -295,7 +295,7 @@ function Booking() {
     const showDetail = (id) => {
 
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Process/GetALL/${id}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Process/GetALL/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal(response.data.data);
@@ -307,7 +307,7 @@ function Booking() {
     const assignTask = (date, start, end) => {
         // Gọi API để lấy dữ liệu
         console.log({ date, start, end });
-        axios.post(`https://localhost:7013/api/Employee/selectemployee`, { date, start, end })
+        axios.post(`https://vinclean.azurewebsites.net/api/Employee/selectemployee`, { date, start, end })
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setEmployeeData(response.data);
@@ -361,7 +361,7 @@ function Booking() {
         setHasLocationData(false);
 
         axios
-            .get(`https://localhost:7013/api/WorkingBy/Process/${id}`)
+            .get(`https://vinclean.azurewebsites.net/api/WorkingBy/Process/${id}`)
             .then((response) => {
                 const { latitude, longtitude } = response.data.data;
                 if (latitude !== 0 && longtitude !== 0) {

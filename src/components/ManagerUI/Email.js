@@ -59,7 +59,7 @@ const handleSendEmail = (e) => {
 
     // Gửi dữ liệu về server
     axios
-        .post('https://localhost:7013/api/Email', emailData)
+        .post('https://vinclean.azurewebsites.net/api/Email', emailData)
         .then((response) => {
             // Xử lý kết quả thành công
             console.log('Email sent successfully!');

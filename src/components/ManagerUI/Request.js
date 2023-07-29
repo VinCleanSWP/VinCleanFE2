@@ -44,7 +44,7 @@ function Request() {
 
     const fetchData = () => {
         // Gọi API để lấy dữ liệu
-        axios.get('https://localhost:7013/api/ProcessSlot')
+        axios.get('https://vinclean.azurewebsites.net/api/ProcessSlot')
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setrequestData(response.data.data);
@@ -56,7 +56,7 @@ function Request() {
     const showDetail = (id) => {
 
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/ProcessSlot/${id}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/ProcessSlot/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal(response.data.data);
@@ -69,7 +69,7 @@ function Request() {
     const showDetailProcess = (id) => {
 
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Process/GetALL/${id}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Process/GetALL/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal2(response.data.data);
@@ -83,7 +83,7 @@ function Request() {
     const assignTask = (date, start, end) => {
         // Gọi API để lấy dữ liệu
         console.log({ date, start, end });
-        axios.post(`https://localhost:7013/api/Employee/selectemployee`, { date, start, end })
+        axios.post(`https://vinclean.azurewebsites.net/api/Employee/selectemployee`, { date, start, end })
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setEmployeeData(response.data);
@@ -106,7 +106,7 @@ function Request() {
             body: ""
         }
         console.log(data);
-        axios.put('https://localhost:7013/api/WorkingBy/AcceptedRequest', data)
+        axios.put('https://vinclean.azurewebsites.net/api/WorkingBy/AcceptedRequest', data)
             .then(response => {
                 console.log(response.data);
                 toast.success('Change Employee Successfully!', {
@@ -119,7 +119,7 @@ function Request() {
                     progress: undefined,
                     theme: "light",
                 });
-                axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
+                axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToCustomer', dataMail)
                     .then(response => {
                         console.log(response.data);
                         toast.success('Send Email Customer Successfully!', {
@@ -133,7 +133,7 @@ function Request() {
                             theme: "light",
                         });
                     })
-                axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
+                axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToEmployee', dataMail)
                     .then(response => {
                         console.log(response.data);
                         toast.success('Send Email Employee Successfully!', {
@@ -197,10 +197,10 @@ function Request() {
                     <p><b>Lý do: </b> ${text}</p>
                     <p>Nếu Có Thắc Mắc gì vui lòng liên hệ trực tiếp với ban quản lý.</p>`
                 }
-                  axios.put(`https://localhost:7013/api/ProcessSlot/Denied/${processId}`)
+                  axios.put(`https://vinclean.azurewebsites.net/api/ProcessSlot/Denied/${processId}`)
                   .then(response => {
                       console.log(response.data);
-                      axios.post('https://localhost:7013/api/Email', dataMail)
+                      axios.post('https://vinclean.azurewebsites.net/api/Email', dataMail)
                           .then(response => {
                               console.log(response.data);
                               toast.success('Send Email Denied Successfully!', {

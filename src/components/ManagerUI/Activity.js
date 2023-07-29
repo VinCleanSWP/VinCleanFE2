@@ -11,7 +11,7 @@ function Activity() {
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
-        axios.get('https://localhost:7013/api/Order')
+        axios.get('https://vinclean.azurewebsites.net/api/Order')
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setBookingData(response.data.data);
@@ -23,7 +23,7 @@ function Activity() {
     const showDetail = (id) => {
 
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Order/${id}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Order/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal(response.data.data);

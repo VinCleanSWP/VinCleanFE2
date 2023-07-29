@@ -26,7 +26,7 @@ export default function BlogDetail() {
             img: tempImageUrl
         };
         // Gọi API để lấy dữ liệu
-        axios.post(`https://localhost:7013/api/Blog`, blogData)
+        axios.post(`https://vinclean.azurewebsites.net/api/Blog`, blogData)
             .then(response => {
 
                 toast.success('Create Successfully!', {

@@ -69,7 +69,7 @@ export default function ProfileCustomer() {
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Order`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Order`)
             .then(response => {
                 const data = response.data.data
                 const mail = localStorage.getItem('email');
@@ -102,7 +102,7 @@ export default function ProfileCustomer() {
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
                 setCurrentGender(response.data.data.account.gender);
@@ -178,7 +178,7 @@ export default function ProfileCustomer() {
         console.log(updatedUser)
 
         try {
-            const response = await axios.put('https://localhost:7013/api/Customer', updatedUser);
+            const response = await axios.put('https://vinclean.azurewebsites.net/api/Customer', updatedUser);
             if (response.status === 200) {
                 console.log('OK');
                 setErrorMessage('Update Successfully');
@@ -199,7 +199,7 @@ export default function ProfileCustomer() {
             setErrorMessage('An error occurred. Please try again.');
         }
 
-        axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
             })
@@ -210,7 +210,7 @@ export default function ProfileCustomer() {
 
     const updateUserPassword = async (newPassword) => {
         try {
-            const apiUrl = 'https://localhost:7013/api/Account';
+            const apiUrl = 'https://vinclean.azurewebsites.net/api/Account';
             // Tạo một đối tượng chứa dữ liệu mới (password mới)
             const updatedUserData = {
                 accountId: localStorage.getItem('id'),

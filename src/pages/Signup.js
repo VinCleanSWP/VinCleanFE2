@@ -14,7 +14,7 @@ function Signup() {
   //   e.preventDefault();
   //   // Gửi dữ liệu đăng kí lên API sử dụng Axios
   //   axios
-  //     .post('https://localhost:7013/api/Account', formData) // Thay thế 'API_ENDPOINT' bằng đường dẫn của API đích
+  //     .post('https://vinclean.azurewebsites.net/api/Account', formData) // Thay thế 'API_ENDPOINT' bằng đường dẫn của API đích
   //     .then((response) => {
   //       // Xử lý phản hồi từ API (nếu cần)
   //       console.log(response.data);
@@ -41,7 +41,7 @@ function Signup() {
       to: formData.email
     }
     axios
-      .post('https://localhost:7013/api/Customer/registration', requestData)
+      .post('https://vinclean.azurewebsites.net/api/Customer/registration', requestData)
       .then((response) => {
         console.log(response.data);
       })
@@ -50,7 +50,7 @@ function Signup() {
       });
 
       axios
-      .post('https://localhost:7013/api/Email/VerifyAccount', emailData)
+      .post('https://vinclean.azurewebsites.net/api/Email/VerifyAccount', emailData)
       .then((response) => {
         console.log(response.data);
         navigate('/verifytoken');

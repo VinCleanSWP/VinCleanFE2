@@ -10,7 +10,7 @@ const BlogList = () => {
   const [filteredBlogs, setFilteredBlogs] = useState([]);
 
   useEffect(() => {
-    axios.get(`https://localhost:7013/api/Blog`)
+    axios.get(`https://vinclean.azurewebsites.net/api/Blog`)
       .then(response => {
         const data = response.data.data;
         setBlogs(data);

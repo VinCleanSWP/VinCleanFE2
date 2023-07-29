@@ -51,7 +51,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   const tomorrowString = tomorrow.toISOString().split('T')[0];
 
   useEffect(() => {
-    axios.get(`https://localhost:7013/api/Customer/Account/${accountID}`)
+    axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${accountID}`)
       .then(response => {
         const data = response.data.data;
         setDataAccount(data);
@@ -184,7 +184,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       pointUsed: lastTotalPoint
     };
 
-    axios.post('https://localhost:7013/api/Process', data)
+    axios.post('https://vinclean.azurewebsites.net/api/Process', data)
       .then(response => {
         console.log(response.data);
         setSubmittedData(response.data);

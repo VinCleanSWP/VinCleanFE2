@@ -12,7 +12,7 @@ const CarItem = (props) => {
 
 
   // useEffect(() => {
-  //   axios.get(`https://localhost:7013/api/Type`)
+  //   axios.get(`https://vinclean.azurewebsites.net/api/Type`)
   //     .then(response => {
   //       const data = response.data.data;
   //       setServices(data);

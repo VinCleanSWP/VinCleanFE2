@@ -16,7 +16,7 @@ export default function ResetPassword() {
             to: emailReset,
         };
         axios
-                .post("https://localhost:7013/api/Email/ResetPassword", requestData)
+                .post("https://vinclean.azurewebsites.net/api/Email/ResetPassword", requestData)
                 .then((response) => {
                     console.log('API response:', response.data);
                     navigate('/verification');

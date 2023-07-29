@@ -66,6 +66,8 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         console.error("Error fetching customer account:", error);
       });
   }, []);
+
+  
   const validateData = () => {
     // if (!(firstName.trim() & lastName.trim() & phoneNumber.trim() & address.trim() & date.trim() & journeyTime.trim())) {
     //   alert('Vui lòng điền thông tin');

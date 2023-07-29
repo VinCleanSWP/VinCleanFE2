@@ -171,7 +171,7 @@ function ADHeader() {
                                         </div>
                                         <div className="image">
                                             <Link to="/profile">
-                                                <img src={img || "http://via.placeholder.com/300"}style={{ width: '50px', height: '50px' }} alt={name} />
+                                                <img src={img || "http://via.placeholder.com/300"}style={{ width: '60px', height: '60px', borderRadius:"" }} alt={name} />
                                             </Link>
                                         </div>
                                         <div className="logout">

@@ -112,12 +112,13 @@ function Booking() {
                                     progress: undefined,
                                     theme: "light",
                                 });
+                               
                             })
                     })
                     .catch(error => {
                         console.error(error);
                     });
-                fetchData();
+                
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel
@@ -188,12 +189,15 @@ function Booking() {
                     )
                     axios.put(`https://vinclean.azurewebsites.net/api/Process/Denied?processid=${processId}`)
                         .then(response => {
+                            fetchData();
+                         console.log(fetchData());
                             swalWithBootstrapButtons.fire(
                                 'Deleted!',
                                 'Your file has been deleted.',
                                 'success'
                             )
                         });
+                        
                     axios.post('https://vinclean.azurewebsites.net/api/Email/DeniedProcess', dataMail)
                         .then(response => {
                             console.log(response.data);
@@ -208,7 +212,7 @@ function Booking() {
                                 theme: "light",
                             });
                         })
-                    fetchData();
+                    
                 } else if (
                     /* Read more about handling dismissals below */
                     result.dismiss === Swal.DismissReason.cancel

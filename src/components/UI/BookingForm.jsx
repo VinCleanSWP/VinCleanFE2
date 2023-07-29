@@ -67,7 +67,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       });
   }, []);
 
-  
+
   const validateData = () => {
     // if (!(firstName.trim() & lastName.trim() & phoneNumber.trim() & address.trim() & date.trim() & journeyTime.trim())) {
     //   alert('Vui lòng điền thông tin');
@@ -120,7 +120,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       return false;
     } else {
       if (!addressRegex.test(address.trim())) {
-        setValidAddress("Địa chỉ không hợp lệ");
+        setValidAddress("Địa chỉ không hợp lệ (VD:S3.05 1312)");
 
         return false;
       } else {
@@ -292,7 +292,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
 
         <div> {validAddress && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validAddress}</div>}
           <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validAddress ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
-            <input type="text" placeholder="Địa chỉ" value={address} onChange={(e) => setAddress(e.target.value)}
+            <input type="text" placeholder="Địa chỉ (VD: S3.05 1312)" value={address} onChange={(e) => setAddress(e.target.value)}
               style={{
                 fontWeight: 'bold',
                 color: address ? 'black' : 'gray',

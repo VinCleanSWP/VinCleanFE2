@@ -147,7 +147,7 @@ const Service = () => {
         const editedType = {
             typeId: editingServiceId,
             type1: TypeName,
-            img: TypeImage.img || TempImageUrl,
+            img: TempImageUrl ? TempImageUrl :   TypeImage.img,
             avaiable: updateTypeStatus === "true" ? true : false
 
         }
@@ -307,7 +307,7 @@ const Service = () => {
                 isOpen={modalTypeIsOpen}
                 onRequestClose={() => setTypeModalIsOpen(false)}
                 contentLabel="Add Employee"
-                style={{ width: '60%' }}
+                style={{ width: '' }}
             >
 
                 <div className="card-body" >

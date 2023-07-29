@@ -43,6 +43,7 @@ export default function DashboardAdmin() {
     const [selectedRow, setSelectedRow] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [orderDetail, setOrderDetail] = useState(null);
+    const [currentMonthRevenue, setCurrentMonthRevenue] = useState(0);
 
     // Tổng income
     const totalIncome = () => {
@@ -143,7 +144,7 @@ export default function DashboardAdmin() {
     // Gọi API cần thiết
     useEffect(() => {
         // Customer
-        axios.get('https://vinclean.azurewebsites.net/api/Customer')
+        axios.get('https://localhost:7013/api/Customer')
             .then(response => {
                 setCustomer(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -152,7 +153,7 @@ export default function DashboardAdmin() {
             });
 
         // Employee
-        axios.get('https://vinclean.azurewebsites.net/api/Employee')
+        axios.get('https://localhost:7013/api/Employee')
             .then(response => {
                 setEmployee(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -161,7 +162,7 @@ export default function DashboardAdmin() {
             });
 
         // Booking
-        axios.get('https://vinclean.azurewebsites.net/api/Order')
+        axios.get('https://localhost:7013/api/Order')
             .then(response => {
                 const data = response.data.data;
                 setBooking(response.data.data); // Lưu dữ liệu từ API vào state
@@ -177,7 +178,7 @@ export default function DashboardAdmin() {
             });
 
         // Blog
-        axios.get('https://vinclean.azurewebsites.net/api/Blog')
+        axios.get('https://localhost:7013/api/Blog')
             .then(response => {
                 setBlog(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -186,7 +187,7 @@ export default function DashboardAdmin() {
             });
 
         // Type
-        axios.get('https://vinclean.azurewebsites.net/api/Type')
+        axios.get('https://localhost:7013/api/Type')
             .then(response => {
                 setService(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -195,14 +196,14 @@ export default function DashboardAdmin() {
             });
 
         // Rating
-        axios.get('https://vinclean.azurewebsites.net/api/Rating')
+        axios.get('https://localhost:7013/api/Rating')
             .then(response => {
                 setRating(response.data.data); // Lưu dữ liệu từ API vào state
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-        
+
     }, []);
 
     const fetchData = async () => {
@@ -301,11 +302,36 @@ export default function DashboardAdmin() {
             backgroundColor: '#096dd9', // Màu nền khi nhấn (active)
         },
     };
-
-
     // ... fetchData và columns như trước
 
     const monthRange = `${startDate.format('MM')}`;
+
+    useEffect(() => {
+        calculateCurrentMonthRevenue();
+    }, [booking]);
+
+    const homnay = new Date();
+    const thangnay = `${homnay.getMonth() + 1}-${homnay.getFullYear()}`;
+
+    const calculateCurrentMonthRevenue = () => {
+        const currentDate = new Date();
+        const currentMonthYear = `${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
+        let revenue = 0;
+
+        // Lặp qua danh sách giao dịch để tính tổng doanh thu của tháng hiện tại
+        booking && booking.forEach((transaction) => {
+            const { total, dateWork } = transaction;
+            const transactionDate = new Date(dateWork);
+            const transactionMonthYear = `${transactionDate.getMonth() + 1}-${transactionDate.getFullYear()}`;
+
+            if (transactionMonthYear === currentMonthYear) {
+                revenue += total;
+            }
+        });
+        setCurrentMonthRevenue(revenue);
+    };
+
+
     return (
         <div className="page-container">
             {/* MAIN CONTENT*/}
@@ -314,7 +340,7 @@ export default function DashboardAdmin() {
                     <div className="container-fluid">
                         <h1 className="table__header" style={{ textAlign: "center" }}><strong>Service List</strong></h1>
                         <div className="row">
-                            <div className="col-md-6 col-xl-4">
+                            <div className="col-md-6 col-xl-6">
                                 <div className="card daily-sales">
                                     <div className="card-block">
                                         <h6 className="m-4">Total income</h6>
@@ -326,7 +352,21 @@ export default function DashboardAdmin() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-6 col-xl-2">
+
+                            <div className="col-md-6 col-xl-6">
+                                <div className="card daily-sales">
+                                    <div className="card-block">
+                                        <h6 className="m-4">Current Month income ({thangnay})</h6>
+                                        <div className="row d-flex align-items-center">
+                                            <div className="col-9">
+                                                <h3 className="f-w-300 d-flex align-items-center m-b-0 mb-4 ml-3"><i className="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{formatCurrency(currentMonthRevenue)}</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 col-xl-3">
                                 <div className="card daily-sales">
                                     <div className="card-block">
                                         <h6 className="m-4">Customer</h6>
@@ -338,7 +378,7 @@ export default function DashboardAdmin() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-6 col-xl-2">
+                            <div className="col-md-6 col-xl-3">
                                 <div className="card daily-sales">
                                     <div className="card-block">
                                         <h6 className="m-4">Employee</h6>
@@ -350,7 +390,7 @@ export default function DashboardAdmin() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-6 col-xl-2">
+                            <div className="col-md-6 col-xl-3">
                                 <div className="card daily-sales">
                                     <div className="card-block">
                                         <h6 className="m-4">Booking</h6>
@@ -362,7 +402,7 @@ export default function DashboardAdmin() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-6 col-xl-2">
+                            <div className="col-md-6 col-xl-3">
                                 <div className="card daily-sales">
                                     <div className="card-block">
                                         <h6 className="m-4">Blogs</h6>
@@ -639,7 +679,7 @@ export default function DashboardAdmin() {
                                 </div>
                             </div>
 
-                            
+                            {/* <div className="col-xl-8 col-md-6">
                                 <div className="card Recent-Users">
                                     <div className="card-header">
                                         <h5>Recent Booking</h5>
@@ -647,14 +687,10 @@ export default function DashboardAdmin() {
                                     <div>
                                         <div style={{ height: '100%', backgroundColor: 'white', padding: "20px", border: '1px solid black', borderRadius: "10px", margin: '15px' }}>
                                             <div style={{ textAlign: 'center', marginTop: '20px' }}>
-
                                                 <div style={{ textAlign: 'left' }}>
-
                                                     <h3 style={{ textAlign: 'center', color: 'black' }}><strong>List Order in month {monthRange}</strong></h3>
                                                 </div>
-
                                             </div>
-
                                             <div style={{ margin: '10px' }}>
                                                 <Button style={buttonStyle} onClick={handleCurrentMonthClick}>Current</Button>
                                                 <Button style={buttonStyle} onClick={handlePreviousMonthClick}>Back</Button>
@@ -666,33 +702,88 @@ export default function DashboardAdmin() {
                                         </div>
                                     </div>
                                 </div>
-                            
-                            <Modal
 
-                                visible={isModalVisible}
-                                onCancel={handleModalClose}
-                                footer={null}
-                            >
-                                {orderDetail && (
-                                    <div>
-                                        <p style={{ textAlign: 'center', fontSize: '20px' }}><strong>Order Detail</strong></p>
-                                        <p>Order ID: {orderDetail.orderId}</p>
-                                        <p>Service type: {orderDetail.type}</p>
-                                        <p>Service Name: {orderDetail.serviceName}</p>
-                                        <p>Work dated: {orderDetail.dateWork.split('T')[0]}</p>
-                                        <p>Start Time: {orderDetail.startTime}</p>
-                                        <p>End Time: {orderDetail.endTime}</p>
-                                        <p>Address: {orderDetail.address}</p>
-                                        <p>Customer: {orderDetail.customerName}</p>
-                                        <p>email: {orderDetail.customerEmail}</p>
-                                        <p>Phone Number: {orderDetail.phone}</p>
-                                        <p>SubPrice: {orderDetail.subPrice}</p>
-                                        <p>Total: {orderDetail.total}</p>
+                                <Modal
 
+                                    visible={isModalVisible}
+                                    onCancel={handleModalClose}
+                                    footer={null}
+                                >
+                                    {orderDetail && (
+                                        <div>
+                                            <p style={{ textAlign: 'center', fontSize: '20px' }}><strong>Order Detail</strong></p>
+                                            <p>Order ID: {orderDetail.orderId}</p>
+                                            <p>Service type: {orderDetail.type}</p>
+                                            <p>Service Name: {orderDetail.serviceName}</p>
+                                            <p>Work dated: {orderDetail.dateWork.split('T')[0]}</p>
+                                            <p>Start Time: {orderDetail.startTime}</p>
+                                            <p>End Time: {orderDetail.endTime}</p>
+                                            <p>Address: {orderDetail.address}</p>
+                                            <p>Customer: {orderDetail.customerName}</p>
+                                            <p>email: {orderDetail.customerEmail}</p>
+                                            <p>Phone Number: {orderDetail.phone}</p>
+                                            <p>SubPrice: {orderDetail.subPrice}</p>
+                                            <p>Total: {orderDetail.total}</p>
+                                        </div>
+                                    )}
+                                </Modal>
+                            </div> */}
 
+                            <div className="col-xl-8 col-md-6">
+                                <div className="card Recent-Users">
+                                    <div className="card-header">
+                                        <h5>Recent Booking</h5>
                                     </div>
-                                )}
-                            </Modal>
+                                    <div className="card-block px-0 py-3">
+                                        <div className="table-responsive">
+                                            <table className="table table-hover">
+                                                <tbody>
+                                                    {/* <tr className="unread">
+                                                        <td><img className="rounded-circle" style={{ width: "40px" }} src="assets/images/user/avatar-1.jpg" alt="activity-user" /></td>
+                                                        <td>
+                                                            <h6 className="mb-1">Isabella Christensen</h6>
+                                                        </td>
+                                                        <td>
+                                                            <h6 className="text-muted"><i className="fas fa-circle text-c-green f-10 m-r-15"></i>11 MAY 12:56</h6>
+                                                        </td>
+                                                        <td><a href="#!" className="label theme-bg2 text-black f-12 mr-2">Reject</a><a href="#!" className="label theme-bg text-black f-12">Approve</a></td>
+                                                    </tr> */}
+
+                                                    {booking && booking
+                                                        .slice()
+                                                        .sort((a, b) => b.orderId - a.orderId)
+                                                        .slice(0, 6)
+                                                        .reverse()
+                                                        .map((item) => (
+                                                            <tr key={item.id} className="unread">
+                                                                <td>
+                                                                    <img
+                                                                        className="rounded-circle"
+                                                                        style={{ width: "40px" }}
+                                                                        src={item.customerImage}
+                                                                        alt="activity-user"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <h6 className="mb-1">{item.customerName}</h6>
+                                                                </td>
+                                                                <td>
+                                                                    <h6 className="mb-1">{item.type}</h6>
+                                                                </td>
+                                                                <td>
+                                                                    <h6 className="text-muted">{formatDateTime(item.dateWork)}</h6>
+                                                                </td>
+                                                                <td>
+                                                                    <h6 className="mb-1">{formatCurrency(item.total)}</h6>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

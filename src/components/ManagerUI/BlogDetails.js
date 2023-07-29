@@ -20,7 +20,7 @@ const BlogDetails = () => {
     const [selectedCommentId, setSelectedCommentId] = useState(null);
 
     useEffect(() => {
-        axios.get(`https://localhost:7013/api/Blog/${blogid}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Blog/${blogid}`)
             .then(response => {
                 const data = response.data.data;
                 setBlog(data);
@@ -29,7 +29,7 @@ const BlogDetails = () => {
                 console.error('Error fetching blog detail:', error);
             });
 
-        axios.get(`https://localhost:7013/api/Blog`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Blog`)
             .then(response => {
                 const data = response.data.data;
                 setBlogs(data);
@@ -39,7 +39,7 @@ const BlogDetails = () => {
             });
 
         axios
-            .get(`https://localhost:7013/api/Comment?blogId=${blogid}`)
+            .get(`https://vinclean.azurewebsites.net/api/Comment?blogId=${blogid}`)
             .then(response => {
                 setComments(response.data.data);
             })
@@ -48,7 +48,7 @@ const BlogDetails = () => {
             });
     }, [id]);
     const fetchComments = (blogid) => {
-        axios.get(`https://localhost:7013/api/Comment?blogId=${blogid}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Comment?blogId=${blogid}`)
             .then(response => {
                 setComments(response.data.data);
             })
@@ -68,7 +68,7 @@ const BlogDetails = () => {
                 const comment = comments[i];
                 if (comment.blogId === blogid) {
                     try {
-                        const response = await axios.get(`https://localhost:7013/api/Account/${comment.modifiedBy}`);
+                        const response = await axios.get(`https://vinclean.azurewebsites.net/api/Account/${comment.modifiedBy}`);
                         const account = response.data.data;
                         authors.push(account.name);
                         img.push(account.img);
@@ -107,10 +107,10 @@ const BlogDetails = () => {
         };
 
         try {
-            const response = await axios.post('https://localhost:7013/api/Comment', commentData);
+            const response = await axios.post('https://vinclean.azurewebsites.net/api/Comment', commentData);
             console.log('Bình luận đã được đăng:', response.data);
 
-            const updatedCommentsResponse = await axios.get(`https://localhost:7013/api/Comment?blogId=${blogid}`);
+            const updatedCommentsResponse = await axios.get(`https://vinclean.azurewebsites.net/api/Comment?blogId=${blogid}`);
             const updatedComments = updatedCommentsResponse.data.data;
 
             setComment('');
@@ -123,7 +123,7 @@ const BlogDetails = () => {
     };
 
     const handleDeleteComment = (commentId) => {
-        axios.delete(`https://localhost:7013/api/Comment/${commentId}`)
+        axios.delete(`https://vinclean.azurewebsites.net/api/Comment/${commentId}`)
             .then(response => {
                 console.log('Comment deleted:', response.data);
                 setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));

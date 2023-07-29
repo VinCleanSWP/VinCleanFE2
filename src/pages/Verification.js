@@ -11,7 +11,7 @@ export default function Verification() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const apiUrl = `https://localhost:7013/api/Account/reset-password`;
+        const apiUrl = `https://vinclean.azurewebsites.net/api/Account/reset-password`;
         const requestData = {
             token: newToken,
             password: newPassword,

@@ -8,7 +8,7 @@ export default function ResetPassword() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const apiUrl = `https://localhost:7013/api/Account/forgot-password?email=${emailReset}`;
+        const apiUrl = `https://vinclean.azurewebsites.net/api/Account/forgot-password?email=${emailReset}`;
         const requestData = {
             email: emailReset,
         };

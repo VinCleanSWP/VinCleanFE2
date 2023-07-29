@@ -29,7 +29,7 @@ const RatingForm = ({ onClose, onRatingSubmit, serviceId, customerId }) => {
     console.log(formData)
 
     axios
-      .post('https://localhost:7013/api/Rating', formData)
+      .post('https://vinclean.azurewebsites.net/api/Rating', formData)
       .then((response) => {
         console.log('Đánh giá dịch vụ thành công', response.data);
         onRatingSubmit(formData); // Gọi callback function để cập nhật dữ liệu rating và comment trên UI

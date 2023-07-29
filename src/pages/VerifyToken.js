@@ -9,7 +9,7 @@ export default function VerifyToken() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const apiUrl = `https://localhost:7013/api/Account/Verify?token=${token}`;
+        const apiUrl = `https://vinclean.azurewebsites.net/api/Account/Verify?token=${token}`;
         axios
             .post(apiUrl)
             .then((response) => {

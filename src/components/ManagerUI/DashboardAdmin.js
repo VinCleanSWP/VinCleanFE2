@@ -143,7 +143,7 @@ export default function DashboardAdmin() {
     // Gọi API cần thiết
     useEffect(() => {
         // Customer
-        axios.get('https://localhost:7013/api/Customer')
+        axios.get('https://vinclean.azurewebsites.net/api/Customer')
             .then(response => {
                 setCustomer(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -152,7 +152,7 @@ export default function DashboardAdmin() {
             });
 
         // Employee
-        axios.get('https://localhost:7013/api/Employee')
+        axios.get('https://vinclean.azurewebsites.net/api/Employee')
             .then(response => {
                 setEmployee(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -161,7 +161,7 @@ export default function DashboardAdmin() {
             });
 
         // Booking
-        axios.get('https://localhost:7013/api/Order')
+        axios.get('https://vinclean.azurewebsites.net/api/Order')
             .then(response => {
                 const data = response.data.data;
                 setBooking(response.data.data); // Lưu dữ liệu từ API vào state
@@ -177,7 +177,7 @@ export default function DashboardAdmin() {
             });
 
         // Blog
-        axios.get('https://localhost:7013/api/Blog')
+        axios.get('https://vinclean.azurewebsites.net/api/Blog')
             .then(response => {
                 setBlog(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -186,7 +186,7 @@ export default function DashboardAdmin() {
             });
 
         // Type
-        axios.get('https://localhost:7013/api/Type')
+        axios.get('https://vinclean.azurewebsites.net/api/Type')
             .then(response => {
                 setService(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -195,7 +195,7 @@ export default function DashboardAdmin() {
             });
 
         // Rating
-        axios.get('https://localhost:7013/api/Rating')
+        axios.get('https://vinclean.azurewebsites.net/api/Rating')
             .then(response => {
                 setRating(response.data.data); // Lưu dữ liệu từ API vào state
             })

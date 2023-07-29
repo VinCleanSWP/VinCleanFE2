@@ -44,7 +44,7 @@ const Contact = () => {
 
   useEffect(() => {
     // Gọi API để lấy dữ liệu
-    axios.get(`https://localhost:7013/api/Process`)
+    axios.get(`https://vinclean.azurewebsites.net/api/Process`)
       .then(response => {
         const data = response.data.data
         const accId = localStorage.getItem('id');
@@ -69,7 +69,7 @@ const Contact = () => {
   const formattedDate = date.toLocaleDateString(undefined, options);
 
   const handleClick = () => {
-    const url = 'https://localhost:7013/api/Order';
+    const url = 'https://vinclean.azurewebsites.net/api/Order';
     const data = {
       customerId: booking.customerId,
       processId: booking.processId,

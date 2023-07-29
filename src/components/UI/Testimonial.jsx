@@ -36,7 +36,7 @@ const Testimonial = () => {
 
   useEffect(() => {
     axios
-      .get('https://localhost:7013/api/Rating')
+      .get('https://vinclean.azurewebsites.net/api/Rating')
       .then((response) => {
         const data = response.data.data;
         const uniqueRatings = getUniqueRatings(data);

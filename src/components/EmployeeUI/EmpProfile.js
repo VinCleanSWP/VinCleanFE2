@@ -64,7 +64,7 @@ export default function EmpProfile() {
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Order`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Order`)
             .then(response => {
                 const data = response.data.data
                 const mail = localStorage.getItem('email');
@@ -97,7 +97,7 @@ export default function EmpProfile() {
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Employee`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Employee`)
             .then(response => {
                 const data = response.data.data
                 const foundUser = data.find(emp => emp.account.accountId == id);
@@ -174,7 +174,7 @@ export default function EmpProfile() {
         };
 
         try {
-            const response = await axios.put('https://localhost:7013/api/Employee', updatedUser);
+            const response = await axios.put('https://vinclean.azurewebsites.net/api/Employee', updatedUser);
             if (response.status === 200) {
                 console.log('OK');
                 toast.success('Updated Successfully!', {
@@ -196,7 +196,7 @@ export default function EmpProfile() {
         }
 
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Employee`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Employee`)
             .then(response => {
                 const data = response.data.data
                 const foundUser = data.find(emp => emp.account.accountId == id);
@@ -209,7 +209,7 @@ export default function EmpProfile() {
 
     const updateUserPassword = async (newPassword) => {
         try {
-            const apiUrl = 'https://localhost:7013/api/Account';
+            const apiUrl = 'https://vinclean.azurewebsites.net/api/Account';
             // Tạo một đối tượng chứa dữ liệu mới (password mới)
             const updatedUserData = {
                 accountId: localStorage.getItem('id'),

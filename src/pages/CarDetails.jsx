@@ -29,7 +29,7 @@ const ServiceTypeDetail = () => {
 
 
   useEffect(() => {
-    axios.get(`https://localhost:7013/api/Service/Type/${id}`)
+    axios.get(`https://vinclean.azurewebsites.net/api/Service/Type/${id}`)
       .then(response => {
         const data = response.data.data;
         setService(data);
@@ -39,7 +39,7 @@ const ServiceTypeDetail = () => {
         console.error('Error fetching service type detail:', error);
       });
 
-    axios.get(`https://localhost:7013/api/Type/${id}`)
+    axios.get(`https://vinclean.azurewebsites.net/api/Type/${id}`)
       .then(response => {
         const data = response.data.data;
         setType(data)
@@ -49,7 +49,7 @@ const ServiceTypeDetail = () => {
       });
 
 
-    axios.get(`https://localhost:7013/api/Rating/Service/${id}`)
+    axios.get(`https://vinclean.azurewebsites.net/api/Rating/Service/${id}`)
       .then(response => {
         const data = response.data.data;
         setRating(data);

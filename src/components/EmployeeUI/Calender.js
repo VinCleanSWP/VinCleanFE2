@@ -71,9 +71,9 @@ const MyCalendar = () => {
           end,
           title: (
             <div class="event-title">
-
+              <p>{event.typeName}</p>
               <p>LH:{event.phone} - {event.address}</p>
-              <p>Note: {event.note}</p>
+              <p>Ghi Chú: {event.note}</p>
             </div>
           ),
           

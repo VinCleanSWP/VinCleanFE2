@@ -102,7 +102,7 @@ export default function Dashboard() {
             title: 'Tổng dịch vụ',
             dataIndex: 'total',
             key: 'total',
-            render: (total) => `${total}.000VND`,
+            render: (total) => `${formatCurrency(total)}`,
         }
     ];
     const buttonStyle = {
@@ -116,6 +116,10 @@ export default function Dashboard() {
         },
     };
 
+    function formatCurrency(amount) {
+        var amount1 = amount*1000;   
+        return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+    }
 
   // ... fetchData và columns như trước
 
@@ -133,7 +137,7 @@ export default function Dashboard() {
                         <h3 style={{ textAlign: 'center', color: 'black' }}><strong>Danh sách các công việc đã hoành thành trong {monthRange}</strong></h3>
                     <div style={{ textAlign: 'right', marginRight: '30px' }}>
                         <p><strong>Tổng số công việc hoành thành trong {monthRange}:</strong><strong style={{ color: 'red'}}> {totalJobs}</strong></p>
-                        <p><strong>Tổng số tiền đã thu trong {monthRange}:</strong> <strong style={{ color: 'red'}}>{totalRevenue}.000VND</strong></p>
+                        <p><strong>Tổng số tiền đã thu trong {monthRange}:</strong> <strong style={{ color: 'red'}}>{formatCurrency(totalRevenue)}</strong></p>
                     </div>
                     </div>
                     

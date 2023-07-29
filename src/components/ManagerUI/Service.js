@@ -147,7 +147,7 @@ const Service = () => {
         const editedType = {
             typeId: editingServiceId,
             type1: TypeName,
-            img: TempImageUrl ? TempImageUrl : TypeImage.img,
+            img: TempImageUrl ? TempImageUrl :   TypeImage.img,
             avaiable: updateTypeStatus === "true" ? true : false
 
         }

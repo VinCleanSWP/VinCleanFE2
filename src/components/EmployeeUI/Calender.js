@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/vi';
+import { ToastContainer, toast } from 'react-toastify';
 import { UploadOutlined } from '@ant-design/icons';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { getProcessAPI, getProcessImageAPIbyID, updateCanncelJobAPI, updateEndWorkingAPI, updateLocationAPI, updateProcessImageAPI, updateStartWorkingAPI, updateSubPriceAPI } from '../../API/Employee/employeeConfig';
@@ -153,6 +154,16 @@ const MyCalendar = () => {
       console.log(sw);
       await updateStartWorkingAPI(sw);
       console.log("update");
+      toast.success('Cập Nhật thành công', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+    });
     } else if (!data.startWorking && status === 'Hoàn Thành') {
       const ew = {
         processId: selectedEvent.id,
@@ -160,9 +171,27 @@ const MyCalendar = () => {
       };
       console.log(ew);
       await updateEndWorkingAPI(ew);
-
+      toast.success('Cập Nhật thành công', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+    });
     } else {
-      <Alert message="Error Text" type="error" />
+      toast.error('Cập Nhật  thất bại', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+    });
     }
     setSelectedEvent(null);
     fetchData();
@@ -592,9 +621,11 @@ const MyCalendar = () => {
             </div>
 
           )}
+          
         </Modal>
-
+                
       </div>
+      <ToastContainer/>
     </div>
 
   );

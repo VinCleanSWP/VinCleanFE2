@@ -12,6 +12,18 @@ export default function ResetPassword() {
         const requestData = {
             email: emailReset,
         };
+        const reset = {
+            to: emailReset,
+        };
+        axios
+                .post("https://localhost:7013/api/Email/ResetPassword", requestData)
+                .then((response) => {
+                    console.log('API response:', response.data);
+                    navigate('/verification');
+                })
+                .catch((error) => {
+                    console.error('API error:', error);
+                });
         axios
             .post(apiUrl, requestData)
             .then((response) => {

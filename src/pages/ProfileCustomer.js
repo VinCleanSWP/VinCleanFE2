@@ -16,6 +16,7 @@ import { AiOutlineLock } from "react-icons/ai";
 import { BiSolidUser } from "react-icons/bi";
 
 import { AiOutlineHistory } from "react-icons/ai";
+import { useNavigate } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -192,6 +193,9 @@ export default function ProfileCustomer() {
                     progress: undefined,
                     theme: "light",
                 });
+                setTimeout(() => {
+                    navigate('/')
+                }, 3000);
             } else {
                 console.log('KO');
             }
@@ -207,6 +211,8 @@ export default function ProfileCustomer() {
                 console.error('Error:', error);
             });
     };
+
+    const navigate = useNavigate()
 
     const updateUserPassword = async (newPassword) => {
         try {
@@ -227,6 +233,9 @@ export default function ProfileCustomer() {
             // Kiểm tra trạng thái phản hồi từ API
             if (response.status === 200) {
                 console.log('Mật khẩu của người dùng đã được cập nhật thành công.');
+                setTimeout(() => {
+                    navigate('/')
+                }, 3000);
             } else {
                 console.log('Có lỗi xảy ra trong quá trình cập nhật mật khẩu của người dùng.');
             }
@@ -234,6 +243,12 @@ export default function ProfileCustomer() {
             console.error('Lỗi:', error);
         }
     };
+
+    const handleCancel = (e) => {
+        e.preventDefault();
+        navigate('/')
+    };
+
     const dob = new Date(customer.account && customer.account.dob);
     const year = dob.getFullYear();
     const month = String(dob.getMonth() + 1).padStart(2, '0');
@@ -359,7 +374,7 @@ export default function ProfileCustomer() {
                                             </div>
                                             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                                             <div className="text-right mt-3 mb-3">
-                                                <button type="button" className="btn btn-default">Hủy</button>
+                                                <button type="button" className="btn btn-default" onClick={handleCancel}>Hủy</button>
                                                 <button type="submit" className="btn btn-primary">Lưu thay đổi</button>&nbsp;
                                             </div>
                                         </div>

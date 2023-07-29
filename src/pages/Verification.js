@@ -37,6 +37,7 @@ export default function Verification() {
             .catch((error) => {
                 console.error('API error:', error);
             });
+            
     };
 
     return (

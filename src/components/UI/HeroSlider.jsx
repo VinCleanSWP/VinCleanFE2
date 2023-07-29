@@ -22,11 +22,11 @@ const HeroSlider = () => {
       <div className="slider__item slider__item-01 mt0">
         <Container>
         <div className="slider__content ">
-            {/* <h4 className="text-light mb-3">Một trong dịch vụ vệ sinh tốt nhất từ trước đến nay!</h4>
+            <h4 className="text-light mb-3">Một trong dịch vụ vệ sinh tốt nhất từ trước đến nay!</h4>
             <h1 className="text-light mb-4">VỆ SINH LÀM TỐT</h1>
-            <h1 className="text-light mb-4">MÔI TRƯỜNG CỦA BẠN</h1> */}
-            <button style={{textAlign:"right",paddingTop:"31%", paddingRight:"10%"}}>
-              <Link style={{padding:"30px 100px"}} to="/services"> </Link>
+            <h1 className="text-light mb-4">MÔI TRƯỜNG CỦA BẠN</h1>
+            <button >
+              <Link to="/services"> </Link>
               </button>
           </div>
         </Container>

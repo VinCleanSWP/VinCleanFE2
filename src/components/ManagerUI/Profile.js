@@ -246,6 +246,8 @@ function Profile() {
                                                     name="dob"
                                                     className="form-control"
                                                     type="date"
+                                                    pattern="^[A-Za-zÀ-ỹà-ỹ ]+$"
+                                                    title="Invalid data."
                                                     value={selectedDate || formattedDOB}
                                                     onChange={handleDateChange}
                                                     InputLabelProps={{

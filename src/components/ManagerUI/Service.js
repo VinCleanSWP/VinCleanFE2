@@ -360,8 +360,8 @@ const Service = () => {
 
                     <table style={{ width: '100%', borderCollapse: 'collapse' }} >
                         <thead>
-                            <tr style={{ padding: '8px', textAlign: 'center', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
-                                <th style={{ width: '20%' }}>Type ID</th>
+                            <tr style={{ padding: '15px', textAlign: 'center', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
+                                <th style={{ width: '20%' }}>ID</th>
                                 <th style={{ width: '20%' }}>Name</th>
                                 <th style={{ width: '20%' }}>Status</th>
                                 <th style={{ width: '20%' }}>Description</th>
@@ -374,7 +374,6 @@ const Service = () => {
                         <tbody style={{ textAlign: 'center' }}>
                             {servicelist.map(sv => (
                                 <tr key={sv.serviceId} >
-
                                     <td >{sv.serviceId}</td>
                                     <td>
                                         {editingServiceId === sv.serviceId ? (
@@ -395,15 +394,11 @@ const Service = () => {
                                                 <option value="Available">Available</option>
                                                 <option value="Deleted">Deleted</option>
                                             </select>
-
                                         ) : (
-                                            sv.status
+                                            <label>{sv.status}</label>
                                         )}
                                     </td>
-
-
                                     <td>
-
                                         {editingServiceId === sv.serviceId ? (
                                             <input
                                                 type="text"
@@ -422,7 +417,7 @@ const Service = () => {
                                                 onChange={e => setEditingServiceCost(e.target.value)}
                                             />
                                         ) : (
-                                            sv.cost
+                                            <input value={sv.cost}></input>
                                         )}
                                     </td>
                                     <td>
@@ -493,7 +488,7 @@ const Service = () => {
                                         <table className="table table-borderless table-data3 shadow-sm" style={{ tableLayout: 'fixed', width: '100%' }}>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ width: '20%' }}>Type ID</th>
+                                                    <th style={{ width: '20%' }}>Type </th>
                                                     <th style={{ width: '20%' }}>Name</th>
                                                     <th style={{ width: '20%' }}>Status</th>
                                                     <th style={{ width: '20%' }}>Image</th>
@@ -534,6 +529,50 @@ const Service = () => {
                                         </table>
                                     </div>
                                     {/* END DATA TABLE */}
+                                    <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
+                                        <table className="table table-borderless table-data3 shadow-sm" style={{ tableLayout: 'fixed', width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ width: '20%' }}>Type ID</th>
+                                                    <th style={{ width: '20%' }}>Name</th>
+                                                    <th style={{ width: '20%' }}>Status</th>
+                                                    <th style={{ width: '20%' }}>Image</th>
+                                                    <th style={{ width: '20%' }}><button
+                                                        style={{ marginRight: "25px" }} data-bs-toggle="modal" data-bs-target="#imageprocess"
+                                                    ><FcAddDatabase size={30}></FcAddDatabase></button></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {servicetype.map(Service => (
+                                                    <tr key={Service.typeId}>
+                                                        <td>{Service.typeId}</td>
+                                                        <td>{Service.type1}</td>
+                                                        <td>{Service.avaiable ? 'Available' : 'Deleted'}</td>
+                                                        <td>
+                                                            <img src={Service.img} style={{ width: '100px', height: 'auto' }} />
+                                                        </td>
+                                                        <td>
+                                                            <div className="table-data-feature">
+                                                                <button
+                                                                    className="item"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="Edit"
+                                                                    onClick={() => {
+                                                                        setTypeModalIsOpen(true);
+                                                                        setServiceTypeId(Service.typeId);
+                                                                        handelDetal(Service.typeId);
+                                                                    }}
+                                                                >
+                                                                    <i className="zmdi zmdi-edit" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                                 <div />
                             </div>
@@ -585,6 +624,7 @@ const Service = () => {
                     </div>
                 </div>
             </div>
+            
             <div />
             <ToastContainer />
 

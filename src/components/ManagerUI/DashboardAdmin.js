@@ -144,7 +144,7 @@ export default function DashboardAdmin() {
     // Gọi API cần thiết
     useEffect(() => {
         // Customer
-        axios.get('https://localhost:7013/api/Customer')
+        axios.get('https://vinclean.azurewebsites.net/api/Customer')
             .then(response => {
                 setCustomer(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -153,7 +153,7 @@ export default function DashboardAdmin() {
             });
 
         // Employee
-        axios.get('https://localhost:7013/api/Employee')
+        axios.get('https://vinclean.azurewebsites.net/api/Employee')
             .then(response => {
                 setEmployee(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -162,7 +162,7 @@ export default function DashboardAdmin() {
             });
 
         // Booking
-        axios.get('https://localhost:7013/api/Order')
+        axios.get('https://vinclean.azurewebsites.net/api/Order')
             .then(response => {
                 const data = response.data.data;
                 setBooking(response.data.data); // Lưu dữ liệu từ API vào state
@@ -178,7 +178,7 @@ export default function DashboardAdmin() {
             });
 
         // Blog
-        axios.get('https://localhost:7013/api/Blog')
+        axios.get('https://vinclean.azurewebsites.net/api/Blog')
             .then(response => {
                 setBlog(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -187,7 +187,7 @@ export default function DashboardAdmin() {
             });
 
         // Type
-        axios.get('https://localhost:7013/api/Type')
+        axios.get('https://vinclean.azurewebsites.net/api/Type')
             .then(response => {
                 setService(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -196,7 +196,7 @@ export default function DashboardAdmin() {
             });
 
         // Rating
-        axios.get('https://localhost:7013/api/Rating')
+        axios.get('https://vinclean.azurewebsites.net/api/Rating')
             .then(response => {
                 setRating(response.data.data); // Lưu dữ liệu từ API vào state
             })
@@ -759,22 +759,22 @@ export default function DashboardAdmin() {
                                                                 <td>
                                                                     <img
                                                                         className="rounded-circle"
-                                                                        style={{ width: "40px" }}
-                                                                        src={item.customerImage}
+                                                                        style={{ width: "40px", height:"40px" }}
+                                                                        src={item.accountImage}
                                                                         alt="activity-user"
                                                                     />
                                                                 </td>
                                                                 <td>
-                                                                    <h6 className="mb-1">{item.customerName}</h6>
+                                                                    <h6 className="mb-1">{item.name}</h6>
                                                                 </td>
                                                                 <td>
-                                                                    <h6 className="mb-1">{item.type}</h6>
+                                                                    <h6 className="mb-1">{item.typeName}</h6>
                                                                 </td>
                                                                 <td>
-                                                                    <h6 className="text-muted">{formatDateTime(item.dateWork)}</h6>
+                                                                    <h6 className="text-muted">{formatDateTime(item.date)}</h6>
                                                                 </td>
                                                                 <td>
-                                                                    <h6 className="mb-1">{formatCurrency(item.total)}</h6>
+                                                                    <h6 className="mb-1">{formatCurrency(item.price)}</h6>
                                                                 </td>
                                                             </tr>
                                                         ))}

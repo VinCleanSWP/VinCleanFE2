@@ -44,7 +44,7 @@ function Request() {
 
     const fetchData = () => {
         // Gọi API để lấy dữ liệu
-        axios.get('https://vinclean.azurewebsites.net/api/ProcessSlot')
+        axios.get('https://localhost:7013/api/OrderRequest')
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setrequestData(response.data.data);
@@ -56,7 +56,7 @@ function Request() {
     const showDetail = (id) => {
 
         // Gọi API để lấy dữ liệu
-        axios.get(`https://vinclean.azurewebsites.net/api/ProcessSlot/${id}`)
+        axios.get(`https://localhost:7013/api/OrderRequest/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal(response.data.data);
@@ -69,7 +69,7 @@ function Request() {
     const showDetailProcess = (id) => {
 
         // Gọi API để lấy dữ liệu
-        axios.get(`https://vinclean.azurewebsites.net/api/Process/GetALL/${id}`)
+        axios.get(`https://localhost:7013/api/Order/GetALL/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal2(response.data.data);
@@ -83,7 +83,7 @@ function Request() {
     const assignTask = (date, start, end) => {
         // Gọi API để lấy dữ liệu
         console.log({ date, start, end });
-        axios.post(`https://vinclean.azurewebsites.net/api/Employee/selectemployee`, { date, start, end })
+        axios.post(`https://localhost:7013/api/Employee/selectemployee`, { date, start, end })
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setEmployeeData(response.data);
@@ -96,17 +96,17 @@ function Request() {
 
     const updateClick = () => {
         const data = {
-            processId: selectedProcessId,
+            orderId: selectedProcessId,
             employeeId: selectedEmployees
         };
         const dataMail = {
-            processId: selectedProcessId,
+            orderId: selectedProcessId,
             to: "example@gmail.com",
             subject: "",
             body: ""
         }
         console.log(data);
-        axios.put('https://vinclean.azurewebsites.net/api/WorkingBy/AcceptedRequest', data)
+        axios.put('https://localhost:7013/api/Location/AcceptedRequest', data)
             .then(response => {
                 console.log(response.data);
                 toast.success('Change Employee Successfully!', {
@@ -119,7 +119,7 @@ function Request() {
                     progress: undefined,
                     theme: "light",
                 });
-                axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToCustomer', dataMail)
+                axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
                     .then(response => {
                         console.log(response.data);
                         toast.success('Send Email Customer Successfully!', {
@@ -133,7 +133,7 @@ function Request() {
                             theme: "light",
                         });
                     })
-                axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToEmployee', dataMail)
+                axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
                     .then(response => {
                         console.log(response.data);
                         toast.success('Send Email Employee Successfully!', {
@@ -153,7 +153,7 @@ function Request() {
             });
     };
 
-    const sendEmail = async (processId,oldEmployeEmail) => {
+    const sendEmail = async (orderId,oldEmployeEmail) => {
         const { value: text } = await Swal.fire({
             input: 'textarea',
             inputLabel: 'Reason',
@@ -192,15 +192,15 @@ function Request() {
                     processId: 0,
                     to: oldEmployeEmail,
                     subject: "Từ Chối Yêu Cầu Đổi Việc",
-                    body: ` <p><b>Process ID: ${processId}</b></p>
+                    body: ` <p><b>Process ID: ${orderId}</b></p>
                     <p>Yêu cầu của bạn ${oldEmployeEmail} không được chấp thuận.</p>
                     <p><b>Lý do: </b> ${text}</p>
                     <p>Nếu Có Thắc Mắc gì vui lòng liên hệ trực tiếp với ban quản lý.</p>`
                 }
-                  axios.put(`https://vinclean.azurewebsites.net/api/ProcessSlot/Denied/${processId}`)
+                  axios.put(`https://localhost:7013/api/OrderRequest/Denied/${orderId}`)
                   .then(response => {
                       console.log(response.data);
-                      axios.post('https://vinclean.azurewebsites.net/api/Email', dataMail)
+                      axios.post('https://localhost:7013/api/Email', dataMail)
                           .then(response => {
                               console.log(response.data);
                               toast.success('Send Email Denied Successfully!', {
@@ -303,8 +303,8 @@ function Request() {
                                             <tbody>
                                                 {sortAndFilterData()
                                                     .map(request => (
-                                                        <tr key={request.processId}>
-                                                            <td>{request.processId}</td>
+                                                        <tr key={request.orderId}>
+                                                            <td>{request.orderId}</td>
                                                             <td>{request.customerName}</td>
                                                             <td>{request.oldEmployeeName} </td>
                                                             <td>{format(new Date(request.date), 'dd/MM/yyyy')}</td>
@@ -314,21 +314,21 @@ function Request() {
                                                             <td>
                                                                 <div className="table-data-feature">
                                                                     <button className="item" data-toggle="tooltip" data-placement="top" title="Send"
-                                                                        onClick={() => sendEmail(request.processId,request.oldEmployeEmail)}>
+                                                                        onClick={() => sendEmail(request.orderId,request.oldEmployeEmail)}>
                                                                         <i className="zmdi zmdi-mail-send" />
                                                                     </button>
                                                                     <button className={`item ${request.NewEmployeeName ? 'assigned' : ''}`} data-toggle="tooltip" data-placement="top" title="Assign"
                                                                         onClick={(p) => {
                                                                             assignTask(request.date, request.startTime, request.endTime);
-                                                                            handleProcessSelect(request.processId);
+                                                                            handleProcessSelect(request.orderId);
                                                                         }}
                                                                         data-bs-toggle="modal" data-bs-target="#assign">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="gray" d="m21.1 12.5l1.4 1.41l-6.53 6.59L12.5 17l1.4-1.41l2.07 2.08l5.13-5.17M10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11L10 17m1-13a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4Z" /></svg>
                                                                     </button>
                                                                     <button className="item" data-toggle="tooltip" data-placement="top" title="More"
                                                                         onClick={(e) => {
-                                                                            showDetail(request.processId);
-                                                                            showDetailProcess(request.processId);
+                                                                            showDetail(request.orderId);
+                                                                            showDetailProcess(request.orderId);
                                                                         }}
                                                                         data-bs-toggle="modal" data-bs-target="#myModal">
                                                                         <i className="zmdi zmdi-more" />
@@ -350,7 +350,7 @@ function Request() {
                         <div className='modal-dialog modal-lg modal-dialog-centered'>
                             <div className="modal-content">
                                 <div className="modal-header" >
-                                    <h5 className="modal-title" id="exampleModalLabel"><strong>Request Details  ID: {modal2.processId} </strong></h5>
+                                    <h5 className="modal-title" id="exampleModalLabel"><strong>Request Details  ID: {modal2.orderId} </strong></h5>
                                     <h5 className={`status ${modal.status} modal-title`} style={{ marginLeft: '400px', width: '130px' }}> <span style={{ marginRight: "5px" }}>•</span> {modal.status} </h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>
@@ -378,7 +378,7 @@ function Request() {
                                     <form className="form-inline">
                                         <div className="input-group mb-3">
                                             <label className=" px-3 input-group-text">Dob</label>
-                                            <input value={modal2.dob ? new Date(modal.dob).toLocaleDateString() : ''} className="form-control" />
+                                            <input value={modal2.dob ? new Date(modal2.dob).toLocaleDateString() : ''} className="form-control" />
                                         </div>
                                         <div className="px-5 input-group mb-3">
                                             <label className="input-group-text" style={{ marginLeft: "100px" }}>Address</label>

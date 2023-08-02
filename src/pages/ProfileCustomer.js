@@ -2,21 +2,24 @@ import React, { useState, useEffect } from 'react'
 import { Container, Row, Col } from "reactstrap";
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
+// import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Modal1 from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
+import NativeSelect from '@mui/material/NativeSelect';
 import { async } from 'q';
 import '../styles/profile-customer.css'
 import { storage } from '../firebase/index';
 import { ToastContainer, toast } from 'react-toastify';
-
-
 import { AiOutlineLock } from "react-icons/ai";
-
 import { BiSolidUser } from "react-icons/bi";
-
 import { AiOutlineHistory } from "react-icons/ai";
 import { useNavigate } from 'react-router-dom';
+import { Alert, Button, Input, Modal, Space, Table, Upload } from 'antd';
+
 
 const style = {
     position: 'absolute',
@@ -34,14 +37,17 @@ const gioitinh = [
     {
         id: 1,
         gender: "Nam",
+        sex: "Male"
     },
     {
         id: 2,
         gender: "Nữ",
+        sex: "Female"
     },
     {
         id: 3,
         gender: "Khác",
+        sex: "Other"
     }
 ]
 
@@ -50,7 +56,6 @@ export default function ProfileCustomer() {
     const handleClose = () => setOpen(false);
     const [customer, setCustomer] = useState([]);
     const [gender1, setGender] = useState('');
-    const [imgnow, setImgNow] = useState('');
     const id = localStorage.getItem('id');
     const [errorMessage, setErrorMessage] = useState('')
     const [tempImageUrl, setTempImageUrl] = useState('');
@@ -68,14 +73,15 @@ export default function ProfileCustomer() {
     const [booking, setBooking] = useState([])
     const [orders, setOrder] = useState([])
 
+    console.log(orders);
+
     useEffect(() => {
-        // Gọi API để lấy dữ liệu
         axios.get(`https://vinclean.azurewebsites.net/api/Order`)
+        // axios.get(`https://localhost:7013/api/Order`)
             .then(response => {
                 const data = response.data.data
                 const mail = localStorage.getItem('email');
-                const foundItem = data.filter(item => item.customerEmail == mail);
-                // setOrder(response.data.data);
+                const foundItem = data.filter(item => item.email == mail && item.status == 'Completed' || item.status == 'Cancel');
                 setOrder(foundItem);
             })
             .catch(error => {
@@ -86,6 +92,7 @@ export default function ProfileCustomer() {
     const handleRowClick = (order) => {
         setOpen(true);
         setBooking(order);
+        setSelectedEvent(order)
     };
 
     // DateDetails
@@ -98,16 +105,17 @@ export default function ProfileCustomer() {
     const dateList = orders.dateWork;
     const date1 = new Date(dateList);
     const options1 = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
-
     // --- End Booking Session ---
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
         axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
+        // axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
                 setCurrentGender(response.data.data.account.gender);
                 setCurrentImg(response.data.data.account.img);
+                setAddress(response.data.data.address)
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -162,7 +170,6 @@ export default function ProfileCustomer() {
 
     const handleSubmitInfo = async (e) => {
         e.preventDefault();
-
         const updatedUser = {
             customerId: customer.customerId,
             email: customer.account.email,
@@ -170,7 +177,8 @@ export default function ProfileCustomer() {
             firstName: customer.firstName,
             lastName: customer.lastName,
             phone: customer.phone,
-            address: customer.address,
+            // address: customer.address,
+            address: phankhu.type + " " + toa + " " + tang + " " + phong,
             dob: selectedDate || customer.account.dob,
             gender: gender1 || currentGender,
             // gender: customer.account.gender,
@@ -180,6 +188,7 @@ export default function ProfileCustomer() {
 
         try {
             const response = await axios.put('https://vinclean.azurewebsites.net/api/Customer', updatedUser);
+            // const response = await axios.put('https://localhost:7013/api/Customer', updatedUser);
             if (response.status === 200) {
                 console.log('OK');
                 setErrorMessage('Update Successfully');
@@ -204,8 +213,10 @@ export default function ProfileCustomer() {
         }
 
         axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
+        // axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
+                console.log('thanh cong');
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -217,7 +228,7 @@ export default function ProfileCustomer() {
     const updateUserPassword = async (newPassword) => {
         try {
             const apiUrl = 'https://vinclean.azurewebsites.net/api/Account';
-            // Tạo một đối tượng chứa dữ liệu mới (password mới)
+            // const apiUrl = 'https://localhost:7013/api/Account';
             const updatedUserData = {
                 accountId: localStorage.getItem('id'),
                 name: localStorage.getItem('name'),
@@ -233,6 +244,16 @@ export default function ProfileCustomer() {
             // Kiểm tra trạng thái phản hồi từ API
             if (response.status === 200) {
                 console.log('Mật khẩu của người dùng đã được cập nhật thành công.');
+                toast.success('Updated Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 setTimeout(() => {
                     navigate('/')
                 }, 3000);
@@ -271,6 +292,99 @@ export default function ProfileCustomer() {
         setTempImageUrl(imgUrl);
     };
 
+    // ĐỊA CHỈ
+
+    const [buildingTypes, setBuildingTypes] = useState([]);
+    const [building, setBuilding] = useState([]);
+    const [building1, setBuilding1] = useState([]);
+    const [phankhu, setPhankhu] = useState();
+    const [toa, setToa] = useState();
+    const [tang, setTang] = useState();
+    const [phong, setPhong] = useState();
+
+    const [address, setAddress] = useState('');
+    const inputString = address;
+    const [soKhu, soToa, soTang, soPhong] = inputString.split(' ');
+
+    // const [soKhu1, setSoKhu1] = useState('');
+    // const [soToa1, setSoToa1] = useState('');
+    // const [soTang1, setAddress] = useState('');
+    // const [soPhong1, setAddress] = useState('');
+
+    console.log(address);
+    console.log(soKhu);
+    console.log(soToa);
+    console.log(soTang);
+    console.log(soPhong);
+
+    useEffect(() => {
+        getBuildingTypes();
+        getBuilding();
+    }, []);
+
+    // https://vinclean.azurewebsites.net
+
+    const getBuildingTypes = () => {
+        axios.get('https://vinclean.azurewebsites.net/api/BuildingType')
+        // axios.get('https://localhost:7013/api/BuildingType')
+            .then(response => {
+                setBuildingTypes(response.data.data);
+            })
+            .catch(error => {
+                console.error('Error fetching building types:', error);
+            });
+    };
+
+    const getBuilding = () => {
+        axios.get('https://vinclean.azurewebsites.net/api/Building')
+        // axios.get('https://localhost:7013/api/Building')
+            .then(response => {
+                setBuilding(response.data.data);
+            })
+            .catch(error => {
+                console.error('Error fetching building types:', error);
+            });
+    };
+
+    const handleType = (event) => {
+        setPhankhu(event.target.value);
+        axios.get(`https://vinclean.azurewebsites.net/api/Building/Type/${event.target.value.id}`)
+        // axios.get(`https://localhost:7013/api/Building/Type/${event.target.value.id}`)
+            .then(response => {
+                setBuilding1(response.data.data);
+            })
+            .catch(error => {
+                console.error('Error fetching building types:', error);
+            });
+    };
+
+    const handleBuilding = (event) => {
+        setToa(event.target.value);
+    };
+
+    const handleFloor = (event) => {
+        setTang(event.target.value);
+    };
+
+    const handleRoom = (event) => {
+        setPhong(event.target.value);
+    };
+
+    const matchedBuilding = building1 && building1.find(buildingItem => buildingItem.name === toa);
+    const floorValue = matchedBuilding ? matchedBuilding.floor : '';
+
+    const matchedFloor = building1 && building1.find(buildingItem => buildingItem.name === toa);
+    const roomValue = matchedFloor ? matchedFloor.room : '';
+
+    // ---------------MODAL-------------------
+
+    const [selectedEvent, setSelectedEvent] = useState(null);
+
+    const dateW = new Date(booking.date);
+    const cDate = new Date(booking.createdDate);
+    const dateWork = dateW.toLocaleDateString(undefined, options);
+    const createDate = cDate.toLocaleDateString(undefined, options);
+
     return (
         <div className='container'>
             <div className="container light-style flex-grow-1 container-p-y">
@@ -291,9 +405,6 @@ export default function ProfileCustomer() {
                                 <a className="list-group-item list-group-item-action active" data-toggle="list" href="#account-general"><BiSolidUser /> Thông tin chung</a>
                                 <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password"><AiOutlineLock /> Bảo mật</a>
                                 <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-info"><AiOutlineHistory /> Lịch sử đặt</a>
-                                {/* <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-social-links">Social links</a>
-                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-connections">Connections</a>
-                                <a className="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Notifications</a> */}
                             </div>
                         </div>
                         <div className="col-md-9">
@@ -317,17 +428,16 @@ export default function ProfileCustomer() {
                                         <div className="card-body">
                                             <div className="form-group">
                                                 <label className="form-label">Tên</label>
-                                                <input type="text" className="form-control" maxLength="30" id="firstName" pattern="^[A-Za-z ]+$"
+                                                <input type="text" className="form-control" maxLength="30" id="firstName" pattern="^[A-Za-zÀ-ỹà-ỹ ]+$"
                                                     name="firstName" defaultValue={customer.firstName} onChange={handleInputChange}
                                                     title="Tên không được xuất hiện số và kí tự đặc biệt." required />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Họ</label>
-                                                <input type="text" className="form-control" maxLength="30" id="lastName" pattern="^[A-Za-z ]+$"
+                                                <input type="text" className="form-control" maxLength="30" id="lastName" pattern="^[A-Za-zÀ-ỹà-ỹ ]+$"
                                                     name="lastName" defaultValue={customer.lastName} onChange={handleInputChange}
                                                     title="Tên không được xuất hiện số và kí tự đặc biệt." required />
                                             </div>
-
                                             <div className="form-group">
                                                 <label className="form-label">Ngày sinh</label>
                                                 <TextField
@@ -342,31 +452,199 @@ export default function ProfileCustomer() {
                                                     }}
                                                 />
                                             </div>
-
                                             <div className="form-group">
                                                 <label className="form-label">Giới tính: </label>
                                                 {gioitinh.map(sex => (
                                                     <div key={sex.id}>
                                                         <input type='radio'
                                                             name='gender'
-                                                            value={sex.gender}
-                                                            checked={check === sex.gender || (!check && sex.gender === currentGender)}
+                                                            value={sex.sex}
+                                                            checked={check === sex.sex || (!check && sex.sex === currentGender)}
                                                             onChange={handleGender} />{sex.gender}
                                                     </div>
                                                 ))}
                                             </div>
-
-
                                             <div className="form-group">
                                                 <label className="form-label">Số điện thoại</label>
-                                                <input type="text" className="form-control" id="phone" title="Số điện thoại bao gồm 10-12 chữ số."
-                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10,12}" required />
+                                                <input type="text" className="form-control" id="phone" maxLength="10" title="Số điện thoại bao gồm 10 chữ số."
+                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10}" required />
                                             </div>
-                                            <div className="form-group">
+
+                                            <div className='row'>
+                                                <div className="col-md-3">
+                                                    <div className="form-group">
+                                                        <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                            <InputLabel id="demo-simple-select-standard-label">Phân khu</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-standard-label"
+                                                                id="demo-simple-select-standard"
+                                                                label="Age"
+                                                                value={soKhu || phankhu}
+                                                                onChange={handleType}
+                                                                required
+                                                            >
+                                                                {buildingTypes && buildingTypes.map((phankhu) => (
+                                                                    <MenuItem value={phankhu}>{phankhu.type}</MenuItem>
+                                                                ))}
+                                                            </Select>
+                                                        </FormControl>
+
+                                                        {/* <FormControl fullWidth>
+                                                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                                                Phân khu
+                                                            </InputLabel>
+                                                            <NativeSelect
+                                                                defaultValue={soKhu || phankhu}
+                                                                inputProps={{
+                                                                    name: 'soKhu',
+                                                                    id: 'uncontrolled-native',
+                                                                }}
+                                                                onChange={handleType}
+                                                                required
+                                                            >
+                                                                {buildingTypes && buildingTypes.map((phankhu) => (
+                                                                    <option value={phankhu}>{phankhu.type}</option>
+                                                                ))}
+                                                            </NativeSelect>
+                                                        </FormControl> */}
+                                                    </div>
+                                                </div>
+                                                {phankhu.type == 'Manhattan' ? (
+                                                    <div className="col-md-9">
+                                                        <div className="form-group">
+                                                            <label className="form-label">Địa chỉ</label>
+                                                            <input type="text" className="form-control" id="address"
+                                                                name="address" defaultValue={customer.address} onChange={handleInputChange} required />
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="col-md-9">
+                                                        <div className='row'>
+                                                            <div className="col-md-3 mr-4">
+                                                                <div className="form-group">
+                                                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                                        <InputLabel id="demo-simple-select-standard-label">Tòa</InputLabel>
+                                                                        <Select
+                                                                            labelId="demo-simple-select-standard-label"
+                                                                            id="demo-simple-select-standard"
+                                                                            label="Age"
+                                                                            value={soToa || toa}
+                                                                            onChange={handleBuilding}
+                                                                            required
+                                                                        >
+                                                                            {building1 && building1.map((toa) => (
+                                                                                <MenuItem value={toa.name}>{toa.name}</MenuItem>
+                                                                            ))}
+                                                                        </Select>
+                                                                    </FormControl>
+
+                                                                    {/* <FormControl fullWidth>
+                                                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                                                Tòa
+                                                            </InputLabel>
+                                                            <NativeSelect
+                                                                defaultValue={soToa || toa}
+                                                                inputProps={{
+                                                                    name: 'age',
+                                                                    id: 'uncontrolled-native',
+                                                                }}
+                                                                onChange={handleBuilding}
+                                                                required
+                                                            >
+                                                                {building1 && building1.map((toa) => (
+                                                                    <option value={toa.name}>{toa.name}</option>
+                                                                ))}
+                                                            </NativeSelect>
+                                                        </FormControl> */}
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-3 mr-4">
+                                                                <div className="form-group">
+                                                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                                        <InputLabel id="demo-simple-select-standard-label">Tầng</InputLabel>
+                                                                        <Select
+                                                                            labelId="demo-simple-select-standard-label"
+                                                                            id="demo-simple-select-standard"
+                                                                            label="Age"
+                                                                            value={soTang || tang}
+                                                                            onChange={handleFloor}
+                                                                            required
+                                                                        >
+                                                                            {Array.from({ length: floorValue }, (_, index) => (
+                                                                                <MenuItem key={index + 1} value={index + 1}>{index + 1}</MenuItem>
+                                                                            ))}
+                                                                        </Select>
+                                                                    </FormControl>
+
+                                                                    {/* <FormControl fullWidth>
+                                                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                                                Tầng
+                                                            </InputLabel>
+                                                            <NativeSelect
+                                                                defaultValue={soTang || tang}
+                                                                inputProps={{
+                                                                    name: 'age',
+                                                                    id: 'uncontrolled-native',
+                                                                }}
+                                                                onChange={handleFloor}
+                                                                required
+                                                            >
+                                                                {Array.from({ length: floorValue }, (_, index) => (
+                                                                    <option key={index + 1} value={index + 1}>{index + 1}</option>
+                                                                ))}
+                                                            </NativeSelect>
+                                                        </FormControl> */}
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-3 mr-4">
+                                                                <div className="form-group">
+                                                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                                        <InputLabel id="demo-simple-select-standard-label">Phòng</InputLabel>
+                                                                        <Select
+                                                                            labelId="demo-simple-select-standard-label"
+                                                                            id="demo-simple-select-standard"
+                                                                            label="Age"
+                                                                            defaultValue={soPhong || phong}
+                                                                            onChange={handleRoom}
+                                                                            required
+                                                                        >
+                                                                            {Array.from({ length: roomValue }, (_, index) => (
+                                                                                <MenuItem key={index + 1} value={index + 1}>{index + 1}</MenuItem>
+                                                                            ))}
+                                                                        </Select>
+                                                                    </FormControl>
+
+                                                                    {/* <FormControl fullWidth>
+                                                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                                                Phòng
+                                                            </InputLabel>
+                                                            <NativeSelect
+                                                                defaultValue={soPhong || phong}
+                                                                inputProps={{
+                                                                    name: 'age',
+                                                                    id: 'uncontrolled-native',
+                                                                }}
+                                                                onChange={handleRoom}
+                                                                required
+                                                            >
+                                                                {Array.from({ length: roomValue }, (_, index) => (
+                                                                    <option key={index + 1} value={index + 1}>{index + 1}</option>
+                                                                ))}
+                                                            </NativeSelect>
+                                                        </FormControl> */}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                            </div>
+
+                                            {/* <div className="form-group">
                                                 <label className="form-label">Địa chỉ</label>
                                                 <input type="text" className="form-control" id="address"
                                                     name="address" defaultValue={customer.address} onChange={handleInputChange} required />
-                                            </div>
+                                            </div> */}
                                             <div className="form-group">
                                                 <label className="form-label">E-mail</label>
                                                 <input type="text" className="form-control mb-1" defaultValue={customer.account && customer.account.email} disabled />
@@ -431,7 +709,7 @@ export default function ProfileCustomer() {
                                                 <h4 className="fw-bold mt-4 mb-4">Lịch sử đặt</h4>
 
                                                 <div className="table-responsive m-b-40">
-                                                    <table className="table table-borderless table-data3">
+                                                    <table className="table table-borderless table-hover table-data3">
                                                         <thead>
                                                             <tr>
                                                                 <th>Dịch vụ</th>
@@ -441,18 +719,19 @@ export default function ProfileCustomer() {
                                                                 <th className='left'>Tổng tiền</th>
                                                             </tr>
                                                         </thead>
+
                                                         <tbody>
                                                             {orders.map((order) => (
                                                                 <tr className="pointer pointertext" key={order.orderId} onClick={() => handleRowClick(order)}>
-                                                                    <td>{order.type}</td>
+                                                                    <td>{order.typeName}</td>
                                                                     <td>{order.serviceName}</td>
                                                                     <td>{order.employeeName}</td>
                                                                     {/* <td>{order.dateWork}</td> */}
-                                                                    <td>{new Date(order.dateWork).toLocaleDateString(undefined, options1)}</td>
-                                                                    <td className="process">{order.total}.000 VND</td>
+                                                                    <td>{new Date(order.date).toLocaleDateString(undefined, options1)}</td>
+                                                                    <td className="process" style={{ color: '#35cb28' }}>{order.price}.000 VND</td>
                                                                 </tr>
                                                             ))}
-                                                            <Modal
+                                                            {/* <Modal1
                                                                 open={open}
                                                                 onClose={handleClose}
                                                                 aria-labelledby="modal-modal-title"
@@ -464,14 +743,30 @@ export default function ProfileCustomer() {
                                                                             <div className="contact__info">
                                                                                 <h4 className="fw-bold mb-3">Thông tin đặt</h4>
                                                                                 <br></br>
+
+                                                                                <div className=" d-flex align-items-center gap-2">
+                                                                                    <h6 className="fs-6 mb-0"><strong>Mã dịch vụ:</strong></h6>
+                                                                                    <p className="section__description mb-0">{booking.orderId}</p>
+                                                                                </div>
+
                                                                                 <div className=" d-flex align-items-center gap-2">
                                                                                     <h6 className="fs-6 mb-0"><strong>Dịch vụ:</strong></h6>
-                                                                                    <p className="section__description mb-0">{booking.type}</p>
+                                                                                    <p className="section__description mb-0">{booking.typeName}</p>
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
                                                                                     <h6 className="fs-6 mb-0"><strong>Hạng mục:</strong></h6>
                                                                                     <p className="section__description mb-0">{booking.serviceName}</p>
+                                                                                </div>
+
+                                                                                <div className=" d-flex align-items-center gap-2">
+                                                                                    <h6 className="fs-6 mb-0"><strong>Ngày tạo đơn:</strong></h6>
+                                                                                    <p className="section__description mb-0">{booking.createdDate}</p>
+                                                                                </div>
+
+                                                                                <div className=" d-flex align-items-center gap-2">
+                                                                                    <h6 className="fs-6 mb-0"><strong>Trạng thái:</strong></h6>
+                                                                                    <p className="section__description mb-0">{booking.status}</p>
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
@@ -481,7 +776,6 @@ export default function ProfileCustomer() {
 
                                                                                 <div className=" d-flex align-items-center gap-2">
                                                                                     <h6 className="mb-0 fs-6"><strong>Ngày đặt:</strong></h6>
-                                                                                    {/* <p className="section__description mb-0">{booking.date}</p> */}
                                                                                     <p className="section__description mb-0">{formattedDate}</p>
                                                                                 </div>
 
@@ -506,8 +800,12 @@ export default function ProfileCustomer() {
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
+                                                                                    <h6 className="mb-0 fs-6"><strong>Email nhân viên:</strong></h6>
+                                                                                    <p className="section__description mb-0">{booking.employeeEmail}</p>
+                                                                                </div>
+
+                                                                                <div className=" d-flex align-items-center gap-2">
                                                                                     <h6 className="mb-0 fs-6"><strong>Ghi chú:</strong></h6>
-                                                                                    {/* <p className="section__description mb-0 bordered">{booking.note}</p> */}
                                                                                 </div>
 
                                                                                 <div className=" d-flex align-items-center gap-2">
@@ -516,14 +814,134 @@ export default function ProfileCustomer() {
 
                                                                                 <div className=" d-flex align-items-center gap-2 ">
                                                                                     <h6 className="mb-0 h3 mt-3"><strong>Tổng tiền:</strong></h6>
-                                                                                    <p className="section__description mb-0 h3 mt-3 text-success"><strong>{booking.total}.000 VND</strong></p>
+                                                                                    <p className="section__description mb-0 h3 mt-3 text-success"><strong>{booking.price}.000 VND</strong></p>
                                                                                 </div>
                                                                             </div>
                                                                         </Col>
                                                                     </Row>
                                                                 </Box>
+                                                            </Modal1> */}
+
+
+                                                            <Modal
+                                                                visible={!!selectedEvent}
+                                                                onCancel={() => setSelectedEvent(null)}
+                                                                width={850}
+                                                                footer={[
+                                                                    // <Button key="cancel" onClick={() => setSelectedEvent(null)}>
+                                                                    //   Đóng
+                                                                    // </Button>,
+                                                                ]}
+                                                            >
+
+                                                                {selectedEvent && (
+                                                                    <div>
+                                                                        <h2 style={{ textAlign: "center" }}>Thông tin dịch vụ</h2>
+                                                                        <div class="process" style={{ marginTop: "30px" }}>
+                                                                            <div class="process-info">
+                                                                                <h4 style={{ textAlign: "center", margin: "10px" }}>Thông tin khách hàng</h4>
+                                                                                <div class="info-content" style={{ padding: "8px" }}>
+                                                                                    <p><strong>Mã khách hàng: </strong> {booking.customerId} </p>
+                                                                                    <p><strong>Tên khách hàng: </strong> {booking.name} </p>
+                                                                                    <p><strong>SĐT khách hàng: </strong> {booking.phone}</p>
+                                                                                    <p><strong>Email khách hàng: </strong> {booking.email}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="process-info1">
+                                                                                <h4 style={{ textAlign: "center", margin: "10px" }}> Thông tin nhân viên</h4>
+                                                                                <div class="info-content" style={{ padding: "8px" }}>
+                                                                                    {booking.employeeId == null ? (
+                                                                                        <div>
+                                                                                            <p><strong>Mã nhân viên: </strong> Incoming</p>
+                                                                                            <p><strong>Tên nhân viên: </strong> Incoming</p>
+                                                                                            <p><strong>SĐT nhân viên: </strong> Incoming</p>
+                                                                                            <p><strong>Email nhân viên: </strong> Incoming</p>
+                                                                                        </div>
+                                                                                    ) : (
+                                                                                        <div>
+                                                                                            <p><strong>Mã nhân viên: </strong> {booking.employeeId} </p>
+                                                                                            <p><strong>Tên nhân viên: </strong> {booking.employeeName} </p>
+                                                                                            <p><strong>SĐT nhân viên: </strong> {booking.employeePhone}</p>
+                                                                                            <p><strong>Email nhân viên: </strong> {booking.employeeEmail}</p>
+                                                                                        </div>
+                                                                                    )}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="process" style={{ marginTop: "30px" }}>
+                                                                            <div class="process-info1">
+                                                                                <h4 style={{ textAlign: "center", margin: "10px" }}>Chi tiết dịch vụ</h4>
+                                                                                <div class="info-content" style={{ padding: "8px" }}>
+                                                                                    <p><strong>Mã đơn hàng: </strong> {booking.orderId}</p>
+                                                                                    <p><strong>Tên dịch vụ: </strong> {booking.typeName} - {booking.serviceName}</p>
+                                                                                    {booking.status == 'Cancel' ? (
+                                                                                        <div style={{ flex: '1' }}>
+                                                                                            <p>
+                                                                                                <strong>Trạng Thái hiện tại: </strong> <label className='status cancelled' style={{ padding: "0px 10px" }}>{booking.status}</label>
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    ) : (
+                                                                                        <div style={{ flex: '1' }}>
+                                                                                            <p>
+                                                                                                <strong>Trạng Thái hiện tại: </strong> <label className='status Completed' style={{ padding: "0px 10px" }}>{booking.status}</label>
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    )}
+                                                                                    <p><strong>Ngày đặt: </strong> {createDate}</p>
+                                                                                    <p><strong>Địa chỉ: </strong> {booking.address}</p>
+                                                                                    <p><strong>Ngày thực hiện: </strong> {dateWork}</p>
+                                                                                    <p><strong>Giờ bắt đầu: </strong> {booking.startTime}</p>
+                                                                                    <p><strong>Giờ kết thúc: </strong> {booking.endTime}</p>
+                                                                                    <p><strong>Điểm sử dụng: </strong> {booking.pointUsed ? booking.pointUsed : 0}</p>
+                                                                                    <p><strong>Phụ Thu: </strong> {booking.subPrice ? booking.subPrice : 0}</p>
+                                                                                    <div className=" d-flex align-items-center gap-2 ">
+                                                                                        <h6 className="mb-0 h3 mt-3"><strong>Tổng tiền:</strong></h6>
+                                                                                        <p className="section__description mb-0 h3 mt-3 text-success"><strong>{booking.price}.000 VND</strong></p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {/* <div class="process" style={{ marginTop: "30px" }}> */}
+                                                                        {booking.status == "Cancel" ? (
+                                                                            <div class="process" style={{ marginTop: "30px" }}>
+                                                                                <div class="process-info1">
+                                                                                    <h4 style={{ textAlign: "center", margin: "10px" }}>Ghi chú</h4>
+                                                                                    <div class="info-content" style={{ padding: "8px" }}>
+                                                                                        {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
+                                                                                        <div className=" d-flex align-items-center gap-2">
+                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="process-info1">
+                                                                                    <h4 style={{ textAlign: "center", margin: "10px" }}>Lý do hủy</h4>
+                                                                                    <div class="info-content" style={{ padding: "8px" }}>
+                                                                                        {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
+                                                                                        <div className=" d-flex align-items-center gap-2">
+                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"} NHỚ BỔ SUNG</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <div class="process" style={{ marginTop: "30px" }}>
+                                                                                <div class="process-info1">
+                                                                                    <h4 style={{ textAlign: "center", margin: "10px" }}>Ghi chú</h4>
+                                                                                    <div class="info-content" style={{ padding: "8px" }}>
+                                                                                        {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
+                                                                                        <div className=" d-flex align-items-center gap-2">
+                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                )}
                                                             </Modal>
                                                         </tbody>
+
                                                     </table>
                                                 </div>
                                             </Col>

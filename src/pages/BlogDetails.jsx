@@ -22,10 +22,9 @@ const BlogDetails = () => {
   const accountId = localStorage.getItem('id');
   const [commentDate, setCommentDate] = useState([]);
 
-
-
   useEffect(() => {
     axios.get(`https://vinclean.azurewebsites.net/api/Blog/${blogid}`)
+    // axios.get(`https://localhost:7013/api/Blog/${blogid}`)
       .then(response => {
         const data = response.data.data;
         setBlog(data);
@@ -35,6 +34,7 @@ const BlogDetails = () => {
       });
 
     axios.get(`https://vinclean.azurewebsites.net/api/Blog`)
+    // axios.get(`https://localhost:7013/api/Blog`)
       .then(response => {
         const data = response.data.data;
         setBlogs(data);
@@ -45,6 +45,7 @@ const BlogDetails = () => {
 
     axios
       .get(`https://vinclean.azurewebsites.net/api/Comment?blogId=${blogid}`)
+      // .get(`https://localhost:7013/api/Comment?blogId=${blogid}`)
       .then(response => {
         setComments(response.data.data);
       })

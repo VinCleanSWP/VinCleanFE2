@@ -12,6 +12,7 @@ const CarListing = () => {
 
   useEffect(() => {
     axios.get(`https://vinclean.azurewebsites.net/api/Type`)
+    // axios.get(`https://localhost:7013/api/Type`)
       .then(response => {
         const data = response.data.data;
         setType(data);

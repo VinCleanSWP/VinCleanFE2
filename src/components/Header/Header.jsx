@@ -87,9 +87,7 @@ const Header = () => {
     const isLoggedIn = localStorage.getItem('loggedIn');
     const storedEmail = localStorage.getItem('email');
     const storedName = localStorage.getItem('name');
-
     const storedImg = localStorage.getItem('img');
-
 
     if (isLoggedIn && storedEmail) {
       setLoggedIn(true);

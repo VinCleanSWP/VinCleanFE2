@@ -5,6 +5,7 @@ import Routers from "../../routers/Routers";
 import EmployeeRouter from "../../routers/EmployeeRouter";
 import ManagerRouter from "../../routers/ManagerRouter";
 import Loading from "../../../src/components/UI/Loading";
+import Home from "../../pages/Home";
 
 const Layout = () => {
   const role = localStorage.getItem("role");
@@ -34,10 +35,12 @@ const Layout = () => {
             <div>
               <EmployeeRouter />
             </div>
-          ) : (
+          ) : role == 3 ? (
             <div>
               <ManagerRouter />
             </div>
+          ) : (
+            <Home />
           )}
         </div>
       )}

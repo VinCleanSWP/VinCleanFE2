@@ -124,8 +124,6 @@ function Table() {
     }
 
     useEffect(() => {
-
-
         axios
             .get(`https://vinclean.azurewebsites.net/api/Employee/${employeeId}`)
             .then(response => {

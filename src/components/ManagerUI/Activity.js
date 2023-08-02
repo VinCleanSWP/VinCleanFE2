@@ -16,7 +16,7 @@ function Activity() {
 
     const handleCancelClick = (id) => {
         setSelectedEvent(id);
-        axios.get(`https://localhost:7013/api/Order/GetALL/${id}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Order/GetALL/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModalCancel(response.data.data);
@@ -29,7 +29,7 @@ function Activity() {
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
-        axios.get('https://localhost:7013/api/Order')
+        axios.get('https://vinclean.azurewebsites.net/api/Order')
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setBookingData(response.data.data);
@@ -40,7 +40,7 @@ function Activity() {
     }, []);
     const showDetail = (id) => {
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Order/GetALL/${id}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Order/GetALL/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal(response.data.data);

@@ -9,7 +9,7 @@ const BlogList = () => {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        axios.get('https://localhost:7013/api/Blog')
+        axios.get('https://vinclean.azurewebsites.net/api/Blog')
             .then(response => {
                 setBlogs(response.data.data);
             })

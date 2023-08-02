@@ -40,7 +40,7 @@ const Service = () => {
     }, []);
 
     const fetchData = () => {
-        axios.get(`https://localhost:7013/api/Type`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Type`)
             .then(response => {
                 const data = response.data.data;
                 setType(data);
@@ -59,7 +59,7 @@ const Service = () => {
     }, [servicetypeid]);
 
     const handelDetal = (servicetypeId) => {
-        axios.get(`https://localhost:7013/api/Type/${servicetypeId}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Type/${servicetypeId}`)
             .then(response => {
                 const data = response.data.data;
                 setTypeName(data.type1)
@@ -71,7 +71,7 @@ const Service = () => {
                 console.error('Error fetching blog list:', error);
             });
 
-        axios.get(`https://localhost:7013/api/Service/Type/${servicetypeId}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Service/Type/${servicetypeId}`)
             .then(response => {
                 const data = response.data.data;
                 setServiceList(data)
@@ -82,7 +82,7 @@ const Service = () => {
     };
 
     useEffect(() => {
-        axios.get(`https://localhost:7013/api/Service/Type`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Service/Type`)
             .then(response => {
                 const data = response;
                 setServiceId(data.ServiceId);
@@ -123,7 +123,7 @@ const Service = () => {
         console.log(editedService);
 
         // Gửi yêu cầu PUT để cập nhật dịch vụ
-        axios.put(`https://localhost:7013/api/Service`, editedService)
+        axios.put(`https://vinclean.azurewebsites.net/api/Service`, editedService)
             .then(response => {
                 toast.success('Save successfull!', {
                     position: "top-right",
@@ -152,7 +152,7 @@ const Service = () => {
 
         }
         console.log(editedType)
-        axios.put(`https://localhost:7013/api/Type`, editedType)
+        axios.put(`https://vinclean.azurewebsites.net/api/Type`, editedType)
             .then((response) => {
                 toast.success('Save successfull!', {
                     position: "top-right",
@@ -202,7 +202,7 @@ const Service = () => {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.post('https://localhost:7013/api/Type', processImgData)
+                axios.post('https://vinclean.azurewebsites.net/api/Type', processImgData)
                     .then(response => {
                         // Xử lý phản hồi từ dịch vụ (service) nếu cần thiết
                         console.log(response.data);
@@ -262,7 +262,7 @@ const Service = () => {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.post('https://localhost:7013/api/Service', processImgData)
+                axios.post('https://vinclean.azurewebsites.net/api/Service', processImgData)
                     .then(response => {
                         // Xử lý phản hồi từ dịch vụ (service) nếu cần thiết
                         console.log(response.data);

@@ -49,7 +49,7 @@ function Customer() {
 
 
         axios
-            .get(`https://localhost:7013/api/Customer/${customerId}`)
+            .get(`https://vinclean.azurewebsites.net/api/Customer/${customerId}`)
             .then(response => {
 
                 const { data } = response.data;
@@ -88,7 +88,7 @@ function Customer() {
 
 
     useEffect(() => {
-        axios.get('https://localhost:7013/api/Customer')
+        axios.get('https://vinclean.azurewebsites.net/api/Customer')
             .then(response => {
                 setCustomerList(response.data.data);
             })
@@ -98,7 +98,7 @@ function Customer() {
     }, []);
 
     useEffect(() => {
-        axios.get('https://localhost:7013/api/Account')
+        axios.get('https://vinclean.azurewebsites.net/api/Account')
             .then(response => {
                 setAccount(response.data.data);
 

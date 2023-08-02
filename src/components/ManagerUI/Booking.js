@@ -112,13 +112,13 @@ function Booking() {
                                     progress: undefined,
                                     theme: "light",
                                 });
-                               
+
                             })
                     })
                     .catch(error => {
                         console.error(error);
                     });
-                
+
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel
@@ -192,17 +192,17 @@ function Booking() {
                         'This Process has been Denied.',
                         'success'
                     )
-                    axios.put(`https://vinclean.azurewebsites.net/api/Order/Cancel`,dataCancel)
+                    axios.put(`https://vinclean.azurewebsites.net/api/Order/Cancel`, dataCancel)
                         .then(response => {
                             fetchData();
-                         console.log(fetchData());
+                            console.log(fetchData());
                             swalWithBootstrapButtons.fire(
                                 'Deleted!',
                                 'Your file has been deleted.',
                                 'success'
                             )
                         });
-                        
+
                     axios.post('https://vinclean.azurewebsites.net/api/Email/DeniedProcess', dataMail)
                         .then(response => {
                             console.log(response.data);
@@ -217,7 +217,7 @@ function Booking() {
                                 theme: "light",
                             });
                         })
-                    
+
                 } else if (
                     /* Read more about handling dismissals below */
                     result.dismiss === Swal.DismissReason.cancel
@@ -236,14 +236,14 @@ function Booking() {
     const closeModal = () => {
         const modal = document.getElementById('myModal');
         if (modal) {
-          const backdrop = document.getElementsByClassName('modal-backdrop')[0];
-          modal.classList.remove('show');
-          modal.style.display = 'none';
-          if (backdrop) {
-            backdrop.remove();
-          }
+            const backdrop = document.getElementsByClassName('modal-backdrop')[0];
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            if (backdrop) {
+                backdrop.remove();
+            }
         }
-      };
+    };
 
 
     const handleButtonClick = () => {
@@ -455,39 +455,40 @@ function Booking() {
                                             </thead>
                                             <tbody>
                                                 {sortAndFilterData().map((booking) => {
-                                                    if(booking.status !== 'Completed' && booking.status !== 'Cancel')
-                                                    return(
-                                                        <tr key={booking.orderId}>
-                                                            <td>{booking.orderId}</td>
-                                                            <td>{booking.name}</td>
-                                                            <td>{booking.typeName}</td>
-                                                            <td>{format(new Date(booking.date), 'dd/MM/yyyy')}</td>
-                                                            <td>{formatTime(booking.startTime)} - {formatTime(booking.endTime)}</td>
-                                                            <td>{booking.address}</td>
-                                                            <td ><p className={`status ${booking.status}`} style={{ minWidth: '100px' }}>{booking.status}</p></td>
-                                                            <td>
-                                                                <div className="table-data-feature">
-                                                                    <button className="item" data-toggle="tooltip" data-placement="top" title="Send" data-bs-toggle="modal" data-bs-target="#imageprocess"
-                                                                        onClick={() => handleProcessImage(booking.orderId, booking.employeeName)}>
-                                                                        <BsImage></BsImage>
-                                                                    </button>
-                                                                    <button className={`item ${booking.employeeName ? 'assigned' : ''}`}
-                                                                        data-toggle="tooltip" data-placement="top" title="Assign"
-                                                                        onClick={(p) => {
-                                                                            assignTask(booking.date, booking.startTime, booking.endTime);
-                                                                            handleProcessSelect(booking.orderId);
-                                                                        }}
-                                                                        data-bs-toggle="modal" data-bs-target="#assign">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="gray" d="m21.1 12.5l1.4 1.41l-6.53 6.59L12.5 17l1.4-1.41l2.07 2.08l5.13-5.17M10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11L10 17m1-13a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4Z" /></svg>
-                                                                    </button>
-                                                                    <button className="item" data-toggle="tooltip" data-placement="top" title="More" onClick={(e) => showDetail(booking.orderId)} data-bs-toggle="modal" data-bs-target="#myModal">
-                                                                        <i className="zmdi zmdi-more" />
-                                                                    </button>
+                                                    if (booking.status !== 'Completed' && booking.status !== 'Cancel')
+                                                        return (
+                                                            <tr key={booking.orderId}>
+                                                                <td>{booking.orderId}</td>
+                                                                <td>{booking.name}</td>
+                                                                <td>{booking.typeName}</td>
+                                                                <td>{format(new Date(booking.date), 'dd/MM/yyyy')}</td>
+                                                                <td>{formatTime(booking.startTime)} - {formatTime(booking.endTime)}</td>
+                                                                <td>{booking.address}</td>
+                                                                <td ><p className={`status ${booking.status}`} style={{ minWidth: '100px' }}>{booking.status}</p></td>
+                                                                <td>
+                                                                    <div className="table-data-feature">
+                                                                        <button className="item" data-toggle="tooltip" data-placement="top" title="Send" data-bs-toggle="modal" data-bs-target="#imageprocess"
+                                                                            onClick={() => handleProcessImage(booking.orderId, booking.employeeName)}>
+                                                                            <BsImage></BsImage>
+                                                                        </button>
+                                                                        <button className={`item ${booking.employeeName ? 'assigned' : ''}`}
+                                                                            data-toggle="tooltip" data-placement="top" title="Assign"
+                                                                            onClick={(p) => {
+                                                                                assignTask(booking.date, booking.startTime, booking.endTime);
+                                                                                handleProcessSelect(booking.orderId);
+                                                                            }}
+                                                                            data-bs-toggle="modal" data-bs-target="#assign">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="gray" d="m21.1 12.5l1.4 1.41l-6.53 6.59L12.5 17l1.4-1.41l2.07 2.08l5.13-5.17M10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11L10 17m1-13a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4Z" /></svg>
+                                                                        </button>
+                                                                        <button className="item" data-toggle="tooltip" data-placement="top" title="More" onClick={(e) => showDetail(booking.orderId)} data-bs-toggle="modal" data-bs-target="#myModal">
+                                                                            <i className="zmdi zmdi-more" />
+                                                                        </button>
 
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    )})}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                })}
                                             </tbody>
                                         </table>
                                     </div>
@@ -510,103 +511,72 @@ function Booking() {
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>
                                 <div className="modal-body">
-                                    <strong>Customer</strong>
-                                    <form className="form-inline">
-                                        <div className="input-group mb-3">
-                                            <label className="px-2.5 input-group-text">Name</label>
-                                            <input value={modal.name} className="form-control" />
-                                        </div>
-                                        <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <img src={modal.accountImage} alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100, marginTop: 0 }} />
-                                        </div>
-                                    </form>
-                                    <form className="form-inline">
-                                        <div className=" input-group mb-3">
-                                            <label className="px-2 input-group-text">Phone</label>
-                                            <input value={modal.phone} className="form-control" />
-                                        </div>
-                                        <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <label className="input-group-text">Email</label>
-                                            <input value={modal.email} className="form-control" />
-                                        </div>
-                                    </form>
-                                    <form className="form-inline">
-                                        <div className="input-group mb-3">
-                                            <label className=" px-3 input-group-text">Dob</label>
-                                            <input value={modal.dob ? new Date(modal.dob).toLocaleDateString() : ''} className="form-control" />
-                                        </div>
-                                        <div className="px-5 input-group mb-3">
-                                            <label className="input-group-text" style={{ marginLeft: "100px" }}>Address</label>
-                                            <input value={modal.address} className="form-control" />
-                                        </div>
-                                    </form>
-                                    <form className="form-inline">
-                                        <div className="input-group mb-3">
-                                            <label className="px-3 input-group-text">Date</label>
-                                            <input value={modal.date ? new Date(modal.date).toLocaleDateString() : ''} className="form-control" />
-                                        </div>
-                                        <div className="px-5 input-group mb-3">
-                                            <label className="input-group-text" style={{ marginLeft: "100px" }}>Time</label>
-                                            <input value={`${modal.startTime} - ${modal.endTime}`} className="form-control" />
-                                        </div>
-                                    </form>
-                                    <form className="form-inline">
-                                        <div className="input-group mb-3">
-                                            <label className="px-3 input-group-text">Type</label>
-                                            <input value={modal.typeName} className="form-control" />
-                                        </div>
-                                        <div className="px-5 input-group mb-3">
-                                            <label className="input-group-text" style={{ marginLeft: "100px" }}>Servce</label>
-                                            <input value={modal.serviceName} className="form-control" />
-                                        </div>
-                                    </form>
-                                    <div className="input-group mb-3">
-                                        <label className="px-3 input-group-text">Note</label>
-                                        <textarea value={modal.note} className="form-control" />
-                                    </div>
-
-                                    <strong>Employee</strong>
-                                    {modal.employeeName ? (
-                                        <>
-                                            <form className="form-inline">
-                                                <div className='input-group mb-3'>
-                                                    <span className='input-group-text'>Name</span>
-                                                    <input type="text" className="form-control" value={modal.employeeName} />
-                                                </div>
-                                                <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                                    <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100 }} />
-                                                </div>
-                                            </form>
-                                            <form className="form-inline">
-                                                <div className="input-group mb-3">
-                                                    <label className="px-2.5 input-group-text">Phone</label>
-                                                    <input value={modal.employeePhone} className="form-control" />
-                                                </div>
-                                                <div className="px-5 input-group mb-3">
-                                                    <label className="input-group-text" style={{ marginLeft: "100px" }}>Email</label>
-                                                    <input value={modal.employeeEmail} className="form-control" />
-                                                </div>
-                                            </form>
-                                            <form className="form-inline">
-                                                <div className="input-group mb-3">
-                                                    <label className="px-2.5 input-group-text">Start Working</label>
-                                                    <input value={modal.startWorking} className="form-control" />
-                                                </div>
-                                                <div className="px-6 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                                    <label className="input-group-text">End Working</label>
-                                                    <input value={modal.endWorking} className="form-control" />
-                                                </div>
-                                            </form>
-                                            <div className='input-group mb-3'>
-                                                <span className='input-group-text'>Name</span>
-                                                <input type="text" className="form-control"
-                                                    value={modal.orderId}
-                                                />
+                                <p style={{textAlign:"end"}}><strong>Created Date:</strong> {modal.createdDate ? new Date(modal.createdDate).toLocaleDateString() : ''}</p>
+                                    <div style={{ display: "flex" }}>
+                                        <div class="process-info">
+                                            <h4 style={{ textAlign: "center", margin: "10px" }}>Order Infor</h4>
+                                            <div class="info-content" style={{ marginLeft: "10px" }}>
+                                                <p><strong>Order ID:</strong> {modal.orderId}</p>
+                                                <p><strong>Status:</strong> <label className='status cancelled' style={{ padding: "0px 10px" }}>{modal.status}</label></p>
+                                                <p><strong>Service:</strong> {modal.typeName} - {modal.serviceName} </p>
+                                                <p><strong>Time: </strong> {modal.startTime} - {modal.endTime}</p>
+                                                <p><strong>Date: </strong> {modal.date ? new Date(modal.date).toLocaleDateString() : ''}</p>
+                                                <p><strong>Note: </strong> {modal.note ? modal.note : "<Nothing>"}</p>
                                             </div>
-                                        </>
-                                    ) : (
-                                        <p><i>No employee assigned.</i></p>
-                                    )}
+                                        </div>
+                                        <div class="process-info1">
+                                            <h4 style={{ textAlign: "center", margin: "10px" }}> Customer Infor</h4>
+                                            <div class="info-content" style={{ marginLeft: "10px" }}>
+                                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                                    <div>
+                                                        <p><strong>ID: {modal.customerId} </strong></p>
+                                                        <p><strong>Customer:</strong> {modal.name} </p>
+                                                        <p><strong>Address</strong> {modal.address}</p>
+                                                        <p><strong>Phone:</strong> {modal.phone}</p>
+                                                        <p><strong>Email:</strong> {modal.email}</p>
+                                                        <p><strong>Dob:</strong> {modal.dob ? new Date(modal.dob).toLocaleDateString() : ''}</p>
+                                                    </div>
+                                                    <div> <img src={modal.accountImage} alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100, marginTop: 0 }} /></div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "flex", marginTop: "20px" }}>
+                                        <div class="process-info">
+                                            <h4 style={{ textAlign: "center", margin: "10px" }}> Price</h4>
+                                            <div class="info-content" style={{ marginLeft: "10px" }}>
+                                                <p><strong>Sub Price:</strong> {modal.subPrice ? modal.subPrice : "0"}</p>
+                                                <p><strong>Point Used:</strong> {modal.pointUsed ? modal.pointUsed : "0"} </p>
+                                                <p style={{ fontFamily: "Arial, sans-serif", fontSize: "25px" }}><strong>Price:</strong> <label className='status Incoming' style={{ padding: "0px 20px" }}>{modal.price}.000 VND</label></p>
+                                            </div>
+                                        </div>
+                                        <div class="process-info1">
+                                            <h4 style={{ textAlign: "center", margin: "10px" }}> Employee Infor</h4>
+                                            {modal.employeeName ? (
+
+                                                <div class="info-content" style={{ marginLeft: "10px" }}>
+                                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                                        <div>
+                                                            <p><strong>ID: {modal.employeeId} </strong></p>
+                                                            <p><strong>Customer:</strong> {modal.employeeName} </p>
+                                                            <p><strong>Phone:</strong> {modal.employeePhone}</p>
+                                                            <p><strong>Email:</strong> {modal.employeeEmail}</p>
+                                                        </div>
+                                                        <div> <img src={modal.employeeImage} alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100, marginTop: 0 }} /></div>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <p><i>No employee assigned.</i></p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className='input-group' style={{marginTop:"20px"}}>
+                                        <span className='input-group-text'>Name</span>
+                                        <input type="text" className="form-control"
+                                            value={modal.orderId}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>

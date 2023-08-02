@@ -17,10 +17,10 @@ function Booking() {
     const [employeeData, setEmployeeData] = useState([]);
     const [processImageData, setProcessImageData] = useState([]);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
-    const [selectedProcessId, setSelectedProcessId] = useState(null);
+    const [selectedorderId, setSelectedorderId] = useState(null);
     const [search, setSearch] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
-    const [processIdImage, setProcessIdImage] = useState('');
+    const [orderIdImage, setorderIdImage] = useState('');
     const [EmpNameProcessImage, setEmpNameProcessImage] = useState('');
     const [hasLocationData, setHasLocationData] = useState(false);
 
@@ -31,12 +31,12 @@ function Booking() {
     };
     const resetSelection = () => {
         setSelectedEmployees([]);
-        setSelectedProcessId(null);
+        setSelectedorderId(null);
     };
 
-    const handleProcessSelect = (processId) => {
+    const handleProcessSelect = (orderId) => {
         resetSelection();
-        setSelectedProcessId(processId);
+        setSelectedorderId(orderId);
     };
 
     const formatTime = (timeString) => {
@@ -48,11 +48,11 @@ function Booking() {
     };
     const updateClick = () => {
         const data = {
-            processId: selectedProcessId,
+            orderId: selectedorderId,
             employeeId: selectedEmployees
         };
         const dataMail = {
-            processId: selectedProcessId,
+            orderId: selectedorderId,
             to: "example@gmail.com",
             subject: "",
             body: ""
@@ -80,12 +80,12 @@ function Booking() {
                     'success'
                 )
                 console.log(dataMail)
-                axios.post('https://vinclean.azurewebsites.net/api/WorkingBy', data)
+                axios.post('https://localhost:7013/api/Location', data)
                     .then(response => {
                         console.log(response.data);
 
                         fetchData();
-                        axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToCustomer', dataMail)
+                        axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
                             .then(response => {
                                 console.log(response.data);
                                 toast.success('Send Email Customer Successfully!', {
@@ -99,7 +99,7 @@ function Booking() {
                                     theme: "light",
                                 });
                             })
-                        axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToEmployee', dataMail)
+                        axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
                             .then(response => {
                                 console.log(response.data);
                                 toast.success('Send Email Employee Successfully!', {
@@ -135,10 +135,10 @@ function Booking() {
 
 
 
-    const handleProcessImage = (processId, employeeName) => {
-        setProcessIdImage(processId)
+    const handleProcessImage = (orderId, employeeName) => {
+        setorderIdImage(orderId)
         setEmpNameProcessImage(employeeName)
-        axios.get(`https://vinclean.azurewebsites.net/api/ProcessImage/Process/${processId}`)
+        axios.get(`https://localhost:7013/api/OrderImage/Order/${orderId}`)
             .then(response => {
                 setProcessImageData(response.data.data)
             })
@@ -146,7 +146,7 @@ function Booking() {
                 console.error(error);
             });
     };
-    const handleDined = async (processId) => {
+    const handleDined = async (orderId) => {
         closeModal();
         const { value: text } = await Swal.fire({
             input: 'textarea',
@@ -160,10 +160,15 @@ function Booking() {
 
         if (text) {
             const dataMail = {
-                processId: processId,
+                orderId: orderId,
                 to: "example@gmail.com",
                 subject: text,
                 body: ""
+            }
+            const dataCancel = {
+                orderId: orderId,
+                cancelBy: localStorage.getItem('id'),
+                reasonCancel: text,
             }
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
@@ -187,7 +192,7 @@ function Booking() {
                         'This Process has been Denied.',
                         'success'
                     )
-                    axios.put(`https://vinclean.azurewebsites.net/api/Process/Denied?processid=${processId}`)
+                    axios.put(`https://localhost:7013/api/Order/Cancel`,dataCancel)
                         .then(response => {
                             fetchData();
                          console.log(fetchData());
@@ -198,7 +203,7 @@ function Booking() {
                             )
                         });
                         
-                    axios.post('https://vinclean.azurewebsites.net/api/Email/DeniedProcess', dataMail)
+                    axios.post('https://localhost:7013/api/Email/DeniedProcess', dataMail)
                         .then(response => {
                             console.log(response.data);
                             toast.success('Send Email Customer Successfully!', {
@@ -246,14 +251,14 @@ function Booking() {
         const selectedType = document.getElementById('type').value;
         const enteredName = document.getElementById('name').value;
         const processImgData = {
-            processId: processIdImage,
+            orderId: orderIdImage,
             type: selectedType,
             name: enteredName,
             image: ""
         }
         console.log(processImgData)
         // Gửi dữ liệu đến dịch vụ thông qua axios
-        axios.post('https://vinclean.azurewebsites.net/api/ProcessImage', processImgData)
+        axios.post('https://localhost:7013/api/OrderImage', processImgData)
             .then(response => {
                 // Xử lý phản hồi từ dịch vụ (service) nếu cần thiết
                 console.log(response.data);
@@ -267,7 +272,7 @@ function Booking() {
                     progress: undefined,
                     theme: "light",
                 });
-                handleProcessImage(processIdImage);
+                handleProcessImage(orderIdImage);
             })
             .catch(error => {
                 // Xử lý lỗi nếu có
@@ -282,7 +287,7 @@ function Booking() {
     }, []);
 
     const fetchData = () => {
-        axios.get('https://vinclean.azurewebsites.net/api/Process')
+        axios.get('https://localhost:7013/api/Order')
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setBookingData(response.data.data);
@@ -299,7 +304,7 @@ function Booking() {
     const showDetail = (id) => {
 
         // Gọi API để lấy dữ liệu
-        axios.get(`https://vinclean.azurewebsites.net/api/Process/GetALL/${id}`)
+        axios.get(`https://localhost:7013/api/Order/GetALL/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal(response.data.data);
@@ -311,7 +316,7 @@ function Booking() {
     const assignTask = (date, start, end) => {
         // Gọi API để lấy dữ liệu
         console.log({ date, start, end });
-        axios.post(`https://vinclean.azurewebsites.net/api/Employee/selectemployee`, { date, start, end })
+        axios.post(`https://localhost:7013/api/Employee/selectemployee`, { date, start, end })
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setEmployeeData(response.data);
@@ -336,7 +341,7 @@ function Booking() {
         });
 
         const filteredData = sortedData.filter(booking =>
-            booking.processId.toString().toLowerCase().includes(search.toLowerCase()) ||
+            booking.orderId.toString().toLowerCase().includes(search.toLowerCase()) ||
             booking.name.toString().toLowerCase().includes(search.toLowerCase()) ||
             booking.typeName.toLowerCase().includes(search.toLowerCase()) ||
             format(new Date(booking.date), 'dd/MM/yyyy').toString().toLowerCase().includes(search.toLowerCase()) ||
@@ -365,7 +370,7 @@ function Booking() {
         setHasLocationData(false);
 
         axios
-            .get(`https://vinclean.azurewebsites.net/api/WorkingBy/Process/${id}`)
+            .get(`https://localhost:7013/api/Location/Process/${id}`)
             .then((response) => {
                 const { latitude, longtitude } = response.data.data;
                 if (latitude !== 0 && longtitude !== 0) {
@@ -449,10 +454,11 @@ function Booking() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {sortAndFilterData()
-                                                    .map(booking => (
-                                                        <tr key={booking.processId}>
-                                                            <td>{booking.processId}</td>
+                                                {sortAndFilterData().map((booking) => {
+                                                    if(booking.status !== 'Completed' && booking.status !== 'Cancel')
+                                                    return(
+                                                        <tr key={booking.orderId}>
+                                                            <td>{booking.orderId}</td>
                                                             <td>{booking.name}</td>
                                                             <td>{booking.typeName}</td>
                                                             <td>{format(new Date(booking.date), 'dd/MM/yyyy')}</td>
@@ -462,26 +468,26 @@ function Booking() {
                                                             <td>
                                                                 <div className="table-data-feature">
                                                                     <button className="item" data-toggle="tooltip" data-placement="top" title="Send" data-bs-toggle="modal" data-bs-target="#imageprocess"
-                                                                        onClick={() => handleProcessImage(booking.processId, booking.employeeName)}>
+                                                                        onClick={() => handleProcessImage(booking.orderId, booking.employeeName)}>
                                                                         <BsImage></BsImage>
                                                                     </button>
                                                                     <button className={`item ${booking.employeeName ? 'assigned' : ''}`}
                                                                         data-toggle="tooltip" data-placement="top" title="Assign"
                                                                         onClick={(p) => {
                                                                             assignTask(booking.date, booking.startTime, booking.endTime);
-                                                                            handleProcessSelect(booking.processId);
+                                                                            handleProcessSelect(booking.orderId);
                                                                         }}
                                                                         data-bs-toggle="modal" data-bs-target="#assign">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="gray" d="m21.1 12.5l1.4 1.41l-6.53 6.59L12.5 17l1.4-1.41l2.07 2.08l5.13-5.17M10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11L10 17m1-13a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4Z" /></svg>
                                                                     </button>
-                                                                    <button className="item" data-toggle="tooltip" data-placement="top" title="More" onClick={(e) => showDetail(booking.processId)} data-bs-toggle="modal" data-bs-target="#myModal">
+                                                                    <button className="item" data-toggle="tooltip" data-placement="top" title="More" onClick={(e) => showDetail(booking.orderId)} data-bs-toggle="modal" data-bs-target="#myModal">
                                                                         <i className="zmdi zmdi-more" />
                                                                     </button>
 
                                                                 </div>
                                                             </td>
                                                         </tr>
-                                                    ))}
+                                                    )})}
                                             </tbody>
                                         </table>
                                     </div>
@@ -494,9 +500,9 @@ function Booking() {
                         <div className='modal-dialog modal-lg modal-dialog-centered'>
                             <div className="modal-content">
                                 <div className="modal-header" >
-                                    <h5 className="modal-title" id="exampleModalLabel"><strong>Booking Details  ID: {modal.processId} </strong></h5>
+                                    <h5 className="modal-title" id="exampleModalLabel"><strong>Booking Details  ID: {modal.orderId} </strong></h5>
                                     <button style={{ marginLeft: '30px', }}
-                                        onClick={() => handleDined(modal.processId)}
+                                        onClick={() => handleDined(modal.orderId)}
                                         data-bs-dismiss="modal">
                                         <VscError color='red' size={26}></VscError>
                                     </button>
@@ -594,7 +600,7 @@ function Booking() {
                                             <div className='input-group mb-3'>
                                                 <span className='input-group-text'>Name</span>
                                                 <input type="text" className="form-control"
-                                                    value={modal.processId}
+                                                    value={modal.orderId}
                                                 />
                                             </div>
                                         </>
@@ -685,7 +691,7 @@ function Booking() {
                                     <h5 className='modal-title'><strong>Employee: </strong>{EmpNameProcessImage}</h5>
                                     <button className="item" data-toggle="tooltip" data-placement="top" title="More" data-bs-toggle="modal" data-bs-target="#map"
                                         style={{ marginLeft: "20px", color: '#d50000' }}
-                                        onClick={() => handleLocation(processIdImage)}>
+                                        onClick={() => handleLocation(orderIdImage)}>
                                         <FaLocationDot size={20}></FaLocationDot>
                                     </button>
                                     <button type="button" className='btn-close' data-bs-dismiss="modal" aria-label='Close'></button>
@@ -735,7 +741,7 @@ function Booking() {
 
 
                                                     {/* Hiện tên dịch vụ */}
-                                                    <p className="section__description"> Process Id: {img.processId}</p>
+                                                    <p className="section__description"> Process Id: {img.orderId}</p>
                                                 </div>
                                             </div>
                                         </div>

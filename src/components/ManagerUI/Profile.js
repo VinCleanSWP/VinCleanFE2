@@ -44,7 +44,7 @@ function Profile() {
             try {
                 const id = localStorage.getItem('id');
                 if (id) {
-                    const response = await axios.get(`https://vinclean.azurewebsites.net/api/Account/${id}`);
+                    const response = await axios.get(`https://localhost:7013/api/Account/${id}`);
                     setAccountData(response.data.data);
                     setCurrentGender(response.data.data.gender);
                     setCurrentImg(response.data.data.img);
@@ -74,7 +74,7 @@ function Profile() {
         console.log(updatedUser)
 
         try {
-            const response = await axios.put('https://vinclean.azurewebsites.net/api/Account', updatedUser);
+            const response = await axios.put('https://localhost:7013/api/Account', updatedUser);
             if (response.status === 200) {
                 console.log('OK');
                 setErrorMessage('Update Successfully');
@@ -95,7 +95,7 @@ function Profile() {
             setErrorMessage('An error occurred. Please try again.');
         }
 
-        axios.get(`https://vinclean.azurewebsites.net/api/Account/${id}`)
+        axios.get(`https://localhost:7013/api/Account/${id}`)
             .then(response => {
                 setAccountData(response.data.data);
             })
@@ -169,7 +169,7 @@ function Profile() {
 
     const updateUserPassword = async (newPassword) => {
         try {
-            const apiUrl = 'https://vinclean.azurewebsites.net/api/Account';
+            const apiUrl = 'https://localhost:7013/api/Account';
             // Tạo một đối tượng chứa dữ liệu mới (password mới)
             const updatedUserData = {
                 accountId: localStorage.getItem('id'),

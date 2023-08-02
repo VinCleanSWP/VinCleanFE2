@@ -40,7 +40,7 @@ const Service = () => {
     }, []);
 
     const fetchData = () => {
-        axios.get(`https://vinclean.azurewebsites.net/api/Type`)
+        axios.get(`https://localhost:7013/api/Type`)
             .then(response => {
                 const data = response.data.data;
                 setType(data);
@@ -59,7 +59,7 @@ const Service = () => {
     }, [servicetypeid]);
 
     const handelDetal = (servicetypeId) => {
-        axios.get(`https://vinclean.azurewebsites.net/api/Type/${servicetypeId}`)
+        axios.get(`https://localhost:7013/api/Type/${servicetypeId}`)
             .then(response => {
                 const data = response.data.data;
                 setTypeName(data.type1)
@@ -71,7 +71,7 @@ const Service = () => {
                 console.error('Error fetching blog list:', error);
             });
 
-        axios.get(`https://vinclean.azurewebsites.net/api/Service/Type/${servicetypeId}`)
+        axios.get(`https://localhost:7013/api/Service/Type/${servicetypeId}`)
             .then(response => {
                 const data = response.data.data;
                 setServiceList(data)
@@ -82,7 +82,7 @@ const Service = () => {
     };
 
     useEffect(() => {
-        axios.get(`https://vinclean.azurewebsites.net/api/Service/Type`)
+        axios.get(`https://localhost:7013/api/Service/Type`)
             .then(response => {
                 const data = response;
                 setServiceId(data.ServiceId);
@@ -123,7 +123,7 @@ const Service = () => {
         console.log(editedService);
 
         // Gửi yêu cầu PUT để cập nhật dịch vụ
-        axios.put(`https://vinclean.azurewebsites.net/api/Service`, editedService)
+        axios.put(`https://localhost:7013/api/Service`, editedService)
             .then(response => {
                 toast.success('Save successfull!', {
                     position: "top-right",
@@ -152,7 +152,7 @@ const Service = () => {
 
         }
         console.log(editedType)
-        axios.put(`https://vinclean.azurewebsites.net/api/Type`, editedType)
+        axios.put(`https://localhost:7013/api/Type`, editedType)
             .then((response) => {
                 toast.success('Save successfull!', {
                     position: "top-right",
@@ -202,7 +202,7 @@ const Service = () => {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.post('https://vinclean.azurewebsites.net/api/Type', processImgData)
+                axios.post('https://localhost:7013/api/Type', processImgData)
                     .then(response => {
                         // Xử lý phản hồi từ dịch vụ (service) nếu cần thiết
                         console.log(response.data);
@@ -262,7 +262,7 @@ const Service = () => {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.post('https://vinclean.azurewebsites.net/api/Service', processImgData)
+                axios.post('https://localhost:7013/api/Service', processImgData)
                     .then(response => {
                         // Xử lý phản hồi từ dịch vụ (service) nếu cần thiết
                         console.log(response.data);
@@ -360,8 +360,8 @@ const Service = () => {
 
                     <table style={{ width: '100%', borderCollapse: 'collapse' }} >
                         <thead>
-                            <tr style={{ padding: '8px', textAlign: 'center', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
-                                <th style={{ width: '20%' }}>Type ID</th>
+                            <tr style={{ padding: '15px', textAlign: 'center', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
+                                <th style={{ width: '20%' }}>ID</th>
                                 <th style={{ width: '20%' }}>Name</th>
                                 <th style={{ width: '20%' }}>Status</th>
                                 <th style={{ width: '20%' }}>Description</th>
@@ -374,7 +374,6 @@ const Service = () => {
                         <tbody style={{ textAlign: 'center' }}>
                             {servicelist.map(sv => (
                                 <tr key={sv.serviceId} >
-
                                     <td >{sv.serviceId}</td>
                                     <td>
                                         {editingServiceId === sv.serviceId ? (
@@ -395,15 +394,11 @@ const Service = () => {
                                                 <option value="Available">Available</option>
                                                 <option value="Deleted">Deleted</option>
                                             </select>
-
                                         ) : (
-                                            sv.status
+                                            <label>{sv.status}</label>
                                         )}
                                     </td>
-
-
                                     <td>
-
                                         {editingServiceId === sv.serviceId ? (
                                             <input
                                                 type="text"
@@ -422,7 +417,7 @@ const Service = () => {
                                                 onChange={e => setEditingServiceCost(e.target.value)}
                                             />
                                         ) : (
-                                            sv.cost
+                                            <input value={sv.cost}></input>
                                         )}
                                     </td>
                                     <td>
@@ -493,7 +488,7 @@ const Service = () => {
                                         <table className="table table-borderless table-data3 shadow-sm" style={{ tableLayout: 'fixed', width: '100%' }}>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ width: '20%' }}>Type ID</th>
+                                                    <th style={{ width: '20%' }}>Type </th>
                                                     <th style={{ width: '20%' }}>Name</th>
                                                     <th style={{ width: '20%' }}>Status</th>
                                                     <th style={{ width: '20%' }}>Image</th>
@@ -534,6 +529,50 @@ const Service = () => {
                                         </table>
                                     </div>
                                     {/* END DATA TABLE */}
+                                    <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
+                                        <table className="table table-borderless table-data3 shadow-sm" style={{ tableLayout: 'fixed', width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ width: '20%' }}>Type ID</th>
+                                                    <th style={{ width: '20%' }}>Name</th>
+                                                    <th style={{ width: '20%' }}>Status</th>
+                                                    <th style={{ width: '20%' }}>Image</th>
+                                                    <th style={{ width: '20%' }}><button
+                                                        style={{ marginRight: "25px" }} data-bs-toggle="modal" data-bs-target="#imageprocess"
+                                                    ><FcAddDatabase size={30}></FcAddDatabase></button></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {servicetype.map(Service => (
+                                                    <tr key={Service.typeId}>
+                                                        <td>{Service.typeId}</td>
+                                                        <td>{Service.type1}</td>
+                                                        <td>{Service.avaiable ? 'Available' : 'Deleted'}</td>
+                                                        <td>
+                                                            <img src={Service.img} style={{ width: '100px', height: 'auto' }} />
+                                                        </td>
+                                                        <td>
+                                                            <div className="table-data-feature">
+                                                                <button
+                                                                    className="item"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="Edit"
+                                                                    onClick={() => {
+                                                                        setTypeModalIsOpen(true);
+                                                                        setServiceTypeId(Service.typeId);
+                                                                        handelDetal(Service.typeId);
+                                                                    }}
+                                                                >
+                                                                    <i className="zmdi zmdi-edit" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                                 <div />
                             </div>
@@ -585,6 +624,7 @@ const Service = () => {
                     </div>
                 </div>
             </div>
+            
             <div />
             <ToastContainer />
 

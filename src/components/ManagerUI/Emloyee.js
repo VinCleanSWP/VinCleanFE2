@@ -81,7 +81,7 @@ function Table() {
             reverseButtons: true
           }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`https://vinclean.azurewebsites.net/api/Employee/${employeeId}`)
+                axios.delete(`https://localhost:7013/api/Employee/${employeeId}`)
                 .then(response => {
                     console.log('Employee delete successfully:', response.data);
                     fetchEmployeeList();
@@ -112,7 +112,7 @@ function Table() {
 
 
     const fetchEmployeeList = () => {
-        axios.get('https://vinclean.azurewebsites.net/api/Employee')
+        axios.get('https://localhost:7013/api/Employee')
             .then(response => {
 
                 setEmployeeList(response.data.data);
@@ -124,10 +124,8 @@ function Table() {
     }
 
     useEffect(() => {
-
-
         axios
-            .get(`https://vinclean.azurewebsites.net/api/Employee/${employeeId}`)
+            .get(`https://localhost:7013/api/Employee/${employeeId}`)
             .then(response => {
                 const { data } = response.data;
 
@@ -215,7 +213,7 @@ function Table() {
             password: password
         };
         axios
-            .put(`https://vinclean.azurewebsites.net/api/Employee`, updatedEmployee)
+            .put(`https://localhost:7013/api/Employee`, updatedEmployee)
             .then(response => {
                 console.log('Employee updated successfully:', response.data);
                 fetchEmployeeList();
@@ -238,7 +236,7 @@ function Table() {
     };
 
     useEffect(() => {
-        axios.get('https://vinclean.azurewebsites.net/api/Employee')
+        axios.get('https://localhost:7013/api/Employee')
             .then(response => {
                 setEmployeeList(response.data.data);
                 console.log(account);
@@ -249,7 +247,7 @@ function Table() {
         fetchEmployeeList();
     }, []);
     useEffect(() => {
-        axios.get('https://vinclean.azurewebsites.net/api/Account')
+        axios.get('https://localhost:7013/api/Account')
             .then(response => {
                 setAccount(response.data.data);
 
@@ -337,7 +335,7 @@ function Table() {
         console.log(formData);
 
         // Gửi dữ liệu form đến API
-        axios.post('https://vinclean.azurewebsites.net/api/Employee', formData)
+        axios.post('https://localhost:7013/api/Employee', formData)
             .then(response => {
                 // Xử lý kết quả từ API (nếu cần)
                 fetchEmployeeList();

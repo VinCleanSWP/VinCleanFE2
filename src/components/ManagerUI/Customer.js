@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import firebase from 'firebase/app';
 import 'firebase/storage';
 import './FireBaseConfig';
+import { format } from 'date-fns';
 import { storage } from './FireBaseConfig';
 
 
@@ -48,13 +49,11 @@ function Customer() {
 
 
         axios
-            .get(`https://vinclean.azurewebsites.net/api/Customer/${customerId}`)
+            .get(`https://localhost:7013/api/Customer/${customerId}`)
             .then(response => {
 
                 const { data } = response.data;
-
-
-                setCustomerData(data);
+                setCustomerData(response.data.data);
                 setUserName(data.account.name)
                 setFirstName(data.firstName);
                 setLastName(data.lastName);
@@ -70,9 +69,7 @@ function Customer() {
                 setAccountId(data.account.accountId);
                 setCreatedDate(data.createdDate);
                 setIsDeleted(data.account.isDeleted);
-
-
-
+                setdob(data.account.dob)
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -91,7 +88,7 @@ function Customer() {
 
 
     useEffect(() => {
-        axios.get('https://vinclean.azurewebsites.net/api/Customer')
+        axios.get('https://localhost:7013/api/Customer')
             .then(response => {
                 setCustomerList(response.data.data);
             })
@@ -101,7 +98,7 @@ function Customer() {
     }, []);
 
     useEffect(() => {
-        axios.get('https://vinclean.azurewebsites.net/api/Account')
+        axios.get('https://localhost:7013/api/Account')
             .then(response => {
                 setAccount(response.data.data);
 
@@ -175,10 +172,10 @@ function Customer() {
                                             <div><img src={img || "http://via.placeholder.com/300"} alt="Avatar" style={{ width: '120px', height: '120px', borderRadius: '50%' }} /></div>
                                             <div style={{ paddingTop: '15px', paddingLeft: '10px', width: 'auto', fontSize: '25px' }}><strong>{userName}</strong>
                                                 <br></br>
-                                                <div style={{ fontSize: '13px' }}><strong style={{ marginRight: "5px" }}>Account ID</strong>{accountId}</div>
-                                                <div style={{ fontSize: '13px' }}><strong style={{ marginRight: "5px" }}>Customer ID</strong>{customerId}</div>
+                                                <div style={{ fontSize: '13px' }}><strong style={{ marginRight: "5px" }}>Account ID: </strong>{accountId}</div>
+                                                <div style={{ fontSize: '13px' }}><strong style={{ marginRight: "5px" }}>Customer ID: </strong>{customerId}</div>
                                             </div>
-                                            <div style={{ marginLeft: '250px', marginTop: '15px' }}><strong>createdDate</strong><br></br>2023-06-12{createdDate}</div>
+                                            <div style={{ marginLeft: '220px', marginTop: '30px' }}><strong>Created Date</strong><br></br>2023-06-12{createdDate}</div>
 
                                         </div>
                                         <div style={{ display: 'flex' }}>
@@ -273,7 +270,7 @@ function Customer() {
                                                     <input
                                                         type="text"
                                                         className="form-control mb-1"
-                                                        value={dob}
+                                                        value={dob ? new Date(dob).toLocaleDateString() : ''}
                                                         readOnly
                                                     />
                                                 </div>

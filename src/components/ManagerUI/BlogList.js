@@ -9,7 +9,7 @@ const BlogList = () => {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        axios.get('https://vinclean.azurewebsites.net/api/Blog')
+        axios.get('https://localhost:7013/api/Blog')
             .then(response => {
                 setBlogs(response.data.data);
             })
@@ -22,15 +22,18 @@ const BlogList = () => {
     };
 
     const sortAndFilterData = () => {
+        // Kiểm tra nếu blogs không phải là một mảng
+        if (!Array.isArray(blogs)) {
+            return []; // hoặc giá trị mặc định phù hợp nếu cần
+        }
+    
         const sortedData = [...blogs];
-
+    
         const filteredData = sortedData.filter(m =>
             m.blogId.toString().toLowerCase().includes(search.toLowerCase()) ||
             m.title.toString().toLowerCase().includes(search.toLowerCase())
-
-
         );
-
+    
         return filteredData;
     };
 

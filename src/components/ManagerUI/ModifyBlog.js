@@ -24,15 +24,14 @@ export default function BlogDetail() {
     const navigate = useNavigate();
     useEffect(() => {
         axios
-            .get(`https://vinclean.azurewebsites.net/api/Blog/${id}`)
+            .get(`https://localhost:7013/api/Blog/${id}`)
             .then(response => {
                 const { title, sumarry, content, img } = response.data.data;
                 setBlog(response.data.data);
                 setBlogTitle(title);
                 setBlogSummary(sumarry);
                 setBlogContent(content);
-
-                setTempImageUrl(img);
+                setTempImageUrl(response.data.data.img);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -70,7 +69,7 @@ export default function BlogDetail() {
         };
         console.log(updatedBlog)
         axios
-            .put(`https://vinclean.azurewebsites.net/api/Blog`, updatedBlog)
+            .put(`https://localhost:7013/api/Blog`, updatedBlog)
             .then(response => {
                 console.log('Update successful:', response.data);
                 // setOldImageUrl(tempImageUrl); // Lưu trữ ảnh mới như là ảnh cũ sau khi lưu
@@ -100,7 +99,7 @@ export default function BlogDetail() {
 
     const handleDeleteBlog = () => {
         axios
-            .delete(`https://vinclean.azurewebsites.net/api/Blog/${id}`)
+            .delete(`https://localhost:7013/api/Blog/${id}`)
             .then(response => {
                 console.log('Blog deleted:', response.data);
                 toast.success('Delete Successfully!', {
@@ -114,26 +113,11 @@ export default function BlogDetail() {
                     theme: "light",
                 });
                 navigate("/bloglist");
-
-
-
-
-
-
-
-
-
             })
 
             .catch(error => {
                 console.log(error);
             });
-
-
-
-
-
-
     };
 
 

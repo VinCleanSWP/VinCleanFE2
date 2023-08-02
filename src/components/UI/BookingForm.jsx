@@ -239,8 +239,6 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     setSubmittedData(null);
   };
 
-
-
   const handleSwitchChange = (isChecked) => {
     setIsSwitchOn(isChecked);
     if (isChecked) {
@@ -249,7 +247,6 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       handleNotUseTotalPoint();
     }
   };
-
 
   return (
     <Form onSubmit={handleSubmit}>

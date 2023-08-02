@@ -12,7 +12,7 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        axios.post('https://vinclean.azurewebsites.net/api/Account/Login', { email, password })
+        axios.post('https://localhost:7013/api/Account/Login', { email, password })
 
             .then(response => {
                 if (response.data.success === true && response.data.message === "OK" && response.data.data.roleId === 1) {

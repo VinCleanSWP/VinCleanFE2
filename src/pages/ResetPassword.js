@@ -32,6 +32,7 @@ export default function ResetPassword() {
             })
             .catch((error) => {
                 console.error('API error:', error);
+                alert('Thử lại')
             });
 
     };
@@ -63,6 +64,7 @@ export default function ResetPassword() {
                                                     name="email"
                                                     id="email"
                                                     className="form-control"
+                                                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                                                     value={emailReset}
                                                     onChange={(e) => setEmailReset(e.target.value)}
                                                     required

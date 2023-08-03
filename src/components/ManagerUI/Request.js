@@ -392,9 +392,9 @@ function Request() {
                                             </div>
                                         </div>
                                         <div>
-                                            <p><strong>Cancel Date: </strong>{(modal.createdDate ? format(new Date(modal2.createdDate), 'dd/MM/yyy') : "").toString()}</p>
+                                            <p><strong>Created Date: </strong>{(modal.createdDate ? format(new Date(modal.createdDate ? modal.createdDate : ""), 'dd/MM/yyy') : "").toString()}</p>
 
-                                            <p><strong>Cancel Time: </strong> {(modal.createdDate ? format(new Date(modal2.createdDate), 'HH:mm:ss') : "").toString()}</p>
+                                            <p><strong>Time: </strong> {(modal.createdDate ? format(new Date(modal.createdDate ? modal.createdDate : ""), 'HH:mm:ss') : "").toString()}</p>
                                         </div>
 
                                         {/* <p>Thời gian bắt đầu: {modal2.date.toLocaleString('vi-VN', {

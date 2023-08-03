@@ -41,27 +41,34 @@ function Customer() {
     const [customerId, setCustomerId] = useState('');
 
     const handleSave = (accountId) => {
-        const status = document.getElementById('updateTypeStatus').value;
-        const data = {
-            accountId: accountId, // Use the appropriate accountID here
-            status: status
-        };
-        console.log(data)
-        axios.put(`https://localhost:7013/api/Account/Active`, data)
-        .then(response => {
-            // Handle the response if needed
-            setModalIsOpen(false)
-             // Update the status in the state
-            Swal.fire(
-                'Success',
-                'Update Status Successfully',
-                'success'
-              )
-              fetchData();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+        if (localStorage.getItem("role") === 3) {
+            const status = document.getElementById('updateTypeStatus').value;
+            const data = {
+                accountId: accountId, // Use the appropriate accountID here
+                status: status
+            };
+            console.log(data)
+            axios.put(`https://localhost:7013/api/Account/Active`, data)
+                .then(response => {
+                    // Handle the response if needed
+                    setModalIsOpen(false)
+                    // Update the status in the state
+                    Swal.fire(
+                        'Success',
+                        'Update Status Successfully',
+                        'success'
+                    )
+                    fetchData();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }Swal.fire(
+            'Not Excepted?',
+            'You does not have permission?',
+            'warning'
+          )
+          setModalIsOpen(false);
     };
 
 
@@ -303,7 +310,7 @@ function Customer() {
                                                     <label className="form-label"><strong>Status</strong></label>
                                                     <select
                                                         className="form-control"
-                                                        id="updateTypeStatus" 
+                                                        id="updateTypeStatus"
                                                     >
                                                         <option value="Active">Active</option>
                                                         <option value="Inactive">Inactive</option>
@@ -327,10 +334,10 @@ function Customer() {
                         </div>
                     </div>
                 </div>
-                <div style={{ marginBottom: '30px', display:"flex" ,justifyContent:"space-between"}}>
-                
-                <></><button type="button" className="btn btn-primary" onClick={() => handleSave(accountId)}>Close</button>
-                
+                <div style={{ marginBottom: '30px', display: "flex", justifyContent: "space-between" }}>
+
+                    <></><button type="button" className="btn btn-primary" onClick={() => handleSave(accountId)}>Save</button>
+
                     <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
 
                 </div>

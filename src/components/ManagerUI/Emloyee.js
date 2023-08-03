@@ -64,50 +64,58 @@ function Table() {
     const [statusError, setStatusError] = useState('');
 
     const deleteEmployee = (employeeId) => {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-              confirmButton: 'btn btn-success',
-              cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-          })
-          swalWithBootstrapButtons.fire({
-            title: 'Are you sure to Delete this Account?',
-            text: "Double-check before you delete this account!!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-            reverseButtons: true
-          }).then((result) => {
-            if (result.isConfirmed) {
-                axios.delete(`https://vinclean.azurewebsites.net/api/Employee/${employeeId}`)
-                .then(response => {
-                    console.log('Employee delete successfully:', response.data);
-                    fetchEmployeeList();
-                    setEmployeeList(response.data.data);
+        if (localStorage.getItem("role") === 3) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure to Delete this Account?',
+                text: "Double-check before you delete this account!!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`https://vinclean.azurewebsites.net/api/Employee/${employeeId}`)
+                        .then(response => {
+                            console.log('Employee delete successfully:', response.data);
+                            fetchEmployeeList();
+                            setEmployeeList(response.data.data);
+                            swalWithBootstrapButtons.fire(
+                                'Deleted!',
+                                'This Account has been deleted.',
+                                'success'
+                            )
+                        })
+                        .catch(error => {
+                            console.error('Error deleting customer:', error);
+                            // Xử lý lỗi khi xóa khách hàng
+                        });
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
                     swalWithBootstrapButtons.fire(
-                        'Deleted!',
-                        'This Account has been deleted.',
-                        'success'
-                      )
-                })
-                .catch(error => {
-                    console.error('Error deleting customer:', error);
-                    // Xử lý lỗi khi xóa khách hàng
-                });
-              
-            } else if (
-              /* Read more about handling dismissals below */
-              result.dismiss === Swal.DismissReason.cancel
-            ) {
-              swalWithBootstrapButtons.fire(
-                'Cancelled',
-                'this account is safe :)',
-                'error'
-              )
-            }
-          })
+                        'Cancelled',
+                        'this account is safe :)',
+                        'error'
+                    )
+                }
+            })
+        } Swal.fire(
+            'Not Excepted?',
+            'You does not have permission?',
+            'warning'
+        )
+        setEditModalIsOpen(false)
+        setAddModalIsOpen(false);
     };
 
 
@@ -151,87 +159,96 @@ function Table() {
             });
     }, [employeeId]);
     const handleChangeSubmit = (e) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const phoneRegex = /^\d{10}$/;
-        e.preventDefault();
-        setUserNameError('');
-        setFirstNameError('');
-        setLastNameError('');
-        setPhoneError('');
-        setEmailError('');
-        setPasswordError('');
-        setGenderError('');
+        console.log(localStorage.getItem("role"))
+        if (localStorage.getItem("role") === 3) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phoneRegex = /^\d{10}$/;
+            e.preventDefault();
+            setUserNameError('');
+            setFirstNameError('');
+            setLastNameError('');
+            setPhoneError('');
+            setEmailError('');
+            setPasswordError('');
+            setGenderError('');
 
-        if (!firstName.trim()) {
-            setFirstNameError('Please enter a first name.');
-            return;
-        }
-        if (!lastName.trim()) {
-            setLastNameError('Please enter a last name.');
-            return;
-        }
-        if (!status.trim()) {
-            setStatusError('Please enter a status.');
-            return;
-        }
-        if (!gender.trim()) {
-            setGenderError('Please select a gender.');
-            return;
-        }
-        if (!email.trim()) {
-            setEmailError('Please enter an email.');
-            return;
-        }
-        if (!emailRegex.test(email.trim())) {
-            setEmailError('Please enter a valid email address.');
-            return;
-        }
-        if (!password.trim()) {
-            setPasswordError('Please enter a password.');
-            return;
-        }
-        if (!phone.trim()) {
-            setPhoneError('Please enter a phone number.');
-            return;
-        }
-        if (!phoneRegex.test(phone.trim())) {
-            setPhoneError('Please enter a valid 10-digit phone number.');
-            return;
-        }
-        const selectedStatus = document.getElementById('statusType').value;
-        const updatedEmployee = {
-            employeeId: employeeId,
-            // accountId: 27,
-            img: newImage,//them vao giup tao Phung
-            status: selectedStatus,
-            name: userName,
-            firstName: firstName,
-            lastName: lastName,
-            gender: gender,
-            phone: phone,
-            email: email,
-            password: password
-        };
-        axios
-            .put(`https://vinclean.azurewebsites.net/api/Employee`, updatedEmployee)
-            .then(response => {
-                console.log('Employee updated successfully:', response.data);
-                fetchEmployeeList();
-                toast.success('Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
+            if (!firstName.trim()) {
+                setFirstNameError('Please enter a first name.');
+                return;
+            }
+            if (!lastName.trim()) {
+                setLastNameError('Please enter a last name.');
+                return;
+            }
+            if (!status.trim()) {
+                setStatusError('Please enter a status.');
+                return;
+            }
+            if (!gender.trim()) {
+                setGenderError('Please select a gender.');
+                return;
+            }
+            if (!email.trim()) {
+                setEmailError('Please enter an email.');
+                return;
+            }
+            if (!emailRegex.test(email.trim())) {
+                setEmailError('Please enter a valid email address.');
+                return;
+            }
+            if (!password.trim()) {
+                setPasswordError('Please enter a password.');
+                return;
+            }
+            if (!phone.trim()) {
+                setPhoneError('Please enter a phone number.');
+                return;
+            }
+            if (!phoneRegex.test(phone.trim())) {
+                setPhoneError('Please enter a valid 10-digit phone number.');
+                return;
+            }
+            const selectedStatus = document.getElementById('statusType').value;
+            const updatedEmployee = {
+                employeeId: employeeId,
+                // accountId: 27,
+                img: newImage,//them vao giup tao Phung
+                status: selectedStatus,
+                name: userName,
+                firstName: firstName,
+                lastName: lastName,
+                gender: gender,
+                phone: phone,
+                email: email,
+                password: password
+            };
+            axios
+                .put(`https://vinclean.azurewebsites.net/api/Employee`, updatedEmployee)
+                .then(response => {
+                    console.log('Employee updated successfully:', response.data);
+                    fetchEmployeeList();
+                    toast.success('Successfully!', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle error
                 });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Handle error
-            });
+        } Swal.fire(
+            'Not Excepted?',
+            'You does not have permission?',
+            'warning'
+        )
+        setEditModalIsOpen(false)
+        setAddModalIsOpen(false);
 
     };
 
@@ -272,106 +289,114 @@ function Table() {
 
 
     const handleSubmit = (e) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const phoneRegex = /^\d{10}$/;
-        e.preventDefault();
-        setUserNameError('');
-        setFirstNameError('');
-        setLastNameError('');
-        setPhoneError('');
-        setEmailError('');
-        setPasswordError('');
-        setGenderError('');
+        console.log(localStorage.getItem("role"))
+        if (localStorage.getItem("role") === 3) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phoneRegex = /^\d{10}$/;
+            e.preventDefault();
+            setUserNameError('');
+            setFirstNameError('');
+            setLastNameError('');
+            setPhoneError('');
+            setEmailError('');
+            setPasswordError('');
+            setGenderError('');
 
-        // Validation for each field
-        if (!newUserName.trim()) {
-            setUserNameError('Please enter a username.');
-            return;
-        }
-        if (!newFirstName.trim()) {
-            setFirstNameError('Please enter a first name.');
-            return;
-        }
-        if (!newLastName.trim()) {
-            setLastNameError('Please enter a last name.');
-            return;
-        }
-        if (!newPhone.trim()) {
-            setPhoneError('Please enter a phone number.');
-            return;
-        }
-        if (!phoneRegex.test(newPhone.trim())) {
-            setPhoneError('Please enter a valid 10-digit phone number.');
-            return;
-        }
-        if (!emailRegex.test(newEmail.trim())) {
-            setEmailError('Please enter a valid email address.');
-            return;
-        }
-        if (!newEmail.trim()) {
-            setEmailError('Please enter an email.');
-            return;
-        }
-        if (!newPassword.trim()) {
-            setPasswordError('Please enter a password.');
-            return;
-        }
-        if (!newGender.trim()) {
-            setGenderError('Please select a gender.');
-            return;
-        }
+            // Validation for each field
+            if (!newUserName.trim()) {
+                setUserNameError('Please enter a username.');
+                return;
+            }
+            if (!newFirstName.trim()) {
+                setFirstNameError('Please enter a first name.');
+                return;
+            }
+            if (!newLastName.trim()) {
+                setLastNameError('Please enter a last name.');
+                return;
+            }
+            if (!newPhone.trim()) {
+                setPhoneError('Please enter a phone number.');
+                return;
+            }
+            if (!phoneRegex.test(newPhone.trim())) {
+                setPhoneError('Please enter a valid 10-digit phone number.');
+                return;
+            }
+            if (!emailRegex.test(newEmail.trim())) {
+                setEmailError('Please enter a valid email address.');
+                return;
+            }
+            if (!newEmail.trim()) {
+                setEmailError('Please enter an email.');
+                return;
+            }
+            if (!newPassword.trim()) {
+                setPasswordError('Please enter a password.');
+                return;
+            }
+            if (!newGender.trim()) {
+                setGenderError('Please select a gender.');
+                return;
+            }
 
 
-        const formData = {
-            name: newUserName,
-            email: newEmail,
-            img: newImage,
-            password: newPassword,
-            gender: newGender,
-            firstName: newFirstName,
-            lastName: newLastName,
-            phone: newPhone
-        };
-        console.log(formData);
+            const formData = {
+                name: newUserName,
+                email: newEmail,
+                img: newImage,
+                password: newPassword,
+                gender: newGender,
+                firstName: newFirstName,
+                lastName: newLastName,
+                phone: newPhone
+            };
+            console.log(formData);
 
-        // Gửi dữ liệu form đến API
-        axios.post('https://vinclean.azurewebsites.net/api/Employee', formData)
-            .then(response => {
-                // Xử lý kết quả từ API (nếu cần)
-                fetchEmployeeList();
-                console.log(response.data);
-                toast.success('Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
+            // Gửi dữ liệu form đến API
+            axios.post('https://vinclean.azurewebsites.net/api/Employee', formData)
+                .then(response => {
+                    // Xử lý kết quả từ API (nếu cần)
+                    fetchEmployeeList();
+                    console.log(response.data);
+                    toast.success('Successfully!', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                    setAddModalIsOpen(false);
+                    setData(response.data);
+
+
+                    // setModalIsOpen(false);
+                })
+                .catch(error => {
+                    toast.error('Faild!', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                    // Xử lý lỗi (nếu có)
+                    console.error(error);
                 });
-                setAddModalIsOpen(false);
-                setData(response.data);
 
-
-                // setModalIsOpen(false);
-            })
-            .catch(error => {
-                toast.error('Faild!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-                // Xử lý lỗi (nếu có)
-                console.error(error);
-            });
-       
-
+        } Swal.fire(
+            'Not Excepted?',
+            'You does not have permission?',
+            'warning'
+        )
+        setEditModalIsOpen(false)
+        setAddModalIsOpen(false);
     };
 
     const handleSearchChange = (e) => {
@@ -681,7 +706,7 @@ function Table() {
             {/* PAGE CONTAINER*/}
             <div className="page-container">
                 {/* HEADER DESKTOP*/}
-                
+
                 {/* END HEADER DESKTOP*/}
                 {/* MAIN CONTENT*/}
                 <div className="main-content">

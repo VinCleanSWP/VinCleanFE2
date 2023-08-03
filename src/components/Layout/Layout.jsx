@@ -39,6 +39,8 @@ const Layout = () => {
             <div>
               <ManagerRouter />
             </div>
+          ) : role == 6 ? (
+            <ManagerRouter />
           ) : (
             <Home />
           )}

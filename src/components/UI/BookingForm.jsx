@@ -55,6 +55,9 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate());
   const tomorrowString = tomorrow.toISOString().split('T')[0];
+  const last7Days = new Date(today);
+  last7Days.setDate(last7Days.getDate() + 7);
+  const last7DaysString = last7Days.toISOString().split('T')[0];
   const currentDate = new Date();
   const formattedDate = format(currentDate, 'dd/MM/yyyy', { locale: vi });
   const viDate = moment(journeyDate).format('DD/MM/YYYY');
@@ -410,7 +413,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
           </FormGroup>
           {validDate && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validDate}</div>}
           <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validDate ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
-            <input type="date" placeholder="Ngày đặt" value={journeyDate} min={tomorrowString} onChange={(e) => setJourneyDate(e.target.value)}
+            <input type="date" placeholder="Ngày đặt" value={journeyDate} min={tomorrowString} max={last7DaysString} onChange={(e) => setJourneyDate(e.target.value)}
               style={{
                 fontWeight: 'bold',
                 color: journeyDate ? 'black' : 'gray',

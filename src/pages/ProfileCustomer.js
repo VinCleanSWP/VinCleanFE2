@@ -113,6 +113,7 @@ export default function ProfileCustomer() {
             // axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
+                console.log(response.data.data);
                 setCurrentGender(response.data.data.account.gender);
                 setCurrentImg(response.data.data.account.img);
                 setAddress(response.data.data.address)
@@ -281,7 +282,12 @@ export default function ProfileCustomer() {
     const handleDateChange = (event) => {
         event.preventDefault();
         const value = event.target.value;
-        setSelectedDate(value !== selectedDate ? value : customer.account.dob);
+        // setSelectedDate(value !== selectedDate ? value : customer.account.dob);
+        if (value <= tomorrowString) {
+            setSelectedDate(value !== selectedDate ? value : customer.account.dob);
+        } else {
+            alert("Ngày sinh không hợp lệ");
+        }
     };
 
     const handleImageUpload = async e => {
@@ -390,6 +396,10 @@ export default function ProfileCustomer() {
         return amount ? amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
     }
 
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate());
+    const tomorrowString = tomorrow.toISOString().slice(0, 10);
+
     return (
         <div className='container'>
             <div className="container light-style flex-grow-1 container-p-y">
@@ -450,6 +460,7 @@ export default function ProfileCustomer() {
                                                     name="dob"
                                                     className="form-control"
                                                     type="date"
+                                                    max={tomorrowString}
                                                     value={selectedDate || formattedDOB}
                                                     onChange={handleDateChange}
                                                     InputLabelProps={{
@@ -471,8 +482,8 @@ export default function ProfileCustomer() {
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Số điện thoại</label>
-                                                <input type="text" className="form-control" id="phone" maxLength="10" title="Số điện thoại bao gồm 10 chữ số."
-                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10}" required />
+                                                <input type="text" className="form-control" id="phone" maxLength="10" title="Số điện thoại phải bắt đầu bằng số 0 và bao gồm 10 chữ số."
+                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="^0\d{9}$" required />
                                             </div>
 
                                             <div className="form-group">
@@ -491,7 +502,8 @@ export default function ProfileCustomer() {
                                                                     labelId="demo-simple-select-standard-label"
                                                                     id="demo-simple-select-standard"
                                                                     label="Age"
-                                                                    value={phankhu || soKhu}
+                                                                    value={phankhu}
+                                                                    // value={phankhu || soKhu}
                                                                     onChange={handleType}
                                                                 // required
                                                                 >
@@ -523,8 +535,8 @@ export default function ProfileCustomer() {
                                                                                     labelId="demo-simple-select-standard-label"
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
-                                                                                    // value={toa || soToa}
-                                                                                    defaultValue={toa || soToa}
+                                                                                    // value={toa}
+                                                                                    // defaultValue={toa || soToa}
                                                                                     onChange={handleBuilding}
                                                                                     required
                                                                                 >
@@ -544,8 +556,8 @@ export default function ProfileCustomer() {
                                                                                     labelId="demo-simple-select-standard-label"
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
-                                                                                    // value={tang || soTang}
-                                                                                    defaultValue={tang || soTang}
+                                                                                    // value={tang}
+                                                                                    // defaultValue={tang || soTang}
                                                                                     onChange={handleFloor}
                                                                                     required
                                                                                 >
@@ -565,7 +577,8 @@ export default function ProfileCustomer() {
                                                                                     labelId="demo-simple-select-standard-label"
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
-                                                                                    defaultValue={phong || soPhong}
+                                                                                    // value={phong}
+                                                                                    // defaultValue={phong || soPhong}
                                                                                     onChange={handleRoom}
                                                                                     required
                                                                                 >
@@ -587,8 +600,8 @@ export default function ProfileCustomer() {
                                                                                     labelId="demo-simple-select-standard-label"
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
-                                                                                    // value={toa || soToa}
-                                                                                    defaultValue={toa || soToa}
+                                                                                    value={toa}
+                                                                                    // defaultValue={toa || soToa}
                                                                                     onChange={handleBuilding}
                                                                                 // required
                                                                                 >
@@ -609,7 +622,7 @@ export default function ProfileCustomer() {
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
                                                                                     // value={tang || soTang}
-                                                                                    defaultValue={tang || soTang}
+                                                                                    // defaultValue={tang || soTang}
                                                                                     onChange={handleFloor}
                                                                                 // required
                                                                                 >
@@ -629,7 +642,7 @@ export default function ProfileCustomer() {
                                                                                     labelId="demo-simple-select-standard-label"
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
-                                                                                    defaultValue={phong || soPhong}
+                                                                                    // defaultValue={phong || soPhong}
                                                                                     onChange={handleRoom}
                                                                                 // required
                                                                                 >

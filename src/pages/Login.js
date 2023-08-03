@@ -37,7 +37,17 @@ export default function Login() {
                     // navigate('/')
                     window.location.href = '/dashboard';
                 }
-                if (response.data.success === true && response.data.message === "OK" && response.data.data.roleId === 3) {
+                if (response.data.success === true && response.data.message === "OK" && response.data.data.roleId === 3 ) {
+                    localStorage.setItem('loggedIn', 'true');
+                    localStorage.setItem('email', email);
+                    localStorage.setItem('name', response.data.data.name);
+                    localStorage.setItem('role', response.data.data.roleId);
+                    localStorage.setItem('img', response.data.data.img);
+                    localStorage.setItem('id', response.data.data.accountId);
+                    // navigate('/')
+                    window.location.href = '/dashboard';
+                }
+                if (response.data.success === true && response.data.message === "OK" && response.data.data.roleId === 6 ) {
                     localStorage.setItem('loggedIn', 'true');
                     localStorage.setItem('email', email);
                     localStorage.setItem('name', response.data.data.name);

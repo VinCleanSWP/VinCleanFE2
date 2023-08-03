@@ -23,6 +23,7 @@ function Booking() {
     const [orderIdImage, setorderIdImage] = useState('');
     const [EmpNameProcessImage, setEmpNameProcessImage] = useState('');
     const [hasLocationData, setHasLocationData] = useState(false);
+    
 
 
     const handleEmployeeSelect = (employeeId) => {

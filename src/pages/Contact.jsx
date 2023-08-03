@@ -470,10 +470,10 @@ const Contact = () => {
                               <div class="info-content" style={{ padding: "8px" }}>
                                 {booking.employeeId == null ? (
                                   <div>
-                                    <p><strong>Mã nhân viên: </strong> Incoming</p>
-                                    <p><strong>Tên nhân viên: </strong> Incoming</p>
-                                    <p><strong>SĐT nhân viên: </strong> Incoming</p>
-                                    <p><strong>Email nhân viên: </strong> Incoming</p>
+                                    <p><strong>Mã nhân viên: </strong> Chờ</p>
+                                    <p><strong>Tên nhân viên: </strong> Chờ</p>
+                                    <p><strong>SĐT nhân viên: </strong> Chờ</p>
+                                    <p><strong>Email nhân viên: </strong> Chờ</p>
                                   </div>
                                 ) : (
                                   <div>
@@ -495,13 +495,13 @@ const Contact = () => {
                                 {booking.status == 'Incoming' ? (
                                   <div style={{ flex: '1' }}>
                                     <p>
-                                      <strong>Trạng Thái hiện tại: </strong> <label className='status Incoming' style={{ padding: "0px 10px" }}>{booking.status}</label>
+                                      <strong>Trạng Thái hiện tại: </strong> <label className='status Incoming' style={{ padding: "0px 10px" }}>{"Chờ"}</label>
                                     </p>
                                   </div>
                                 ) : (
                                   <div style={{ flex: '1' }}>
                                     <p>
-                                      <strong>Trạng Thái hiện tại: </strong> <label className='status Processing' style={{ padding: "0px 10px" }}>{booking.status}</label>
+                                      <strong>Trạng Thái hiện tại: </strong> <label className='status Processing' style={{ padding: "0px 10px" }}>{"Đang làm việc"}</label>
                                     </p>
                                   </div>
                                 )}

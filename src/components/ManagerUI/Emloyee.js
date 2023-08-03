@@ -242,11 +242,12 @@ function Table() {
                     console.error('Error:', error);
                     // Handle error
                 });
-        } Swal.fire(
+        }else{Swal.fire(
             'Not Excepted?',
             'You does not have permission?',
             'warning'
         )
+        }
         setEditModalIsOpen(false)
         setAddModalIsOpen(false);
 
@@ -390,11 +391,12 @@ function Table() {
                     console.error(error);
                 });
 
-        } Swal.fire(
+        }else{Swal.fire(
             'Not Excepted?',
             'You does not have permission?',
             'warning'
         )
+        }
         setEditModalIsOpen(false)
         setAddModalIsOpen(false);
     };

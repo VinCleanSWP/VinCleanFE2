@@ -27,16 +27,34 @@ function Signup() {
   //     });
   // };
 
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleNewPasswordChange = (e) => {
+    setNewPassword(e.target.value);
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      alert('2 mật khẩu không trùng khớp');
+      return;
+    }
     const requestData = {
       email: formData.email,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword,
+      // password: formData.password,
+      password: newPassword,
+      // confirmPassword: formData.confirmPassword,
+      confirmPassword: confirmPassword,
       firstName: formData.firstName,
       lastName: formData.lastName,
       phone: formData.phone,
-      address: formData.address
+      // address: formData.address
+      address: 'nothing'
     };
     const emailData = {
       to: formData.email
@@ -54,7 +72,17 @@ function Signup() {
           draggable: true,
           progress: undefined,
           theme: "light",
-      });
+        });
+        axios
+          .post('https://vinclean.azurewebsites.net/api/Email/VerifyAccount', emailData)
+          .then((response) => {
+            console.log(response.data);
+            navigate('/verifytoken');
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+        // navigate('/verifytoken');
       })
       .catch((error) => {
         console.error(error);
@@ -67,18 +95,18 @@ function Signup() {
           draggable: true,
           progress: undefined,
           theme: "light",
-      });
+        });
       });
 
-      axios
-      .post('https://vinclean.azurewebsites.net/api/Email/VerifyAccount', emailData)
-      .then((response) => {
-        console.log(response.data);
-        navigate('/verifytoken');
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // axios
+    //   .post('https://vinclean.azurewebsites.net/api/Email/VerifyAccount', emailData)
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     navigate('/verifytoken');
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   };
 
   return (
@@ -113,14 +141,22 @@ function Signup() {
 
                     <div className="col-12">
                       <label for="yourFirstName" className="form-label">Họ</label>
-                      <input type="text" name="firstName" className="form-control" id="yourFirstName" value={formData.firstName} onChange={handleChange} required />
+                      <input type="text" name="firstName" className="form-control" id="yourFirstName"
+                        pattern="^[A-Za-zÀ-ỹà-ỹ ]+$"
+                        title="Tên không được xuất hiện số và kí tự đặc biệt."
+                        value={formData.firstName}
+                        onChange={handleChange} required />
                       <div className="invalid-feedback">Hãy nhập họ của bạn</div>
                     </div>
 
                     <div className="col-12">
                       <label for="yourLastName" className="form-label">Tên</label>
-                      <input type="text" name="lastName" className="form-control" id="yourLastName" value={formData.lastName} onChange={handleChange} required />
-                      <div className="invalid-feedback">Hãy nhập họ của bạn</div>
+                      <input type="text" name="lastName" className="form-control" id="yourLastName"
+                        pattern="^[A-Za-zÀ-ỹà-ỹ ]+$"
+                        title="Tên không được xuất hiện số và kí tự đặc biệt."
+                        value={formData.lastName}
+                        onChange={handleChange} required />
+                      <div className="invalid-feedback">Hãy nhập tên của bạn</div>
                     </div>
 
                     <div className="col-12">
@@ -134,35 +170,36 @@ function Signup() {
 
                     <div className="col-12">
                       <label for="yourPassword" className="form-label">Mật khẩu</label>
-                      <input type="password" name="password" className="form-control" id="yourPassword" value={formData.password} onChange={handleChange} required />
+                      <input type="password" name="password" className="form-control" id="yourPassword"
+                        value={newPassword}
+                        onChange={handleNewPasswordChange} required />
                       <div className="invalid-feedback">Nhập lại mật khẩu</div>
                     </div>
 
                     <div className="col-12">
                       <label for="yourConfirmPassword" className="form-label">Xác nhận mật khẩu</label>
-                      <input type="password" name="confirmPassword" className="form-control" id="yourConfirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+                      <input type="password" name="confirmPassword" className="form-control" id="yourConfirmPassword"
+                        value={confirmPassword}
+                        onChange={handleConfirmPasswordChange} required />
                       <div className="invalid-feedback">Nhập lại mật khẩu</div>
                     </div>
 
                     <div className="col-12">
                       <label for="yourPhone" className="form-label">Điện thoại</label>
-                      <input type="text" name="phone" className="form-control" id="yourPhone" value={formData.phone} onChange={handleChange} required />
+                      <input type="text" name="phone" className="form-control" id="yourPhone"
+                        pattern="^0\d{9}$"
+                        title="Số điện thoại phải bắt đầu bằng số 0 và bao gồm 10 chữ số."
+                        value={formData.phone}
+                        onChange={handleChange} required />
                       <div className="invalid-feedback">Hãy nhập số điện thoại của bạn</div>
                     </div>
 
-                    <div className="col-12">
+                    {/* <div className="col-12">
                       <label for="yourAddress" className="form-label">Địa chỉ</label>
                       <input type="text" name="address" className="form-control" id="yourAddress" value={formData.address} onChange={handleChange} required />
                       <div className="invalid-feedback">Hãy nhập địa chỉ của bạn</div>
-                    </div>
+                    </div> */}
 
-                    <div className="col-12">
-                      <div className="form-check">
-                        <input className="form-check-input" name="terms" type="checkbox" value="" id="acceptTerms" required />
-                        <label className="form-check-label" for="acceptTerms">Tôi đồng ý với <a href="#">những điều khoản và điều kiện</a> sử dụng</label>
-                        <div className="invalid-feedback">Bạn phải đồng ý những điều khoản và điều kiện trên trước khi xác nhận.</div>
-                      </div>
-                    </div>
                     <div className="col-12">
                       <button className="btn btn-primary w-100" type="submit">Đăng ký</button>
                     </div>

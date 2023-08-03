@@ -6,16 +6,29 @@ import { ToastContainer, toast } from 'react-toastify';
 export default function Verification() {
     const [newToken, setNewToken] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [verifyPassword, setVerifyPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const handleNewPasswordChange = (e) => {
+        setNewPassword(e.target.value);
+    };
+
+    const handleConfirmPasswordChange = (e) => {
+        setConfirmPassword(e.target.value);
+    };
+
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (newPassword !== confirmPassword) {
+            alert('2 mật khẩu không trùng khớp');
+            return;
+        }
         const apiUrl = `https://vinclean.azurewebsites.net/api/Account/reset-password`;
         const requestData = {
             token: newToken,
             password: newPassword,
-            confirmPassword: verifyPassword
+            confirmPassword: confirmPassword
         };
         axios
             .post(apiUrl, requestData)
@@ -31,13 +44,15 @@ export default function Verification() {
                     progress: undefined,
                     theme: "light",
                 });
-                alert('doi mat khau thanh cong')
-                navigate('/login');
+                setTimeout(() => {
+                    navigate('/login');
+                }, 3000);
             })
             .catch((error) => {
                 console.error('API error:', error);
+                alert('Sai Token')
             });
-            
+
     };
 
     return (
@@ -72,23 +87,16 @@ export default function Verification() {
 
                                         <div className="col-12">
                                             <label for="yourPassword" className="form-label">Mật khẩu</label>
-                                            <input type="password" name="password" className="form-control" id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+                                            <input type="password" name="password" className="form-control" id="newPassword" value={newPassword} onChange={handleNewPasswordChange} required />
                                             <div className="invalid-feedback">Nhập lại mật khẩu</div>
                                         </div>
 
                                         <div className="col-12">
                                             <label for="yourPassword" className="form-label">Xác Thực Mật khẩu</label>
-                                            <input type="password" name="confirmPassword" className="form-control" id="verifyPassword" value={verifyPassword} onChange={(e) => setVerifyPassword(e.target.value)} required />
+                                            <input type="password" name="confirmPassword" className="form-control" id="verifyPassword" value={confirmPassword} onChange={handleConfirmPasswordChange} required />
                                             <div className="invalid-feedback">Nhập lại mật khẩu lần 2</div>
                                         </div>
 
-                                        <div className="col-12">
-                                            <div className="form-check">
-                                                <input className="form-check-input" name="terms" type="checkbox" value="" id="acceptTerms" required />
-                                                <label className="form-check-label" for="acceptTerms">Tôi đồng ý với <a href="#">những điều khoản và điều kiện</a> sử dụng</label>
-                                                <div className="invalid-feedback">Bạn phải đồng ý những điều khoản và điều kiện trên trước khi xác nhận.</div>
-                                            </div>
-                                        </div>
                                         <div className="col-12">
                                             <button className="btn btn-primary w-100" type="submit">Xác nhận</button>
                                         </div>

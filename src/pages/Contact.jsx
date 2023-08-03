@@ -14,6 +14,7 @@ import "../styles/contact.css";
 import RatingForm from "../components/UI/RatingForm";
 import { ToastContainer, toast } from 'react-toastify';
 import { Alert, Button, Input, Modal, Select, Space, Table, Upload } from 'antd';
+import Swal from "sweetalert2";
 
 
 const style = {
@@ -120,15 +121,7 @@ const Contact = () => {
     setIsOpen(true);
   };
 
-  const handleCancel = () => {
-    setIsMo(true);
-  }
-
-  const xoa = () => {
-    cancelBooking();
-  }
-
-  const cancelBooking = async () => {
+  const handleCancel = async () => {
     const cancelInfo = {
       orderId: booking.orderId,
       cancelBy: localStorage.getItem('id'),
@@ -136,31 +129,105 @@ const Contact = () => {
     };
 
     try {
-      const response = await axios.put('https://vinclean.azurewebsites.net/api/Order/Cancel', cancelInfo);
-      // const response = await axios.put('https://localhost:7013/api/Order/Cancel', cancelInfo);
-      if (response.status === 200) {
-        console.log('OK');
-        toast.success('Cancel Successfully!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        setTimeout(() => {
-          handleDong();
-          setSelectedEvent(null)
-          fetchOrderData();
-        }, 3000);
-      } else {
-        console.log('KO');
+      const { value: text } = await Swal.fire({
+        input: 'textarea',
+        inputLabel: 'Message',
+        inputPlaceholder: 'Type your message here...',
+        inputAttributes: {
+          'aria-label': 'Type your message here'
+        },
+        showCancelButton: true
+      })
+
+      if (text) {
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+        })
+        
+        swalWithBootstrapButtons.fire({
+          title: 'Are you sure to Cancel it?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Cancel it!',
+          cancelButtonText: 'No, cancel!',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const response = axios.put('https://vinclean.azurewebsites.net/api/Order/Cancel', cancelInfo);
+            if (response.status === 200) {
+              console.log('OK');
+              setTimeout(() => {
+                setSelectedEvent(null)
+                fetchOrderData();
+              }, 3000);
+              swalWithBootstrapButtons.fire(
+                'Cancelled!',
+                'this order has been cancelled.',
+                'success'
+              )
+            } else {
+              console.log('KO');
+            }
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire(
+              'Cancelled',
+              'Your imaginary file is safe :)',
+              'error'
+            )
+          }
+        })
+       
       }
+
     } catch (error) {
     }
   }
+
+  // const xoa = () => {
+  //   cancelBooking();
+  // }
+
+  // const cancelBooking = async () => {
+  //   const cancelInfo = {
+  //     orderId: booking.orderId,
+  //     cancelBy: localStorage.getItem('id'),
+  //     reasonCancel: "string"
+  //   };
+
+  //   try {
+  //     const response = await axios.put('https://vinclean.azurewebsites.net/api/Order/Cancel', cancelInfo);
+  //     // const response = await axios.put('https://localhost:7013/api/Order/Cancel', cancelInfo);
+  //     if (response.status === 200) {
+  //       console.log('OK');
+  //       toast.success('Cancel Successfully!', {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "light",
+  //       });
+  //       setTimeout(() => {
+  //         handleDong();
+  //         setSelectedEvent(null)
+  //         fetchOrderData();
+  //       }, 3000);
+  //     } else {
+  //       console.log('KO');
+  //     }
+  //   } catch (error) {
+  //   }
+  // }
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(process.length / itemsPerPage);
@@ -521,7 +588,7 @@ const Contact = () => {
                                   </Row>
                                 </div>
                               )}
-                          <Modal
+                          <Modal1
                             open={isOpen}
                             onClose={handleClose2}
                             aria-labelledby="child-modal-title"
@@ -529,32 +596,21 @@ const Contact = () => {
                           >
                             <Box sx={{ ...style, width: 450 }}>
                               <h2 id="child-modal-title">Checkout Thành Công</h2>
-                              <h5 id="child-modal-title">Rating</h5>
-                              <p id="child-modal-description">
-                                Sao sao sao sao sao
-                              </p>
-                              <div className=" d-flex align-items-center gap-2">
-                                <h6 className="mb-0 fs-6">Note:</h6>
-                              </div>
-
-                              <div className=" d-flex align-items-center gap-2">
-                                <p className="section__description mb-0 mt-2 note-container">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                              </div>
                               <Row>
                                 <Col lg="6" md="6">
-                                  <Button variant="contained" className="container mt-3" onClick={handleClose}>Đóng</Button>
+                                  <Button variant="contained" className="container mt-3" onClick={handleClose2}>Đóng</Button>
                                 </Col>
                                 <Col lg="6" md="6">
                                   <Button variant="contained" className="container mt-3" onClick={handleRatingOpen}>Đánh giá</Button>
                                 </Col>
                               </Row>
                             </Box>
-                          </Modal>
+                          </Modal1>
                         </div>
                       )}
                     </Modal>
 
-                    <Modal1
+                    {/* <Modal1
                       open={isMo}
                       onClose={handleDong}
                       aria-labelledby="child-modal-title"
@@ -567,14 +623,14 @@ const Contact = () => {
                             <Button variant="contained" className="container mt-3" onClick={handleDong}>Đóng</Button>
                           </Col>
                           <Col lg="6" md="6">
-                            <Button variant="contained" className="container mt-3" onClick={xoa}>Xóa mẹ đi</Button>
+                            <Button variant="contained" className="container mt-3" onClick={handleCancel}>Xóa mẹ đi</Button>
                           </Col>
                         </Row>
                       </Box>
-                    </Modal1>
+                    </Modal1> */}
 
                     {isRatingOpen && (
-                      <Modal
+                      <Modal1
                         open={isRatingOpen}
                         onClose={() => setIsRatingOpen(false)}
                         aria-labelledby="modal-modal-title"
@@ -587,7 +643,7 @@ const Contact = () => {
                             onClose={() => setIsRatingOpen(false)}
                             onRatingSubmit={handleRatingSubmit} />
                         </Box>
-                      </Modal>
+                      </Modal1>
                     )}
 
                   </tbody>

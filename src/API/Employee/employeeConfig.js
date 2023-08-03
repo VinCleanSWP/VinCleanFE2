@@ -23,35 +23,38 @@ export const selectEmployeeAPI = (StarTime, EndTime, Date) => {
     });
 }
 export const getProcessAPI = () => {
-    return api.get(`Process`);
+    return api.get(`Order`);
 }
 export const updateStartWorkingAPI = (data) => {
-    return api.put(`Process/StartWorking`,data);
+    return api.put(`Order/StartWorking`,data);
 }
 export const updateEndWorkingAPI = (data) => {
-    return api.put(`Process/EndWorking`,data);
+    return api.put(`Order/EndWorking`,data);
 }
 export const getProcessImageAPIbyID = (id) => {
-    return api.get(`ProcessImage/Process/${id}`);
+    return api.get(`OrderImage/Order/${id}`);
 }
 export const updateProcessImageAPI = (data) => {
-    return api.put(`ProcessImage/UpdateImage`,data);
+    return api.put(`OrderImage/UpdateImage`,data);
 }
 export const updateSubPriceAPI = (data) => {
-    return api.put(`Process/SubPrice`,data);
+    return api.put(`Order/SubPrice`,data);
 }
 export const updateLocationAPI= (data) => {
-    return api.put(`WorkingBy/Location`,data);
+    return api.put(`Location/Location`,data);
 }
 export const updateCanncelJobAPI = (data) => {
-    return api.post(`ProcessSlot`,data);
+    return api.post(`OrderRequest`,data);
 }
 export const GetOrderRangeAPI = (data) => {
     return api.post(`Order/OrderRange`,data);
 }
 export const GetOrderbyIDAPI = (id) => {
-    return api.get(`Order/${id}`);
+    return api.get(`Order/GetAll/${id}`);
 }
 export const GetAllOrderRangeAPI = (data) => {
     return api.post(`Order/GetAllOrderRange`,data);
+}
+export const GetOrderRequestAPI = (id) => {
+    return api.get(`OrderRequest`);
 }

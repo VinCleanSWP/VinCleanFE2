@@ -7,7 +7,15 @@
 }
 .rbc-header {
     background-color:  #4D96FF;
-    padding: 5px 3px;
+    padding: 10px 3px;
+    font-weight: bold;
+}
+.rbc-button-link span{
+    padding:5px 3px !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    background-color: #4D96FF;
+    color: black;
 }
 .rbc-events-container{
     width: 100%;
@@ -26,6 +34,9 @@
 }
 .rbc-row rbc-month-header{
     background-color:  #4D96FF;
+}
+.ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:first-child{
+    background-color: #4D96FF !important;
 }
 .process{
     display: flex;

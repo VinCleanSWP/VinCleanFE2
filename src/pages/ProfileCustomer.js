@@ -75,7 +75,7 @@ export default function ProfileCustomer() {
 
     useEffect(() => {
         axios.get(`https://vinclean.azurewebsites.net/api/Order`)
-        // axios.get(`https://localhost:7013/api/Order`)
+            // axios.get(`https://vinclean.azurewebsites.net/api/Order`)
             .then(response => {
                 const data = response.data.data
                 const mail = localStorage.getItem('email');
@@ -110,7 +110,7 @@ export default function ProfileCustomer() {
     useEffect(() => {
         // Gọi API để lấy dữ liệu
         axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
-        // axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
+            // axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
                 setCurrentGender(response.data.data.account.gender);
@@ -189,7 +189,7 @@ export default function ProfileCustomer() {
 
         try {
             const response = await axios.put('https://vinclean.azurewebsites.net/api/Customer', updatedUser);
-            // const response = await axios.put('https://localhost:7013/api/Customer', updatedUser);
+            // const response = await axios.put('https://vinclean.azurewebsites.net/api/Customer', updatedUser);
             if (response.status === 200) {
                 console.log('OK');
                 setErrorMessage('Update Successfully');
@@ -214,7 +214,7 @@ export default function ProfileCustomer() {
         }
 
         axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
-        // axios.get(`https://localhost:7013/api/Customer/Account/${id}`)
+            // axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
                 console.log('thanh cong');
@@ -228,8 +228,8 @@ export default function ProfileCustomer() {
 
     const updateUserPassword = async (newPassword) => {
         try {
+            const apiUrl = 'https://vinclean.azurewebsites.net/api/Account';
             // const apiUrl = 'https://vinclean.azurewebsites.net/api/Account';
-            const apiUrl = 'https://localhost:7013/api/Account';
             const updatedUserData = {
                 accountId: localStorage.getItem('id'),
                 name: localStorage.getItem('name'),
@@ -317,8 +317,8 @@ export default function ProfileCustomer() {
     }, []);
 
     const getBuildingTypes = () => {
-        // axios.get('https://vinclean.azurewebsites.net/api/BuildingType')
-        axios.get('https://localhost:7013/api/BuildingType')
+        axios.get('https://vinclean.azurewebsites.net/api/BuildingType')
+            // axios.get('https://localhost:7013/api/BuildingType')
             .then(response => {
                 setBuildingTypes(response.data.data);
             })
@@ -328,8 +328,8 @@ export default function ProfileCustomer() {
     };
 
     const getBuilding = () => {
-        // axios.get('https://vinclean.azurewebsites.net/api/Building')
-        axios.get('https://localhost:7013/api/Building')
+        axios.get('https://vinclean.azurewebsites.net/api/Building')
+            // axios.get('https://localhost:7013/api/Building')
             .then(response => {
                 setBuilding(response.data.data);
             })
@@ -341,7 +341,7 @@ export default function ProfileCustomer() {
     const handleType = (event) => {
         setPhankhu(event.target.value);
         axios.get(`https://vinclean.azurewebsites.net/api/Building/Type/${event.target.value.id}`)
-        // axios.get(`https://localhost:7013/api/Building/Type/${event.target.value.id}`)
+            // axios.get(`https://localhost:7013/api/Building/Type/${event.target.value.id}`)
             .then(response => {
                 setBuilding1(response.data.data);
             })

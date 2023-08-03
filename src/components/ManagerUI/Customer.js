@@ -41,7 +41,6 @@ function Customer() {
     const [customerId, setCustomerId] = useState('');
 
     const handleSave = (accountId) => {
-        console.log(localStorage.getItem("role"));
         if (localStorage.getItem("role") === "3") {
             const status = document.getElementById('updateTypeStatus').value;
             const data = {

@@ -142,7 +142,7 @@ function Activity() {
                                                                 <td>{format(new Date(booking.date), 'dd/MM/yyyy')}</td>
                                                                 <td>{formatTime(booking.startTime)} - {formatTime(booking.endTime)}</td>
                                                                 <td>{booking.address}</td>
-                                                                <td><p className="status Completed" style={{ margin: 0 }}>{formatCurrency(modal.price)}</p></td>
+                                                                <td><p className="status Completed" style={{ margin: 0 }}>{formatCurrency(booking.price)}</p></td>
                                                                 <td>
                                                                     <div className="table-data-feature">
                                                                         <button

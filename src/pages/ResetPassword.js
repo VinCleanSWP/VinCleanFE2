@@ -19,7 +19,7 @@ export default function ResetPassword() {
             .post(`https://vinclean.azurewebsites.net/api/Account/forgot-password?email=${emailReset}`, requestData)
             .then((response) => {
                 console.log('API response:', response.data);
-                navigate('/verification');
+                // navigate('/verification');
                 axios
                     .post(apiUrl, reset)
                     .then((response) => {
@@ -49,8 +49,8 @@ export default function ResetPassword() {
                             <div className="card mb-3">
                                 <div className="card-body">
                                     <div className="pt-4 pb-2">
-                                        <h5 className="card-title text-center pb-0 fs-4">Reset your password</h5>
-                                        <p className="text-center small">Enter your email to reset password</p>
+                                        <h5 className="card-title text-center pb-0 fs-4">Đặt lại mật khẩu của bạn</h5>
+                                        <p className="text-center small">Nhập email của bạn</p>
                                     </div>
 
                                     <form className="row g-3 needs-validation" onSubmit={handleSubmit}>
@@ -71,7 +71,7 @@ export default function ResetPassword() {
                                             </div>
                                         </div>
                                         <div className="col-12 mt-3">
-                                            <button className="btn btn-primary w-100" type="submit">Login</button>
+                                            <button className="btn btn-primary w-100" type="submit">Gửi đến email</button>
                                         </div>
                                     </form>
                                 </div>

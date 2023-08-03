@@ -252,7 +252,8 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       pointUsed: lastTotalPoint
     };
 
-    axios.post('https://vinclean.azurewebsites.net/api/Order', data)
+    console.log(data)
+    axios.post('https://vinclean.azurewebsites.net/api/Orde', data)
       .then(response => {
         console.log(response.data);
         setSubmittedData(response.data);
@@ -355,7 +356,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
           console.error('Error fetching building types:', error);
         });
     } else {
-      setSelectedOptionId(null);
+      // setSelectedOptionId(null);
       setAvailableFloors([]);
     }
     setSelectedOption(selectedValue);
@@ -366,7 +367,11 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       setShowTextBox(false);
     }
   };
-
+  
+  function formatCurrency(amount) {
+    var amount1 = amount;
+    return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+}
   return (
     <Form onSubmit={handleSubmit}>
       <div style={{ display: 'flex' }}>

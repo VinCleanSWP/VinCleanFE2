@@ -38,9 +38,8 @@ export default function Dashboard() {
       const filteredResponse = response.filter((event) => event.status !== "Cancel");
       setEmployee(filteredResponse);
       console.log(filteredResponse);
-      const totalJobs = response.length;
-      const totalRevenue = response.reduce((acc, curr) => acc + curr.price, 0);
-
+      const totalJobs = filteredResponse.length;
+      const totalRevenue = filteredResponse.reduce((acc, curr) => acc + curr.price, 0);
       setTotalJobs(totalJobs);
       setTotalRevenue(totalRevenue);
     } catch (error) {

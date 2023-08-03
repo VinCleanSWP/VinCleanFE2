@@ -58,6 +58,10 @@ function Activity() {
         }
         return "";
     };
+    const formatCurrency = (amount) => {
+        var amount1 = amount;   
+        return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+    }
 
     ///Search and sort
     const handleSearchChange = (e) => {
@@ -86,6 +90,8 @@ function Activity() {
     const toggleSortOrder = () => {
         setSortOrder(prevSortOrder => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
     };
+
+    
 
 
     return (
@@ -136,7 +142,7 @@ function Activity() {
                                                                 <td>{format(new Date(booking.date), 'dd/MM/yyyy')}</td>
                                                                 <td>{formatTime(booking.startTime)} - {formatTime(booking.endTime)}</td>
                                                                 <td>{booking.address}</td>
-                                                                <td><p className="status Completed" style={{ margin: 0 }}>{booking.price}.000</p></td>
+                                                                <td><p className="status Completed" style={{ margin: 0 }}>{formatCurrency(modal.price)}</p></td>
                                                                 <td>
                                                                     <div className="table-data-feature">
                                                                         <button
@@ -235,7 +241,7 @@ function Activity() {
                             <div className="modal-content">
                                 <div className="modal-header" >
                                     <h5 className="modal-title" id="exampleModalLabel"><strong>Order Details  ID: {modal.orderId} </strong></h5>
-                                    <h5 className="status Completed modal-title" style={{ marginLeft: '350px', minWidth: "210px" }}> <span style={{ marginRight: "5px" }}>Total</span> {modal.price}.000 VND </h5>
+                                    <h5 className="status Completed modal-title" style={{ marginLeft: '350px', minWidth: "210px" }}> <span style={{ marginRight: "5px" }}>Total</span> {formatCurrency(modal.price)} </h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>
                                 <div className="modal-body">

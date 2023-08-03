@@ -551,7 +551,7 @@ function Booking() {
                                             <h4 style={{ textAlign: "center", margin: "10px" }}> Price</h4>
                                             <div class="info-content" style={{ marginLeft: "10px" }}>
                                                 <p><strong>Sub Price:</strong> {formatCurrency(modal.subPrice)}</p>
-                                                <p><strong>Point Used:</strong> {formatCurrency(modal.pointUsed)} </p>
+                                                <p><strong>Point Used:</strong> {modal.pointUsed} </p>
                                                 <p style={{ fontFamily: "Arial, sans-serif", fontSize: "25px" }}><strong>Price:</strong> <label className='status Incoming' style={{ padding: "0px 20px" }}>{formatCurrency(modal.price)}</label></p>
                                             </div>
                                         </div>

@@ -298,10 +298,10 @@ const BookingForm = ({
         address: showTextBox
           ? address
           : selectedOption +
-            " " +
-            selectedBuilding +
-            selectedFloor +
-            selectedRoom,
+          " " +
+          selectedBuilding +
+          selectedFloor +
+          selectedRoom,
         phone: phoneNumber,
         buildingId: showTextBox ? 37 : buildingId,
         note: message,
@@ -348,12 +348,12 @@ const BookingForm = ({
 
   const handleUseTotalPoint = () => {
     const pointsToUse = Math.floor(totalPoint / 100) * 100;
-    const discountAmount = Math.floor(pointsToUse / 100) * 5;
 
-    setLastTotalPoint(totalPoint);
+
+    setLastTotalPoint(pointsToUse);
     setDiscountedPrice(
-      discountAmount > 0
-        ? selectedServiceCost - discountAmount
+      pointsToUse > 0
+        ? selectedServiceCost - pointsToUse
         : selectedServiceCost
     );
     setIsPointUsed(true);
@@ -914,13 +914,13 @@ const BookingForm = ({
                             <>
                               <strong >{"Phân khu: "}</strong>
                               {selectedOption}
-                              
-                              <strong style={{ marginLeft: "25px"}}>{"Tòa: "}</strong>
+
+                              <strong style={{ marginLeft: "25px" }}>{"Tòa: "}</strong>
                               {selectedBuilding}
                               <br />
                               <strong >{"Tầng: "}</strong>
                               {selectedFloor}
-                              <strong style={{ marginLeft: "100px"}}>{"Phòng: "}</strong>
+                              <strong style={{ marginLeft: "100px" }}>{"Phòng: "}</strong>
                               {selectedRoom}
                             </>
                           )}

@@ -56,8 +56,7 @@ const MyCalendar = () => {
     dayHeaderFormat: "dddd  -  DD/MM/YYYY",
   };
   var today = new Date();
-  var time =
-    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  const time = moment(today).format("HH:mm:ss");
   const messages = {
     today: "Hôm nay",
     previous: "Sau",
@@ -375,8 +374,8 @@ const MyCalendar = () => {
           const isCompleted = selectedEvent.data.status === "Completed";
           console.log(record.type);
           const isDisable =
-            (isIncoming && isRecordVerify) ||
-            (isProcessing && (isRecordVerify || isRecordIncoming)) ||
+            
+            (isProcessing && (isRecordVerify|| isRecordIncoming )) ||
             (isCompleted &&
               (isRecordVerify || isRecordIncoming || isRecordCompleted));
           return (

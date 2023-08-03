@@ -49,7 +49,7 @@ export default function DashboardAdmin() {
     const totalIncome = () => {
         let sum = 0;
         booking && booking.forEach(order => {
-            sum += order.total;
+            sum += order.price;
         });
         setIncome(sum);
     };
@@ -72,10 +72,8 @@ export default function DashboardAdmin() {
         return averageRating;
     };
 
-    // Khi muốn hiển thị giá trị trung bình cộng của rating, bạn gọi hàm calculateAverageRating():
     const averageRating = calculateAverageRating();
 
-    // Phân loại rating
     const categorizeRating = () => {
         if (!rating || rating.length === 0) {
             return {
@@ -88,7 +86,6 @@ export default function DashboardAdmin() {
             };
         }
 
-        // Tạo một đối tượng để lưu trữ các mảng con
         const categorizedRatings = {
             '0': [],
             '1': [],
@@ -98,7 +95,6 @@ export default function DashboardAdmin() {
             '5': [],
         };
 
-        // Phân loại các rating vào mảng con tương ứng
         rating.forEach((item) => {
             const rate = item.rate;
             if (rate >= 0 && rate <= 5) {
@@ -129,12 +125,12 @@ export default function DashboardAdmin() {
 
     useEffect(() => {
         // Tính tổng giá tiền của mỗi type khi state type1 đến type6 thay đổi
-        setTotal1(type1?.reduce((total, item) => total + (item.total || 0), 0) || 0);
-        setTotal2(type2?.reduce((total, item) => total + (item.total || 0), 0) || 0);
-        setTotal3(type3?.reduce((total, item) => total + (item.total || 0), 0) || 0);
-        setTotal4(type4?.reduce((total, item) => total + (item.total || 0), 0) || 0);
-        setTotal5(type5?.reduce((total, item) => total + (item.total || 0), 0) || 0);
-        setTotal6(type6?.reduce((total, item) => total + (item.total || 0), 0) || 0);
+        setTotal1(type1?.reduce((price, item) => price + (item.price || 0), 0) || 0);
+        setTotal2(type2?.reduce((price, item) => price + (item.price || 0), 0) || 0);
+        setTotal3(type3?.reduce((price, item) => price + (item.price || 0), 0) || 0);
+        setTotal4(type4?.reduce((price, item) => price + (item.price || 0), 0) || 0);
+        setTotal5(type5?.reduce((price, item) => price + (item.price || 0), 0) || 0);
+        setTotal6(type6?.reduce((price, item) => price + (item.price || 0), 0) || 0);
     }, [type1, type2, type3, type4, type5, type6]);
 
     function formatCurrency(amount) {
@@ -320,12 +316,12 @@ export default function DashboardAdmin() {
 
         // Lặp qua danh sách giao dịch để tính tổng doanh thu của tháng hiện tại
         booking && booking.forEach((transaction) => {
-            const { total, dateWork } = transaction;
+            const { price, dateWork } = transaction;
             const transactionDate = new Date(dateWork);
             const transactionMonthYear = `${transactionDate.getMonth() + 1}-${transactionDate.getFullYear()}`;
 
             if (transactionMonthYear === currentMonthYear) {
-                revenue += total;
+                revenue += price;
             }
         });
         setCurrentMonthRevenue(revenue);
@@ -346,7 +342,7 @@ export default function DashboardAdmin() {
                                         <h6 className="m-4">Total income</h6>
                                         <div className="row d-flex align-items-center">
                                             <div className="col-9">
-                                                <h3 className="f-w-300 d-flex align-items-center m-b-0 mb-4 ml-3"><i className="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{formatCurrency(income)}</h3>
+                                                <h3 className="f-w-300 d-flex align-items-center m-b-0 mb-4 ml-3"><i className="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{formatCurrency(income) ? formatCurrency(income) : 0}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -359,7 +355,7 @@ export default function DashboardAdmin() {
                                         <h6 className="m-4">Current Month income ({thangnay})</h6>
                                         <div className="row d-flex align-items-center">
                                             <div className="col-9">
-                                                <h3 className="f-w-300 d-flex align-items-center m-b-0 mb-4 ml-3"><i className="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{formatCurrency(currentMonthRevenue)}</h3>
+                                                <h3 className="f-w-300 d-flex align-items-center m-b-0 mb-4 ml-3"><i className="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{formatCurrency(currentMonthRevenue) ? formatCurrency(currentMonthRevenue) : 0}</h3>
                                             </div>
                                         </div>
                                     </div>

@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Container, Row, Col } from "reactstrap";
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
+// import Button from '@mui/material/Button';
+// import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import { async } from 'q';
 import '../../styles/profile-customer.css'
 import { storage } from '../../firebase/index';
 import { ToastContainer, toast } from 'react-toastify';
+import { Alert, Button, Input, Modal, Space, Table, Upload } from 'antd';
 
 const style = {
     position: 'absolute',
@@ -26,14 +27,17 @@ const gioitinh = [
     {
         id: 1,
         gender: "Nam",
+        sex: "Male"
     },
     {
         id: 2,
         gender: "Nữ",
+        sex: "Female"
     },
     {
         id: 3,
         gender: "Khác",
+        sex: "Other"
     }
 ]
 
@@ -65,7 +69,7 @@ export default function EmpProfile() {
             .then(response => {
                 const data = response.data.data
                 const mail = localStorage.getItem('email');
-                const foundItem = data.filter(item => item.employeeEmail == mail);
+                const foundItem = data.filter(item => item.employeeEmail == mail && (item.status == 'Completed' || item.status == 'Cancel'));
                 // setOrder(response.data.data);
                 setOrder(foundItem);
             })
@@ -77,6 +81,7 @@ export default function EmpProfile() {
     const handleRowClick = (order) => {
         setOpen(true);
         setBooking(order);
+        setSelectedEvent(order)
     };
 
     // DateDetails
@@ -94,13 +99,13 @@ export default function EmpProfile() {
 
     useEffect(() => {
         // Gọi API để lấy dữ liệu
-        axios.get(`https://vinclean.azurewebsites.net/api/Employee`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Employee/Account/${id}`)
+        // axios.get(`https://localhost:7013/api/Employee/Account/${id}`)
             .then(response => {
                 const data = response.data.data
-                const foundUser = data.find(emp => emp.account.accountId == id);
-                setCustomer(foundUser);
-                setCurrentGender(foundUser.account.gender);
-                setCurrentImg(foundUser.account.img);
+                setCustomer(data);
+                setCurrentGender(data.account.gender);
+                setCurrentImg(data.account.img);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -250,6 +255,19 @@ export default function EmpProfile() {
         setTempImageUrl(imgUrl);
     };
 
+    function formatCurrency(amount) {
+        return amount ? amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+    }
+
+    // ---------------MODAL-------------------
+
+    const [selectedEvent, setSelectedEvent] = useState(null);
+
+    const dateW = new Date(booking.date);
+    const cDate = new Date(booking.createdDate);
+    const dateWork = dateW.toLocaleDateString(undefined, options);
+    const createDate = cDate.toLocaleDateString(undefined, options);
+
     return (
         <div className='container'>
             <div className="container light-style flex-grow-1 container-p-y">
@@ -311,8 +329,8 @@ export default function EmpProfile() {
                                                     <div key={sex.id}>
                                                         <input type='radio'
                                                             name='gender'
-                                                            value={sex.gender}
-                                                            checked={check === sex.gender || (!check && sex.gender === currentGender)}
+                                                            value={sex.sex}
+                                                            checked={check === sex.sex || (!check && sex.sex === currentGender)}
                                                             onChange={handleGender} />{sex.gender}
                                                     </div>
                                                 ))}
@@ -387,7 +405,7 @@ export default function EmpProfile() {
                                                 <h4 className="fw-bold mt-4 mb-4">Danh sách công việc</h4>
 
                                                 <div className="table-responsive m-b-40">
-                                                    <table className="table table-borderless table-data3">
+                                                    <table className="table table-borderless table-hover table-data3">
                                                         <thead>
                                                             <tr>
                                                                 <th>Loại dịch vụ</th>
@@ -400,84 +418,131 @@ export default function EmpProfile() {
                                                         <tbody>
                                                             {orders.map((order) => (
                                                                 <tr className="pointer pointertext" key={order.orderId} onClick={() => handleRowClick(order)}>
-                                                                    <td>{order.type}</td>
+                                                                    <td>{order.typeName}</td>
                                                                     <td>{order.serviceName}</td>
                                                                     <td>{order.employeeName}</td>
                                                                     {/* <td>{order.dateWork}</td> */}
-                                                                    <td>{new Date(order.dateWork).toLocaleDateString(undefined, options1)}</td>
-                                                                    <td className="process">{order.total}.000 VND</td>
+                                                                    <td>{new Date(order.date).toLocaleDateString(undefined, options1)}</td>
+                                                                    <td className="process" style={{ color: '#35cb28' }}>{formatCurrency(order.price)}</td>
                                                                 </tr>
                                                             ))}
+
                                                             <Modal
-                                                                open={open}
-                                                                onClose={handleClose}
-                                                                aria-labelledby="modal-modal-title"
-                                                                aria-describedby="modal-modal-description"
+                                                                visible={!!selectedEvent}
+                                                                onCancel={() => setSelectedEvent(null)}
+                                                                width={850}
+                                                                footer={[
+                                                                    // <Button key="cancel" onClick={() => setSelectedEvent(null)}>
+                                                                    //   Đóng
+                                                                    // </Button>,
+                                                                ]}
                                                             >
-                                                                <Box sx={style}>
-                                                                    <Row>
-                                                                        <Col lg="12" md="12">
-                                                                            <div className="contact__info">
-                                                                                <h4 className="fw-bold mb-3">Chi tiết công việc</h4>
-                                                                                <br></br>
-                                                                                <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="fs-6 mb-0">Loại dịch vụ:</h6>
-                                                                                    <p className="section__description mb-0">{booking.type}</p>
-                                                                                </div>
 
-                                                                                <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="fs-6 mb-0">Dịch vụ:</h6>
-                                                                                    <p className="section__description mb-0">{booking.serviceName}</p>
-                                                                                </div>
-
-                                                                                <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Địa chỉ:</h6>
-                                                                                    <p className="section__description mb-0">{booking.address}</p>
-                                                                                </div>
-
-                                                                                <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Ngày:</h6>
-                                                                                    {/* <p className="section__description mb-0">{booking.date}</p> */}
-                                                                                    <p className="section__description mb-0">{formattedDate}</p>
-                                                                                </div>
-
-                                                                                <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Thời gian bắt đầu:</h6>
-                                                                                    <p className="section__description mb-0">{booking.startTime}</p>
-                                                                                </div>
-
-                                                                                <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Thời gian kết thúc:</h6>
-                                                                                    <p className="section__description mb-0">{booking.endTime}</p>
-                                                                                </div>
-
-                                                                                <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Nhân viên:</h6>
-                                                                                    <p className="section__description mb-0">{booking.employeeName}</p>
-                                                                                </div>
-
-                                                                                <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Số điện thoại nhân viên:</h6>
-                                                                                    <p className="section__description mb-0">{booking.employeePhone}</p>
-                                                                                </div>
-
-                                                                                <div className=" d-flex align-items-center gap-2">
-                                                                                    <h6 className="mb-0 fs-6">Ghi chú:</h6>
-                                                                                    {/* <p className="section__description mb-0 bordered">{booking.note}</p> */}
-                                                                                </div>
-
-                                                                                <div className=" d-flex align-items-center gap-2">
-                                                                                    <p className="section__description mb-0 mt-2 note-container">{booking.note}</p>
-                                                                                </div>
-
-                                                                                <div className=" d-flex align-items-center gap-2 ">
-                                                                                    <h6 className="mb-0 h3 mt-3">Tổng:</h6>
-                                                                                    <p className="section__description mb-0 h3 mt-3 text-success">{booking.total}000 VND</p>
+                                                                {selectedEvent && (
+                                                                    <div>
+                                                                        <h2 style={{ textAlign: "center" }}>Thông tin dịch vụ</h2>
+                                                                        <div class="process" style={{ marginTop: "30px" }}>
+                                                                            <div class="process-info">
+                                                                                <h4 style={{ textAlign: "center", margin: "10px" }}>Thông tin khách hàng</h4>
+                                                                                <div class="info-content" style={{ padding: "8px" }}>
+                                                                                    <p><strong>Mã khách hàng: </strong> {booking.customerId} </p>
+                                                                                    <p><strong>Tên khách hàng: </strong> {booking.name} </p>
+                                                                                    <p><strong>SĐT khách hàng: </strong> {booking.phone}</p>
+                                                                                    <p><strong>Email khách hàng: </strong> {booking.email}</p>
                                                                                 </div>
                                                                             </div>
-                                                                        </Col>
-                                                                    </Row>
-                                                                </Box>
+                                                                            <div class="process-info1">
+                                                                                <h4 style={{ textAlign: "center", margin: "10px" }}> Thông tin nhân viên</h4>
+                                                                                <div class="info-content" style={{ padding: "8px" }}>
+                                                                                    {booking.employeeId == null ? (
+                                                                                        <div>
+                                                                                            <p><strong>Mã nhân viên: </strong> Incoming</p>
+                                                                                            <p><strong>Tên nhân viên: </strong> Incoming</p>
+                                                                                            <p><strong>SĐT nhân viên: </strong> Incoming</p>
+                                                                                            <p><strong>Email nhân viên: </strong> Incoming</p>
+                                                                                        </div>
+                                                                                    ) : (
+                                                                                        <div>
+                                                                                            <p><strong>Mã nhân viên: </strong> {booking.employeeId} </p>
+                                                                                            <p><strong>Tên nhân viên: </strong> {booking.employeeName} </p>
+                                                                                            <p><strong>SĐT nhân viên: </strong> {booking.employeePhone}</p>
+                                                                                            <p><strong>Email nhân viên: </strong> {booking.employeeEmail}</p>
+                                                                                        </div>
+                                                                                    )}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="process" style={{ marginTop: "30px" }}>
+                                                                            <div class="process-info1">
+                                                                                <h4 style={{ textAlign: "center", margin: "10px" }}>Chi tiết dịch vụ</h4>
+                                                                                <div class="info-content" style={{ padding: "8px" }}>
+                                                                                    <p><strong>Mã đơn hàng: </strong> {booking.orderId}</p>
+                                                                                    <p><strong>Tên dịch vụ: </strong> {booking.typeName} - {booking.serviceName}</p>
+                                                                                    {booking.status == 'Cancel' ? (
+                                                                                        <div style={{ flex: '1' }}>
+                                                                                            <p>
+                                                                                                <strong>Trạng Thái hiện tại: </strong> <label className='status cancelled' style={{ padding: "0px 10px" }}>{booking.status}</label>
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    ) : (
+                                                                                        <div style={{ flex: '1' }}>
+                                                                                            <p>
+                                                                                                <strong>Trạng Thái hiện tại: </strong> <label className='status Completed' style={{ padding: "0px 10px" }}>{booking.status}</label>
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    )}
+                                                                                    <p><strong>Ngày đặt: </strong> {createDate}</p>
+                                                                                    <p><strong>Địa chỉ: </strong> {booking.address}</p>
+                                                                                    <p><strong>Ngày thực hiện: </strong> {dateWork}</p>
+                                                                                    <p><strong>Giờ bắt đầu: </strong> {booking.startTime}</p>
+                                                                                    <p><strong>Giờ kết thúc: </strong> {booking.endTime}</p>
+                                                                                    <p><strong>Điểm sử dụng: </strong> {booking.pointUsed ? booking.pointUsed : 0}</p>
+                                                                                    <p><strong>Phụ Thu: </strong> {booking.subPrice ? formatCurrency(booking.subPrice) : 0}</p>
+                                                                                    <div className=" d-flex align-items-center gap-2 ">
+                                                                                        <h6 className="mb-0 h3 mt-3"><strong>Tổng tiền:</strong></h6>
+                                                                                        <p className="section__description mb-0 h3 mt-3 text-success"><strong>{formatCurrency(booking.price)}</strong></p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {/* <div class="process" style={{ marginTop: "30px" }}> */}
+                                                                        {booking.status == "Cancel" ? (
+                                                                            <div class="process" style={{ marginTop: "30px" }}>
+                                                                                <div class="process-info1">
+                                                                                    <h4 style={{ textAlign: "center", margin: "10px" }}>Ghi chú</h4>
+                                                                                    <div class="info-content" style={{ padding: "8px" }}>
+                                                                                        {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
+                                                                                        <div className=" d-flex align-items-center gap-2">
+                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="process-info1">
+                                                                                    <h4 style={{ textAlign: "center", margin: "10px" }}>Lý do hủy</h4>
+                                                                                    <div class="info-content" style={{ padding: "8px" }}>
+                                                                                        {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
+                                                                                        <div className=" d-flex align-items-center gap-2">
+                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"} NHỚ BỔ SUNG</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <div class="process" style={{ marginTop: "30px" }}>
+                                                                                <div class="process-info1">
+                                                                                    <h4 style={{ textAlign: "center", margin: "10px" }}>Ghi chú</h4>
+                                                                                    <div class="info-content" style={{ padding: "8px" }}>
+                                                                                        {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
+                                                                                        <div className=" d-flex align-items-center gap-2">
+                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                )}
                                                             </Modal>
                                                         </tbody>
                                                     </table>

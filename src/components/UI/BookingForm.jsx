@@ -53,7 +53,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   const accountID = localStorage.getItem('id');
   const today = new Date();
   const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setDate(tomorrow.getDate());
   const tomorrowString = tomorrow.toISOString().split('T')[0];
   const currentDate = new Date();
   const formattedDate = format(currentDate, 'dd/MM/yyyy', { locale: vi });
@@ -181,31 +181,50 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       return false;
     }
 
-    if (journeyTime == null) {
-      setValidTime("Vui lòng chọn thời gian");
-
+    if (!isTimeValid(journeyDate,journeyTime)) {
+      setValidTime("Thời gian đặt không hợp lệ");
       return false;
     } else {
-      const [hours, minutes] = journeyTime.split(":");
-
-
-
-
-      if (hours >= 7 && hours <= 20) {
-        setValidTime(true);
-      } else {
-        setValidTime("Thời gian phải từ 7h sáng đến 8h tối.");
-
-        return false;
-      }
+      setValidTime(true);
     }
+
     if (serviceId == null) {
       setValidService("Vui lòng chọn dịch vụ");
       return false;
     }
     return true;
   }
+  const isTimeValid = (date,time) => {
+    if (!date || !time || date.length !== 10 || time.length !== 5) {
+      return false;
+    }
+    const currentTime = new Date();
+  const selectedDateTime = new Date(`${date}T${time}`);
 
+  // Thời gian đặt phải sau 7h30 sáng cùng ngày
+  const sevenThirtyAM = new Date(selectedDateTime);
+  sevenThirtyAM.setHours(7, 30, 0, 0);
+
+  // Thời gian đặt phải trước 22 giờ cùng ngày
+  const tenPM = new Date(selectedDateTime);
+  tenPM.setHours(22, 0, 0, 0);
+
+  // Thời gian đặt phải sau 2 giờ từ hiện tại
+  const twoHoursFromNow = new Date(currentTime);
+  twoHoursFromNow.setHours(currentTime.getHours() + 2, currentTime.getMinutes(), 0, 0);
+  console.log("hiện tại "+currentTime);
+    console.log("giờ chọn "+selectedDateTime);
+    console.log("trước hai giờ "+twoHoursFromNow);
+    console.log("trước 10 giờ   "+tenPM);
+    if (
+      selectedDateTime <= sevenThirtyAM || // Kiểm tra sau 7h30 sáng
+      selectedDateTime >= tenPM || // Kiểm tra trước 22 giờ
+      selectedDateTime <= twoHoursFromNow // Kiểm tra sau 2 giờ từ hiện tại
+    ) {
+      return false;
+    }
+    return true;
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateData()) {
@@ -214,7 +233,6 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       setDiscountedPrice(0);
     }
   };
-  console.log(discountedPrice);
 
   const handleConfirm = (e) => {
     e.preventDefault();
@@ -253,7 +271,6 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
 
 
   };
-  console.log(firstName);
 
   const handleUseTotalPoint = () => {
     const pointsToUse = Math.floor(totalPoint / 100) * 100;
@@ -335,7 +352,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
           console.error('Error fetching building types:', error);
         });
     } else {
-
+      setSelectedOptionId(null);
       setAvailableFloors([]);
     }
     setSelectedOption(selectedValue);

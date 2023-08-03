@@ -73,11 +73,9 @@ export default function ProfileCustomer() {
     const [booking, setBooking] = useState([])
     const [orders, setOrder] = useState([])
 
-    console.log(orders);
-
     useEffect(() => {
         axios.get(`https://vinclean.azurewebsites.net/api/Order`)
-        // axios.get(`https://vinclean.azurewebsites.net/api/Order`)
+            // axios.get(`https://vinclean.azurewebsites.net/api/Order`)
             .then(response => {
                 const data = response.data.data
                 const mail = localStorage.getItem('email');
@@ -88,6 +86,8 @@ export default function ProfileCustomer() {
                 console.error('Error:', error);
             });
     }, []);
+
+    console.log(orders);
 
     const handleRowClick = (order) => {
         setOpen(true);
@@ -110,7 +110,7 @@ export default function ProfileCustomer() {
     useEffect(() => {
         // Gọi API để lấy dữ liệu
         axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
-        // axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
+            // axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
                 setCurrentGender(response.data.data.account.gender);
@@ -166,7 +166,8 @@ export default function ProfileCustomer() {
     };
 
     const [check, setCheck] = useState(customer.account && customer.account.gender)
-    console.log(check);
+
+    console.log(customer.address);
 
     const handleSubmitInfo = async (e) => {
         e.preventDefault();
@@ -178,7 +179,7 @@ export default function ProfileCustomer() {
             lastName: customer.lastName,
             phone: customer.phone,
             // address: customer.address,
-            address: phankhu.type + " " + toa + " " + tang + " " + phong,
+            address: diachi3 || customer.address,
             dob: selectedDate || customer.account.dob,
             gender: gender1 || currentGender,
             // gender: customer.account.gender,
@@ -213,7 +214,7 @@ export default function ProfileCustomer() {
         }
 
         axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
-        // axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
+            // axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
                 console.log('thanh cong');
@@ -303,30 +304,21 @@ export default function ProfileCustomer() {
     const [phong, setPhong] = useState();
 
     const [address, setAddress] = useState('');
+    const [diachi, setDiachi] = useState('');
     const inputString = address;
     const [soKhu, soToa, soTang, soPhong] = inputString.split(' ');
 
-    // const [soKhu1, setSoKhu1] = useState('');
-    // const [soToa1, setSoToa1] = useState('');
-    // const [soTang1, setAddress] = useState('');
-    // const [soPhong1, setAddress] = useState('');
-
-    console.log(address);
-    console.log(soKhu);
-    console.log(soToa);
-    console.log(soTang);
-    console.log(soPhong);
+    // const diachi3 = tang ? (phankhu.type + " " + toa + " " + tang + " " + phong) : (phankhu && phankhu.type + " " + diachi)
+    const diachi3 = tang ? (phankhu.type + " " + toa + " " + tang + " " + phong) : diachi ? ((phankhu && phankhu.type + " " + diachi)) : (customer.address)
 
     useEffect(() => {
         getBuildingTypes();
         getBuilding();
     }, []);
 
-    // https://vinclean.azurewebsites.net
-
     const getBuildingTypes = () => {
         axios.get('https://vinclean.azurewebsites.net/api/BuildingType')
-        // axios.get('https://vinclean.azurewebsites.net/api/BuildingType')
+            // axios.get('https://localhost:7013/api/BuildingType')
             .then(response => {
                 setBuildingTypes(response.data.data);
             })
@@ -337,7 +329,7 @@ export default function ProfileCustomer() {
 
     const getBuilding = () => {
         axios.get('https://vinclean.azurewebsites.net/api/Building')
-        // axios.get('https://vinclean.azurewebsites.net/api/Building')
+            // axios.get('https://localhost:7013/api/Building')
             .then(response => {
                 setBuilding(response.data.data);
             })
@@ -349,13 +341,14 @@ export default function ProfileCustomer() {
     const handleType = (event) => {
         setPhankhu(event.target.value);
         axios.get(`https://vinclean.azurewebsites.net/api/Building/Type/${event.target.value.id}`)
-        // axios.get(`https://vinclean.azurewebsites.net/api/Building/Type/${event.target.value.id}`)
+            // axios.get(`https://localhost:7013/api/Building/Type/${event.target.value.id}`)
             .then(response => {
                 setBuilding1(response.data.data);
             })
             .catch(error => {
                 console.error('Error fetching building types:', error);
             });
+        setTang();
     };
 
     const handleBuilding = (event) => {
@@ -370,11 +363,17 @@ export default function ProfileCustomer() {
         setPhong(event.target.value);
     };
 
+    const handleDiaChi = (event) => {
+        setTang();
+        setDiachi(event.target.value);
+    };
+
     const matchedBuilding = building1 && building1.find(buildingItem => buildingItem.name === toa);
     const floorValue = matchedBuilding ? matchedBuilding.floor : '';
 
     const matchedFloor = building1 && building1.find(buildingItem => buildingItem.name === toa);
     const roomValue = matchedFloor ? matchedFloor.room : '';
+
 
     // ---------------MODAL-------------------
 
@@ -384,6 +383,12 @@ export default function ProfileCustomer() {
     const cDate = new Date(booking.createdDate);
     const dateWork = dateW.toLocaleDateString(undefined, options);
     const createDate = cDate.toLocaleDateString(undefined, options);
+
+    // ------------------TIEN-------------------
+
+    function formatCurrency(amount) {
+        return amount ? amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+    }
 
     return (
         <div className='container'>
@@ -470,181 +475,180 @@ export default function ProfileCustomer() {
                                                     name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10}" required />
                                             </div>
 
-                                            <div className='row'>
-                                                <div className="col-md-3">
-                                                    <div className="form-group">
-                                                        <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
-                                                            <InputLabel id="demo-simple-select-standard-label">Phân khu</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-standard-label"
-                                                                id="demo-simple-select-standard"
-                                                                label="Age"
-                                                                value={soKhu || phankhu}
-                                                                onChange={handleType}
-                                                                required
-                                                            >
-                                                                {buildingTypes && buildingTypes.map((phankhu) => (
-                                                                    <MenuItem value={phankhu}>{phankhu.type}</MenuItem>
-                                                                ))}
-                                                            </Select>
-                                                        </FormControl>
-
-                                                        {/* <FormControl fullWidth>
-                                                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                                                Phân khu
-                                                            </InputLabel>
-                                                            <NativeSelect
-                                                                defaultValue={soKhu || phankhu}
-                                                                inputProps={{
-                                                                    name: 'soKhu',
-                                                                    id: 'uncontrolled-native',
-                                                                }}
-                                                                onChange={handleType}
-                                                                required
-                                                            >
-                                                                {buildingTypes && buildingTypes.map((phankhu) => (
-                                                                    <option value={phankhu}>{phankhu.type}</option>
-                                                                ))}
-                                                            </NativeSelect>
-                                                        </FormControl> */}
-                                                    </div>
-                                                </div>
-                                                {phankhu && phankhu.type == 'Manhattan' ? (
-                                                    <div className="col-md-9">
+                                            <div className="form-group">
+                                                <label className="form-label">Địa chỉ hiện tại</label>
+                                                <input type="text" className="form-control" id="address"
+                                                    name="address" defaultValue={customer.address} /* onChange={handleInputChange} */ disabled />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label">Thay đổi dịa chỉ (Nếu cần)</label>
+                                                <div className='row'>
+                                                    <div className="col-md-3">
                                                         <div className="form-group">
-                                                            <label className="form-label">Địa chỉ</label>
-                                                            <input type="text" className="form-control" id="address"
-                                                                name="address" defaultValue={customer.address} onChange={handleInputChange} required />
+                                                            <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                                <InputLabel id="demo-simple-select-standard-label">Phân khu</InputLabel>
+                                                                <Select
+                                                                    labelId="demo-simple-select-standard-label"
+                                                                    id="demo-simple-select-standard"
+                                                                    label="Age"
+                                                                    value={phankhu || soKhu}
+                                                                    onChange={handleType}
+                                                                // required
+                                                                >
+                                                                    {buildingTypes && buildingTypes.map((phankhu) => (
+                                                                        <MenuItem value={phankhu}>{phankhu.type}</MenuItem>
+                                                                    ))}
+                                                                </Select>
+                                                            </FormControl>
                                                         </div>
                                                     </div>
-                                                ) : (
-                                                    <div className="col-md-9">
-                                                        <div className='row'>
-                                                            <div className="col-md-3 mr-4">
-                                                                <div className="form-group">
-                                                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
-                                                                        <InputLabel id="demo-simple-select-standard-label">Tòa</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-standard-label"
-                                                                            id="demo-simple-select-standard"
-                                                                            label="Age"
-                                                                            value={soToa || toa}
-                                                                            onChange={handleBuilding}
-                                                                            required
-                                                                        >
-                                                                            {building1 && building1.map((toa) => (
-                                                                                <MenuItem value={toa.name}>{toa.name}</MenuItem>
-                                                                            ))}
-                                                                        </Select>
-                                                                    </FormControl>
 
-                                                                    {/* <FormControl fullWidth>
-                                                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                                                Tòa
-                                                            </InputLabel>
-                                                            <NativeSelect
-                                                                defaultValue={soToa || toa}
-                                                                inputProps={{
-                                                                    name: 'age',
-                                                                    id: 'uncontrolled-native',
-                                                                }}
-                                                                onChange={handleBuilding}
-                                                                required
-                                                            >
-                                                                {building1 && building1.map((toa) => (
-                                                                    <option value={toa.name}>{toa.name}</option>
-                                                                ))}
-                                                            </NativeSelect>
-                                                        </FormControl> */}
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-3 mr-4">
-                                                                <div className="form-group">
-                                                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
-                                                                        <InputLabel id="demo-simple-select-standard-label">Tầng</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-standard-label"
-                                                                            id="demo-simple-select-standard"
-                                                                            label="Age"
-                                                                            value={soTang || tang}
-                                                                            onChange={handleFloor}
-                                                                            required
-                                                                        >
-                                                                            {Array.from({ length: floorValue }, (_, index) => (
-                                                                                <MenuItem key={index + 1} value={index + 1}>{index + 1}</MenuItem>
-                                                                            ))}
-                                                                        </Select>
-                                                                    </FormControl>
-
-                                                                    {/* <FormControl fullWidth>
-                                                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                                                Tầng
-                                                            </InputLabel>
-                                                            <NativeSelect
-                                                                defaultValue={soTang || tang}
-                                                                inputProps={{
-                                                                    name: 'age',
-                                                                    id: 'uncontrolled-native',
-                                                                }}
-                                                                onChange={handleFloor}
-                                                                required
-                                                            >
-                                                                {Array.from({ length: floorValue }, (_, index) => (
-                                                                    <option key={index + 1} value={index + 1}>{index + 1}</option>
-                                                                ))}
-                                                            </NativeSelect>
-                                                        </FormControl> */}
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-3 mr-4">
-                                                                <div className="form-group">
-                                                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
-                                                                        <InputLabel id="demo-simple-select-standard-label">Phòng</InputLabel>
-                                                                        <Select
-                                                                            labelId="demo-simple-select-standard-label"
-                                                                            id="demo-simple-select-standard"
-                                                                            label="Age"
-                                                                            defaultValue={soPhong || phong}
-                                                                            onChange={handleRoom}
-                                                                            required
-                                                                        >
-                                                                            {Array.from({ length: roomValue }, (_, index) => (
-                                                                                <MenuItem key={index + 1} value={index + 1}>{index + 1}</MenuItem>
-                                                                            ))}
-                                                                        </Select>
-                                                                    </FormControl>
-
-                                                                    {/* <FormControl fullWidth>
-                                                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                                                Phòng
-                                                            </InputLabel>
-                                                            <NativeSelect
-                                                                defaultValue={soPhong || phong}
-                                                                inputProps={{
-                                                                    name: 'age',
-                                                                    id: 'uncontrolled-native',
-                                                                }}
-                                                                onChange={handleRoom}
-                                                                required
-                                                            >
-                                                                {Array.from({ length: roomValue }, (_, index) => (
-                                                                    <option key={index + 1} value={index + 1}>{index + 1}</option>
-                                                                ))}
-                                                            </NativeSelect>
-                                                        </FormControl> */}
-                                                                </div>
+                                                    {phankhu && phankhu.type == 'Manhattan' ? (
+                                                        <div className="col-md-9">
+                                                            <div className="form-group">
+                                                                <label className="form-label">Địa chỉ</label>
+                                                                <input type="text" className="form-control" id="address" placeholder="Nhập địa chỉ của bạn..."
+                                                                    name="address" defaultValue={diachi} onChange={handleDiaChi} />
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                )}
+                                                    ) : (
+                                                        <div className="col-md-9">
+                                                            {(phankhu && phankhu.type == 'Rainbow') || (phankhu && phankhu.type == 'Origami') ? (
+                                                                <div className='row'>
+                                                                    <div className="col-md-3 mr-4">
+                                                                        <div className="form-group">
+                                                                            <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                                                <InputLabel id="demo-simple-select-standard-label">Tòa</InputLabel>
+                                                                                <Select
+                                                                                    labelId="demo-simple-select-standard-label"
+                                                                                    id="demo-simple-select-standard"
+                                                                                    label="Age"
+                                                                                    // value={toa || soToa}
+                                                                                    defaultValue={toa || soToa}
+                                                                                    onChange={handleBuilding}
+                                                                                    required
+                                                                                >
+                                                                                    {building1 && building1.map((toa) => (
+                                                                                        <MenuItem value={toa.name}>{toa.name}</MenuItem>
+                                                                                    ))}
+                                                                                </Select>
+                                                                            </FormControl>
 
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-md-3 mr-4">
+                                                                        <div className="form-group">
+                                                                            <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                                                <InputLabel id="demo-simple-select-standard-label">Tầng</InputLabel>
+                                                                                <Select
+                                                                                    labelId="demo-simple-select-standard-label"
+                                                                                    id="demo-simple-select-standard"
+                                                                                    label="Age"
+                                                                                    // value={tang || soTang}
+                                                                                    defaultValue={tang || soTang}
+                                                                                    onChange={handleFloor}
+                                                                                    required
+                                                                                >
+                                                                                    {Array.from({ length: floorValue }, (_, index) => (
+                                                                                        <MenuItem key={index + 1} value={index + 1}>{index + 1}</MenuItem>
+                                                                                    ))}
+                                                                                </Select>
+                                                                            </FormControl>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-md-3 mr-4">
+                                                                        <div className="form-group">
+                                                                            <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                                                <InputLabel id="demo-simple-select-standard-label">Phòng</InputLabel>
+                                                                                <Select
+                                                                                    labelId="demo-simple-select-standard-label"
+                                                                                    id="demo-simple-select-standard"
+                                                                                    label="Age"
+                                                                                    defaultValue={phong || soPhong}
+                                                                                    onChange={handleRoom}
+                                                                                    required
+                                                                                >
+                                                                                    {Array.from({ length: tang && roomValue }, (_, index) => (
+                                                                                        <MenuItem key={index + 1} value={index + 1}>{index + 1}</MenuItem>
+                                                                                    ))}
+                                                                                </Select>
+                                                                            </FormControl>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ) : (
+                                                                <div className='row'>
+                                                                    <div className="col-md-3 mr-4">
+                                                                        <div className="form-group">
+                                                                            <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                                                <InputLabel id="demo-simple-select-standard-label">Tòa</InputLabel>
+                                                                                <Select
+                                                                                    labelId="demo-simple-select-standard-label"
+                                                                                    id="demo-simple-select-standard"
+                                                                                    label="Age"
+                                                                                    // value={toa || soToa}
+                                                                                    defaultValue={toa || soToa}
+                                                                                    onChange={handleBuilding}
+                                                                                // required
+                                                                                >
+                                                                                    {building1 && building1.map((toa) => (
+                                                                                        <MenuItem value={toa.name}>{toa.name}</MenuItem>
+                                                                                    ))}
+                                                                                </Select>
+                                                                            </FormControl>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-md-3 mr-4">
+                                                                        <div className="form-group">
+                                                                            <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                                                <InputLabel id="demo-simple-select-standard-label">Tầng</InputLabel>
+                                                                                <Select
+                                                                                    labelId="demo-simple-select-standard-label"
+                                                                                    id="demo-simple-select-standard"
+                                                                                    label="Age"
+                                                                                    // value={tang || soTang}
+                                                                                    defaultValue={tang || soTang}
+                                                                                    onChange={handleFloor}
+                                                                                // required
+                                                                                >
+                                                                                    {Array.from({ length: floorValue }, (_, index) => (
+                                                                                        <MenuItem key={index + 1} value={index + 1}>{index + 1}</MenuItem>
+                                                                                    ))}
+                                                                                </Select>
+                                                                            </FormControl>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-md-3 mr-4">
+                                                                        <div className="form-group">
+                                                                            <FormControl variant="standard" sx={{ m: 1, minWidth: 180 }}>
+                                                                                <InputLabel id="demo-simple-select-standard-label">Phòng</InputLabel>
+                                                                                <Select
+                                                                                    labelId="demo-simple-select-standard-label"
+                                                                                    id="demo-simple-select-standard"
+                                                                                    label="Age"
+                                                                                    defaultValue={phong || soPhong}
+                                                                                    onChange={handleRoom}
+                                                                                // required
+                                                                                >
+                                                                                    {Array.from({ length: tang && roomValue }, (_, index) => (
+                                                                                        <MenuItem key={index + 1} value={index + 1}>{index + 1}</MenuItem>
+                                                                                    ))}
+                                                                                </Select>
+                                                                            </FormControl>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
 
-                                            {/* <div className="form-group">
-                                                <label className="form-label">Địa chỉ</label>
-                                                <input type="text" className="form-control" id="address"
-                                                    name="address" defaultValue={customer.address} onChange={handleInputChange} required />
-                                            </div> */}
+
                                             <div className="form-group">
                                                 <label className="form-label">E-mail</label>
                                                 <input type="text" className="form-control mb-1" defaultValue={customer.account && customer.account.email} disabled />
@@ -707,7 +711,6 @@ export default function ProfileCustomer() {
                                         <Row>
                                             <Col lg="12" md="12">
                                                 <h4 className="fw-bold mt-4 mb-4">Lịch sử đặt</h4>
-
                                                 <div className="table-responsive m-b-40">
                                                     <table className="table table-borderless table-hover table-data3">
                                                         <thead>
@@ -728,7 +731,7 @@ export default function ProfileCustomer() {
                                                                     <td>{order.employeeName}</td>
                                                                     {/* <td>{order.dateWork}</td> */}
                                                                     <td>{new Date(order.date).toLocaleDateString(undefined, options1)}</td>
-                                                                    <td className="process" style={{ color: '#35cb28' }}>{order.price}.000 VND</td>
+                                                                    <td className="process" style={{ color: '#35cb28' }}>{formatCurrency(order.price)}</td>
                                                                 </tr>
                                                             ))}
                                                             {/* <Modal1
@@ -893,10 +896,10 @@ export default function ProfileCustomer() {
                                                                                     <p><strong>Giờ bắt đầu: </strong> {booking.startTime}</p>
                                                                                     <p><strong>Giờ kết thúc: </strong> {booking.endTime}</p>
                                                                                     <p><strong>Điểm sử dụng: </strong> {booking.pointUsed ? booking.pointUsed : 0}</p>
-                                                                                    <p><strong>Phụ Thu: </strong> {booking.subPrice ? booking.subPrice : 0}</p>
+                                                                                    <p><strong>Phụ Thu: </strong> {booking.subPrice ? formatCurrency(booking.subPrice) : 0}</p>
                                                                                     <div className=" d-flex align-items-center gap-2 ">
                                                                                         <h6 className="mb-0 h3 mt-3"><strong>Tổng tiền:</strong></h6>
-                                                                                        <p className="section__description mb-0 h3 mt-3 text-success"><strong>{booking.price}.000 VND</strong></p>
+                                                                                        <p className="section__description mb-0 h3 mt-3 text-success"><strong>{formatCurrency(booking.price)}</strong></p>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>

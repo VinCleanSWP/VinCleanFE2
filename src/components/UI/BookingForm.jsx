@@ -55,6 +55,9 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate());
   const tomorrowString = tomorrow.toISOString().split('T')[0];
+  const last7Days = new Date(today);
+  last7Days.setDate(last7Days.getDate() + 7);
+  const last7DaysString = last7Days.toISOString().split('T')[0];
   const currentDate = new Date();
   const formattedDate = format(currentDate, 'dd/MM/yyyy', { locale: vi });
   const viDate = moment(journeyDate).format('DD/MM/YYYY');

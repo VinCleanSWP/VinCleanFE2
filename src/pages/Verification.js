@@ -57,7 +57,6 @@ export default function Verification() {
 
     return (
         <div className="container">
-
             <section className="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
                 <div className="container">
                     <div className="row justify-content-center">
@@ -87,14 +86,31 @@ export default function Verification() {
 
                                         <div className="col-12">
                                             <label for="yourPassword" className="form-label">Mật khẩu</label>
-                                            <input type="password" name="password" className="form-control" id="newPassword" value={newPassword} onChange={handleNewPasswordChange} required />
+                                            <input type="password" name="password" className="form-control" id="newPassword"
+                                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+                                                value={newPassword}
+                                                onChange={handleNewPasswordChange} required />
                                             <div className="invalid-feedback">Nhập lại mật khẩu</div>
                                         </div>
 
                                         <div className="col-12">
                                             <label for="yourPassword" className="form-label">Xác Thực Mật khẩu</label>
-                                            <input type="password" name="confirmPassword" className="form-control" id="verifyPassword" value={confirmPassword} onChange={handleConfirmPasswordChange} required />
+                                            <input type="password" name="confirmPassword" className="form-control" id="verifyPassword"
+                                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+                                                value={confirmPassword}
+                                                onChange={handleConfirmPasswordChange} required />
                                             <div className="invalid-feedback">Nhập lại mật khẩu lần 2</div>
+                                        </div>
+
+                                        <div className="col-12">
+                                            <h5>Mật khẩu phải đáp ứng được những yêu cầu dưới đây</h5>
+                                            <ol>
+                                                <li>Mật khẩu phải chứa ít nhất một ký tự viết thường.</li>
+                                                <li>Mật khẩu phải chứa ít nhất một ký tự viết hoa.</li>
+                                                <li>Mật khẩu phải chứa ít nhất một chữ số.</li>
+                                                <li>Mật khẩu chỉ được chứa các ký tự chữ và số (viết thường, viết hoa).</li>
+                                                <li>Mật khẩu phải có ít nhất 8 ký tự.</li>
+                                            </ol>
                                         </div>
 
                                         <div className="col-12">

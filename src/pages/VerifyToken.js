@@ -27,6 +27,7 @@ export default function VerifyToken() {
                 navigate('/login');
             })
             .catch((error) => {
+                alert('Sai Token')
                 console.error('API error:', error);
             });
     };

@@ -189,6 +189,7 @@ function Signup() {
                     <div className="col-12">
                       <label for="yourPhone" className="form-label">Điện thoại</label>
                       <input type="text" name="phone" className="form-control" id="yourPhone"
+                        maxLength="10"
                         pattern="^0\d{9}$"
                         title="Số điện thoại phải bắt đầu bằng số 0 và bao gồm 10 chữ số."
                         value={formData.phone}

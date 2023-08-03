@@ -83,7 +83,7 @@ export default function ProfileCustomer() {
             .then(response => {
                 const data = response.data.data
                 const mail = localStorage.getItem('email');
-                const foundItem = data.filter(item => item.email == mail && item.status == 'Completed' || item.status == 'Cancel');
+                const foundItem = data.filter(item => item.email == mail && (item.status == 'Completed' || item.status == 'Cancel'));
                 setOrder(foundItem);
             })
             .catch(error => {

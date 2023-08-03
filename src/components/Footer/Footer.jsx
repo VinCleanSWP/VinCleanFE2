@@ -7,13 +7,13 @@ import WhiteVinCleanLogo from"../../assets/all-images/whitelogo.png";
 
 import { AiOutlineHome } from "react-icons/ai";
 
-import { TbBrandBooking } from "react-icons/tb";
+import { MdOutlineCleaningServices } from "react-icons/md";
 
-import { FaBlog } from "react-icons/fa";
+import { RiFileList3Line } from "react-icons/ri";
 
 import { RxActivityLog } from "react-icons/rx";
 
-import { BsFillInfoCircleFill } from "react-icons/bs";
+import { BsInfoCircle } from "react-icons/bs";
 
 const quickLinks = [
   {
@@ -27,25 +27,25 @@ const quickLinks = [
     path: "/about",
     display:
       <>
-        <BsFillInfoCircleFill/> Giới thiệu
+        <BsInfoCircle/> Giới thiệu
       </>
   },
   {
-    path: "/cars",
+    path: "/services",
     display:
       <>
-        <TbBrandBooking/> Đặt dịch vụ
+        <MdOutlineCleaningServices/> Đặt dịch vụ
       </>
   },
   {
     path: "/blogs",
     display:
       <>
-        <FaBlog/> Blog
+        <RiFileList3Line/> Blog
       </>
   },
   {
-    path: "/contact",
+    path: "/activity",
     display:
       <>
         <RxActivityLog/> Hoạt động
@@ -95,13 +95,13 @@ const Footer = () => {
               <p className="office__info">Vinhome Grand Park</p>
               <p className="office__info">Số điện thoại: +0995345875365</p>
 
-              <p className="office__info">Email: muhib5532@gmail.com</p>
+              <p className="office__info">Email: vinhomegrandpark@gmail.com</p>
 
               <p className="office__info">Giờ làm: 7am - 8pm</p>
             </div>
           </Col>
 
-          <Col lg="3" md="4" sm="12">
+          {/* <Col lg="3" md="4" sm="12">
             <div className="mb-4">
               <h5 className="footer__link-title">Newsletter</h5>
               <p className="section__description">Subscribe our newsletter</p>
@@ -112,16 +112,16 @@ const Footer = () => {
                 </span>
               </div>
             </div>
-          </Col>
+          </Col> */}
 
-          <Col lg="12">
+          {/* <Col lg="12">
             <div className="footer__bottom">
               <p className="section__description d-flex align-items-center justify-content-center gap-1 pt-4">
                 <i class="ri-copyright-line"></i>Copyright {year}, Developed by
                 Muhibur Rahman. All rights reserved.
               </p>
             </div>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     </footer>

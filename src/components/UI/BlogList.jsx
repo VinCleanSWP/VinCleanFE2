@@ -10,7 +10,8 @@ const BlogList = () => {
   const [filteredBlogs, setFilteredBlogs] = useState([]);
 
   useEffect(() => {
-    axios.get(`https://vinclean.azurewebsites.net/api/Blog`)
+    // axios.get(`https://vinclean.azurewebsites.net/api/Blog`)
+    axios.get(`https://localhost:7013/api/Blog`)
       .then(response => {
         const data = response.data.data;
         setBlogs(data);
@@ -47,7 +48,7 @@ const BlogList = () => {
       </div>
 
 
-      {filteredBlogs.map(blog => (
+      {filteredBlogs && filteredBlogs.map(blog => (
         <Col lg="4" md="6" sm="6" className="mb-5" key={blog.id}>
           <div className="blog__item">
 

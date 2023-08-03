@@ -147,7 +147,7 @@ const Service = () => {
         const editedType = {
             typeId: editingServiceId,
             type1: TypeName,
-            img: TypeImage.img || TempImageUrl,
+            img: TempImageUrl ? TempImageUrl :   TypeImage.img,
             avaiable: updateTypeStatus === "true" ? true : false
 
         }
@@ -307,7 +307,7 @@ const Service = () => {
                 isOpen={modalTypeIsOpen}
                 onRequestClose={() => setTypeModalIsOpen(false)}
                 contentLabel="Add Employee"
-                style={{ width: '60%' }}
+                style={{ width: '' }}
             >
 
                 <div className="card-body" >
@@ -360,8 +360,8 @@ const Service = () => {
 
                     <table style={{ width: '100%', borderCollapse: 'collapse' }} >
                         <thead>
-                            <tr style={{ padding: '8px', textAlign: 'center', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
-                                <th style={{ width: '20%' }}>Type ID</th>
+                            <tr style={{ padding: '15px', textAlign: 'center', borderBottom: '1px solid #ddd', backgroundColor: '#f2f2f2' }}>
+                                <th style={{ width: '20%' }}>ID</th>
                                 <th style={{ width: '20%' }}>Name</th>
                                 <th style={{ width: '20%' }}>Status</th>
                                 <th style={{ width: '20%' }}>Description</th>
@@ -374,7 +374,6 @@ const Service = () => {
                         <tbody style={{ textAlign: 'center' }}>
                             {servicelist.map(sv => (
                                 <tr key={sv.serviceId} >
-
                                     <td >{sv.serviceId}</td>
                                     <td>
                                         {editingServiceId === sv.serviceId ? (
@@ -395,15 +394,11 @@ const Service = () => {
                                                 <option value="Available">Available</option>
                                                 <option value="Deleted">Deleted</option>
                                             </select>
-
                                         ) : (
-                                            sv.status
+                                            <label>{sv.status}</label>
                                         )}
                                     </td>
-
-
                                     <td>
-
                                         {editingServiceId === sv.serviceId ? (
                                             <input
                                                 type="text"
@@ -422,7 +417,7 @@ const Service = () => {
                                                 onChange={e => setEditingServiceCost(e.target.value)}
                                             />
                                         ) : (
-                                            sv.cost
+                                            <input value={sv.cost}></input>
                                         )}
                                     </td>
                                     <td>
@@ -493,7 +488,7 @@ const Service = () => {
                                         <table className="table table-borderless table-data3 shadow-sm" style={{ tableLayout: 'fixed', width: '100%' }}>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ width: '20%' }}>Type ID</th>
+                                                    <th style={{ width: '20%' }}>Type </th>
                                                     <th style={{ width: '20%' }}>Name</th>
                                                     <th style={{ width: '20%' }}>Status</th>
                                                     <th style={{ width: '20%' }}>Image</th>
@@ -585,6 +580,7 @@ const Service = () => {
                     </div>
                 </div>
             </div>
+            
             <div />
             <ToastContainer />
 

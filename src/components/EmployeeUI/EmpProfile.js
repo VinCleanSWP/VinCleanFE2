@@ -10,9 +10,6 @@ import '../../styles/profile-customer.css'
 import { storage } from '../../firebase/index';
 import { ToastContainer, toast } from 'react-toastify';
 
-
-
-
 const style = {
     position: 'absolute',
     top: '50%',
@@ -299,12 +296,12 @@ export default function EmpProfile() {
                                         <div className="card-body">
                                             <div className="form-group">
                                                 <label className="form-label">Tên</label>
-                                                <input type="text" className="form-control" maxLength="30" id="firstName" pattern="^[A-Za-z ]+$"
+                                                <input type="text" className="form-control" maxLength="30" id="firstName" pattern="^[A-Za-zÀ-ỹà-ỹ ]+$"
                                                     name="firstName" defaultValue={customer.firstName} onChange={handleInputChange} required />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Họ</label>
-                                                <input type="text" className="form-control" maxLength="30" id="lastName" pattern="^[A-Za-z ]+$"
+                                                <input type="text" className="form-control" maxLength="30" id="lastName" pattern="^[A-Za-zÀ-ỹà-ỹ ]+$"
                                                     name="lastName" defaultValue={customer.lastName} onChange={handleInputChange} required />
                                             </div>
 
@@ -323,8 +320,8 @@ export default function EmpProfile() {
 
                                             <div className="form-group">
                                                 <label className="form-label">Số điện thoại</label>
-                                                <input type="text" className="form-control" id="phone" title="Số điện thoại bao gồm 10-12 chữ số."
-                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10,12}" required />
+                                                <input type="text" className="form-control" id="phone" maxLength="10" title="Số điện thoại bao gồm 10 chữ số."
+                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10}" required />
                                             </div>
 
                                             <div className="form-group">

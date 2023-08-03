@@ -31,8 +31,7 @@ export default function BlogDetail() {
                 setBlogTitle(title);
                 setBlogSummary(sumarry);
                 setBlogContent(content);
-
-                setTempImageUrl(img);
+                setTempImageUrl(response.data.data.img);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -114,26 +113,11 @@ export default function BlogDetail() {
                     theme: "light",
                 });
                 navigate("/bloglist");
-
-
-
-
-
-
-
-
-
             })
 
             .catch(error => {
                 console.log(error);
             });
-
-
-
-
-
-
     };
 
 

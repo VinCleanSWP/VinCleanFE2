@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Signup() {
   const [formData, setFormData] = useState({});
@@ -44,9 +45,29 @@ function Signup() {
       .post('https://vinclean.azurewebsites.net/api/Customer/registration', requestData)
       .then((response) => {
         console.log(response.data);
+        toast.success('Successfully !', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+      });
       })
       .catch((error) => {
         console.error(error);
+        toast.error('Fail, Existed Email !', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+      });
       });
 
       axios
@@ -156,6 +177,7 @@ function Signup() {
             </div>
           </div>
         </div>
+        <ToastContainer />
 
       </section>
 

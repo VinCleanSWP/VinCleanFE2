@@ -5,12 +5,17 @@ import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
+// import Button from '@mui/material/Button';
+import Pagination from '@mui/material/Pagination';
+import Modal1 from '@mui/material/Modal';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import "../styles/contact.css";
 import RatingForm from "../components/UI/RatingForm";
+import { ToastContainer, toast } from 'react-toastify';
+import { Alert, Button, Input, Modal, Select, Space, Table, Upload } from 'antd';
+import Swal from "sweetalert2";
+
 
 const style = {
   position: 'absolute',
@@ -24,6 +29,8 @@ const style = {
   p: 4,
 };
 
+const itemsPerPage = 12;
+
 const Contact = () => {
   const [open, setOpen] = React.useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -33,73 +40,208 @@ const Contact = () => {
   const [process, setProcess] = useState([])
   const [isRatingOpen, setIsRatingOpen] = useState(false);
 
+  const [isMo, setIsMo] = useState(false);
+  const handleDong = () => setIsMo(false);
+
   const handleRatingOpen = () => {
     setIsRatingOpen(true);
   };
 
   const handleRatingSubmit = (formData) => {
-    // Xử lý dữ liệu rating và comment ở đây (ví dụ: gửi lên backend)
     console.log('Rating and comment:', formData);
   };
 
   useEffect(() => {
-    // Gọi API để lấy dữ liệu
-    axios.get(`https://vinclean.azurewebsites.net/api/Process`)
-      .then(response => {
-        const data = response.data.data
-        const accId = localStorage.getItem('id');
-        const foundItem = data.filter(item => item.accountId == accId);
-        // setProcess(response.data.data);
-        setProcess(foundItem);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+    fetchOrderData();
   }, []);
 
-  const handleRowClick = (process) => {
-    setOpen(true);
-    setBooking(process);
+  const fetchOrderData = () => {
+    axios
+      .get('https://vinclean.azurewebsites.net/api/Order')
+      // .get('https://localhost:7013/api/Order')
+      .then((response) => {
+        const data = response.data.data;
+        const mail = localStorage.getItem('email');
+        const foundItem = data.filter(
+          (item) => item.email === mail && item.status !== 'Completed' && item.status !== 'Cancel'
+        );
+        setProcess(foundItem);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   };
 
-  // DateDetails
-  const dateDetails = booking.date;
-  const date = new Date(dateDetails);
-  const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
-  const formattedDate = date.toLocaleDateString(undefined, options);
+  const [modal, setModal] = useState({})
 
-  const handleClick = () => {
-    const url = 'https://vinclean.azurewebsites.net/api/Order';
-    const data = {
-      customerId: booking.customerId,
-      processId: booking.processId,
-      serviceId: booking.serviceId,
-      note: booking.note,
-      total: booking.price,
-      pointUsed: booking.pointUsed,
-      orderDate: booking.date,
-      finishedDate: booking.date,
-      employeeId: booking.employeeId,
-      startTime: booking.startTime,
-      endTime: booking.endTime,
-      dateWork: booking.date,
-      startWorking: booking.startWorking,
-      endWorking: booking.endWorking
-    };
-    console.log(data)
-    axios.post(url, data)
+  const handleRowClick = (process, id) => {
+    setOpen(true);
+    setBooking(process);
+    setSelectedEvent(process)
+    axios.get(`https://vinclean.azurewebsites.net/api/Order/GetALL/${id}`)
+      // axios.get(`https://localhost:7013/api/Order/GetALL/${id}`)
       .then(response => {
-        console.log('Success:', response.data);
-        // Thêm các xử lý thành công tại đây (nếu cần)
+        console.log('Success:', response.data.data);
+        setModal(response.data.data)
       })
       .catch(error => {
         console.error('Error:', error.response.data);
-        // Thêm các xử lý lỗi tại đây (nếu cần)
+      });
+  };
+
+  // DateDetails
+  // const dateDetails = booking.date;
+  const dateW = new Date(booking.date);
+  const cDate = new Date(booking.createdDate);
+  const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' };
+  const dateWork = dateW.toLocaleDateString(undefined, options);
+  const createDate = cDate.toLocaleDateString(undefined, options);
+
+  const handleClick = () => {
+    axios.put(`https://vinclean.azurewebsites.net/api/Order/StatusCompleted?processid=${booking.orderId}`)
+      // axios.put(`https://localhost:7013/api/Order/StatusCompleted?processid=${booking.orderId}`)
+      .then(response => {
+        console.log('Success:', response.data.data);
+        toast.success('Checkout Successfully!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        fetchOrderData();
+      })
+      .catch(error => {
+        console.error('Error:', error.response.data);
       });
 
     setIsOpen(true);
   };
 
+  const handleCancel = async () => {
+    const cancelInfo = {
+      orderId: booking.orderId,
+      cancelBy: localStorage.getItem('id'),
+      reasonCancel: "string"
+    };
+
+    try {
+      const { value: text } = await Swal.fire({
+        input: 'textarea',
+        inputLabel: 'Message',
+        inputPlaceholder: 'Type your message here...',
+        inputAttributes: {
+          'aria-label': 'Type your message here'
+        },
+        showCancelButton: true
+      })
+
+      if (text) {
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+        })
+        
+        swalWithBootstrapButtons.fire({
+          title: 'Are you sure to Cancel it?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Cancel it!',
+          cancelButtonText: 'No, cancel!',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const response = axios.put('https://vinclean.azurewebsites.net/api/Order/Cancel', cancelInfo);
+            if (response.status === 200) {
+              console.log('OK');
+              setTimeout(() => {
+                setSelectedEvent(null)
+                fetchOrderData();
+              }, 3000);
+              swalWithBootstrapButtons.fire(
+                'Cancelled!',
+                'this order has been cancelled.',
+                'success'
+              )
+            } else {
+              console.log('KO');
+            }
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire(
+              'Cancelled',
+              'Your imaginary file is safe :)',
+              'error'
+            )
+          }
+        })
+       
+      }
+
+    } catch (error) {
+    }
+  }
+
+  // const xoa = () => {
+  //   cancelBooking();
+  // }
+
+  // const cancelBooking = async () => {
+  //   const cancelInfo = {
+  //     orderId: booking.orderId,
+  //     cancelBy: localStorage.getItem('id'),
+  //     reasonCancel: "string"
+  //   };
+
+  //   try {
+  //     const response = await axios.put('https://vinclean.azurewebsites.net/api/Order/Cancel', cancelInfo);
+  //     // const response = await axios.put('https://localhost:7013/api/Order/Cancel', cancelInfo);
+  //     if (response.status === 200) {
+  //       console.log('OK');
+  //       toast.success('Cancel Successfully!', {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "light",
+  //       });
+  //       setTimeout(() => {
+  //         handleDong();
+  //         setSelectedEvent(null)
+  //         fetchOrderData();
+  //       }, 3000);
+  //     } else {
+  //       console.log('KO');
+  //     }
+  //   } catch (error) {
+  //   }
+  // }
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(process.length / itemsPerPage);
+  const currentData = process.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
+
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  function formatCurrency(amount) {
+    var amount1 = amount;
+    return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+  }
   return (
     <Helmet title="Các hoạt động đã đặt">
       <CommonSection title="Các hoạt động đã đặt" />
@@ -110,7 +252,7 @@ const Contact = () => {
             <Col lg="12" md="12">
               <h4 className="fw-bold mb-4">Hoạt động</h4>
               <div className="table-responsive m-b-40">
-                <table className="table table-borderless table-data3">
+                <table className="table table-borderless table-hover table-data3">
                   <thead>
                     <tr>
                       <th>Dịch vụ</th>
@@ -122,27 +264,24 @@ const Contact = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {process.map((processing) => (
-                      <tr className="pointer" key={processing.processId} onClick={() => handleRowClick(processing)}>
+                    {currentData.map((processing) => (
+                      // {process.map((processing) => (
+                      // <tr className="pointer" key={processing.processId} onClick={() => handleRowClick(processing)}>
+                      <tr className="pointer" key={processing.orderId} onClick={() => handleRowClick(processing, processing.orderId)}>
                         <td>{processing.typeName}</td>
                         <td>{processing.serviceName}</td>
                         <td>{processing.employeeName}</td>
                         {/* <td>{order.dateWork}</td> */}
                         <td>{new Date(processing.date).toLocaleDateString(undefined, options)}</td>
-                        {processing.status == 'Completed' ?
-                          (
-                            <td className="complete">{processing.status}</td>
-                          ) : processing.status == 'Incoming' ?
-                            (
-                              <td className="denied">{processing.status}</td>
-                            ) : (
-                              <td className="process">{processing.status}</td>
-                            )}
-                        {/* <td className="complete">{processing.status}</td> */}
-                        <td className="process">{processing.price} VND</td>
+                        {processing.status == 'Incoming' ? (
+                          <td className="listorder complete" style={{ color: '#ff6a00' }}>{processing.status}</td>
+                        ) : (
+                          <td className="listorder complete" style={{ color: '#0053e4' }}>{processing.status}</td>
+                        )}
+                        <td className="process" style={{ color: '#35cb28' }}>{formatCurrency(processing.price)}</td>
                       </tr>
                     ))}
-                    <Modal
+                    {/* <Modal
                       open={open}
                       onClose={handleClose}
                       aria-labelledby="modal-modal-title"
@@ -154,13 +293,19 @@ const Contact = () => {
                             <div className="contact__info">
                               <h4 className="fw-bold mb-3"><strong>Thông tin đặt</strong></h4>
                               <br></br>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="fs-6 mb-0"><strong>Mã dịch vụ:</strong></h6>
+                                <p className="section__description mb-0">{booking.orderId}</p>
+                              </div>
+
                               <div className=" d-flex align-items-center gap-2">
                                 <h6 className="fs-6 mb-0"><strong>Dịch vụ:</strong></h6>
                                 <p className="section__description mb-0">{booking.typeName}</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
-                                <h6 className="fs-6 mb-0"><strong>Option:</strong></h6>
+                                <h6 className="fs-6 mb-0"><strong>Hạng mục:</strong></h6>
                                 <p className="section__description mb-0">{booking.serviceName}</p>
                               </div>
 
@@ -170,9 +315,13 @@ const Contact = () => {
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-6"><strong>Ngày tạo đơn:</strong></h6>
+                                <p className="section__description mb-0">{createDate}</p>
+                              </div>
+
+                              <div className=" d-flex align-items-center gap-2">
                                 <h6 className="mb-0 fs-6"><strong>Ngày đặt:</strong></h6>
-                                {/* <p className="section__description mb-0">{booking.date}</p> */}
-                                <p className="section__description mb-0">{formattedDate}</p>
+                                <p className="section__description mb-0">{dateWork}</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
@@ -194,14 +343,19 @@ const Contact = () => {
                                 <h6 className="mb-0 fs-6"><strong>SĐT của nhân viên:</strong></h6>
                                 <p className="section__description mb-0">{booking.employeePhone}</p>
                               </div>
+
+                              <div className=" d-flex align-items-center gap-2">
+                                <h6 className="mb-0 fs-6"><strong>Email của nhân viên:</strong></h6>
+                                <p className="section__description mb-0">{booking.employeeEmail}</p>
+                              </div>
+
                               <div className=" d-flex align-items-center gap-2">
                                 <h6 className="mb-0 fs-6"><strong>Phụ thu:</strong></h6>
-                                <p className="section__description mb-0">{booking.subPrice ? booking.subPrice:0 } VND</p>
+                                <p className="section__description mb-0">{booking.subPrice ? booking.subPrice : 0} VND</p>
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
                                 <h6 className="mb-0 fs-6"><strong>Ghi chú:</strong></h6>
-                                {/* <p className="section__description mb-0 bordered">{booking.note}</p> */}
                               </div>
 
                               <div className=" d-flex align-items-center gap-2">
@@ -210,15 +364,15 @@ const Contact = () => {
 
                               <div className=" d-flex align-items-center gap-2 ">
                                 <h6 className="mb-0 h3 mt-3"><strong>Tổng tiền:</strong></h6>
-                                <p className="section__description mb-0 h3 mt-3 text-success"><strong>{booking.price} VND</strong></p>
+                                <p className="section__description mb-0 h3 mt-3 text-success"><strong>{booking.price}.000 VND</strong></p>
                               </div>
                             </div>
-                            {booking.status == 'Completed' ?
+                            {booking.status == 'Processing' ?
                               (
                                 <div>
                                   <Row>
                                     <Col lg="6" md="6">
-                                      <Button variant="contained" className="container mt-3 mr-3" disabled>Sửa</Button>
+                                      <Button variant="contained" className="container mt-3 mr-3" disabled>Hủy</Button>
                                     </Col>
                                     <Col lg="6" md="6">
                                       <Button variant="contained" className="container mt-3 mr-3" onClick={handleClick}>Check Out</Button>
@@ -230,7 +384,7 @@ const Contact = () => {
                                   <div>
                                     <Row>
                                       <Col lg="6" md="6">
-                                        <Button variant="contained" className="container mt-3 mr-3" >Sửa</Button>
+                                        <Button variant="contained" className="container mt-3 mr-3" onClick={handleCancel}>Hủy</Button>
                                       </Col>
                                       <Col lg="6" md="6">
                                         <Button variant="contained" className="container mt-3 mr-3" disabled>Check Out</Button>
@@ -241,7 +395,7 @@ const Contact = () => {
                                   <div>
                                     <Row>
                                       <Col lg="6" md="6">
-                                        <Button variant="contained" className="container mt-3 mr-3" disabled>Sửa</Button>
+                                        <Button variant="contained" className="container mt-3 mr-3" disabled>Hủy</Button>
                                       </Col>
                                       <Col lg="6" md="6">
                                         <Button variant="contained" className="container mt-3 mr-3" disabled>Check Out</Button>
@@ -278,13 +432,205 @@ const Contact = () => {
                                 <Button variant="contained" className="container mt-3" onClick={handleRatingOpen}>Đánh giá</Button>
                               </Col>
                             </Row>
-                            {/* <Button className="mt-3" onClick={handleClose}>Close</Button> */}
                           </Box>
                         </Modal>
                       </Box>
+                    </Modal> */}
+
+                    <Modal
+                      visible={!!selectedEvent}
+                      onCancel={() => setSelectedEvent(null)}
+                      width={850}
+                      footer={[
+                        // <Button key="cancel" onClick={() => setSelectedEvent(null)}>
+                        //   Đóng
+                        // </Button>,
+                      ]}
+                    >
+
+                      {selectedEvent && (
+                        <div>
+                          <h2 style={{ textAlign: "center" }}>Thông tin dịch vụ</h2>
+                          <div class="process" style={{ marginTop: "30px" }}>
+                            <div class="process-info">
+                              <h4 style={{ textAlign: "center", margin: "10px" }}>Thông tin khách hàng</h4>
+                              <div class="info-content" style={{ padding: "8px" }}>
+                                <p><strong>Mã khách hàng: </strong> {booking.customerId} </p>
+                                <p><strong>Tên khách hàng: </strong> {booking.name} </p>
+                                <p><strong>SĐT khách hàng: </strong> {booking.phone}</p>
+                                <p><strong>Email khách hàng: </strong> {booking.email}</p>
+                              </div>
+                            </div>
+                            <div class="process-info1">
+                              <h4 style={{ textAlign: "center", margin: "10px" }}> Thông tin nhân viên</h4>
+                              <div class="info-content" style={{ padding: "8px" }}>
+                                {booking.employeeId == null ? (
+                                  <div>
+                                    <p><strong>Mã nhân viên: </strong> Incoming</p>
+                                    <p><strong>Tên nhân viên: </strong> Incoming</p>
+                                    <p><strong>SĐT nhân viên: </strong> Incoming</p>
+                                    <p><strong>Email nhân viên: </strong> Incoming</p>
+                                  </div>
+                                ) : (
+                                  <div>
+                                    <p><strong>Mã nhân viên: </strong> {booking.employeeId} </p>
+                                    <p><strong>Tên nhân viên: </strong> {booking.employeeName} </p>
+                                    <p><strong>SĐT nhân viên: </strong> {booking.employeePhone}</p>
+                                    <p><strong>Email nhân viên: </strong> {booking.employeeEmail}</p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div class="process" style={{ marginTop: "30px" }}>
+                            <div class="process-info1">
+                              <h4 style={{ textAlign: "center", margin: "10px" }}>Chi tiết dịch vụ</h4>
+                              <div class="info-content" style={{ padding: "8px" }}>
+                                <p><strong>Mã đơn hàng: </strong> {booking.orderId}</p>
+                                <p><strong>Tên dịch vụ: </strong> {booking.typeName} - {booking.serviceName}</p>
+                                {booking.status == 'Incoming' ? (
+                                  <div style={{ flex: '1' }}>
+                                    <p>
+                                      <strong>Trạng Thái hiện tại: </strong> <label className='status Incoming' style={{ padding: "0px 10px" }}>{booking.status}</label>
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <div style={{ flex: '1' }}>
+                                    <p>
+                                      <strong>Trạng Thái hiện tại: </strong> <label className='status Processing' style={{ padding: "0px 10px" }}>{booking.status}</label>
+                                    </p>
+                                  </div>
+                                )}
+                                <p><strong>Ngày đặt: </strong> {createDate}</p>
+                                <p><strong>Địa chỉ: </strong> {booking.address}</p>
+                                <p><strong>Ngày thực hiện: </strong> {dateWork}</p>
+                                <p><strong>Giờ bắt đầu: </strong> {booking.startTime}</p>
+                                <p><strong>Giờ kết thúc: </strong> {booking.endTime}</p>
+                                <p><strong>Điểm sử dụng: </strong> {booking.pointUsed ? booking.pointUsed : 0}</p>
+                                <p><strong>Phụ Thu: </strong> {booking.subPrice ? booking.subPrice : 0}</p>
+                                <div className=" d-flex align-items-center gap-2 ">
+                                  <h6 className="mb-0 h3 mt-3"><strong>Tổng tiền:</strong></h6>
+                                  <p className="section__description mb-0 h3 mt-3 text-success"><strong>{formatCurrency(booking.price)}</strong></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {/* <div class="process" style={{ marginTop: "30px" }}> */}
+                          {booking.status == "Cancel" ? (
+                            <div class="process" style={{ marginTop: "30px" }}>
+                              <div class="process-info1">
+                                <h4 style={{ textAlign: "center", margin: "10px" }}>Ghi chú</h4>
+                                <div class="info-content" style={{ padding: "8px" }}>
+                                  {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
+                                  <div className=" d-flex align-items-center gap-2">
+                                    <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="process-info1">
+                                <h4 style={{ textAlign: "center", margin: "10px" }}>Lý do hủy</h4>
+                                <div class="info-content" style={{ padding: "8px" }}>
+                                  {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
+                                  <div className=" d-flex align-items-center gap-2">
+                                    <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div class="process" style={{ marginTop: "30px" }}>
+                              <div class="process-info1">
+                                <h4 style={{ textAlign: "center", margin: "10px" }}>Ghi chú</h4>
+                                <div class="info-content" style={{ padding: "8px" }}>
+                                  {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
+                                  <div className=" d-flex align-items-center gap-2">
+                                    <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {booking.status == 'Processing' ?
+                            (
+                              <div>
+                                <Row>
+                                  <Col lg="6" md="6">
+                                    <Button variant="contained" className="container mt-3 mr-3" disabled>Hủy dịch vụ</Button>
+                                  </Col>
+                                  <Col lg="6" md="6">
+                                    <Button variant="contained" className="container mt-3 mr-3" onClick={handleClick}>Check Out</Button>
+                                  </Col>
+                                </Row>
+                              </div>
+                            ) : booking.status == 'Incoming' ?
+                              (
+                                <div>
+                                  <Row>
+                                    <Col lg="6" md="6">
+                                      <Button variant="contained" className="container mt-3 mr-3" onClick={handleCancel}>Hủy dịch vụ</Button>
+                                    </Col>
+                                    <Col lg="6" md="6">
+                                      <Button variant="contained" className="container mt-3 mr-3" disabled>Check Out</Button>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              ) : (
+                                <div>
+                                  <Row>
+                                    <Col lg="6" md="6">
+                                      <Button variant="contained" className="container mt-3 mr-3" disabled>Hủy dịch vụ</Button>
+                                    </Col>
+                                    <Col lg="6" md="6">
+                                      <Button variant="contained" className="container mt-3 mr-3" disabled>Check Out</Button>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              )}
+                          <Modal1
+                            open={isOpen}
+                            onClose={handleClose2}
+                            aria-labelledby="child-modal-title"
+                            aria-describedby="child-modal-description"
+                          >
+                            <Box sx={{ ...style, width: 450 }}>
+                              <h2 id="child-modal-title">Checkout Thành Công</h2>
+                              <Row>
+                                <Col lg="6" md="6">
+                                  <Button variant="contained" className="container mt-3" onClick={handleClose2}>Đóng</Button>
+                                </Col>
+                                <Col lg="6" md="6">
+                                  <Button variant="contained" className="container mt-3" onClick={handleRatingOpen}>Đánh giá</Button>
+                                </Col>
+                              </Row>
+                            </Box>
+                          </Modal1>
+                        </div>
+                      )}
                     </Modal>
+
+                    {/* <Modal1
+                      open={isMo}
+                      onClose={handleDong}
+                      aria-labelledby="child-modal-title"
+                      aria-describedby="child-modal-description"
+                    >
+                      <Box sx={{ ...style, width: 450 }}>
+                        <h2 id="child-modal-title">Cho tao hủy đi please</h2>
+                        <Row>
+                          <Col lg="6" md="6">
+                            <Button variant="contained" className="container mt-3" onClick={handleDong}>Đóng</Button>
+                          </Col>
+                          <Col lg="6" md="6">
+                            <Button variant="contained" className="container mt-3" onClick={handleCancel}>Xóa mẹ đi</Button>
+                          </Col>
+                        </Row>
+                      </Box>
+                    </Modal1> */}
+
                     {isRatingOpen && (
-                      <Modal
+                      <Modal1
                         open={isRatingOpen}
                         onClose={() => setIsRatingOpen(false)}
                         aria-labelledby="modal-modal-title"
@@ -292,22 +638,28 @@ const Contact = () => {
                       >
                         <Box sx={style}>
                           <RatingForm
-                            serviceId={booking.serviceId} // Giá trị serviceId từ UI
-                            customerId={booking.customerId} // Giá trị customerId từ UI
+                            serviceId={booking.serviceId}
+                            customerId={booking.customerId}
                             onClose={() => setIsRatingOpen(false)}
                             onRatingSubmit={handleRatingSubmit} />
                         </Box>
-                      </Modal>
+                      </Modal1>
                     )}
+
                   </tbody>
                 </table>
+
+                {/* Hiển thị phân trang */}
+                <div style={{ float: 'right' }}>
+                  <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color="primary" />
+                </div>
               </div>
             </Col>
           </Row>
         </Container >
       </section >
+      <ToastContainer />
     </Helmet >
-    
   );
 };
 

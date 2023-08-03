@@ -2,6 +2,7 @@ import carData from "../assets/data/carData";
 import { Container, Row, Col, Modal } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import { useParams } from "react-router-dom";
+import Pagination from '@mui/material/Pagination';
 import BookingForm from "../components/UI/BookingForm";
 import PaymentMethod from "../components/UI/PaymentMethod";
 import '../styles/rating-list.css';
@@ -17,7 +18,7 @@ const ServiceTypeDetail = () => {
   const typeId = useParams();
   const [service, setService] = useState(null);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
-  const [rating, setRating] = useState();
+  const [rating, setRating] = useState([]);
   const [selectedServiceName, setSelectedServiceName] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [selectedCost, setSelectedServiceCost] = useState("");
@@ -108,6 +109,13 @@ const ServiceTypeDetail = () => {
   //   setValidService("Vui lòng chọn dịch vụ")
   //   return false;
   // }
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(rating.length / itemsPerPage);
+  const currentRatings = rating.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
 
   if (!service) {
     return <div>Loading...</div>;
@@ -204,13 +212,13 @@ const ServiceTypeDetail = () => {
                 </h3>
               </div>
 
-              <div className="rating-list">
-                {rating.map(rating => (
+              <div className="ratings-list">
+                {currentRatings.map(rating => (
                   <li key={rating.id} className="rating-item">
                     <Row>
 
                       <Col lg="1">
-                        <img class="avatar__img" src={rating.img} alt="Avatar" />
+                        <img style={{ height: "60px", width: "60px" }} class="avatar__img" src={rating.img} alt="Avatar" />
                       </Col>
 
 
@@ -232,6 +240,9 @@ const ServiceTypeDetail = () => {
                     </Row>
                   </li>
                 ))}
+                <div style={{ float: 'right' }}>
+                  <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color="primary" />
+                </div>
               </div>
             </div>
           ) : (

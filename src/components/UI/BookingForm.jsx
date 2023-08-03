@@ -347,7 +347,6 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     }
   };
 
-
   return (
     <Form onSubmit={handleSubmit}>
       <div style={{ display: 'flex' }}>

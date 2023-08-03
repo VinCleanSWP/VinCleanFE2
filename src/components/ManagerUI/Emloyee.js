@@ -64,7 +64,7 @@ function Table() {
     const [statusError, setStatusError] = useState('');
 
     const deleteEmployee = (employeeId) => {
-        if (localStorage.getItem("role") === 3) {
+        if (localStorage.getItem("role") === "3") {
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-success',
@@ -160,7 +160,7 @@ function Table() {
     }, [employeeId]);
     const handleChangeSubmit = (e) => {
         console.log(localStorage.getItem("role"))
-        if (localStorage.getItem("role") === 3) {
+        if (localStorage.getItem("role") === "3") {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const phoneRegex = /^\d{10}$/;
             e.preventDefault();
@@ -290,7 +290,7 @@ function Table() {
 
     const handleSubmit = (e) => {
         console.log(localStorage.getItem("role"))
-        if (localStorage.getItem("role") === 3) {
+        if (localStorage.getItem("role") === "3") {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const phoneRegex = /^\d{10}$/;
             e.preventDefault();

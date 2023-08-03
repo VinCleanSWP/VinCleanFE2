@@ -6,6 +6,7 @@ import "../../styles/contact.css";
 const RatingForm = ({ onClose, onRatingSubmit, serviceId, customerId }) => {
   const [rate, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleStarHover = (hoveredStars) => {
     setRating(hoveredStars);
@@ -20,6 +21,11 @@ const RatingForm = ({ onClose, onRatingSubmit, serviceId, customerId }) => {
   };
 
   const handleSubmit = () => {
+    if (rate === 0) {
+      setErrorMessage('Bạn phải chọn ít nhất 1 sao để đánh giá dịch vụ!');
+      return;
+    }
+
     const formData = {
       rate: rate,
       comment: comment,
@@ -58,6 +64,7 @@ const RatingForm = ({ onClose, onRatingSubmit, serviceId, customerId }) => {
         value={comment}
         onChange={handleCommentChange}
       ></textarea>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
       <button className="submit-button" onClick={handleSubmit}>
         Gửi đánh giá
       </button>

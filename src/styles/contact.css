@@ -17,6 +17,11 @@ padding-bottom: 10px;
   height: 50px;
 }
 
+.error-message{
+  color: red;
+  font-size: large;
+}
+
 .submit-button {
   background: #162b75;
   color: #fff;

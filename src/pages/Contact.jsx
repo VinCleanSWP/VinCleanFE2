@@ -588,7 +588,7 @@ const Contact = () => {
                                   </Row>
                                 </div>
                               )}
-                          <Modal
+                          <Modal1
                             open={isOpen}
                             onClose={handleClose2}
                             aria-labelledby="child-modal-title"
@@ -596,27 +596,16 @@ const Contact = () => {
                           >
                             <Box sx={{ ...style, width: 450 }}>
                               <h2 id="child-modal-title">Checkout Thành Công</h2>
-                              <h5 id="child-modal-title">Rating</h5>
-                              <p id="child-modal-description">
-                                Sao sao sao sao sao
-                              </p>
-                              <div className=" d-flex align-items-center gap-2">
-                                <h6 className="mb-0 fs-6">Note:</h6>
-                              </div>
-
-                              <div className=" d-flex align-items-center gap-2">
-                                <p className="section__description mb-0 mt-2 note-container">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-                              </div>
                               <Row>
                                 <Col lg="6" md="6">
-                                  <Button variant="contained" className="container mt-3" onClick={handleClose}>Đóng</Button>
+                                  <Button variant="contained" className="container mt-3" onClick={handleClose2}>Đóng</Button>
                                 </Col>
                                 <Col lg="6" md="6">
                                   <Button variant="contained" className="container mt-3" onClick={handleRatingOpen}>Đánh giá</Button>
                                 </Col>
                               </Row>
                             </Box>
-                          </Modal>
+                          </Modal1>
                         </div>
                       )}
                     </Modal>
@@ -641,7 +630,7 @@ const Contact = () => {
                     </Modal1> */}
 
                     {isRatingOpen && (
-                      <Modal
+                      <Modal1
                         open={isRatingOpen}
                         onClose={() => setIsRatingOpen(false)}
                         aria-labelledby="modal-modal-title"
@@ -654,7 +643,7 @@ const Contact = () => {
                             onClose={() => setIsRatingOpen(false)}
                             onRatingSubmit={handleRatingSubmit} />
                         </Box>
-                      </Modal>
+                      </Modal1>
                     )}
 
                   </tbody>

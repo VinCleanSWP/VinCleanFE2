@@ -9,6 +9,7 @@ import moment from 'moment';
 import { ToastContainer, toast } from 'react-toastify';
 import Switch from "react-switch";
 import { TbReload } from "react-icons/tb";
+import { vi } from 'date-fns/locale';
 import { fi } from "date-fns/locale";
 
 
@@ -30,7 +31,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   const [notification, setNotification] = useState(null);
   const [totalPoint, setTotalPoint] = useState(0);
   const [lastTotalPoint, setLastTotalPoint] = useState(totalPoint);
-  const [discountedPrice, setDiscountedPrice] = useState();
+  const [discountedPrice, setDiscountedPrice] = useState(selectedServiceCost);
   const [isPointUsed, setIsPointUsed] = useState(false);
   const [DataAccount, setDataAccount] = useState("");
   const [selectedServiceCostChange, setSelectedServiceCost] = useState(0);
@@ -39,16 +40,45 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   const [validLastName, setValidLastName] = useState(true);
   const [validPhone, setValidPhone] = useState(true);
   const [validDate, setValidDate] = useState(true);
-  const [validAddress, setValidAddress] = useState(true);
+  const [validArea, setValidArea] = useState(true);
+  const [validBuilding, setValidBuilding] = useState(true);
+  const [validFloor, setValidFloor] = useState(true);
+  const [validRoom, setValidRoom] = useState(true);
+
   const [validTime, setValidTime] = useState(true);
   const [validService, setValidService] = useState(true);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
-
+  const [AreaOptions, setAreaOptions] = useState([]);
+  const [building, setBuilding] = useState([]);
   const accountID = localStorage.getItem('id');
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowString = tomorrow.toISOString().split('T')[0];
+  const currentDate = new Date();
+  const formattedDate = format(currentDate, 'dd/MM/yyyy', { locale: vi });
+  const viDate = moment(journeyDate).format('DD/MM/YYYY');
+
+
+
+
+  useEffect(() => {
+    axios.get(`https://vinclean.azurewebsites.net/api/BuildingType`)
+      .then(response => {
+        setAreaOptions(response.data.data);
+      })
+      .catch(error => {
+        console.error('Error fetching building types:', error);
+      });
+  }, []);
+
+  // axios.get(`https://vinclean.azurewebsites.net/api/Building/Type/${AreaOptions.id}`)
+  //   .then(response => {
+  //     setBuilding(response.data.data);
+  //   })
+  //   .catch(error => {
+  //     console.error('Error fetching building types:', error);
+  //   });
 
   useEffect(() => {
     axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${accountID}`)
@@ -74,14 +104,20 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     //   return false;
     // }
     setValidTime(true);
-    setValidAddress(true);
+    // setValidAddress(true);
     setValidFirstName(true);
     setValidPhone(true);
     setValidLastName(true);
     setValidDate(true);
     setValidService(true);
+    setValidArea(true);
+    setValidBuilding(true);
+    setValidFloor(true);
+    setValidRoom(true);
     const phoneRegex = /^\d{10}$/;
     const addressRegex = /^S\d+\.\d+\s\d+$/;
+
+
     if (!firstName.trim()) {
       setValidFirstName("vui lòng nhập tên");
 
@@ -114,17 +150,29 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       }
 
     }
-    if (!address.trim()) {
-      setValidAddress("Vui lòng nhập địa chỉ");
+    if (!selectedOption.trim()) {
+      setValidArea("Vui lòng nhập phân khu");
 
       return false;
-    } else {
-      if (!addressRegex.test(address.trim())) {
-        setValidAddress("Địa chỉ không hợp lệ (VD:S3.05 1312)");
-
+    }
+    if (!selectedBuilding.trim()) {
+      if (showTextBox) { setValidBuilding(true) } else {
+        setValidBuilding("Vui lòng chọn tòa");
         return false;
-      } else {
-        setValidAddress(true);
+      }
+
+
+    }
+    if (!selectedFloor.trim()) {
+      if (showTextBox) { setValidFloor(true) } else {
+        setValidFloor("Vui lòng chọn tầng");
+        return false;
+      }
+    }
+    if (!selectedRoom.trim()) {
+      if (showTextBox) { setValidRoom(true) } else {
+        setValidRoom("Vui lòng chọn phòng");
+        return false;
       }
     }
     if (!journeyDate.trim()) {
@@ -155,7 +203,6 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       setValidService("Vui lòng chọn dịch vụ");
       return false;
     }
-
     return true;
   }
 
@@ -167,6 +214,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       setDiscountedPrice(0);
     }
   };
+  console.log(discountedPrice);
 
   const handleConfirm = (e) => {
     e.preventDefault();
@@ -174,17 +222,16 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     const data = {
       customerId: customerid,
       starTime: journeyTime + ":00",
-      name: lastName + ' ' + firstName,
       date: date,
       serviceId: serviceId,
-      address: address,
+      address: showTextBox ? address : selectedOption + " " + selectedBuilding + selectedFloor + selectedRoom,
       phone: phoneNumber,
       note: message,
       price: discountedPrice, // Use the discounted price
       pointUsed: lastTotalPoint
     };
 
-    axios.post('https://vinclean.azurewebsites.net/api/Process', data)
+    axios.post('https://vinclean.azurewebsites.net/api/Order', data)
       .then(response => {
         console.log(response.data);
         setSubmittedData(response.data);
@@ -225,6 +272,8 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   };
 
   const handleReset = (e) => {
+    e.preventDefault();
+
     setFirstName("");
     setLastName("");
     setPhoneNumber("");
@@ -232,14 +281,19 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     setJourneyDate("");
     setJourneyTime("");
     setMessage("");
-    handleClosePopup()
+    setAddress("");
+    setSelectedOption("");
+    setSelectedRoom("");
+    setSelectedFloor("");
+    setSlectedBuilding("");
+
+
+
   };
   const handleClosePopup = () => {
     setIsPopupOpen(false);
     setSubmittedData(null);
   };
-
-
 
   const handleSwitchChange = (isChecked) => {
     setIsSwitchOn(isChecked);
@@ -249,54 +303,87 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       handleNotUseTotalPoint();
     }
   };
+  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedBuilding, setSlectedBuilding] = useState('');
+  const [selectedFloor, setSelectedFloor] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState('');
+  const [showTextBox, setShowTextBox] = useState(false);
+  const [availableFloors, setAvailableFloors] = useState([]);
+  const matchedBuilding = building && building.find(buildingItem => buildingItem.name === selectedBuilding);
+  const floorValue = matchedBuilding ? matchedBuilding.floor : '';
+
+  const roomValue = matchedBuilding ? matchedBuilding.room : '';
+
+
+  const handleSelectChange = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedOption(selectedValue);
+    const selectedOption = AreaOptions.find(option => option.type === selectedValue);
+
+    if (selectedOption) {
+      // setSelectedOptionId(selectedOption.id);
+      axios.get(`https://vinclean.azurewebsites.net/api/Building/Type/${selectedOption.id}`)
+        .then(response => {
+          setBuilding(response.data.data);
+          const floors = response.data.data.find(option => option.name === selectedBuilding);
+          console.log(floors)
+          // Tạo danh sách từ 1 đến option.floor
+          const floorOptions = Array.from({ length: Math.max(...floors) }, (_, index) => (index + 1).toString());
+          setAvailableFloors(floorOptions);
+        })
+        .catch(error => {
+          console.error('Error fetching building types:', error);
+        });
+    } else {
+      setSelectedOptionId(null);
+      setAvailableFloors([]);
+    }
+    setSelectedOption(selectedValue);
+
+    if (selectedValue === 'Manhattan') {
+      setShowTextBox(true);
+    } else {
+      setShowTextBox(false);
+    }
+  };
 
 
   return (
     <Form onSubmit={handleSubmit}>
-      <div style={{ display: 'flex' }}>  <div> {validFirstName && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validFirstName}</div>}
-        <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validFirstName ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
+      <div style={{ display: 'flex' }}>
+        <div> {validFirstName && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px', paddingTop: '0px' }}>{validFirstName}</div>}
+          <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validFirstName ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px', }}>
 
-          <input type="text" placeholder="Tên" value={firstName} onChange={(e) => setFirstName(e.target.value)}
-            style={{
-              fontWeight: 'bold',
-              color: firstName ? 'black' : 'gray',
-              opacity: firstName ? '1' : '0.5',
-              fontFamily: 'Arial'
-            }}
-          />
-
-
-        </FormGroup>
-
-        {validLastName && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validLastName}</div>}
-        <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validLastName ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
-          <input type="text" placeholder="Họ" value={lastName} onChange={(e) => setLastName(e.target.value)}
-            style={{
-              fontWeight: 'bold',
-              color: lastName ? 'black' : 'gray',
-              opacity: lastName ? '1' : '0.5'
-            }}
-          />
-        </FormGroup>
-        {validPhone && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validPhone}</div>}
-        <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validPhone ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
-          <input type="text" placeholder="SĐT" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
-            style={{
-              fontWeight: 'bold',
-              color: phoneNumber ? 'black' : 'gray',
-              opacity: phoneNumber ? '1' : '0.5'
-            }}
-          />
-        </FormGroup>
-      </div>
-
-        <div> {validAddress && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validAddress}</div>}
-          <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validAddress ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
-            <input type="text" placeholder="Địa chỉ (VD: S3.05 1312)" value={address} onChange={(e) => setAddress(e.target.value)}
+            <input type="text" placeholder="Tên" value={firstName} onChange={(e) => setFirstName(e.target.value)}
               style={{
                 fontWeight: 'bold',
-                color: address ? 'black' : 'gray',
-                opacity: address ? '1' : '0.5'
+                color: firstName ? 'black' : 'gray',
+                opacity: firstName ? '1' : '0.5',
+                fontFamily: 'Arial',
+
+              }}
+            />
+
+
+          </FormGroup>
+
+          {validLastName && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validLastName}</div>}
+          <FormGroup className="booking__form d-inline-block ms-1 mb-4" style={{ border: validLastName ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
+            <input type="text" placeholder="Họ" value={lastName} onChange={(e) => setLastName(e.target.value)}
+              style={{
+                fontWeight: 'bold',
+                color: lastName ? 'black' : 'gray',
+                opacity: lastName ? '1' : '0.5'
+              }}
+            />
+          </FormGroup>
+          {validPhone && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validPhone}</div>}
+          <FormGroup className="booking__form d-inline-block me-4 mb-4" style={{ border: validPhone ? '2px solid gray' : '2px solid red', borderRadius: '10px', width: '250px' }}>
+            <input type="text" placeholder="SĐT" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
+              style={{
+                fontWeight: 'bold',
+                color: phoneNumber ? 'black' : 'gray',
+                opacity: phoneNumber ? '1' : '0.5'
               }}
             />
           </FormGroup>
@@ -320,7 +407,181 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
               }}
             />
           </FormGroup></div>
+
+        <div >
+
+          <div>  {validArea && (
+            <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>
+              {validArea}
+            </div>
+
+          )}
+          </div>
+
+          <FormGroup
+            className="booking__form d-inline-block ms-1 mb-4"
+            style={{
+              border: validArea ? '2px solid gray' : '2px solid red',
+              borderRadius: '10px',
+              width: '200px',
+            }}
+          >
+            <select
+              value={selectedOption}
+              onChange={handleSelectChange}
+              style={{
+                fontWeight: 'bold',
+                color: selectedOption ? 'black' : 'gray',
+                opacity: selectedOption ? '1' : '0.5',
+                width: '100%',
+                border: 'none',
+                outline: 'none',
+                backgroundColor: 'transparent',
+              }}
+            >
+
+              <option value="">Chọn phân khu</option>
+              {AreaOptions.map((option) => (
+                <option key={option.id} value={option.type}>
+                  {option.type}
+                </option>
+              ))}
+            </select>
+
+            {showTextBox && (
+
+              <input
+                style={{
+                  color: address ? 'black' : 'gray',
+                  opacity: address ? '1' : '0.5', fontWeight: 'bold', color: 'grey', fontSize: '14px', marginTop: '0px'
+                }}
+                type="text"
+                placeholder="Nhập địa chỉ"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+
+              />
+            )}
+          </FormGroup>
+
+
+          {validBuilding && (
+            <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>
+              {validBuilding}
+            </div>
+          )}
+
+          <FormGroup
+            className="booking__form d-inline-block ms-1 mb-4"
+            style={{
+              border: validBuilding ? '2px solid gray' : '2px solid red',
+              borderRadius: '10px',
+              width: '200px',
+            }}
+          >
+            <select
+              value={selectedBuilding}
+              onChange={(e) => setSlectedBuilding(e.target.value)}
+              style={{
+                fontWeight: 'bold',
+                color: selectedBuilding ? 'black' : 'gray',
+                opacity: selectedBuilding ? '1' : '0.5',
+                width: '100%',
+                border: 'none',
+                outline: 'none',
+                backgroundColor: 'transparent',
+              }}
+            >
+
+              <option value="">Chọn số tòa</option>
+              {building.map((option) => (
+                <option key={option.id} value={option.name}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </FormGroup>
+          <div>  {validFloor && (
+            <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>
+              {validFloor}
+            </div>
+          )}
+
+            <FormGroup
+              className="booking__form d-inline-block ms-1 mb-4"
+              style={{
+                border: validFloor ? '2px solid gray' : '2px solid red',
+                borderRadius: '10px',
+                width: '200px',
+              }}
+            >
+              <select
+                value={selectedFloor}
+                onChange={(e) => setSelectedFloor(e.target.value)}
+                style={{
+                  fontWeight: 'bold',
+                  color: selectedFloor ? 'black' : 'gray',
+                  opacity: selectedFloor ? '1' : '0.5',
+                  width: '100%',
+                  border: 'none',
+                  outline: 'none',
+                  backgroundColor: 'transparent',
+                }}
+              >
+                <option value="">Chọn số tầng</option>
+                {Array.from({ length: floorValue }, (_, index) => (
+                  <option key={index + 1} value={index + 1}>{index + 1}</option>
+                ))}
+
+              </select>
+            </FormGroup>
+
+
+            <div>  {validRoom && (
+              <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>
+                {validRoom}
+              </div>
+            )}
+
+              <FormGroup
+                className="booking__form d-inline-block ms-1 mb-4"
+                style={{
+                  border: validRoom ? '2px solid gray' : '2px solid red',
+                  borderRadius: '10px',
+                  width: '200px',
+                }}
+              >
+                <select
+                  value={selectedRoom}
+                  onChange={(e) => setSelectedRoom(e.target.value)}
+                  style={{
+                    fontWeight: 'bold',
+                    color: selectedFloor ? 'black' : 'gray',
+                    opacity: selectedFloor ? '1' : '0.5',
+                    width: '100%',
+                    border: 'none',
+                    outline: 'none',
+                    backgroundColor: 'transparent',
+                  }}
+                >
+                  <option value="">Chọn số phòng</option>
+                  {Array.from({ length: roomValue }, (_, index) => (
+                    <option key={index + 1} value={index + 1}>{index + 1}</option>
+                  ))}
+
+                </select>
+              </FormGroup>
+
+            </div>
+
+
+
+          </div>
+        </div>
+
       </div>
+
+
 
       {validService && <div style={{ color: 'red', fontSize: '14px', marginTop: '0px' }}>{validService}</div>}
       <FormGroup style={{ border: '2px solid gray', borderRadius: '10px' }}>
@@ -347,6 +608,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
         {/* <button className="normal-button buttonReset blue" type="submit">Xác nhận</button> */}
       </div>
 
+
       <Modal
         isOpen={isPopupOpen}
         onRequestClose={handleClosePopup}
@@ -371,12 +633,21 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
               <div className="tab-content">
                 <div className="tab-pane fade active show" id="account-general">
                   <hr className="border-light m-0" />
-                  <div className="card-body"> <h3 style={{ textAlign: 'center' }}><strong>Thông tin đặt dịch vụ</strong></h3>
+                  <div className="card-body" style={{ height: '700px' }}> <h3 style={{ textAlign: 'center' }}><strong>Thông tin đặt dịch vụ</strong></h3>
                     <br></br>
-                    <p><strong>ID của bạn:</strong> {customerid}</p>
+                    {/* <p><strong>ID của bạn:</strong> {customerid}</p>
                     <p><strong>Tên bạn:</strong> {lastName + ' ' + firstName}</p>
                     <p><strong>SĐT:</strong> {phoneNumber}</p>
-                    <p><strong>SĐT:</strong> {address}</p>
+                    <p>
+                      <strong>Địa chỉ:</strong>{" "}
+                      {showTextBox ? (
+                        address
+                      ) : (
+                        <>
+                          {"Phân khu: " + selectedOption + " " + "Tòa: " + selectedBuilding + " Tầng: " + selectedFloor + " Phòng: " + selectedRoom}
+                        </>
+                      )}
+                    </p>
                     <p><strong>Thời gian bắt đầu làm:</strong> {journeyTime + ":00"}</p>
                     <p><strong>Dịch vụ bạn đã chọn:</strong> {selectedServiceName}</p>
                     <p><strong>Ngày đặt:</strong> {journeyDate}</p>
@@ -402,13 +673,66 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
                         className="react-switch"
                       />
                       <span>{isSwitchOn ? handleUseTotalPoint : handleNotUseTotalPoint}</span>
+                    </div> */}
+                    <div style={{ display: 'flex' }}>
+                      {/* Cột thứ nhất */}
+                      <div style={{ flex: 1, paddingRight: '10px', borderRight: '1px solid #ccc', marginRight: '10px' }}>
+                        <p><strong>ID của bạn:</strong> {customerid}</p>
+                        <p><strong>Tên bạn:</strong> {lastName + ' ' + firstName}</p>
+                        <p><strong>SĐT:</strong> {phoneNumber}</p>
+                        <p>
+                          <strong>Địa chỉ:</strong>{" "}
+                          {showTextBox ? (
+                            address
+                          ) : (
+                            <>
+                              {"Phân khu: " + selectedOption + " " + "Tòa: " + selectedBuilding + " Tầng: " + selectedFloor + " Phòng: " + selectedRoom}
+                            </>
+                          )}
+                        </p>
+                      </div>
+
+                      {/* Đường phân cách */}
+                      <div style={{ width: '1px', backgroundColor: '#ccc', margin: '0 10px' }}></div>
+
+                      {/* Cột thứ hai */}
+                      <div style={{ flex: 1, paddingLeft: '10px' }}>
+                        <p><strong>Thời gian bắt đầu làm:</strong> {journeyTime + ":00"}</p>
+                        <p><strong>Dịch vụ bạn đã chọn:</strong> {selectedServiceName}</p>
+                        <p><strong>Ngày tạo đơn:</strong> {formattedDate}</p>
+                        <p><strong>Ngày đặt:</strong> {viDate}</p>
+                        <p><strong>Tạm tính:</strong> {isSwitchOn ? discountedPrice : selectedServiceCost}</p>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <p>
+                            <strong>
+                              Dùng{" "}
+                              <span style={{ color: '#162b75' }}>{totalPoint}</span> điểm tích lũy?
+                            </strong>
+                          </p>
+
+                          <Switch
+                            checked={isSwitchOn}
+                            onChange={handleSwitchChange}
+                            onColor="#162b75"
+                            onHandleColor="#162b75"
+                            handleDiameter={24}
+                            uncheckedIcon={false}
+                            checkedIcon={false}
+                            height={20}
+                            width={48}
+                            className="react-switch"
+                          />
+                          <span>{isSwitchOn ? handleUseTotalPoint : handleNotUseTotalPoint}</span>
+                        </div>
+                      </div>
                     </div>
 
 
 
+
                     <br></br>
-
-
+                    <p>Dịch vụ có thể có thêm phụ thu</p>
+                    <br></br>
                     <p>
                       <strong>Ghi chú:</strong>
                     </p>

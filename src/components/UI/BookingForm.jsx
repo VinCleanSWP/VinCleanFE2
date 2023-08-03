@@ -40,7 +40,6 @@ const BookingForm = ({
   const [isPointUsed, setIsPointUsed] = useState(false);
   const [DataAccount, setDataAccount] = useState("");
   const [selectedServiceCostChange, setSelectedServiceCost] = useState(0);
-  const date = moment(journeyDate).format("YYYY-MM-DD");
   const [validFirstName, setValidFirstName] = useState(true);
   const [validLastName, setValidLastName] = useState(true);
   const [validPhone, setValidPhone] = useState(true);
@@ -58,13 +57,12 @@ const BookingForm = ({
   const [building, setBuilding] = useState([]);
   const [servicebyId, setServicebyId] = useState([]);
   const accountID = localStorage.getItem("id");
-  const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate());
-  const tomorrowString = tomorrow.toISOString().split("T")[0];
-  const last7Days = new Date(today);
-  last7Days.setDate(last7Days.getDate() + 7);
-  const last7DaysString = last7Days.toISOString().split("T")[0];
+  const moment = require("moment");
+  moment.locale("vi");
+  const daynow = moment().format("YYYY-MM-DD");
+  const next7Days = moment().add(7, "days").format("YYYY-MM-DD");
+
+
   const currentDate = new Date();
   const formattedDate = format(currentDate, "dd/MM/yyyy", { locale: vi });
   const viDate = moment(journeyDate).format("DD/MM/YYYY");
@@ -262,6 +260,8 @@ const BookingForm = ({
     const response = await GetServicebyIDAPI(id);
     setServicebyId(response.data);
     console.log(servicebyId);
+    console.log(daynow);
+    console.log(next7Days);
   };
   const CheckEmployee = async () => {
     const startTimeObj = new Date(`${date}T${journeyTime}`);
@@ -283,13 +283,14 @@ const BookingForm = ({
     }
     return false;
   };
-
+  const date = moment(journeyDate).format("YYYY-MM-DD");
   const handleConfirm = (e) => {
     e.preventDefault();
     //check còn nhân viên hay không
 
     if (CheckEmployee) {
       console.log("còn nhân viên");
+      
       const data = {
         customerId: customerid,
         starTime: journeyTime + ":00",
@@ -562,8 +563,8 @@ const BookingForm = ({
               type="date"
               placeholder="Ngày đặt"
               value={journeyDate}
-              min={tomorrowString}
-              max={last7DaysString}
+              min={daynow}
+              max={next7Days}
               onChange={(e) => setJourneyDate(e.target.value)}
               style={{
                 fontWeight: "bold",

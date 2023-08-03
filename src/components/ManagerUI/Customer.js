@@ -41,7 +41,7 @@ function Customer() {
     const [customerId, setCustomerId] = useState('');
 
     const handleSave = (accountId) => {
-        if (localStorage.getItem("role") === 3) {
+        if (localStorage.getItem("role") === "3") {
             const status = document.getElementById('updateTypeStatus').value;
             const data = {
                 accountId: accountId, // Use the appropriate accountID here
@@ -63,12 +63,14 @@ function Customer() {
                 .catch(error => {
                     console.error('Error:', error);
                 });
-        }Swal.fire(
+        }else{
+        Swal.fire(
             'Not Excepted?',
             'You does not have permission?',
             'warning'
           )
           setModalIsOpen(false);
+        }
     };
 
 

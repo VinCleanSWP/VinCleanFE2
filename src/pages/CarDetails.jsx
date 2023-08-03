@@ -35,6 +35,7 @@ const ServiceTypeDetail = () => {
         const data = response.data.data;
         setService(data);
         setSelectedType(typeId.type1);
+        console.log(service);
       })
       .catch(error => {
         console.error('Error fetching service type detail:', error);
@@ -44,6 +45,7 @@ const ServiceTypeDetail = () => {
       .then(response => {
         const data = response.data.data;
         setType(data)
+        console.log(type);
       })
       .catch(error => {
         console.error('Error fetching service type detail:', error);
@@ -163,7 +165,7 @@ const ServiceTypeDetail = () => {
             <Col lg="7" className="mt-5">
 
               <h5 className="mb-4 fw-bold ">Thông tin đặt</h5>
-              <BookingForm serviceId={selectedServiceId} selectedServiceName={selectedServiceName}
+              <BookingForm selectedServiceID={selectedServiceId} selectedServiceName={selectedServiceName}
                 selectedServiceType={selectedType} selectedServiceCost={selectedCost} />
 
             </Col>

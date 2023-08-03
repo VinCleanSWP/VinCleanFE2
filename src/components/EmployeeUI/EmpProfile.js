@@ -100,12 +100,12 @@ export default function EmpProfile() {
     useEffect(() => {
         // Gọi API để lấy dữ liệu
         axios.get(`https://vinclean.azurewebsites.net/api/Employee/Account/${id}`)
-        // axios.get(`https://localhost:7013/api/Employee/Account/${id}`)
+            // axios.get(`https://localhost:7013/api/Employee/Account/${id}`)
             .then(response => {
                 const data = response.data.data
-                setCustomer(data);
-                setCurrentGender(data.account.gender);
-                setCurrentImg(data.account.img);
+                setCustomer(response.data.data);
+                setCurrentGender(response.data.data.account.gender);
+                setCurrentImg(response.data.data.account.img);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -156,6 +156,7 @@ export default function EmpProfile() {
     };
 
     const [check, setCheck] = useState(customer.account && customer.account.gender)
+    // const [check, setCheck] = useState(customer?.account?.gender);
 
     const handleSubmitInfo = async (e) => {
         e.preventDefault();
@@ -324,7 +325,7 @@ export default function EmpProfile() {
                                             </div>
 
                                             <div className="form-group">
-                                                <label className="form-label">Giới tính: </label>
+                                                <label className="form-label">Giới tính</label>
                                                 {gioitinh.map(sex => (
                                                     <div key={sex.id}>
                                                         <input type='radio'
@@ -338,8 +339,8 @@ export default function EmpProfile() {
 
                                             <div className="form-group">
                                                 <label className="form-label">Số điện thoại</label>
-                                                <input type="text" className="form-control" id="phone" maxLength="10" title="Số điện thoại bao gồm 10 chữ số."
-                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10}" required />
+                                                <input type="text" className="form-control" id="phone" maxLength="10" title="Số điện thoại phải bắt đầu bằng số 0 và bao gồm 10 chữ số."
+                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="^0\d{9}$" required />
                                             </div>
 
                                             <div className="form-group">
@@ -523,7 +524,7 @@ export default function EmpProfile() {
                                                                                     <div class="info-content" style={{ padding: "8px" }}>
                                                                                         {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
                                                                                         <div className=" d-flex align-items-center gap-2">
-                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"} NHỚ BỔ SUNG</p>
+                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.reasonCancel ? booking.reasonCancel : "<Nothing>"}</p>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>

@@ -56,6 +56,7 @@ const MyCalendar = () => {
     dayHeaderFormat: "dddd  -  DD/MM/YYYY",
   };
   var today = new Date();
+  const date = moment(today).format("YYYY-MM-DD");
   const time = moment(today).format("HH:mm:ss");
   const messages = {
     today: "Hôm nay",
@@ -561,7 +562,8 @@ const MyCalendar = () => {
         processId: selectedEvent.id,
         oldEmployeeId: selectedEvent.data.employeeId,
         note: inputNote,
-        createBy: selectedEvent.data.employeeAccountId,
+         createAt: date+"T"+time,
+        createBy: selectedEvent.data.employeeAccountId
       };
       console.log(data);
       await updateCanncelJobAPI(data);

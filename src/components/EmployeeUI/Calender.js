@@ -342,13 +342,13 @@ const MyCalendar = () => {
           const isCompleted = selectedEvent.data.status === 'Completed';
           console.log(record.type);
           const isDisable =
-              (isIncoming && isRecordVerify) ||
-              (isProcessing && (isRecordVerify || isRecordIncoming)) ||
-              (isCompleted && (isRecordVerify || isRecordIncoming || isRecordCompleted));
+            (isIncoming && isRecordVerify) ||
+            (isProcessing && (isRecordVerify || isRecordIncoming)) ||
+            (isCompleted && (isRecordVerify || isRecordIncoming || isRecordCompleted));
           return (
             <Space>
-              <Button onClick={() => handleOpenCamera(record)} 
-              disabled={isDisable}
+              <Button onClick={() => handleOpenCamera(record)}
+                disabled={isDisable}
               >
                 Chụp ảnh
               </Button>
@@ -393,9 +393,9 @@ const MyCalendar = () => {
     }));
     console.log(data);
     function formatCurrency(amount) {
-      var amount1 = amount*1000;   
+      var amount1 = amount * 1000;
       return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
-  }
+    }
     return (
       <Table columns={columns.filter(col => col.dataIndex !== 'id')} dataSource={data} pagination={false} />
     );
@@ -509,9 +509,9 @@ const MyCalendar = () => {
     return false;
   };
   function formatCurrency(amount) {
-    var amount1 = amount;   
+    var amount1 = amount;
     return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
-}
+  }
   return (
     <div>
       <div style={{ paddingBottom: '0px', paddingLeft: '15px', paddingRight: '15px', paddingTop: '5px' }}>
@@ -643,34 +643,26 @@ const MyCalendar = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div style={{ display: 'flex', flexWrap: 'nowrap', margin: '5px' }}>
-                <div style={{ flex: '1',fontSize: '15px' ,marginLeft: '5px' }}>
-                <p style={{fontSize: '15px'}}><strong>Mã công việc:</strong> {selectedEvent.id}</p>
-                <p tyle={{fontSize: '15px'}}>Thời gian bắt đầu:  {selectedEvent.start.toLocaleString('vi-VN', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-                <br></br>
-                  Thời gian kết thúc dự kiến: {selectedEvent.end.toLocaleString('vi-VN', {
+                <div style={{ flex: '1', fontSize: '15px', marginLeft: '5px' }}>
+                  <p style={{ fontSize: '15px' }}><strong>Mã công việc:</strong> {selectedEvent.id}</p>
+                  <p tyle={{ fontSize: '15px' }}>Thời gian bắt đầu:  {selectedEvent.start.toLocaleString('vi-VN', {
                     year: 'numeric',
                     month: '2-digit',
                     day: '2-digit',
                     hour: '2-digit',
                     minute: '2-digit',
-                  })}</p>
-              
-                  
-
-                </div>
-                
-                <div style={{ flex: '1', marginRight: '5px',marginLeft: '25px', justifyContent: 'flex-end' }}>
-                <p style={{fontSize: '15px' }}>
-                <p style={{fontSize: '15px'}}><strong>Tổng Tiền Thu Hộ:   </strong> <strong style={{ color: 'green'}}>{formatCurrency(selectedEvent.price)}</strong></p>
-                    <div>
+                  })}
+                    <br></br>
+                    Thời gian kết thúc dự kiến: {selectedEvent.end.toLocaleString('vi-VN', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}</p>
+                  <div>
                     <strong>Trạng Thái hiện tại:</strong>{" "}
                     {selectedEvent.data.status === "Incoming" ? (
                       <span style={{ color: "#fbec15" }}><strong>chờ</strong></span>
@@ -681,14 +673,17 @@ const MyCalendar = () => {
                     ) : (
                       selectedEvent.data.status
                     )}
-                    <Button style={{ marginLeft: '35px' }} onClick={handleOther} disabled={handleDisabledCannelwhenCompleted()}>Tác vụ khác</Button>
-                    </div>
-                  </p>
-                  
+                  </div>
+
+
+                </div>
+
+                <div style={{ flex: '1', marginRight: '5px', marginLeft: '25px', justifyContent: 'flex-end' }}>
+                  <p style={{ fontSize: '15px' }}><strong>Phụ Thu:  </strong> <strong style={{ color: 'green' }}>{formatCurrency(selectedEvent.data.subPrice)}</strong></p>
+                  <p style={{ fontSize: '15px' }}><strong>Tổng Tiền Thu Hộ:   </strong> <strong style={{ color: 'green' }}>{formatCurrency(selectedEvent.price)}</strong></p>
+                  <Button style={{ marginTop: '10px' }} onClick={handleOther} disabled={handleDisabledCannelwhenCompleted()}>Tác vụ khác</Button>
                 </div>
               </div>
-
-
               <Table
                 columns={columns}
                 dataSource={data}

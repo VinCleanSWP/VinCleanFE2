@@ -128,7 +128,7 @@ function Request() {
                     'success'
                 )
                 console.log(data);
-                axios.put('https://vinclean.azurewebsites.net/api/WorkingBy/AcceptedRequest', data)
+                axios.put('https://vinclean.azurewebsites.net/api/Location/AcceptedRequest', data)
                     .then(response => {
                         console.log(response.data);
                         axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToCustomer', dataMail)
@@ -221,7 +221,7 @@ function Request() {
                     <p><b>Lý do: </b> ${text}</p>
                     <p>Nếu Có Thắc Mắc gì vui lòng liên hệ trực tiếp với ban quản lý.</p>`
                     }
-                    axios.put(`https://vinclean.azurewebsites.net/api/ProcessSlot/Denied/${processId}`)
+                    axios.put(`https://vinclean.azurewebsites.net/api/OrderRequest/Denied/${processId}`)
                         .then(response => {
                             console.log(response.data);
                             axios.post('https://vinclean.azurewebsites.net/api/Email', dataMail)
@@ -341,7 +341,7 @@ function Request() {
                                                             <td>
                                                                 <div className="table-data-feature">
                                                                     <button className="item" data-toggle="tooltip" data-placement="top" title="Send"
-                                                                        onClick={() => sendEmail(request.processId, request.oldEmployeEmail)}>
+                                                                        onClick={() => sendEmail(request.orderId, request.oldEmployeEmail)}>
                                                                         <i className="zmdi zmdi-mail-send" />
                                                                     </button>
                                                                     <button className={`item ${request.NewEmployeeName ? 'assigned' : ''}`} data-toggle="tooltip" data-placement="top" title="Assign"
@@ -377,7 +377,7 @@ function Request() {
                         <div className='modal-dialog modal-lg modal-dialog-centered'>
                             <div className="modal-content">
                                 <div className="modal-header" >
-                                    <h5 className="modal-title" id="exampleModalLabel"><strong>Request Details  ID: {modal2.processId} </strong></h5>
+                                    <h5 className="modal-title" id="exampleModalLabel"><strong>Request Details  ID: {modal2.orderId} </strong></h5>
                                     <h5 className={`status ${modal.status} modal-title`} style={{ marginLeft: '400px', width: '130px' }}> <span style={{ marginRight: "5px" }}>•</span> {modal.status} </h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>

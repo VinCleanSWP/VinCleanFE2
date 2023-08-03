@@ -122,11 +122,6 @@ const Contact = () => {
   };
 
   const handleCancel = async () => {
-    const cancelInfo = {
-      orderId: booking.orderId,
-      cancelBy: localStorage.getItem('id'),
-      reasonCancel: "string"
-    };
 
     try {
       const { value: text } = await Swal.fire({
@@ -147,7 +142,7 @@ const Contact = () => {
           },
           buttonsStyling: false
         })
-        
+
         swalWithBootstrapButtons.fire({
           title: 'Are you sure to Cancel it?',
           text: "You won't be able to revert this!",
@@ -158,21 +153,29 @@ const Contact = () => {
           reverseButtons: true
         }).then((result) => {
           if (result.isConfirmed) {
-            const response = axios.put('https://vinclean.azurewebsites.net/api/Order/Cancel', cancelInfo);
-            if (response.status == 200) {
-              console.log('OK');
-              setTimeout(() => {
-                setSelectedEvent(null)
-                fetchOrderData();
-              }, 3000);
-              swalWithBootstrapButtons.fire(
-                'Cancelled!',
-                'this order has been cancelled.',
-                'success'
-              )
-            } else {
-              console.log('KO');
-            }
+            const cancelInfo = {
+              orderId: booking.orderId,
+              cancelBy: localStorage.getItem('id'),
+              reasonCancel: text
+            };
+            console.log(cancelInfo)
+            axios.put('https://vinclean.azurewebsites.net/api/Order/Cancel', cancelInfo)
+              .then((response) => {
+                console.log('OK');
+                setTimeout(() => {
+                  setSelectedEvent(null)
+                  fetchOrderData();
+                }, 3000);
+                swalWithBootstrapButtons.fire(
+                  'Cancelled!',
+                  'this order has been cancelled.',
+                  'success'
+                )
+              })
+              .catch((error) => {
+                console.error('Error fetching data:', error);
+                console.log('KO');
+              });
           } else if (
             /* Read more about handling dismissals below */
             result.dismiss === Swal.DismissReason.cancel
@@ -184,7 +187,7 @@ const Contact = () => {
             )
           }
         })
-       
+
       }
 
     } catch (error) {

@@ -78,7 +78,7 @@ const Contact = () => {
     setBooking(process);
     setSelectedEvent(process)
     axios.get(`https://vinclean.azurewebsites.net/api/Order/GetALL/${id}`)
-    // axios.get(`https://localhost:7013/api/Order/GetALL/${id}`)
+      // axios.get(`https://localhost:7013/api/Order/GetALL/${id}`)
       .then(response => {
         console.log('Success:', response.data.data);
         setModal(response.data.data)
@@ -98,7 +98,7 @@ const Contact = () => {
 
   const handleClick = () => {
     axios.put(`https://vinclean.azurewebsites.net/api/Order/StatusCompleted?processid=${booking.orderId}`)
-    // axios.put(`https://localhost:7013/api/Order/StatusCompleted?processid=${booking.orderId}`)
+      // axios.put(`https://localhost:7013/api/Order/StatusCompleted?processid=${booking.orderId}`)
       .then(response => {
         console.log('Success:', response.data.data);
         toast.success('Checkout Successfully!', {
@@ -171,6 +171,10 @@ const Contact = () => {
 
   const [selectedEvent, setSelectedEvent] = useState(null);
 
+  function formatCurrency(amount) {
+    return amount ? amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+  }
+
   return (
     <Helmet title="Các hoạt động đã đặt">
       <CommonSection title="Các hoạt động đã đặt" />
@@ -207,7 +211,7 @@ const Contact = () => {
                         ) : (
                           <td className="listorder complete" style={{ color: '#0053e4' }}>{processing.status}</td>
                         )}
-                        <td className="process" style={{ color: '#35cb28' }}>{processing.price}.000 VND</td>
+                        <td className="process" style={{ color: '#35cb28' }}>{formatCurrency(processing.price)}</td>
                       </tr>
                     ))}
                     {/* <Modal
@@ -439,7 +443,7 @@ const Contact = () => {
                                 <p><strong>Phụ Thu: </strong> {booking.subPrice ? booking.subPrice : 0}</p>
                                 <div className=" d-flex align-items-center gap-2 ">
                                   <h6 className="mb-0 h3 mt-3"><strong>Tổng tiền:</strong></h6>
-                                  <p className="section__description mb-0 h3 mt-3 text-success"><strong>{booking.price}.000 VND</strong></p>
+                                  <p className="section__description mb-0 h3 mt-3 text-success"><strong>{formatCurrency(booking.price)}</strong></p>
                                 </div>
                               </div>
                             </div>

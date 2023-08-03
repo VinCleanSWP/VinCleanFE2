@@ -291,12 +291,12 @@ const BookingForm = ({
         address: showTextBox
           ? address
           : selectedOption +
-          " " +
-          selectedBuilding +
-          selectedFloor +
-          selectedRoom,
+            " " +
+            selectedBuilding +
+            selectedFloor +
+            selectedRoom,
         phone: phoneNumber,
-        buildingId: buildingId,
+        buildingId: showTextBox? 37 : buildingId,
         note: message,
         price: discountedPrice, // Use the discounted price
         pointUsed: lastTotalPoint,
@@ -394,14 +394,13 @@ const BookingForm = ({
   const [selectedRoom, setSelectedRoom] = useState("");
   const [showTextBox, setShowTextBox] = useState(false);
   const [availableFloors, setAvailableFloors] = useState([]);
-  const matchedBuilding = building && building.find(buildingItem => buildingItem.name === selectedBuilding);
-  const floorValue = matchedBuilding ? matchedBuilding.floor : '';
+  const matchedBuilding =
+    building &&
+    building.find((buildingItem) => buildingItem.name === selectedBuilding);
+  const floorValue = matchedBuilding ? matchedBuilding.floor : "";
 
-  const roomValue = matchedBuilding ? matchedBuilding.room : '';
-  const buildingId = matchedBuilding ? matchedBuilding.id : '';
-
-
-
+  const roomValue = matchedBuilding ? matchedBuilding.room : "";
+  const buildingId = matchedBuilding ? matchedBuilding.id : "";
 
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
@@ -447,7 +446,9 @@ const BookingForm = ({
 
   function formatCurrency(amount) {
     var amount1 = amount;
-    return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+    return amount1
+      ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+      : "";
   }
   return (
     <Form onSubmit={handleSubmit}>
@@ -893,7 +894,7 @@ const BookingForm = ({
                           <strong>SĐT:</strong> {phoneNumber}
                         </p>
                         <p>
-                          <strong>Địa chỉ:</strong>{" "}
+                          <strong>Địa chỉ:</strong><br></br>{" "}
                           {showTextBox ? (
                             address
                           ) : (
@@ -938,8 +939,10 @@ const BookingForm = ({
                           <strong>Ngày đặt:</strong> {viDate}
                         </p>
                         <p>
-                          <strong>Tạm tính:</strong>{" "}
-                          {isSwitchOn ? discountedPrice : selectedServiceCost}
+                          <strong>Tạm tính:</strong>{" "}<strong style={{ color: "green" }}>
+                          {formatCurrency(
+                            isSwitchOn ? discountedPrice : selectedServiceCost
+                          )}</strong>
                         </p>
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <p>
@@ -973,7 +976,7 @@ const BookingForm = ({
                       </div>
                     </div>
                     <br></br>
-                    <p>Dịch vụ có thể có thêm phụ thu</p>
+                    <p><strong>LƯU Ý:</strong> Dịch vụ có thể có thêm phụ thu thêm tuỳ hiện trạng(nhân viên sẽ báo giá sau)</p>
                     <br></br>
                     <p>
                       <strong>Ghi chú:</strong>

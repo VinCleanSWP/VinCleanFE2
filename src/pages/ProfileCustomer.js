@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Modal1 from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import NativeSelect from '@mui/material/NativeSelect';
+import Pagination from '@mui/material/Pagination';
 import { async } from 'q';
 import '../styles/profile-customer.css'
 import { storage } from '../firebase/index';
@@ -50,6 +51,9 @@ const gioitinh = [
         sex: "Other"
     }
 ]
+
+const itemsPerPage = 10;
+
 
 export default function ProfileCustomer() {
     const [open, setOpen] = useState(false);
@@ -113,6 +117,7 @@ export default function ProfileCustomer() {
             // axios.get(`https://vinclean.azurewebsites.net/api/Customer/Account/${id}`)
             .then(response => {
                 setCustomer(response.data.data);
+                console.log(response.data.data);
                 setCurrentGender(response.data.data.account.gender);
                 setCurrentImg(response.data.data.account.img);
                 setAddress(response.data.data.address)
@@ -281,7 +286,12 @@ export default function ProfileCustomer() {
     const handleDateChange = (event) => {
         event.preventDefault();
         const value = event.target.value;
-        setSelectedDate(value !== selectedDate ? value : customer.account.dob);
+        // setSelectedDate(value !== selectedDate ? value : customer.account.dob);
+        if (value <= tomorrowString) {
+            setSelectedDate(value !== selectedDate ? value : customer.account.dob);
+        } else {
+            alert("Ngày sinh không hợp lệ");
+        }
     };
 
     const handleImageUpload = async e => {
@@ -390,6 +400,19 @@ export default function ProfileCustomer() {
         return amount ? amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
     }
 
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate());
+    const tomorrowString = tomorrow.toISOString().slice(0, 10);
+
+    // -------------------PAGING---------------------
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(orders.length / itemsPerPage);
+    const currentData = orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const handlePageChange = (event, page) => {
+        setCurrentPage(page);
+    };
+
     return (
         <div className='container'>
             <div className="container light-style flex-grow-1 container-p-y">
@@ -450,6 +473,7 @@ export default function ProfileCustomer() {
                                                     name="dob"
                                                     className="form-control"
                                                     type="date"
+                                                    max={tomorrowString}
                                                     value={selectedDate || formattedDOB}
                                                     onChange={handleDateChange}
                                                     InputLabelProps={{
@@ -471,8 +495,8 @@ export default function ProfileCustomer() {
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Số điện thoại</label>
-                                                <input type="text" className="form-control" id="phone" maxLength="10" title="Số điện thoại bao gồm 10 chữ số."
-                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="[0-9]{10}" required />
+                                                <input type="text" className="form-control" id="phone" maxLength="10" title="Số điện thoại phải bắt đầu bằng số 0 và bao gồm 10 chữ số."
+                                                    name="phone" defaultValue={customer.phone} onChange={handleInputChange} pattern="^0\d{9}$" required />
                                             </div>
 
                                             <div className="form-group">
@@ -491,7 +515,8 @@ export default function ProfileCustomer() {
                                                                     labelId="demo-simple-select-standard-label"
                                                                     id="demo-simple-select-standard"
                                                                     label="Age"
-                                                                    value={phankhu || soKhu}
+                                                                    value={phankhu}
+                                                                    // value={phankhu || soKhu}
                                                                     onChange={handleType}
                                                                 // required
                                                                 >
@@ -523,8 +548,8 @@ export default function ProfileCustomer() {
                                                                                     labelId="demo-simple-select-standard-label"
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
-                                                                                    // value={toa || soToa}
-                                                                                    defaultValue={toa || soToa}
+                                                                                    // value={toa}
+                                                                                    // defaultValue={toa || soToa}
                                                                                     onChange={handleBuilding}
                                                                                     required
                                                                                 >
@@ -544,8 +569,8 @@ export default function ProfileCustomer() {
                                                                                     labelId="demo-simple-select-standard-label"
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
-                                                                                    // value={tang || soTang}
-                                                                                    defaultValue={tang || soTang}
+                                                                                    // value={tang}
+                                                                                    // defaultValue={tang || soTang}
                                                                                     onChange={handleFloor}
                                                                                     required
                                                                                 >
@@ -565,7 +590,8 @@ export default function ProfileCustomer() {
                                                                                     labelId="demo-simple-select-standard-label"
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
-                                                                                    defaultValue={phong || soPhong}
+                                                                                    // value={phong}
+                                                                                    // defaultValue={phong || soPhong}
                                                                                     onChange={handleRoom}
                                                                                     required
                                                                                 >
@@ -587,8 +613,8 @@ export default function ProfileCustomer() {
                                                                                     labelId="demo-simple-select-standard-label"
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
-                                                                                    // value={toa || soToa}
-                                                                                    defaultValue={toa || soToa}
+                                                                                    value={toa}
+                                                                                    // defaultValue={toa || soToa}
                                                                                     onChange={handleBuilding}
                                                                                 // required
                                                                                 >
@@ -609,7 +635,7 @@ export default function ProfileCustomer() {
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
                                                                                     // value={tang || soTang}
-                                                                                    defaultValue={tang || soTang}
+                                                                                    // defaultValue={tang || soTang}
                                                                                     onChange={handleFloor}
                                                                                 // required
                                                                                 >
@@ -629,7 +655,7 @@ export default function ProfileCustomer() {
                                                                                     labelId="demo-simple-select-standard-label"
                                                                                     id="demo-simple-select-standard"
                                                                                     label="Age"
-                                                                                    defaultValue={phong || soPhong}
+                                                                                    // defaultValue={phong || soPhong}
                                                                                     onChange={handleRoom}
                                                                                 // required
                                                                                 >
@@ -718,18 +744,24 @@ export default function ProfileCustomer() {
                                                                 <th>Dịch vụ</th>
                                                                 <th>Hạng mục</th>
                                                                 <th>Nhân viên</th>
+                                                                <th>Trạng thái</th>
                                                                 <th>Ngày đặt</th>
                                                                 <th className='left'>Tổng tiền</th>
                                                             </tr>
                                                         </thead>
 
                                                         <tbody>
-                                                            {orders.map((order) => (
+                                                            {currentData.map((order) => (
                                                                 <tr className="pointer pointertext" key={order.orderId} onClick={() => handleRowClick(order)}>
                                                                     <td>{order.typeName}</td>
                                                                     <td>{order.serviceName}</td>
                                                                     <td>{order.employeeName}</td>
                                                                     {/* <td>{order.dateWork}</td> */}
+                                                                    {order.status == 'Completed' ? (
+                                                                        <td className="listorder complete" style={{ color: '#28a745' }}>{order.status}</td>
+                                                                    ) : (
+                                                                        <td className="listorder complete" style={{ color: '#e20303' }}>{order.status}</td>
+                                                                    )}
                                                                     <td>{new Date(order.date).toLocaleDateString(undefined, options1)}</td>
                                                                     <td className="process" style={{ color: '#35cb28' }}>{formatCurrency(order.price)}</td>
                                                                 </tr>
@@ -922,7 +954,7 @@ export default function ProfileCustomer() {
                                                                                     <div class="info-content" style={{ padding: "8px" }}>
                                                                                         {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
                                                                                         <div className=" d-flex align-items-center gap-2">
-                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"} NHỚ BỔ SUNG</p>
+                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.reasonCancel ? booking.reasonCancel : "<Nothing>"}</p>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -944,8 +976,12 @@ export default function ProfileCustomer() {
                                                                 )}
                                                             </Modal>
                                                         </tbody>
-
                                                     </table>
+
+                                                    <div style={{ float: 'right' }}>
+                                                        <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color="primary" />
+                                                    </div>
+
                                                 </div>
                                             </Col>
                                         </Row>

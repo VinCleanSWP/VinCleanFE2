@@ -157,7 +157,7 @@ const MyCalendar = () => {
     setSelectedEvent(event);
     location();
     const dataGPS = {
-      processId: event.id,
+      orderId: event.id,
       latitude: latitudeLGPS,
       longtitude: longtitudeGPS,
     };

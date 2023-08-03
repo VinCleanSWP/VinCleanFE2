@@ -122,11 +122,20 @@ function Profile() {
     const day = String(dob.getDate()).padStart(2, '0');
     const formattedDOB = `${year}-${month}-${day}`;
 
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate());
+    const tomorrowString = tomorrow.toISOString().slice(0, 10);
+
     const [selectedDate, setSelectedDate] = useState('');
     const handleDateChange = (event) => {
         event.preventDefault();
         const value = event.target.value;
-        setSelectedDate(value !== selectedDate ? value : accountData.dob);
+        // setSelectedDate(value !== selectedDate ? value : accountData.dob);
+        if (value <= tomorrowString) {
+            setSelectedDate(value !== selectedDate ? value : accountData.dob);
+        } else {
+            alert("Ngày sinh không hợp lệ");
+        }
     };
     const handleGender = (e) => {
         e.preventDefault();
@@ -240,9 +249,9 @@ function Profile() {
                                         <div className="card-body">
                                             <div className="form-group">
                                                 <label className="form-label">Username</label>
-                                                <input type="text" className="form-control mb-1" pattern="^[A-Za-zÀ-ỹà-ỹ ]+$" 
-                                                defaultValue={accountData.name} 
-                                                onChange={handleNameChange} />
+                                                <input type="text" className="form-control mb-1" pattern="^[A-Za-zÀ-ỹà-ỹ ]+$"
+                                                    defaultValue={accountData.name}
+                                                    onChange={handleNameChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Birthday</label>

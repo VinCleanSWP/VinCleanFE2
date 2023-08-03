@@ -524,7 +524,7 @@ export default function EmpProfile() {
                                                                                     <div class="info-content" style={{ padding: "8px" }}>
                                                                                         {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
                                                                                         <div className=" d-flex align-items-center gap-2">
-                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"} NHỚ BỔ SUNG</p>
+                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.reasonCancel ? booking.reasonCancel : "<Nothing>"}</p>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>

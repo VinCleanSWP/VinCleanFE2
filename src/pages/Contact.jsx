@@ -159,7 +159,7 @@ const Contact = () => {
         }).then((result) => {
           if (result.isConfirmed) {
             const response = axios.put('https://vinclean.azurewebsites.net/api/Order/Cancel', cancelInfo);
-            if (response.status === 200) {
+            if (response.status == 200) {
               console.log('OK');
               setTimeout(() => {
                 setSelectedEvent(null)

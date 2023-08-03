@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Modal1 from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import NativeSelect from '@mui/material/NativeSelect';
+import Pagination from '@mui/material/Pagination';
 import { async } from 'q';
 import '../styles/profile-customer.css'
 import { storage } from '../firebase/index';
@@ -50,6 +51,9 @@ const gioitinh = [
         sex: "Other"
     }
 ]
+
+const itemsPerPage = 10;
+
 
 export default function ProfileCustomer() {
     const [open, setOpen] = useState(false);
@@ -400,6 +404,15 @@ export default function ProfileCustomer() {
     tomorrow.setDate(tomorrow.getDate());
     const tomorrowString = tomorrow.toISOString().slice(0, 10);
 
+    // -------------------PAGING---------------------
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(orders.length / itemsPerPage);
+    const currentData = orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const handlePageChange = (event, page) => {
+        setCurrentPage(page);
+    };
+
     return (
         <div className='container'>
             <div className="container light-style flex-grow-1 container-p-y">
@@ -731,18 +744,24 @@ export default function ProfileCustomer() {
                                                                 <th>Dịch vụ</th>
                                                                 <th>Hạng mục</th>
                                                                 <th>Nhân viên</th>
+                                                                <th>Trạng thái</th>
                                                                 <th>Ngày đặt</th>
                                                                 <th className='left'>Tổng tiền</th>
                                                             </tr>
                                                         </thead>
 
                                                         <tbody>
-                                                            {orders.map((order) => (
+                                                            {currentData.map((order) => (
                                                                 <tr className="pointer pointertext" key={order.orderId} onClick={() => handleRowClick(order)}>
                                                                     <td>{order.typeName}</td>
                                                                     <td>{order.serviceName}</td>
                                                                     <td>{order.employeeName}</td>
                                                                     {/* <td>{order.dateWork}</td> */}
+                                                                    {order.status == 'Completed' ? (
+                                                                        <td className="listorder complete" style={{ color: '#28a745' }}>{order.status}</td>
+                                                                    ) : (
+                                                                        <td className="listorder complete" style={{ color: '#e20303' }}>{order.status}</td>
+                                                                    )}
                                                                     <td>{new Date(order.date).toLocaleDateString(undefined, options1)}</td>
                                                                     <td className="process" style={{ color: '#35cb28' }}>{formatCurrency(order.price)}</td>
                                                                 </tr>
@@ -935,7 +954,7 @@ export default function ProfileCustomer() {
                                                                                     <div class="info-content" style={{ padding: "8px" }}>
                                                                                         {/* <p><strong>Ghi chú: </strong> {modal.note ? modal.note : "<Nothing>"}</p> */}
                                                                                         <div className=" d-flex align-items-center gap-2">
-                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.note ? booking.note : "<Nothing>"} NHỚ BỔ SUNG</p>
+                                                                                            <p className="section__description mb-0 mt-2 note-container">{booking.reasonCancel ? booking.reasonCancel : "<Nothing>"}</p>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -957,8 +976,12 @@ export default function ProfileCustomer() {
                                                                 )}
                                                             </Modal>
                                                         </tbody>
-
                                                     </table>
+
+                                                    <div style={{ float: 'right' }}>
+                                                        <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color="primary" />
+                                                    </div>
+
                                                 </div>
                                             </Col>
                                         </Row>

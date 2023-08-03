@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import StarRating from './StarRating';
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import "../../styles/contact.css";
 
 const RatingForm = ({ onClose, onRatingSubmit, serviceId, customerId }) => {
   const [rate, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const navigate = useNavigate()
 
   const handleStarHover = (hoveredStars) => {
     setRating(hoveredStars);
@@ -39,7 +43,20 @@ const RatingForm = ({ onClose, onRatingSubmit, serviceId, customerId }) => {
       .then((response) => {
         console.log('Đánh giá dịch vụ thành công', response.data);
         onRatingSubmit(formData); // Gọi callback function để cập nhật dữ liệu rating và comment trên UI
+        toast.success('Rating Successfully!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         onClose(); // Đóng modal
+        setTimeout(() => {
+          navigate('/')
+        }, 3000);
       })
       .catch((error) => {
         console.error('Lỗi khi đánh giá dịch vụ', error);
@@ -68,6 +85,7 @@ const RatingForm = ({ onClose, onRatingSubmit, serviceId, customerId }) => {
       <button className="submit-button" onClick={handleSubmit}>
         Gửi đánh giá
       </button>
+      <ToastContainer />
     </div>
   );
 };

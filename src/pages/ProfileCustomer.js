@@ -428,6 +428,9 @@ export default function ProfileCustomer() {
                                     <div class="info">
                                         Tài khoản của
                                         <strong>{customer.lastName} {customer.firstName}</strong>
+                                        <br/>
+                                        <h6>Điểm thưởng: {customer.totalPoint} </h6>
+                                        <h6>Chi tiêu: {formatCurrency(customer.totalMoney)} </h6>
                                     </div>
                                 </div>
                                 <a className="list-group-item list-group-item-action active" data-toggle="list" href="#account-general"><BiSolidUser /> Thông tin chung</a>

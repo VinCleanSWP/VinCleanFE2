@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import "../styles/contact.css";
 import RatingForm from "../components/UI/RatingForm";
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import { Alert, Button, Input, Modal, Select, Space, Table, Upload } from 'antd';
 import Swal from "sweetalert2";
 
@@ -39,6 +40,8 @@ const Contact = () => {
   const [booking, setBooking] = useState([])
   const [process, setProcess] = useState([])
   const [isRatingOpen, setIsRatingOpen] = useState(false);
+
+  const navigate = useNavigate()
 
   const [isMo, setIsMo] = useState(false);
   const handleDong = () => setIsMo(false);

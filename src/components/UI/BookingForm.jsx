@@ -296,7 +296,7 @@ const BookingForm = ({
             selectedFloor +
             selectedRoom,
         phone: phoneNumber,
-        buildingId: showTextBox? 37 : buildingId,
+        buildingId: showTextBox ? 37 : buildingId,
         note: message,
         price: discountedPrice, // Use the discounted price
         pointUsed: lastTotalPoint,
@@ -894,20 +894,22 @@ const BookingForm = ({
                           <strong>SĐT:</strong> {phoneNumber}
                         </p>
                         <p>
-                          <strong>Địa chỉ:</strong><br></br>{" "}
+                          <strong>Địa chỉ:</strong>
+                          <br></br>{" "}
                           {showTextBox ? (
                             address
                           ) : (
                             <>
-                              {"Phân khu: " +
-                                selectedOption +
-                                " " +
-                                "Tòa: " +
-                                selectedBuilding +
-                                " Tầng: " +
-                                selectedFloor +
-                                " Phòng: " +
-                                selectedRoom}
+                              <strong >{"Phân khu: "}</strong>
+                              {selectedOption}
+                              
+                              <strong style={{ marginLeft: "25px"}}>{"Tòa: "}</strong>
+                              {selectedBuilding}
+                              <br />
+                              <strong >{"Tầng: "}</strong>
+                              {selectedFloor}
+                              <strong style={{ marginLeft: "100px"}}>{"Phòng: "}</strong>
+                              {selectedRoom}
                             </>
                           )}
                         </p>
@@ -939,10 +941,12 @@ const BookingForm = ({
                           <strong>Ngày đặt:</strong> {viDate}
                         </p>
                         <p>
-                          <strong>Tạm tính:</strong>{" "}<strong style={{ color: "green" }}>
-                          {formatCurrency(
-                            isSwitchOn ? discountedPrice : selectedServiceCost
-                          )}</strong>
+                          <strong>Tạm tính:</strong>{" "}
+                          <strong style={{ color: "green" }}>
+                            {formatCurrency(
+                              isSwitchOn ? discountedPrice : selectedServiceCost
+                            )}
+                          </strong>
                         </p>
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <p>
@@ -976,7 +980,10 @@ const BookingForm = ({
                       </div>
                     </div>
                     <br></br>
-                    <p><strong>LƯU Ý:</strong> Dịch vụ có thể có thêm phụ thu thêm tuỳ hiện trạng(nhân viên sẽ báo giá sau)</p>
+                    <p>
+                      <strong>LƯU Ý:</strong> Dịch vụ có thể có thêm phụ thu
+                      thêm tuỳ hiện trạng(nhân viên sẽ báo giá sau)
+                    </p>
                     <br></br>
                     <p>
                       <strong>Ghi chú:</strong>

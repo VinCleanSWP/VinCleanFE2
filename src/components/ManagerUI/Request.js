@@ -102,7 +102,7 @@ function Request() {
             longtitude: 0,
         };
         const dataMail = {
-            processId: selectedProcessId,
+            orderId: selectedProcessId,
             to: "example@gmail.com",
             subject: "",
             body: ""
@@ -129,13 +129,14 @@ function Request() {
                     'You have assigned successfully.',
                     'success'
                 )
+                fetchData();
                 console.log(data);
                 axios.put('https://vinclean.azurewebsites.net/api/Location/AcceptedRequest', data)
                     .then(response => {
                         console.log(response.data);
                         axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToCustomer', dataMail)
                             .then(response => {
-                                console.log(response.data);
+                              
                                 toast.success('Send Email Customer Successfully!', {
                                     position: "top-right",
                                     autoClose: 5000,
@@ -149,7 +150,7 @@ function Request() {
                             })
                         axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToEmployee', dataMail)
                             .then(response => {
-                                console.log(response.data);
+                               
                                 toast.success('Send Email Employee Successfully!', {
                                     position: "top-right",
                                     autoClose: 5000,

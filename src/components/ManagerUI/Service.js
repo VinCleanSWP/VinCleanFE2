@@ -529,50 +529,6 @@ const Service = () => {
                                         </table>
                                     </div>
                                     {/* END DATA TABLE */}
-                                    <div className="table-responsive  m-b-40" style={{ borderRadius: '15px' }}>
-                                        <table className="table table-borderless table-data3 shadow-sm" style={{ tableLayout: 'fixed', width: '100%' }}>
-                                            <thead>
-                                                <tr>
-                                                    <th style={{ width: '20%' }}>Type ID</th>
-                                                    <th style={{ width: '20%' }}>Name</th>
-                                                    <th style={{ width: '20%' }}>Status</th>
-                                                    <th style={{ width: '20%' }}>Image</th>
-                                                    <th style={{ width: '20%' }}><button
-                                                        style={{ marginRight: "25px" }} data-bs-toggle="modal" data-bs-target="#imageprocess"
-                                                    ><FcAddDatabase size={30}></FcAddDatabase></button></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {servicetype.map(Service => (
-                                                    <tr key={Service.typeId}>
-                                                        <td>{Service.typeId}</td>
-                                                        <td>{Service.type1}</td>
-                                                        <td>{Service.avaiable ? 'Available' : 'Deleted'}</td>
-                                                        <td>
-                                                            <img src={Service.img} style={{ width: '100px', height: 'auto' }} />
-                                                        </td>
-                                                        <td>
-                                                            <div className="table-data-feature">
-                                                                <button
-                                                                    className="item"
-                                                                    data-toggle="tooltip"
-                                                                    data-placement="top"
-                                                                    title="Edit"
-                                                                    onClick={() => {
-                                                                        setTypeModalIsOpen(true);
-                                                                        setServiceTypeId(Service.typeId);
-                                                                        handelDetal(Service.typeId);
-                                                                    }}
-                                                                >
-                                                                    <i className="zmdi zmdi-edit" />
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
                                 </div>
                                 <div />
                             </div>

@@ -509,7 +509,7 @@ export default function ProfileCustomer() {
                                                         </FormControl> */}
                                                     </div>
                                                 </div>
-                                                {phankhu.type == 'Manhattan' ? (
+                                                {phankhu && phankhu.type == 'Manhattan' ? (
                                                     <div className="col-md-9">
                                                         <div className="form-group">
                                                             <label className="form-label">Địa chỉ</label>

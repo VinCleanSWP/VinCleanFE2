@@ -4839,6 +4839,16 @@ section {
     color: #b30021;
 }
 
+.status.NonAvailable {
+    background-color: #d893a3;
+    color: #b30021;
+}
+
+.status.Inactive {
+    background-color: #d893a3;
+    color: #b30021;
+}
+
 .status.Incoming {
     background-color: #ebc474;
 }
@@ -4851,6 +4861,15 @@ section {
 }
 
 .status.Accepted  {
+    background-color: #86e49d;
+    color: #006b21;
+}
+.status.Available  {
+    background-color: #86e49d;
+    color: #006b21;
+}
+
+.status.Active  {
     background-color: #86e49d;
     color: #006b21;
 }

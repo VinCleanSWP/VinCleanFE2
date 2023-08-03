@@ -748,7 +748,7 @@ function Table() {
                                                         <td>{employee.lastName}</td>
                                                         <td>{employee.firstName}</td>
                                                         <td>{employee.phone}</td>
-                                                        <td>{employee.status}</td>
+                                                        <td><p className={`status ${employee.status}`}>{employee.status}</p></td>
                                                         <td />
                                                         <td>
                                                             <div className="table-data-feature">

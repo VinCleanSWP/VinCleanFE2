@@ -416,6 +416,10 @@ function Booking() {
     const [map, setMap] = React.useState(null)
     {/*-----Location Google Map------ */ }
 
+    function formatCurrency(amount) {
+        var amount1 = amount;   
+        return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+    }
 
     return (
         <div >
@@ -546,9 +550,9 @@ function Booking() {
                                         <div class="process-info">
                                             <h4 style={{ textAlign: "center", margin: "10px" }}> Price</h4>
                                             <div class="info-content" style={{ marginLeft: "10px" }}>
-                                                <p><strong>Sub Price:</strong> {modal.subPrice ? modal.subPrice : "0"}</p>
-                                                <p><strong>Point Used:</strong> {modal.pointUsed ? modal.pointUsed : "0"} </p>
-                                                <p style={{ fontFamily: "Arial, sans-serif", fontSize: "25px" }}><strong>Price:</strong> <label className='status Incoming' style={{ padding: "0px 20px" }}>{modal.price}.000 VND</label></p>
+                                                <p><strong>Sub Price:</strong> {formatCurrency(modal.subPrice)}</p>
+                                                <p><strong>Point Used:</strong> {formatCurrency(modal.pointUsed)} </p>
+                                                <p style={{ fontFamily: "Arial, sans-serif", fontSize: "25px" }}><strong>Price:</strong> <label className='status Incoming' style={{ padding: "0px 20px" }}>{formatCurrency(modal.price)}</label></p>
                                             </div>
                                         </div>
                                         <div class="process-info1">

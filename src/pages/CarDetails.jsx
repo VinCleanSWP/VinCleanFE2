@@ -101,6 +101,10 @@ const ServiceTypeDetail = () => {
     },
   };
 
+  function formatCurrency(amount) {
+    var amount1 = amount;
+    return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+}
 
 
   const averageRate = _.meanBy(rating, 'rate');
@@ -183,7 +187,7 @@ const ServiceTypeDetail = () => {
                           setSelectedServiceCost(service.cost);
                         }}
                       >
-                        {service.name} / {service.cost} VND
+                        {service.name} / {formatCurrency(service.cost ? service.cost : "0")}
                       </li>
                     );
                   } else {

@@ -14,7 +14,7 @@ import { fi } from "date-fns/locale";
 
 
 
-const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, selectedServiceCost }) => {
+const BookingForm = ({ serviceId, selectedServiceName, selectedServiceCost }) => {
   const { id } = useParams();
   const [customerid, setCustomerid] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -181,7 +181,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       return false;
     }
 
-    if (!isTimeValid(journeyDate,journeyTime)) {
+    if (!isTimeValid(journeyDate, journeyTime)) {
       setValidTime("Thời gian đặt không hợp lệ");
       return false;
     } else {
@@ -194,28 +194,28 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     }
     return true;
   }
-  const isTimeValid = (date,time) => {
+  const isTimeValid = (date, time) => {
     if (!date || !time || date.length !== 10 || time.length !== 5) {
       return false;
     }
     const currentTime = new Date();
-  const selectedDateTime = new Date(`${date}T${time}`);
+    const selectedDateTime = new Date(`${date}T${time}`);
 
-  // Thời gian đặt phải sau 7h30 sáng cùng ngày
-  const sevenThirtyAM = new Date(selectedDateTime);
-  sevenThirtyAM.setHours(7, 30, 0, 0);
+    // Thời gian đặt phải sau 7h30 sáng cùng ngày
+    const sevenThirtyAM = new Date(selectedDateTime);
+    sevenThirtyAM.setHours(7, 30, 0, 0);
 
-  // Thời gian đặt phải trước 22 giờ cùng ngày
-  const tenPM = new Date(selectedDateTime);
-  tenPM.setHours(22, 0, 0, 0);
+    // Thời gian đặt phải trước 22 giờ cùng ngày
+    const tenPM = new Date(selectedDateTime);
+    tenPM.setHours(22, 0, 0, 0);
 
-  // Thời gian đặt phải sau 2 giờ từ hiện tại
-  const twoHoursFromNow = new Date(currentTime);
-  twoHoursFromNow.setHours(currentTime.getHours() + 2, currentTime.getMinutes(), 0, 0);
-  console.log("hiện tại "+currentTime);
-    console.log("giờ chọn "+selectedDateTime);
-    console.log("trước hai giờ "+twoHoursFromNow);
-    console.log("trước 10 giờ   "+tenPM);
+    // Thời gian đặt phải sau 2 giờ từ hiện tại
+    const twoHoursFromNow = new Date(currentTime);
+    twoHoursFromNow.setHours(currentTime.getHours() + 2, currentTime.getMinutes(), 0, 0);
+    console.log("hiện tại " + currentTime);
+    console.log("giờ chọn " + selectedDateTime);
+    console.log("trước hai giờ " + twoHoursFromNow);
+    console.log("trước 10 giờ   " + tenPM);
     if (
       selectedDateTime <= sevenThirtyAM || // Kiểm tra sau 7h30 sáng
       selectedDateTime >= tenPM || // Kiểm tra trước 22 giờ
@@ -230,9 +230,10 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     if (validateData()) {
 
       setIsPopupOpen(true);
-      setDiscountedPrice(0);
+      setDiscountedPrice(selectedServiceCost);
     }
   };
+
 
   const handleConfirm = (e) => {
     e.preventDefault();
@@ -246,11 +247,12 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       phone: phoneNumber,
       note: message,
       price: discountedPrice, // Use the discounted price
-      pointUsed: lastTotalPoint
+      pointUsed: lastTotalPoint,
+      buildingId: buildingId
     };
 
     console.log(data)
-    axios.post('https://vinclean.azurewebsites.net/api/Orde', data)
+    axios.post('https://vinclean.azurewebsites.net/api/Order', data)
       .then(response => {
         console.log(response.data);
         setSubmittedData(response.data);
@@ -331,6 +333,8 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
   const floorValue = matchedBuilding ? matchedBuilding.floor : '';
 
   const roomValue = matchedBuilding ? matchedBuilding.room : '';
+  const buildingId = matchedBuilding ? matchedBuilding.id : '';
+
 
 
   const handleSelectChange = (event) => {
@@ -364,11 +368,11 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
       setShowTextBox(false);
     }
   };
-  
+
   function formatCurrency(amount) {
     var amount1 = amount;
     return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
-}
+  }
   return (
     <Form onSubmit={handleSubmit}>
       <div style={{ display: 'flex' }}>

@@ -49,6 +49,7 @@ const BookingForm = ({
   const [validBuilding, setValidBuilding] = useState(true);
   const [validFloor, setValidFloor] = useState(true);
   const [validRoom, setValidRoom] = useState(true);
+  const [validAdress, setValidAddress] = useState(true);
 
   const [validTime, setValidTime] = useState(true);
   const [validService, setValidService] = useState(true);
@@ -127,6 +128,12 @@ const BookingForm = ({
     setValidRoom(true);
     const phoneRegex = /^\d{10}$/;
     const addressRegex = /^S\d+\.\d+\s\d+$/;
+    if (!address.trim()) {
+      setValidAddress("Vui lòng nhập địa chỉ");
+      return false
+    } else {
+      setValidAddress(true);
+    }
 
     if (!firstName.trim()) {
       setValidFirstName("vui lòng nhập tên");
@@ -597,8 +604,13 @@ const BookingForm = ({
             {validArea && (
               <div style={{ color: "red", fontSize: "14px", marginTop: "0px" }}>
                 {validArea}
+
               </div>
             )}
+            {validAdress && (<div style={{ color: "red", fontSize: "14px", marginTop: "0px" }}>
+              {validAdress}
+
+            </div>)}
           </div>
 
           <FormGroup
@@ -636,7 +648,7 @@ const BookingForm = ({
                   color: address ? "black" : "gray",
                   opacity: address ? "1" : "0.5",
                   fontWeight: "bold",
-                  color: "grey",
+                  color: "black",
                   fontSize: "14px",
                   marginTop: "0px",
                 }}

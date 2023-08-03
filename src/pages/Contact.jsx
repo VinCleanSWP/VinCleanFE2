@@ -239,9 +239,9 @@ const Contact = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   function formatCurrency(amount) {
-    var amount1 = amount;
-    return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+    return amount ? amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
   }
+
   return (
     <Helmet title="Các hoạt động đã đặt">
       <CommonSection title="Các hoạt động đã đặt" />

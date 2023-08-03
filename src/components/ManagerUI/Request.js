@@ -44,7 +44,7 @@ function Request() {
 
     const fetchData = () => {
         // Gọi API để lấy dữ liệu
-        axios.get('https://localhost:7013/api/OrderRequest')
+        axios.get('https://vinclean.azurewebsites.net/api/OrderRequest')
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setrequestData(response.data.data);
@@ -56,7 +56,7 @@ function Request() {
     const showDetail = (id) => {
 
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/OrderRequest/${id}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/OrderRequest/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal(response.data.data);
@@ -69,7 +69,7 @@ function Request() {
     const showDetailProcess = (id) => {
 
         // Gọi API để lấy dữ liệu
-        axios.get(`https://localhost:7013/api/Order/GetALL/${id}`)
+        axios.get(`https://vinclean.azurewebsites.net/api/Order/GetALL/${id}`)
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setModal2(response.data.data);
@@ -83,7 +83,7 @@ function Request() {
     const assignTask = (date, start, end) => {
         // Gọi API để lấy dữ liệu
         console.log({ date, start, end });
-        axios.post(`https://localhost:7013/api/Employee/selectemployee`, { date, start, end })
+        axios.post(`https://vinclean.azurewebsites.net/api/Employee/selectemployee`, { date, start, end })
             .then(response => {
                 // Cập nhật dữ liệu lấy từ API vào state
                 setEmployeeData(response.data);
@@ -96,84 +96,108 @@ function Request() {
 
     const updateClick = () => {
         const data = {
-            orderId: selectedProcessId,
+            processId: selectedProcessId,
             employeeId: selectedEmployees
         };
         const dataMail = {
-            orderId: selectedProcessId,
+            processId: selectedProcessId,
             to: "example@gmail.com",
             subject: "",
             body: ""
         }
-        console.log(data);
-        axios.put('https://localhost:7013/api/Location/AcceptedRequest', data)
-            .then(response => {
-                console.log(response.data);
-                toast.success('Change Employee Successfully!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-                axios.post('https://localhost:7013/api/Email/SendAssignToCustomer', dataMail)
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+        swalWithBootstrapButtons.fire({
+            title: 'Do you want to assgin this task?',
+            text: "Double check before you assign!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Iam sure!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                swalWithBootstrapButtons.fire(
+                    'Assigned!',
+                    'You have assigned successfully.',
+                    'success'
+                )
+                console.log(data);
+                axios.put('https://vinclean.azurewebsites.net/api/WorkingBy/AcceptedRequest', data)
                     .then(response => {
                         console.log(response.data);
-                        toast.success('Send Email Customer Successfully!', {
-                            position: "top-right",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                        });
+                        axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToCustomer', dataMail)
+                            .then(response => {
+                                console.log(response.data);
+                                toast.success('Send Email Customer Successfully!', {
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "light",
+                                });
+                            })
+                        axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToEmployee', dataMail)
+                            .then(response => {
+                                console.log(response.data);
+                                toast.success('Send Email Employee Successfully!', {
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "light",
+                                });
+                            })
                     })
-                axios.post('https://localhost:7013/api/Email/SendAssignToEmployee', dataMail)
-                    .then(response => {
-                        console.log(response.data);
-                        toast.success('Send Email Employee Successfully!', {
-                            position: "top-right",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                        });
-                    })
-            })
-            .catch(error => {
-                console.error(error);
-            });
+                    .catch(error => {
+                        console.error(error);
+                    });
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                )
+            }
+        })
+
     };
 
-    const sendEmail = async (orderId,oldEmployeEmail) => {
+    const sendEmail = async (processId, oldEmployeEmail) => {
         const { value: text } = await Swal.fire({
             input: 'textarea',
             inputLabel: 'Reason',
             inputPlaceholder: 'Type your message here...',
             inputAttributes: {
-              'aria-label': 'Type your message here'
+                'aria-label': 'Type your message here'
             },
             showCancelButton: true
-          })
-          
-          if (text) {
-            
+        })
+
+        if (text) {
+
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
-                  confirmButton: 'btn btn-success',
-                  cancelButton: 'btn btn-danger'
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
                 },
                 buttonsStyling: false
-              })
-              swalWithBootstrapButtons.fire({
+            })
+            swalWithBootstrapButtons.fire({
                 title: 'Are you sure?',
                 text: "Do you want to Denied this Process!",
                 icon: 'warning',
@@ -181,59 +205,59 @@ function Request() {
                 confirmButtonText: 'Yes, denied it!',
                 cancelButtonText: 'No, cancel!',
                 reverseButtons: true
-              }).then((result) => {
+            }).then((result) => {
                 if (result.isConfirmed) {
-                  swalWithBootstrapButtons.fire(
-                    'Denied!',
-                    'this process has been denied.',
-                    'success'
-                  )
-                  const dataMail = {
-                    processId: 0,
-                    to: oldEmployeEmail,
-                    subject: "Từ Chối Yêu Cầu Đổi Việc",
-                    body: ` <p><b>Process ID: ${orderId}</b></p>
+                    swalWithBootstrapButtons.fire(
+                        'Denied!',
+                        'this process has been denied.',
+                        'success'
+                    )
+                    const dataMail = {
+                        processId: 0,
+                        to: oldEmployeEmail,
+                        subject: "Từ Chối Yêu Cầu Đổi Việc",
+                        body: ` <p><b>Process ID: ${processId}</b></p>
                     <p>Yêu cầu của bạn ${oldEmployeEmail} không được chấp thuận.</p>
                     <p><b>Lý do: </b> ${text}</p>
                     <p>Nếu Có Thắc Mắc gì vui lòng liên hệ trực tiếp với ban quản lý.</p>`
-                }
-                  axios.put(`https://localhost:7013/api/OrderRequest/Denied/${orderId}`)
-                  .then(response => {
-                      console.log(response.data);
-                      axios.post('https://localhost:7013/api/Email', dataMail)
-                          .then(response => {
-                              console.log(response.data);
-                              toast.success('Send Email Denied Successfully!', {
-                                  position: "top-right",
-                                  autoClose: 5000,
-                                  hideProgressBar: false,
-                                  closeOnClick: true,
-                                  pauseOnHover: true,
-                                  draggable: true,
-                                  progress: undefined,
-                                  theme: "light",
-                              });
-                          })
-                      fetchData();
-                  })
-                  .catch(error => {
-                      console.error(error);
-                  });
+                    }
+                    axios.put(`https://vinclean.azurewebsites.net/api/ProcessSlot/Denied/${processId}`)
+                        .then(response => {
+                            console.log(response.data);
+                            axios.post('https://vinclean.azurewebsites.net/api/Email', dataMail)
+                                .then(response => {
+                                    console.log(response.data);
+                                    toast.success('Send Email Denied Successfully!', {
+                                        position: "top-right",
+                                        autoClose: 5000,
+                                        hideProgressBar: false,
+                                        closeOnClick: true,
+                                        pauseOnHover: true,
+                                        draggable: true,
+                                        progress: undefined,
+                                        theme: "light",
+                                    });
+                                })
                             fetchData();
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                    fetchData();
                 } else if (
-                  /* Read more about handling dismissals below */
-                  result.dismiss === Swal.DismissReason.cancel
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
                 ) {
-                  swalWithBootstrapButtons.fire(
-                    'Cancelled',
-                    'Your imaginary file is safe :)',
-                    'error'
-                  )
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'Your imaginary file is safe :)',
+                        'error'
+                    )
                 }
-              })
-          }
-  
-        
+            })
+        }
+
+
     };
 
     const handleSearchChange = (e) => {
@@ -262,7 +286,10 @@ function Request() {
     const toggleSortOrder = () => {
         setSortOrder(prevSortOrder => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
     };
-
+    const formatCurrency = (amount) => {
+        var amount1 = amount;
+        return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+    }
     return (
         <div >
             {/* PAGE CONTAINER*/}
@@ -290,7 +317,7 @@ function Request() {
                                         <table className="table table-borderless table-data3 shadow-sm">
                                             <thead>
                                                 <tr>
-                                                    <th>Process Id <span className='icon-arrow' ><FcAlphabeticalSortingAz /></span> </th>
+                                                    <th>Order Id <span className='icon-arrow' ><FcAlphabeticalSortingAz /></span> </th>
                                                     <th>Customer<span className='icon-arrow' ><FcAlphabeticalSortingAz /></span></th>
                                                     <th>Employee <span className='icon-arrow' ><FcAlphabeticalSortingAz /></span></th>
                                                     <th onClick={toggleSortOrder}><div>Date<span className='icon-arrow' ><FcAlphabeticalSortingAz /></span></div></th>
@@ -314,7 +341,7 @@ function Request() {
                                                             <td>
                                                                 <div className="table-data-feature">
                                                                     <button className="item" data-toggle="tooltip" data-placement="top" title="Send"
-                                                                        onClick={() => sendEmail(request.orderId,request.oldEmployeEmail)}>
+                                                                        onClick={() => sendEmail(request.processId, request.oldEmployeEmail)}>
                                                                         <i className="zmdi zmdi-mail-send" />
                                                                     </button>
                                                                     <button className={`item ${request.NewEmployeeName ? 'assigned' : ''}`} data-toggle="tooltip" data-placement="top" title="Assign"
@@ -350,117 +377,132 @@ function Request() {
                         <div className='modal-dialog modal-lg modal-dialog-centered'>
                             <div className="modal-content">
                                 <div className="modal-header" >
-                                    <h5 className="modal-title" id="exampleModalLabel"><strong>Request Details  ID: {modal2.orderId} </strong></h5>
+                                    <h5 className="modal-title" id="exampleModalLabel"><strong>Request Details  ID: {modal2.processId} </strong></h5>
                                     <h5 className={`status ${modal.status} modal-title`} style={{ marginLeft: '400px', width: '130px' }}> <span style={{ marginRight: "5px" }}>•</span> {modal.status} </h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>
                                 <div className="modal-body">
-                                    <strong>Customer</strong>
-                                    <form className="form-inline">
-                                        <div className="input-group mb-3">
-                                            <label className="px-2.5 input-group-text">Name</label>
-                                            <input value={modal2.name} className="form-control" />
+                                    <div style={{ display: "flex", justifyContent: "space-between", margin: "0px 20px" }}>
+                                        <div>
+                                            <div >
+                                                <p><strong>AccountID: </strong> {modal.accountId}</p>
+                                                <p><strong>Cancel By: </strong> {modal.name}</p>
+                                                <p><strong>Role: </strong> {modal.role}</p>
+                                                <p><strong>Reason: </strong> {modal.reason}</p>
+                                            </div>
                                         </div>
-                                        <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '150px', }} />
-                                        </div>
-                                    </form>
-                                    <form className="form-inline">
-                                        <div className=" input-group mb-3">
-                                            <label className="px-2 input-group-text">Phone</label>
-                                            <input value={modal2.phone} className="form-control" />
-                                        </div>
-                                        <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <label className="input-group-text">Email</label>
-                                            <input value={modal2.email} className="form-control" />
-                                        </div>
-                                    </form>
-                                    <form className="form-inline">
-                                        <div className="input-group mb-3">
-                                            <label className=" px-3 input-group-text">Dob</label>
-                                            <input value={modal2.dob ? new Date(modal2.dob).toLocaleDateString() : ''} className="form-control" />
-                                        </div>
-                                        <div className="px-5 input-group mb-3">
-                                            <label className="input-group-text" style={{ marginLeft: "100px" }}>Address</label>
-                                            <input value={modal2.address} className="form-control" />
-                                        </div>
-                                    </form>
-                                    <form className="form-inline">
-                                        <div className="input-group mb-3">
-                                            <label className="px-3 input-group-text">Date</label>
-                                            <input value={modal2.date ? new Date(modal2.date).toLocaleDateString() : ''} className="form-control" />
-                                        </div>
-                                        <div className="px-5 input-group mb-3">
-                                            <label className="input-group-text" style={{ marginLeft: "100px" }}>Time</label>
-                                            <input value={`${modal2.startTime} - ${modal2.endTime}`} className="form-control" />
-                                        </div>
-                                    </form>
-                                    <form className="form-inline">
-                                        <div className="input-group mb-3">
-                                            <label className="px-3 input-group-text">Type</label>
-                                            <input value={modal2.typeName} className="form-control" />
-                                        </div>
-                                        <div className="px-5 input-group mb-3">
-                                            <label className="input-group-text" style={{ marginLeft: "100px" }}>Servce</label>
-                                            <input value={modal2.serviceName} className="form-control" />
-                                        </div>
-                                    </form>
-                                    <div className="input-group mb-3">
-                                        <label className="px-3 input-group-text">Note</label>
-                                        <textarea value={modal2.note} className="form-control" />
-                                    </div>
+                                        <div>
+                                            <p><strong>Cancel Date: </strong>{(modal.createdDate ? format(new Date(modal2.createdDate), 'dd/MM/yyy') : "").toString()}</p>
 
-                                    <strong>Employee</strong>
-                                    <form className="form-inline">
-                                        <div className='input-group mb-3'>
-                                            <span className='input-group-text'>Name</span>
-                                            <input type="text" className="form-control" value={modal.oldEmployeeName} />
+                                            <p><strong>Cancel Time: </strong> {(modal.createdDate ? format(new Date(modal2.createdDate), 'HH:mm:ss') : "").toString()}</p>
                                         </div>
-                                        <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '150px', }} />
-                                        </div>
-                                    </form>
-                                    <form className="form-inline">
-                                        <div className="input-group mb-3">
-                                            <label className="px-2.5 input-group-text">Phone</label>
-                                            <input value={modal.oldEmployePhone} className="form-control" />
-                                        </div>
-                                        <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                            <label className="input-group-text">Email</label>
-                                            <input value={modal.oldEmployeEmail} className="form-control" />
-                                        </div>
-                                    </form>
-                                    <div className="input-group mb-3">
-                                        <label className="px-3 input-group-text">Reason</label>
-                                        <textarea value={modal.reason} className="form-control" />
-                                    </div>
 
-                                    {modal.newEmployeeName ? (
-                                        <>
-                                            <strong>New Employee</strong>
-                                            <form className="form-inline">
-                                                <div className='input-group mb-3'>
-                                                    <span className='input-group-text'>Name</span>
-                                                    <input type="text" className="form-control" value={modal.newEmployeeName} />
+                                        {/* <p>Thời gian bắt đầu: {modal2.date.toLocaleString('vi-VN', {
+                                            year: 'numeric',
+                                            month: '2-digit',
+                                            day: '2-digit',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                        })}
+                                            <br></br>Thời gian kết thúc dự kiến: {modal2.date.toLocaleString('vi-VN', {
+                                                year: 'numeric',
+                                                month: '2-digit',
+                                                day: '2-digit',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            })}</p> */}
+
+                                    </div>
+                                    <div>
+                                        <h2 style={{ textAlign: "center" }}>Order Detail</h2>
+                                        <div class="process" style={{ marginTop: "30px" }}>
+                                            <div class="process-info">
+                                                <h4 style={{ textAlign: "center", margin: "10px" }}>Order Infor</h4>
+                                                <div class="info-content" style={{ marginLeft: "10px" }}>
+                                                    <p><strong>Order ID:</strong> {modal2.orderId}</p>
+                                                    <p><strong>Status:</strong> <label className={`status ${modal2.status}`} style={{ padding: "0px 10px" }}>{modal2.status}</label></p>
+                                                    <p><strong>Service:</strong> {modal2.typeName} - {modal2.serviceName} </p>
+                                                    <p><strong>Time: </strong> {modal2.startTime} - {modal2.endTime}</p>
+                                                    <p><strong>Date: </strong> {modal2.date ? new Date(modal2.date).toLocaleDateString() : ''}</p>
+                                                    <p><strong>Note: </strong> {modal2.note ? modal2.note : "<Nothing>"}</p>
+                                                    <p><strong>Sub Pirce: </strong>{formatCurrency(modal2.subPrice ? modal2.subPrice : "0")} </p>
+                                                    <p style={{ fontSize: "20px" }}><strong>Total: </strong><label style={{ color: "green" }}>{formatCurrency(modal2.price)} </label></p>
                                                 </div>
-                                                <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                                    <img src="https://reactjs.org/logo-og.png" alt="react logo" style={{ width: '150px', }} />
+                                            </div>
+                                            <div class="process-info1">
+                                                <h4 style={{ textAlign: "center", margin: "10px" }}> Customer Infor</h4>
+                                                <div class="info-content" style={{ marginLeft: "10px" }}>
+                                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                                        <div style={{ marginRight: "" }}>
+                                                            <p><strong>ID: </strong> {modal2.customerId}</p>
+                                                            <p><strong>Customer:</strong> {modal2.name} </p>
+                                                            <p><strong>Address</strong> {modal2.address}</p>
+                                                            <p><strong>Phone:</strong> {modal2.phone}</p>
+                                                            <p><strong>Email:</strong> {modal2.email}</p>
+                                                            <p><strong>Dob:</strong> {modal2.dob ? new Date(modal2.dob).toLocaleDateString() : ''}</p>
+                                                            <p><strong>Point Used: </strong> {modal2.pointUsed ? modal2.pointUsed : 0}</p>
+                                                        </div>
+                                                        <div><img src={modal.customerImage || "https://firebasestorage.googleapis.com/v0/b/swp-vinclean-7b1d3.appspot.com/o/Employee%2Fuser-default.jpg?alt=media&token=983b62d3-504c-4874-beb9-2b7dffe8f332"} alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100, marginTop: 0 }} /></div>
+                                                    </div>
                                                 </div>
-                                            </form>
-                                            <form className="form-inline">
-                                                <div className="input-group mb-3">
-                                                    <label className="px-2.5 input-group-text">Phone</label>
-                                                    <input value={modal.newEmployePhone} className="form-control" />
+                                            </div>
+                                        </div>
+                                        <div><p className='status cancelled' style={{ marginTop: "20px" }}><strong> { }</strong></p></div>
+
+                                        <div style={{ display: 'flex', flexWrap: 'nowrap', margin: '5px' }}>
+                                            <div style={{ flex: '1' }}>
+                                                <p>
+
+                                                </p>
+
+                                            </div>
+                                            <div style={{ flex: '1', marginRight: '5px', justifyContent: 'flex-end' }}>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    <div>
+                                        <h2 style={{ textAlign: "center" }}>Employee</h2>
+                                        <div class="process" style={{ marginTop: "30px" }}>
+                                            <div class="process-info">
+                                                <h4 style={{ textAlign: "center", margin: "10px" }}> Old Employee</h4>
+                                                <div class="info-content" style={{ marginLeft: "10px" }}>
+                                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                                        <div style={{ marginRight: "" }}>
+                                                            <p><strong>ID: </strong> {modal.oldEmployeeId}</p>
+                                                            <p><strong>Employee:</strong> {modal.oldEmployeeName} </p>
+                                                            <p><strong>Phone:</strong> {modal.oldEmployePhone}</p>
+                                                            <p><strong>Email:</strong> {modal.oldEmployeEmail}</p>
+                                                        </div>
+                                                        <div><img src={modal.oldEmployeImg || "https://firebasestorage.googleapis.com/v0/b/swp-vinclean-7b1d3.appspot.com/o/Employee%2Fuser-default.jpg?alt=media&token=983b62d3-504c-4874-beb9-2b7dffe8f332"} alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100, marginTop: 0 }} /></div>
+                                                    </div>
                                                 </div>
-                                                <div className="px-5 input-group mb-3" style={{ marginLeft: "100px" }}>
-                                                    <label className="input-group-text">Email</label>
-                                                    <input value={modal.newEmployeEmail} className="form-control" />
+                                            </div>
+                                            <div class="process-info1">
+                                                <h4 style={{ textAlign: "center", margin: "10px" }}> New Employee</h4>
+                                                <div class="info-content" style={{ marginLeft: "10px" }}>
+                                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                                        {modal.newEmployeeId ? (
+                                                            <>
+                                                                <div style={{ marginRight: "" }}>
+                                                                    <p><strong>ID: </strong> {modal.newEmployeeId}</p>
+                                                                    <p><strong>Employee:</strong> {modal.newEmployeeName} </p>
+                                                                    <p><strong>Phone:</strong> {modal.newEmployePhone}</p>
+                                                                    <p><strong>Email:</strong> {modal.newEmployeEmail}</p>
+                                                                </div>
+                                                                <div><img src={modal.newEmployeImg || "https://firebasestorage.googleapis.com/v0/b/swp-vinclean-7b1d3.appspot.com/o/Employee%2Fuser-default.jpg?alt=media&token=983b62d3-504c-4874-beb9-2b7dffe8f332"} alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100, marginTop: 0 }} /></div>
+                                                            </>
+                                                        ) : (
+                                                            <p>No Employee Assigned</p>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                            </form>
-                                        </>
-                                    ) : (
-                                        <p></p>
-                                    )}
+                                            </div>
+                                        </div>
+                            
+                                    </div>
                                 </div>
                             </div>
                         </div>

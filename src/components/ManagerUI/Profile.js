@@ -11,14 +11,17 @@ const gioitinh = [
     {
         id: 1,
         gender: "Nam",
+        sex: "Male"
     },
     {
         id: 2,
         gender: "Nữ",
+        sex: "Female"
     },
     {
         id: 3,
         gender: "Khác",
+        sex: "Other"
     }
 ]
 
@@ -237,7 +240,9 @@ function Profile() {
                                         <div className="card-body">
                                             <div className="form-group">
                                                 <label className="form-label">Username</label>
-                                                <input type="text" className="form-control mb-1" defaultValue={accountData.name} onChange={handleNameChange} />
+                                                <input type="text" className="form-control mb-1" pattern="^[A-Za-zÀ-ỹà-ỹ ]+$" 
+                                                defaultValue={accountData.name} 
+                                                onChange={handleNameChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label className="form-label">Birthday</label>
@@ -246,7 +251,6 @@ function Profile() {
                                                     name="dob"
                                                     className="form-control"
                                                     type="date"
-                                                    pattern="^[A-Za-zÀ-ỹà-ỹ ]+$"
                                                     title="Invalid data."
                                                     value={selectedDate || formattedDOB}
                                                     onChange={handleDateChange}
@@ -262,8 +266,8 @@ function Profile() {
                                                     <div key={sex.id}>
                                                         <input type='radio'
                                                             name='gender'
-                                                            value={sex.gender}
-                                                            checked={check === sex.gender || (!check && sex.gender === currentGender)}
+                                                            value={sex.sex}
+                                                            checked={check === sex.sex || (!check && sex.sex === currentGender)}
                                                             onChange={handleGender} />{sex.gender}
                                                     </div>
                                                 ))}

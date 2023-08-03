@@ -7,6 +7,7 @@ import 'firebase/storage';
 import './FireBaseConfig';
 import { format } from 'date-fns';
 import { storage } from './FireBaseConfig';
+import Swal from 'sweetalert2';
 
 
 
@@ -39,7 +40,29 @@ function Customer() {
 
     const [customerId, setCustomerId] = useState('');
 
-
+    const handleSave = (accountId) => {
+        const status = document.getElementById('updateTypeStatus').value;
+        const data = {
+            accountId: accountId, // Use the appropriate accountID here
+            status: status
+        };
+        console.log(data)
+        axios.put(`https://localhost:7013/api/Account/Active`, data)
+        .then(response => {
+            // Handle the response if needed
+            setModalIsOpen(false)
+             // Update the status in the state
+            Swal.fire(
+                'Success',
+                'Update Status Successfully',
+                'success'
+              )
+              fetchData();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
 
 
 
@@ -85,9 +108,11 @@ function Customer() {
 
 
 
-
-
     useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = () => {
         axios.get('https://vinclean.azurewebsites.net/api/Customer')
             .then(response => {
                 setCustomerList(response.data.data);
@@ -95,7 +120,7 @@ function Customer() {
             .catch(error => {
                 console.error(error);
             });
-    }, []);
+    };
 
     useEffect(() => {
         axios.get('https://vinclean.azurewebsites.net/api/Account')
@@ -275,13 +300,15 @@ function Customer() {
                                                     />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label className="form-label" ><strong>Status</strong></label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control mb-1"
-                                                        value={status}
-                                                        readOnly
-                                                    />
+                                                    <label className="form-label"><strong>Status</strong></label>
+                                                    <select
+                                                        className="form-control"
+                                                        id="updateTypeStatus" 
+                                                    >
+                                                        <option value="Active">Active</option>
+                                                        <option value="Inactive">Inactive</option>
+                                                        {/* Add more options if needed */}
+                                                    </select>
                                                 </div>
                                                 <div className="form-group">
                                                     <label className="form-label"><strong>Total Point</strong></label>
@@ -300,8 +327,12 @@ function Customer() {
                         </div>
                     </div>
                 </div>
-                <div style={{ marginBottom: '30px', textAlign: 'right' }}>
+                <div style={{ marginBottom: '30px', display:"flex" ,justifyContent:"space-between"}}>
+                
+                <></><button type="button" className="btn btn-primary" onClick={() => handleSave(accountId)}>Close</button>
+                
                     <button type="button" className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>Close</button>
+
                 </div>
             </Modal>
             <div className='modal-dialog modal-lg modal-dialog-centered'>
@@ -315,7 +346,7 @@ function Customer() {
 
             <div className="page-container">
                 {/* MAIN CONTENT*/}
-                
+
                 <div >
                     <div className="section__content section__content--p30">
                         <div className="container-fluid">
@@ -349,10 +380,10 @@ function Customer() {
 
                                                     <th>Customer ID</th>
                                                     <th>Image</th>
-                                                    <th>Last name</th>
-                                                    <th>First Name</th>
+                                                    <th>Name</th>
                                                     <th>Phone</th>
                                                     <th>Address</th>
+                                                    <th>Status</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -363,10 +394,10 @@ function Customer() {
                                                         <td><img src={customer.account.img
                                                             || "http://via.placeholder.com/300"}
                                                             alt="Avatar" style={{ width: '100px', height: '100px', borderRadius: "50%" }} /></td>
-                                                        <td>{customer.lastName}</td>
-                                                        <td>{customer.firstName}</td>
+                                                        <td>{customer.account.name}</td>
                                                         <td>{customer.phone}</td>
                                                         <td>{customer.address}</td>
+                                                        <td><p className={`status ${customer.account.status}`}>{customer.account.status}</p></td>
                                                         <td>
                                                             <div className="table-data-feature">
 

@@ -275,9 +275,9 @@ const Contact = () => {
                         {/* <td>{order.dateWork}</td> */}
                         <td>{new Date(processing.date).toLocaleDateString(undefined, options)}</td>
                         {processing.status == 'Incoming' ? (
-                          <td className="listorder complete" style={{ color: '#ff6a00' }}>{processing.status}</td>
+                          <td className="listorder complete" style={{ color: '#ff6a00' }}>{"Chờ"}</td>
                         ) : (
-                          <td className="listorder complete" style={{ color: '#0053e4' }}>{processing.status}</td>
+                          <td className="listorder complete" style={{ color: '#0053e4' }}>{"Đang làm việc"}</td>
                         )}
                         <td className="process" style={{ color: '#35cb28' }}>{formatCurrency(processing.price)}</td>
                       </tr>

@@ -758,9 +758,9 @@ export default function ProfileCustomer() {
                                                                     <td>{order.employeeName}</td>
                                                                     {/* <td>{order.dateWork}</td> */}
                                                                     {order.status == 'Completed' ? (
-                                                                        <td className="listorder complete" style={{ color: '#28a745' }}>{order.status}</td>
+                                                                        <td className="listorder complete" style={{ color: '#28a745' }}>{"Hoành Thành"}</td>
                                                                     ) : (
-                                                                        <td className="listorder complete" style={{ color: '#e20303' }}>{order.status}</td>
+                                                                        <td className="listorder complete" style={{ color: '#e20303' }}>{"Đã Huỷ"}</td>
                                                                     )}
                                                                     <td>{new Date(order.date).toLocaleDateString(undefined, options1)}</td>
                                                                     <td className="process" style={{ color: '#35cb28' }}>{formatCurrency(order.price)}</td>

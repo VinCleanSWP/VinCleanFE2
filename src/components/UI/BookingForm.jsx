@@ -335,7 +335,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
           console.error('Error fetching building types:', error);
         });
     } else {
-      setSelectedOptionId(null);
+
       setAvailableFloors([]);
     }
     setSelectedOption(selectedValue);

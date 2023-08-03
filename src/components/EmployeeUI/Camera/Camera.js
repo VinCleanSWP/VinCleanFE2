@@ -45,7 +45,10 @@ function CameraCapture({ processId,onCaptureImage }) {
       const imgUrl = await imageRef.getDownloadURL();
       console.log('Đã tải ảnh lên Firebase Storage:', imgUrl);
       onCaptureImage(imgUrl);
+      openCamera();
+
     }
+    console.log('lỗi tải ảnh lên Firebase Storage: ' + captureImage);
   };
   const switchCamera = () => {
     setCurrentCamera(prevCamera => (prevCamera === 'user' ? 'environment' : 'user'));
@@ -77,6 +80,7 @@ function CameraCapture({ processId,onCaptureImage }) {
     return () => {
       window.removeEventListener('resize', getDeviceImageSize);
     };
+    captureImage();
   }, []);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: '100%' }}>
@@ -92,7 +96,7 @@ function CameraCapture({ processId,onCaptureImage }) {
         {capturedImage ? (
           <div >
             <button className="camera-button" onClick={() => { setCapturedImage(null); openCamera(); }}>Chụp lại</button>
-            <button className="camera-button" onClick={uploadImageToFirebase}>Done</button>
+            <button className="camera-button" onClick={() => { setCapturedImage(null);uploadImageToFirebase();}}>Tải lên</button>
           </div>
         ) : (
           <div >

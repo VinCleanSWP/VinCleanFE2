@@ -50,8 +50,11 @@ export const GetOrderRangeAPI = (data) => {
     return api.post(`Order/OrderRange`,data);
 }
 export const GetOrderbyIDAPI = (id) => {
-    return api.get(`Order/${id}`);
+    return api.get(`Order/GetAll/${id}`);
 }
 export const GetAllOrderRangeAPI = (data) => {
     return api.post(`Order/GetAllOrderRange`,data);
+}
+export const GetOrderRequestAPI = (id) => {
+    return api.get(`OrderRequest`);
 }

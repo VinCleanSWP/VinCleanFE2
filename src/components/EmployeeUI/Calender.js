@@ -83,7 +83,7 @@ const MyCalendar = () => {
       const formattedEvents = response.data
         .filter(
           (event) =>
-            event.employeeAccountId === parseInt(localStorage.getItem("id"))
+            event.employeeAccountId === parseInt(localStorage.getItem("id")) && event.status !== "Cancel"
         )
         .map((event) => {
           console.log(event.date);

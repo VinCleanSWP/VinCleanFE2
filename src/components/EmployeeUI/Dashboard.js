@@ -24,7 +24,7 @@ export default function Dashboard() {
   useEffect(() => {
     // Gọi API để lấy dữ liệu khi startMonth và endMonth thay đổi
     fetchData();
-    
+
   }, [startDate, endDate]);
 
   const fetchData = async () => {
@@ -35,11 +35,11 @@ export default function Dashboard() {
     };
     try {
       const response = await GetOrderRangeAPI(data);
-      setEmployee(response);
-      console.log(employee);
-      const totalJobs = response.length;
-      const totalRevenue = response.reduce((acc, curr) => acc + curr.price, 0);
-
+      const filteredResponse = response.filter((event) => event.status !== "Cancel");
+      setEmployee(filteredResponse);
+      console.log(filteredResponse);
+      const totalJobs = filteredResponse.length;
+      const totalRevenue = filteredResponse.reduce((acc, curr) => acc + curr.price, 0);
       setTotalJobs(totalJobs);
       setTotalRevenue(totalRevenue);
     } catch (error) {
@@ -54,31 +54,31 @@ export default function Dashboard() {
     setEndDate(endMonth);
   };
   useEffect(() => {
-    fetchDatarequest(); 
+    fetchDatarequest();
   }, [localStorage.getItem("id")]);
   const fetchDatarequest = async () => {
     try {
-    const response = await GetOrderRequestAPI();
+      const response = await GetOrderRequestAPI();
 
-    const orderRequest = response.data
-      .filter(
-        (event) => event.accountId === parseInt(localStorage.getItem("id"))
-      )
-      .map((event) => {
-        return {
+      const orderRequest = response.data
+        .filter(
+          (event) => event.accountId === parseInt(localStorage.getItem("id"))
+        )
+        .map((event) => {
+          return {
             orderId: event.orderId,
             status: event.status,
-            reason:event.reason,
+            reason: event.reason,
             date: event.date.split("T")[0],
             createdDate: event.createdDate,
-        };
-      }
-      );
+          };
+        }
+        );
       console.log(orderRequest);
       setorderRequest(orderRequest);
     } catch (error) {
-        console.error('Failed to fetch data:', error);
-      }
+      console.error('Failed to fetch data:', error);
+    }
   };
   const handlePreviousMonthClick = () => {
     const startMonth = startDate.clone().subtract(1, "month").startOf("month");
@@ -149,55 +149,55 @@ export default function Dashboard() {
       sorter: (a, b) => a.orderId - b.orderId,
     },
     {
-        title: "Ngày làm việc",
-        dataIndex: "createdDate",
-        key: "createdDate",
-        sorter: (a, b) => moment(a.createdDate).unix() - moment(b.createdDate).unix(),
-        render: (date) => {
-            if (!date) return null;
-          const formattedDate = new Date(date).toLocaleString('vi-VN', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-          });
-          return formattedDate;
-        },
+      title: "Ngày làm việc",
+      dataIndex: "createdDate",
+      key: "createdDate",
+      sorter: (a, b) => moment(a.createdDate).unix() - moment(b.createdDate).unix(),
+      render: (date) => {
+        if (!date) return null;
+        const formattedDate = new Date(date).toLocaleString('vi-VN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+        return formattedDate;
+      },
     },
     {
-        title: "Lý do",
-        dataIndex: "reason",
-        key: "reason",
+      title: "Lý do",
+      dataIndex: "reason",
+      key: "reason",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        let tagColor = "";
+        let statusText = "";
+
+        switch (status) {
+          case "Accepted":
+            tagColor = "green";
+            statusText = "Được chấp nhận";
+            break;
+          case "Waiting":
+            tagColor = "blue";
+            statusText = "Đợi duyệt";
+            break;
+          case "Denied":
+            tagColor = "red";
+            statusText = "Không được chấp nhận";
+            break;
+          default:
+            statusText = status;
+            break;
+        }
+
+        return <Tag color={tagColor}>{statusText}</Tag>;
       },
-      {
-        title: "Trạng thái",
-        dataIndex: "status",
-        key: "status",
-        render: (status) => {
-          let tagColor = "";
-          let statusText = "";
-      
-          switch (status) {
-            case "Accepted":
-              tagColor = "green";
-              statusText = "Được chấp nhận";
-              break;
-            case "Waiting":
-              tagColor = "blue";
-              statusText = "Đợi duyệt";
-              break;
-            case "Denied":
-              tagColor = "red";
-              statusText = "Không được chấp nhận";
-              break;
-            default:
-              statusText = status;
-              break;
-          }
-      
-          return <Tag color={tagColor}>{statusText}</Tag>;
-        },
     },
   ];
   const buttonStyle = {
@@ -259,71 +259,71 @@ export default function Dashboard() {
           margin: "15px",
         }}
       >
-        
+
         <Tabs defaultActiveKey="1" onChange={handleTabChange}>
-        <TabPane tab={<span style={{ width: "100%",fontWeight: "bold"}}>Danh sách công việc</span>} key="1">
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <div style={{ textAlign: "left" }}>
-            <h3 style={{ textAlign: "center", color: "black" }}>
-              <strong>
-                Danh sách các công việc đã hoành thành trong {monthRange}
-              </strong>
-            </h3>
-            <div style={{ textAlign: "right", marginRight: "30px" }}>
-              <p>
-                <strong>
-                  Tổng số công việc hoành thành trong {monthRange}:
-                </strong>
-                <strong style={{ color: "red" }}> {totalJobs}</strong>
-              </p>
-              <p>
-                <strong>Tổng số tiền đã thu trong {monthRange}:</strong>{" "}
-                <strong style={{ color: "red" }}>
-                  {formatCurrency(totalRevenue)}
-                </strong>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ margin: "10px" }}>
-          <Button style={buttonStyle} onClick={handleCurrentMonthClick}>
-            Tháng hiện tại
-          </Button>
-          <Button style={buttonStyle} onClick={handlePreviousMonthClick}>
-            Tháng trước
-          </Button>
-          <Button style={buttonStyle} onClick={handleNextMonthClick}>
-            Tháng sau
-          </Button>
-        </div>
-          <Table
-            dataSource={employee}
-            columns={columns}
-            pagination={false}
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record),
-            })}
-          />
-        </TabPane>
-
-
-
-        <TabPane  tab={<span style={{ width: "100%",fontWeight: "bold"}}>Yêu cầu huỷ công việc</span>} key="2">
-        
+          <TabPane tab={<span style={{ width: "100%", fontWeight: "bold" }}>Danh sách công việc</span>} key="1">
             <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <div style={{ textAlign: "left" }}>
-          <h3 style={{ textAlign: "center", color: "black",marginTop: "20px" }}>
-              <strong>
-                Danh sách các yêu cầu huỷ công việc 
-              </strong>
-            </h3>
-            
-          </div>
-        </div>
-          <Table dataSource={orderRequest} columns={columns2} pagination={false} />
-        </TabPane>
-      </Tabs>
+              <div style={{ textAlign: "left" }}>
+                <h3 style={{ textAlign: "center", color: "black" }}>
+                  <strong>
+                    Danh sách các công việc đã hoành thành trong {monthRange}
+                  </strong>
+                </h3>
+                <div style={{ textAlign: "right", marginRight: "30px" }}>
+                  <p>
+                    <strong>
+                      Tổng số công việc hoành thành trong {monthRange}:
+                    </strong>
+                    <strong style={{ color: "red" }}> {totalJobs}</strong>
+                  </p>
+                  <p>
+                    <strong>Tổng số tiền đã thu trong {monthRange}:</strong>{" "}
+                    <strong style={{ color: "red" }}>
+                      {formatCurrency(totalRevenue)}
+                    </strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ margin: "10px" }}>
+              <Button style={buttonStyle} onClick={handleCurrentMonthClick}>
+                Tháng hiện tại
+              </Button>
+              <Button style={buttonStyle} onClick={handlePreviousMonthClick}>
+                Tháng trước
+              </Button>
+              <Button style={buttonStyle} onClick={handleNextMonthClick}>
+                Tháng sau
+              </Button>
+            </div>
+            <Table
+              dataSource={employee}
+              columns={columns}
+              pagination={false}
+              onRow={(record) => ({
+                onClick: () => handleRowClick(record),
+              })}
+            />
+          </TabPane>
+
+
+
+          <TabPane tab={<span style={{ width: "100%", fontWeight: "bold" }}>Yêu cầu huỷ công việc</span>} key="2">
+
+            <div style={{ textAlign: "center", marginTop: "20px" }}>
+              <div style={{ textAlign: "left" }}>
+                <h3 style={{ textAlign: "center", color: "black", marginTop: "20px" }}>
+                  <strong>
+                    Danh sách các yêu cầu huỷ công việc
+                  </strong>
+                </h3>
+
+              </div>
+            </div>
+            <Table dataSource={orderRequest} columns={columns2} pagination={false} />
+          </TabPane>
+        </Tabs>
 
         <Modal
           visible={isModalVisible}

@@ -250,7 +250,7 @@ const BookingForm = ({ serviceId, selectedServiceName, selectedServiceType, sele
     };
 
     console.log(data)
-    axios.post('https://vinclean.azurewebsites.net/api/Orde', data)
+    axios.post('https://vinclean.azurewebsites.net/api/Order', data)
       .then(response => {
         console.log(response.data);
         setSubmittedData(response.data);

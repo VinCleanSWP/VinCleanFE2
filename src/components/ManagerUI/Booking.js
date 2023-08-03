@@ -370,7 +370,7 @@ function Booking() {
         setHasLocationData(false);
 
         axios
-            .get(`https://vinclean.azurewebsites.net/api/Location/Process/${id}`)
+            .get(`https://vinclean.azurewebsites.net/api/Location/Order/${id}`)
             .then((response) => {
                 const { latitude, longtitude } = response.data.data;
                 if (latitude !== 0 && longtitude !== 0) {

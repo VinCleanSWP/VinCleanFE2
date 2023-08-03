@@ -96,8 +96,10 @@ function Request() {
 
     const updateClick = () => {
         const data = {
-            processId: selectedProcessId,
-            employeeId: selectedEmployees
+            orderId: selectedProcessId,
+            employeeId: selectedEmployees,
+            latitude: 0,
+            longtitude: 0,
         };
         const dataMail = {
             processId: selectedProcessId,

@@ -417,7 +417,7 @@ function Booking() {
     {/*-----Location Google Map------ */ }
 
     function formatCurrency(amount) {
-        var amount1 = amount;   
+        var amount1 = amount;
         return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
     }
 
@@ -515,19 +515,32 @@ function Booking() {
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                 </div>
                                 <div className="modal-body">
-                                <p style={{textAlign:"end"}}><strong>Created Date:</strong> {modal.createdDate ? new Date(modal.createdDate).toLocaleDateString() : ''}</p>
                                     <div style={{ display: "flex" }}>
                                         <div class="process-info">
                                             <h4 style={{ textAlign: "center", margin: "10px" }}>Order Infor</h4>
                                             <div class="info-content" style={{ marginLeft: "10px" }}>
-                                                <p><strong>Order ID:</strong> {modal.orderId}</p>
-                                                <p><strong>Status:</strong> <label className='status cancelled' style={{ padding: "0px 10px" }}>{modal.status}</label></p>
-                                                <p><strong>Service:</strong> {modal.typeName} - {modal.serviceName} </p>
-                                                <p><strong>Time: </strong> {modal.startTime} - {modal.endTime}</p>
-                                                <p><strong>Date: </strong> {modal.date ? new Date(modal.date).toLocaleDateString() : ''}</p>
-                                                <p><strong>Note: </strong> {modal.note ? modal.note : "<Nothing>"}</p>
+                                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                                    <div>
+                                                        <p><strong>Order ID:</strong> {modal.orderId}</p>
+
+                                                        <p><strong>Time: </strong> {modal.startTime} - {modal.endTime}</p>
+                                                        <p><strong>Date: </strong> {modal.date ? new Date(modal.date).toLocaleDateString() : ''}</p>
+                                                        <p><strong>Note: </strong> {modal.note ? modal.note : "<Nothing>"}</p>
+                                                        <p><strong>Sub Price:</strong> {formatCurrency(modal.subPrice ? modal.subPrice : "0")}</p>
+                                                        <p><strong>Point Used:</strong> {modal.pointUsed ? modal.pointUsed : 0} </p>
+                                                        <p style={{ fontFamily: "Arial, sans-serif", fontSize: "25px" }}><strong>Price:</strong> <label className='status Completed' style={{ padding: "0px 20px" }}>{formatCurrency(modal.price)}</label></p>
+                                                    </div>
+                                                    <div style={{marginRight:"15px"}}>
+                                                        <p><strong>Created Date:</strong> {modal.createdDate ? new Date(modal.createdDate).toLocaleDateString() : ''}</p>
+                                                        <p><strong>Status:</strong> <label className={`status ${modal.status}`}style={{ padding: "0px 10px" }}>{modal.status}</label></p>
+                                                        <p><strong>Service:</strong> {modal.typeName} - {modal.serviceName} </p>
+                                                        <p><strong>Address: </strong> {modal.address}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div style={{ display: "flex", marginTop: "20px" }}>
                                         <div class="process-info1">
                                             <h4 style={{ textAlign: "center", margin: "10px" }}> Customer Infor</h4>
                                             <div class="info-content" style={{ marginLeft: "10px" }}>
@@ -535,7 +548,6 @@ function Booking() {
                                                     <div>
                                                         <p><strong>ID: {modal.customerId} </strong></p>
                                                         <p><strong>Customer:</strong> {modal.name} </p>
-                                                        <p><strong>Address</strong> {modal.address}</p>
                                                         <p><strong>Phone:</strong> {modal.phone}</p>
                                                         <p><strong>Email:</strong> {modal.email}</p>
                                                         <p><strong>Dob:</strong> {modal.dob ? new Date(modal.dob).toLocaleDateString() : ''}</p>
@@ -543,16 +555,6 @@ function Booking() {
                                                     <div> <img src={modal.accountImage} alt="react logo" style={{ width: '100px', height: "100px", borderRadius: 100, marginTop: 0 }} /></div>
                                                 </div>
 
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "flex", marginTop: "20px" }}>
-                                        <div class="process-info">
-                                            <h4 style={{ textAlign: "center", margin: "10px" }}> Price</h4>
-                                            <div class="info-content" style={{ marginLeft: "10px" }}>
-                                                <p><strong>Sub Price:</strong> {formatCurrency(modal.subPrice)}</p>
-                                                <p><strong>Point Used:</strong> {modal.pointUsed} </p>
-                                                <p style={{ fontFamily: "Arial, sans-serif", fontSize: "25px" }}><strong>Price:</strong> <label className='status Incoming' style={{ padding: "0px 20px" }}>{formatCurrency(modal.price)}</label></p>
                                             </div>
                                         </div>
                                         <div class="process-info1">
@@ -575,7 +577,7 @@ function Booking() {
                                             )}
                                         </div>
                                     </div>
-                                    <div className='input-group' style={{marginTop:"20px"}}>
+                                    <div className='input-group' style={{ marginTop: "20px" }}>
                                         <span className='input-group-text'>Name</span>
                                         <input type="text" className="form-control"
                                             value={modal.orderId}

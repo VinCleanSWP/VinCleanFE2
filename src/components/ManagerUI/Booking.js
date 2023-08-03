@@ -81,7 +81,7 @@ function Booking() {
                     'success'
                 )
                 console.log(dataMail)
-                axios.post('https://vinclean.azurewebsites.net/api/Location', data)
+                axios.post('https://vinclean.azurewebsites.net/api/Order/AssignEmployee', data)
                     .then(response => {
                         console.log(response.data);
 

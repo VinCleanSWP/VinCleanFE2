@@ -81,11 +81,11 @@ function Booking() {
                     'success'
                 )
                 console.log(dataMail)
-                axios.post('https://vinclean.azurewebsites.net/api/Order/AssignEmployee', data)
+                console.log(data)
+                axios.put('https://vinclean.azurewebsites.net/api/Order/AssignEmployee', data)
                     .then(response => {
                         console.log(response.data);
 
-                        fetchData();
                         axios.post('https://vinclean.azurewebsites.net/api/Email/SendAssignToCustomer', dataMail)
                             .then(response => {
                                 console.log(response.data);
@@ -115,6 +115,7 @@ function Booking() {
                                 });
 
                             })
+                            fetchData();
                     })
                     .catch(error => {
                         console.error(error);

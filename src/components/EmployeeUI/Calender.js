@@ -31,6 +31,8 @@ const MyCalendar = () => {
   const [inputValue, setInputValue] = useState('');
   const [inputNote, setInputNote] = useState('');
   const inputRef = useRef(null);
+  const [error, setError] = useState('');
+  const [error1, setError1] = useState('');
   const formats = {
     monthHeaderFormat: 'MMMM',
     dayHeaderFormat: 'dddd  -  DD/MM/YYYY',
@@ -67,7 +69,7 @@ const MyCalendar = () => {
         console.log(event.startTime);
         console.log(start);
         return {
-          id: event.processId,
+          id: event.orderId,
           start,
           end,
           title: (
@@ -77,9 +79,10 @@ const MyCalendar = () => {
               <p>Ghi Chú: {event.note}</p>
             </div>
           ),
-          
+
           phone: event.phone,
           email: event.email,
+          price: event.price,
           data: {
             status: event.status,
             startTime: event.startTime,
@@ -87,7 +90,7 @@ const MyCalendar = () => {
             endWorking: event.endWorking,
             name: event.name,
             employeeAccountId: event.employeeAccountId,
-          employeeId: event.employeeId,
+            employeeId: event.employeeId,
             note: event.note,
             address: event.address,
             typeName: event.typeName,
@@ -163,7 +166,7 @@ const MyCalendar = () => {
         draggable: true,
         progress: undefined,
         theme: "light",
-    });
+      });
     } else if (!data.startWorking && status === 'Hoàn Thành') {
       const ew = {
         processId: selectedEvent.id,
@@ -180,7 +183,7 @@ const MyCalendar = () => {
         draggable: true,
         progress: undefined,
         theme: "light",
-    });
+      });
     } else {
       toast.error('Cập Nhật  thất bại', {
         position: "top-right",
@@ -191,7 +194,7 @@ const MyCalendar = () => {
         draggable: true,
         progress: undefined,
         theme: "light",
-    });
+      });
     }
     setSelectedEvent(null);
     fetchData();
@@ -241,7 +244,7 @@ const MyCalendar = () => {
   const handleImageUpload = async (file, record) => {
     setIdImage(record);
     console.log(idImage);
-    const storageRef = storage.ref(`Process/process${selectedEvent.id}/${file.name}`);
+    const storageRef = storage.ref(`Order/order${selectedEvent.id}/${file.name}`);
     const fileRef = storageRef.child(file.name);
     await fileRef.put(file);
     const imgUrl = await fileRef.getDownloadURL();
@@ -278,7 +281,7 @@ const MyCalendar = () => {
 
   const handleCloseCamera = () => {
     setShowCamera(false);
-
+    setSelectedImage(null);
   };
   const handleImageClick = (image) => {
     setSelectedImage(image);
@@ -290,6 +293,9 @@ const MyCalendar = () => {
   const handleCloseModal = () => {
     setModalVisible(false);
     setModalOther(false);
+    setInputNote('');
+    setError('');
+    setSelectedValue('');
   };
   // bảng dropdown của antd
   const expandedRowRender = (record1) => {
@@ -327,14 +333,37 @@ const MyCalendar = () => {
       {
         title: 'Hành động',
         key: 'action',
-        render: (_, record) => (
-          <Space>
-            <Button onClick={() => handleOpenCamera(record)}>Chụp ảnh</Button>
-            <Upload beforeUpload={(file) => handleImageUpload(file, record)} showUploadList={false}>
-              <Button icon={<UploadOutlined />}>Tải ảnh</Button>
-            </Upload>
-          </Space>
-        ),
+        render: (_, record) => {
+          const isRecordVerify = record.type === 'Verify';
+          const isRecordIncoming = record.type === 'Processing';
+          const isRecordCompleted = record.type === 'Completed';
+          const isIncoming = selectedEvent.data.status === 'Incoming';
+          const isProcessing = selectedEvent.data.status === 'Processing';
+          const isCompleted = selectedEvent.data.status === 'Completed';
+          console.log(record.type);
+          const isDisable =
+            (isIncoming && isRecordVerify) ||
+            (isProcessing && (isRecordVerify || isRecordIncoming)) ||
+            (isCompleted && (isRecordVerify || isRecordIncoming || isRecordCompleted));
+          return (
+            <Space>
+              <Button onClick={() => handleOpenCamera(record)}
+                disabled={isDisable}
+              >
+                Chụp ảnh
+              </Button>
+              <Upload
+                beforeUpload={(file) => handleImageUpload(file, record)}
+                showUploadList={false}
+                disabled={isDisable}
+              >
+                <Button icon={<UploadOutlined />} disabled={isDisable}>
+                  Tải ảnh
+                </Button>
+              </Upload>
+            </Space>
+          );
+        },
       },
     ];
 
@@ -358,11 +387,15 @@ const MyCalendar = () => {
       index: index + 1,
       key: image.id.toString(),
       id: image.id,
+      type: image.type,
       name: image.name,
       image: image.image,
     }));
     console.log(data);
-
+    function formatCurrency(amount) {
+      var amount1 = amount * 1000;
+      return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+    }
     return (
       <Table columns={columns.filter(col => col.dataIndex !== 'id')} dataSource={data} pagination={false} />
     );
@@ -399,50 +432,92 @@ const MyCalendar = () => {
 
   const onSelectChange = (value) => {
     setSelectedValue(value);
+    console.log(value);
   };
 
   const onInputChange = (event) => {
     setInputValue(event.target.value);
+    setError('');
   };
   const onInputNote = (event) => {
-    setInputNote(event.target.value);
+    const inputValue = event.target.value;
+    const isSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(inputValue);
+    const isNotEmpty = inputValue.trim() !== '';
+
+    if (!isSpecialChars && isNotEmpty) {
+      setInputNote(inputValue);
+      setError(''); // Xóa thông báo lỗi nếu chuỗi hợp lệ
+    } else {
+      setError('Chuỗi không được chứa kí tự đặc biệt và không để trống.');
+    }
   };
+  const isValidNumber = (value) => {
+    const numberValue = parseInt(value, 10);
+    return !isNaN(numberValue) && numberValue >= 0 && numberValue <= 1000000;
+  };
+
   const handleAddItem = () => {
-    if (inputValue) {
+    if (isValidNumber(inputValue)) {
       setItems([...items, inputValue]);
       setInputValue('');
-      inputRef.current.focus();
+      setError1('');
+    } else {
+      setError1('Giá trị phải là số từ 0 đến 1 triệu.');
     }
   };
   const handleSubmit = async () => {
-    console.log('Selected value:', selectedValue);
-    const data = {
-      subPrice: parseInt(selectedValue),
-      processId: selectedEvent.id
+    if (selectedValue) {
+      console.log('Selected value:', selectedValue);
+      const data = {
+        subPrice: parseInt(selectedValue),
+        processId: selectedEvent.id
+      }
+      console.log(data);
+      await updateSubPriceAPI(data);
+      setModalOther(false);
+      fetchData();
     }
-    console.log(data);
-    await updateSubPriceAPI(data);
-    setModalOther(false);
+
   };
   const handleSubmitCanncel = async () => {
-    console.log('Selected value:',selectedEvent);
-    const data = {
-      processId: selectedEvent.id,
-      oldEmployeeId: selectedEvent.data.employeeId,
-      note: inputNote,
-      createBy: selectedEvent.data.employeeAccountId
+    if (inputNote) {
+      console.log('Selected value:', selectedEvent);
+      const data = {
+        processId: selectedEvent.id,
+        oldEmployeeId: selectedEvent.data.employeeId,
+        note: inputNote,
+        createBy: selectedEvent.data.employeeAccountId
+      }
+      console.log(data);
+      await updateCanncelJobAPI(data);
+      setModalOther(false);
+      setInputNote('');
+      setError('');
     }
-    console.log(data);
-    await updateCanncelJobAPI(data);
-    setModalOther(false);
-    setInputNote('');
+    setError('Lý do không được bỏ trống.');
   };
+  const handleDisabledCannelwhenIncom = () => {
+    if (selectedEvent?.data?.status !== 'Incoming') {
+      return true;
+    }
+    return false;
+  };
+  const handleDisabledCannelwhenCompleted = () => {
+    if (selectedEvent?.data?.status === 'Completed') {
+      return true;
+    }
+    return false;
+  };
+  function formatCurrency(amount) {
+    var amount1 = amount;
+    return amount1 ? amount1.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : "";
+  }
   return (
     <div>
-      <div style={{paddingBottom: '0px',paddingLeft: '15px',paddingRight: '15px',paddingTop: '5px'}}>
-      <h2 style={{ color: 'black', fontSize: '45px', fontWeight: 'bold',border:'1px solid black', padding: '10px 35px',borderRadius:'10px',background:'#4D96FF'}}>Lịch Công Việc</h2>
+      <div style={{ paddingBottom: '0px', paddingLeft: '15px', paddingRight: '15px', paddingTop: '5px' }}>
+        <h2 style={{ color: 'black', fontSize: '45px', fontWeight: 'bold', border: '1px solid black', padding: '10px 35px', borderRadius: '10px', background: '#4D96FF' }}>Lịch Công Việc</h2>
       </div>
-      <div style={{ height: '1300px', backgroundColor: 'white', padding: "20px",border:'1px solid black', borderRadius: "10px", margin: '15px' }}>
+      <div style={{ height: '1300px', backgroundColor: 'white', padding: "20px", border: '1px solid black', borderRadius: "10px", margin: '15px' }}>
 
         <Calendar
           formats={formats}
@@ -461,7 +536,7 @@ const MyCalendar = () => {
           showAllEvents
         />
         <div>
-          <Modal visible={modalVisible} onCancel={handleCloseModal} footer={null}>
+          <Modal title="Xem Ảnh" visible={modalVisible} onCancel={handleCloseModal} footer={null}>
             <img src={selectedImage} />
           </Modal>
         </div>
@@ -470,43 +545,47 @@ const MyCalendar = () => {
             <div>
               <h2 style={{ textAlign: "center" }}>Tác Vụ Khác Công Việc</h2>
               <p style={{ marginBottom: '3px' }}><strong>Phụ Thu Thêm: </strong></p>
-              <Select
-                style={{ width: 300, margin: '5px' }}
-                placeholder="Chọn giá trị"
-                onChange={onSelectChange}
-                value={selectedEvent ? selectedEvent.data.subPrice : ''}
-                dropdownRender={(menu) => (
-                  <div>
-                    {menu}
-                    <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
-                      <Input
-                        style={{ flex: 'auto' }}
-                        value={inputValue}
-                        onChange={onInputChange}
-                        ref={inputRef}
-                      />
-                      <Button
-                        type="primary"
-                        style={{ flex: 'none', marginLeft: '8px' }}
-                        onClick={handleAddItem}
-                      >
-                        Thêm
-                      </Button>
+              <div>
+                <Select
+                  style={{ width: 300, margin: '5px' }}
+                  placeholder="Chọn giá trị"
+                  onChange={onSelectChange}
+                  value={selectedValue !== '' ? selectedValue : (selectedEvent ? selectedEvent.data.subPrice : '')}
+
+                  dropdownRender={(menu) => (
+                    <div>
+                      {menu}
+                      <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
+                        <Input
+                          style={{ flex: 'auto' }}
+                          value={inputValue}
+                          onChange={onInputChange}
+                          ref={inputRef}
+                        />
+                        <Button
+                          type="primary"
+                          style={{ flex: 'none', marginLeft: '8px' }}
+                          onClick={handleAddItem}
+                        >
+                          Thêm
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                )}
-              >
-                {items.map((item) => (
-                  <Option key={item} value={item}>
-                    {item}
-                  </Option>
-                ))}
-              </Select>
-              <Button onClick={handleSubmit}>Xác Nhận</Button>
+                  )}
+                >
+                  {items.map((item) => (
+                    <Option key={item} value={item}>
+                      {item}
+                    </Option>
+                  ))}
+                </Select>
+                <Button onClick={handleSubmit} >Xác Nhận</Button>
+              </div>
+              {error1 && <span style={{ color: 'red' }}>{error1}</span>}
               <p><strong>Lưu Ý:</strong> Phụ thu phải báo trước với khách hàng và được sự đồng ý của khách hàng.</p>
 
 
-              <p style={{ marginBottom: '3px' }}><strong>Yêu Cầu Huỷ Công Việc:</strong></p>
+              <p style={{ marginBottom: '3px' }}><strong>Yêu Cầu chuyển Công Việc:</strong></p>
               <div style={{ display: 'flex', flexWrap: 'nowrap', margin: '5px' }}>
                 <Input
                   style={{ width: 300, marginRight: '5px' }}
@@ -515,9 +594,9 @@ const MyCalendar = () => {
                   onChange={onInputNote}
                   ref={inputRef}
                 />
-                <Button onClick={handleSubmitCanncel}>Xác Nhận</Button>
-
+                <Button onClick={handleSubmitCanncel}  >Xác Nhận</Button>
               </div>
+              {error && <span style={{ color: 'red' }}>{error}</span>}
               <p><strong>Lưu Ý:</strong> Huỷ công việc chỉ được thực hiện khi trạng thái công việc là CHỜ.</p>
             </div>
           </Modal>
@@ -564,46 +643,47 @@ const MyCalendar = () => {
                   </div>
                 </div>
               </div>
-              <div style={{ margin: "9px" }}>
-                <p><strong>Mã công việc:</strong> {selectedEvent.id}</p>
-                <p>Thời gian bắt đầu: {selectedEvent.start.toLocaleString('vi-VN', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-                  <br></br>Thời gian kết thúc dự kiến: {selectedEvent.end.toLocaleString('vi-VN', {
+
+              <div style={{ display: 'flex', flexWrap: 'nowrap', margin: '5px' }}>
+                <div style={{ flex: '1', fontSize: '15px', marginLeft: '5px' }}>
+                  <p style={{ fontSize: '15px' }}><strong>Mã công việc:</strong> {selectedEvent.id}</p>
+                  <p tyle={{ fontSize: '15px' }}>Thời gian bắt đầu:  {selectedEvent.start.toLocaleString('vi-VN', {
                     year: 'numeric',
                     month: '2-digit',
                     day: '2-digit',
                     hour: '2-digit',
                     minute: '2-digit',
-                  })}</p>
-                
-              </div>
-              <div style={{display: 'flex', flexWrap: 'nowrap', margin: '5px'}}>
-                <div style={{flex: '1'}}>
-                <p>
-                  <strong>Trạng Thái hiện tại:</strong>{" "}
-                  {selectedEvent.data.status === "Incoming" ? (
-                    <span style={{ color: "#fbec15" }}><strong>chờ</strong></span>
-                  ) : selectedEvent.data.status === "Completed" ? (
-                    <span style={{ color: "green" }}><strong>hoàn thành</strong></span>
-                  ) : selectedEvent.data.status === "Processing" ? (
-                    <span style={{ color: "#f4a700" }}><strong>Đang làm việc</strong></span>
-                  ) : (
-                    selectedEvent.data.status
-                  )}
-                </p>
+                  })}
+                    <br></br>
+                    Thời gian kết thúc dự kiến: {selectedEvent.end.toLocaleString('vi-VN', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}</p>
+                  <div>
+                    <strong>Trạng Thái hiện tại:</strong>{" "}
+                    {selectedEvent.data.status === "Incoming" ? (
+                      <span style={{ color: "#fbec15" }}><strong>chờ</strong></span>
+                    ) : selectedEvent.data.status === "Completed" ? (
+                      <span style={{ color: "green" }}><strong>hoàn thành</strong></span>
+                    ) : selectedEvent.data.status === "Processing" ? (
+                      <span style={{ color: "#f4a700" }}><strong>Đang làm việc</strong></span>
+                    ) : (
+                      selectedEvent.data.status
+                    )}
+                  </div>
+
 
                 </div>
-                <div style={{flex: '1', marginRight: '5px', justifyContent: 'flex-end'}}>
-                <Button onClick={handleOther}>Tác vụ khác</Button>
+
+                <div style={{ flex: '1', marginRight: '5px', marginLeft: '25px', justifyContent: 'flex-end' }}>
+                  <p style={{ fontSize: '15px' }}><strong>Phụ Thu:  </strong> <strong style={{ color: 'green' }}>{formatCurrency(selectedEvent.data.subPrice)}</strong></p>
+                  <p style={{ fontSize: '15px' }}><strong>Tổng Tiền Thu Hộ:   </strong> <strong style={{ color: 'green' }}>{formatCurrency(selectedEvent.price)}</strong></p>
+                  <Button style={{ marginTop: '10px' }} onClick={handleOther} disabled={handleDisabledCannelwhenCompleted()}>Tác vụ khác</Button>
                 </div>
-                </div>
-                
-              
+              </div>
               <Table
                 columns={columns}
                 dataSource={data}
@@ -621,11 +701,11 @@ const MyCalendar = () => {
             </div>
 
           )}
-          
+
         </Modal>
-                
+
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
 
   );

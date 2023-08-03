@@ -8,7 +8,7 @@ export default function ResetPassword() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const apiUrl = `https://vinclean.azurewebsites.net/api/Account/forgot-password?email=${emailReset}`;
+        const apiUrl = `https://vinclean.azurewebsites.net/api/Email/ResetPassword`;
         const requestData = {
             email: emailReset,
         };
@@ -16,24 +16,24 @@ export default function ResetPassword() {
             to: emailReset,
         };
         axios
-                .post("https://vinclean.azurewebsites.net/api/Email/ResetPassword", reset)
-                .then((response) => {
-                    console.log('API response:', response.data);
-                    navigate('/verification');
-                    axios
-            .post(apiUrl, requestData)
+            .post(`https://vinclean.azurewebsites.net/api/Account/forgot-password?email=${emailReset}`, requestData)
             .then((response) => {
                 console.log('API response:', response.data);
                 navigate('/verification');
+                axios
+                    .post(apiUrl, reset)
+                    .then((response) => {
+                        console.log('API response:', response.data);
+                        navigate('/verification');
+                    })
+                    .catch((error) => {
+                        console.error('API error:', error);
+                    });
             })
             .catch((error) => {
                 console.error('API error:', error);
             });
-                })
-                .catch((error) => {
-                    console.error('API error:', error);
-                });
-        
+
     };
 
     return (

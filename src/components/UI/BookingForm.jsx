@@ -223,7 +223,7 @@ const BookingForm = ({
 
     // Thời gian đặt phải trước 22 giờ cùng ngày
     const tenPM = new Date(selectedDateTime);
-    tenPM.setHours(22, 0, 0, 0);
+    tenPM.setHours(17, 0, 0, 0);
 
     // Thời gian đặt phải sau 2 giờ từ hiện tại
     const twoHoursFromNow = new Date(currentTime);

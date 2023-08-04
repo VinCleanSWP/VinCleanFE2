@@ -198,7 +198,7 @@ const BookingForm = ({
     }
 
     if (!isTimeValid(journeyDate, journeyTime)) {
-      setValidTime("Thời gian đặt không hợp lệ");
+      setValidTime("Vui lòng đặt trước 2 tiếng và trong khoảng từ sau 7h30 đến 22h ");
       return false;
     } else {
       setValidTime(true);
